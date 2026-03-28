@@ -23,14 +23,27 @@
             overflow-x: hidden; scroll-behavior: smooth;
         }
 
-        /* URGENCY HEADER */
+        /* SUCCESS BOX (HIDDEN BY DEFAULT) */
+        #success-box {
+            display: none; /* Hidden until status=success */
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--success);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 900px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.5s ease forwards;
+        }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
         .promo-bar {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             text-align: center; padding: 10px; font-weight: 800; font-size: 0.85rem;
             text-transform: uppercase; letter-spacing: 1px; color: white;
         }
 
-        /* NAVIGATION */
         nav {
             position: sticky; top: 0; width: 100%; z-index: 1000;
             background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px);
@@ -40,52 +53,42 @@
         }
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; }
 
-        /* HERO SECTION */
         .hero {
-            padding: 120px 20px 80px;
+            padding: 80px 20px 60px;
             background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%);
             text-align: center;
         }
         .hero h1 { font-size: clamp(2.8rem, 7vw, 5rem); line-height: 1; margin-bottom: 20px; font-weight: 800; }
-        .hero p { font-size: 1.25rem; color: #94a3b8; max-width: 750px; margin: 0 auto 40px; }
         .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* STATS BAR */
-        .stats { display: flex; justify-content: center; gap: 60px; margin-bottom: 60px; flex-wrap: wrap; }
-        .stat-item h3 { font-size: 2.2rem; margin: 0; color: var(--secondary); }
-        .stat-item p { color: #64748b; font-size: 0.9rem; margin: 5px 0; font-weight: 600; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        /* INTERACTIVE TABS */
+        /* TABS & CARDS */
         .tab-menu { display: flex; justify-content: center; gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
         .tab-link {
             background: var(--glass); border: 1px solid var(--border);
             padding: 14px 28px; border-radius: 50px; color: #94a3b8; cursor: pointer;
-            transition: 0.3s; font-weight: 700; font-size: 0.9rem;
+            transition: 0.3s; font-weight: 700;
         }
-        .tab-link.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 112, 186, 0.4); }
+        .tab-link.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .tab-content { display: none; animation: fadeIn 0.6s ease; }
-        .tab-content.active { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; }
+        .tab-content { display: none; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: grid; }
 
-        /* PRODUCT CARDS */
         .glass-card {
             background: var(--glass); border: 1px solid var(--border);
-            border-radius: 32px; padding: 50px; backdrop-filter: blur(20px);
-            position: relative; overflow: hidden;
+            border-radius: 32px; padding: 40px; backdrop-filter: blur(20px);
         }
-        .price-hero { font-size: 4rem; font-weight: 800; margin: 15px 0; letter-spacing: -2px; }
-        .price-hero span { font-size: 1.2rem; color: #64748b; font-weight: 400; text-decoration: line-through; margin-right: 10px; }
+        .price-hero { font-size: 3.5rem; font-weight: 800; margin: 15px 0; }
+        .price-hero span { font-size: 1.2rem; color: #64748b; text-decoration: line-through; margin-right: 10px; }
 
         .buy-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white; text-decoration: none; padding: 20px 45px;
             border-radius: 16px; display: inline-block; font-weight: 800;
-            box-shadow: 0 10px 30px rgba(0, 112, 186, 0.3);
             transition: 0.3s; width: 100%; text-align: center; box-sizing: border-box;
         }
-        .buy-btn:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0, 112, 186, 0.5); }
+        .buy-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 112, 186, 0.4); }
 
         /* PREVIEW MOCKUP */
         .prompt-preview {
@@ -100,19 +103,7 @@
             backdrop-filter: blur(3px); border-radius: 20px;
         }
 
-        /* EMAIL SYNC SECTION */
-        .sync-section {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            border-radius: 40px; padding: 60px; text-align: center;
-            margin: 80px 0; border: 1px solid var(--primary);
-        }
-        .email-input {
-            padding: 20px 30px; border-radius: 14px; border: 1px solid var(--border);
-            background: rgba(255,255,255,0.05); color: white; font-size: 1rem;
-            width: 100%; max-width: 400px; margin-bottom: 20px;
-        }
-
-        /* LIVE PROOF */
+        /* LIVE PROOF POPUP */
         #live-proof {
             position: fixed; bottom: 25px; left: 25px;
             background: white; color: #020617; border-radius: 16px;
@@ -121,42 +112,39 @@
             transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        @media (max-width: 900px) {
-            .tab-content.active { grid-template-columns: 1fr; }
-            nav { padding: 15px 20px; }
-            .hero h1 { font-size: 3rem; }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) { .tab-content.active { grid-template-columns: 1fr; } nav { padding: 15px 20px; } }
     </style>
 </head>
 <body>
 
-<div class="promo-bar">
-    ⚡ Flash Sale: Prices increase in <span id="scarcity-timer">09:59</span>
-</div>
+<div class="promo-bar">⚡ Flash Sale: Prices increase in <span id="scarcity-timer">09:59</span></div>
 
 <nav>
     <div class="logo">PROMPT<span style="color:var(--primary)">VAULT</span> USA</div>
-    <div style="display: flex; align-items: center; gap: 20px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" width="80" alt="PayPal">
-    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" width="80" alt="PayPal">
 </nav>
 
 <section class="hero">
-    <div style="display:inline-block; border: 1px solid var(--primary); padding: 5px 15px; border-radius: 30px; font-size: 0.75rem; font-weight: 800; color: var(--secondary); margin-bottom: 20px;">NEW: 2026 AI MODELS OPTIMIZED</div>
-    <h1>Don't Just Prompt. <br><span class="highlight">Command Success.</span></h1>
-    <p>Professional-grade engineering for US industries. Instant access to the scripts that turn AI into a high-performance employee.</p>
-    
-    <div class="stats">
-        <div class="stat-item"><h3>45k+</h3><p>Downloads</p></div>
-        <div class="stat-item"><h3>$0.02</h3><p>Avg Lead Cost</p></div>
-        <div class="stat-item"><h3>99.2%</h3><p>Success Rate</p></div>
-    </div>
+    <h1>Command Success with <br><span class="highlight">Professional AI.</span></h1>
+    <p>Premium, high-conversion prompt engineering for Real Estate, Freelancers, and Shopify sellers.</p>
 </section>
 
 <div class="container">
     
+    <!-- SUCCESS DOWNLOAD BOX (Triggers on ?status=success) -->
+    <div id="success-box">
+        <h2 style="color: var(--success); margin-top: 0;">✅ Payment Verified! Welcome to the Vault.</h2>
+        <p style="margin-bottom: 30px;">Access your professional prompt packs below. Please bookmark this page.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <a href="https://docs.google.com/document/d/1xhPX4grJ6B0Q6TqDCw05ZyhR-eUb-D3O/edit" target="_blank" class="buy-btn" style="background: var(--success);">🏠 Real Estate Pack</a>
+            <a href="https://docs.google.com/document/d/1qPJ_52OpsfBgUyjQtD078Uh5OlY2qd16/edit" target="_blank" class="buy-btn" style="background: var(--success);">💼 Freelancer Pack</a>
+            <a href="https://docs.google.com/document/d/1eku6D95wNDcMpr78WYEvEvTp0UwVx3Ot/edit" target="_blank" class="buy-btn" style="background: var(--success);">🛒 Shopify Pack</a>
+        </div>
+    </div>
+
+    <!-- PRODUCT TABS -->
     <div class="tab-menu">
         <div class="tab-link active" onclick="openTab(event, 'realestate')">🏠 Real Estate</div>
         <div class="tab-link" onclick="openTab(event, 'freelance')">💼 Freelance</div>
@@ -164,74 +152,57 @@
         <div class="tab-link" style="border-color: var(--accent); color: var(--accent);" onclick="openTab(event, 'vip')">🚀 VIP Vault</div>
     </div>
 
-    <!-- Real Estate Content -->
     <div id="realestate" class="tab-content active">
         <div class="glass-card">
-            <h2>The Real Estate Power-Pack</h2>
-            <p>Engineered for high-stakes US listings. Scripts for property descriptions, buyer lead magnets, and FSBO conversion.</p>
+            <h2>Real Estate Power-Pack</h2>
+            <p>50+ Prompts for high-stakes listings and lead conversion.</p>
             <div class="price-hero"><span>$49</span> $7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="buy-btn">GET INSTANT ACCESS</a>
+            <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="buy-btn">GET ACCESS NOW</a>
         </div>
         <div class="prompt-preview">
-            <p>SYSTEM_ROLE: Expert US Real Estate Broker<br>PROMPT: Analyze the following 15 property features and generate a high-urgency listing...<br>[ENCRYPTED DATA...]</p>
-            <div class="blur-overlay"><b>FULL PROMPT REVEALED IN VAULT</b></div>
+            <p>TASK: Generate a sensory-driven listing for a $2M property...<br>[ENCRYPTED DATA...]</p>
+            <div class="blur-overlay"><b>REVEALED IN VAULT</b></div>
         </div>
     </div>
 
-    <!-- Freelance Content -->
     <div id="freelance" class="tab-content">
         <div class="glass-card">
             <h2>The Freelancer's Edge</h2>
-            <p>Master the art of the proposal. Prompts for Upwork and cold outreach that land high-ticket clients.</p>
+            <p>Master proposals and outreach that land high-ticket clients.</p>
             <div class="price-hero"><span>$49</span> $7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET INSTANT ACCESS</a>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
         </div>
         <div class="prompt-preview">
-            <p>TASK: Draft a proposal for a $5,000 project that addresses pain points...<br>[ENCRYPTED DATA...]</p>
-            <div class="blur-overlay"><b>FULL PROMPT REVEALED IN VAULT</b></div>
+            <p>TASK: Draft a high-ticket proposal that highlights...<br>[ENCRYPTED DATA...]</p>
+            <div class="blur-overlay"><b>REVEALED IN VAULT</b></div>
         </div>
     </div>
 
-    <!-- Shopify Content -->
     <div id="shopify" class="tab-content">
         <div class="glass-card">
-            <h2>The Shopify Seller Pack</h2>
-            <p>Scale your brand with SEO product descriptions and viral ad copy that converts browsers into buyers.</p>
+            <h2>Shopify Seller Pack</h2>
+            <p>Viral product descriptions and TikTok ad copy that converts.</p>
             <div class="price-hero"><span>$49</span> $7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET INSTANT ACCESS</a>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
         </div>
         <div class="prompt-preview">
-            <p>TASK: Create 5 viral TikTok scripts for this product using...<br>[ENCRYPTED DATA...]</p>
-            <div class="blur-overlay"><b>FULL PROMPT REVEALED IN VAULT</b></div>
+            <p>TASK: Create 5 viral TikTok scripts for this product...<br>[ENCRYPTED DATA...]</p>
+            <div class="blur-overlay"><b>REVEALED IN VAULT</b></div>
         </div>
     </div>
 
-    <!-- VIP Vault Content -->
     <div id="vip" class="tab-content">
         <div class="glass-card" style="border-color: var(--accent);">
-            <div style="background: var(--accent); color: black; padding: 4px 12px; border-radius: 5px; font-size: 0.7rem; font-weight: 800; display: inline-block; margin-bottom: 10px;">BEST SELLER</div>
-            <h2>The Weekly VIP Vault</h2>
-            <p>Get all packs above + 10 fresh prompts delivered to your inbox every Monday at 9AM.</p>
+            <h2 style="color: var(--accent);">Weekly VIP Vault</h2>
+            <p>Everything above + 10 fresh prompts delivered every Monday.</p>
             <div class="price-hero" style="font-size: 3rem;">$9.00<span>/mo</span></div>
             <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="buy-btn" style="background: var(--accent);">JOIN THE ELITE</a>
         </div>
         <div class="glass-card">
-            <h3 style="color: var(--secondary);">Next Drop: Monday @ 9:00 AM</h3>
+            <h3 style="color: var(--secondary);">Next Drop: Monday @ 9AM</h3>
             <p>Join 1,200+ members receiving weekly "Money-Maker" packs.</p>
         </div>
     </div>
-
-    <!-- EMAIL SYNC -->
-    <section class="sync-section">
-        <h2>Already a Member?</h2>
-        <p style="color: #94a3b8; margin-bottom: 30px;">Enter your email to sync your vault and access your downloads instantly.</p>
-        <form onsubmit="handleSync(event)">
-            <input type="email" class="email-input" placeholder="yourname@example.com" required>
-            <br>
-            <button type="submit" class="buy-btn" style="max-width: 300px;">SYNC MY ACCOUNT</button>
-        </form>
-        <div id="sync-msg" style="display:none; color: var(--success); margin-top: 20px; font-weight: 700;">✓ Access link sent to your inbox!</div>
-    </section>
 
 </div>
 
@@ -244,28 +215,33 @@
     </div>
 </div>
 
-<footer style="text-align: center; padding: 80px 20px; border-top: 1px solid var(--border); color: #64748b; font-size: 0.9rem;">
+<footer style="text-align: center; padding: 60px 20px; border-top: 1px solid var(--border); color: #64748b; font-size: 0.9rem; margin-top: 40px;">
     <p>&copy; 2026 PromptVault USA. All Payments Secured by PayPal.</p>
 </footer>
 
 <script>
+    // 1. SUCCESS CHECKER
+    const urlParams = new URLSearchParams(window.location.search);
+    const successBox = document.getElementById('success-box');
+
+    if (urlParams.get('status') === 'success') {
+        successBox.style.display = 'block';
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // 2. TABS
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-            tabcontent[i].classList.remove("active");
-        }
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; tabcontent[i].classList.remove("active"); }
         tablinks = document.getElementsByClassName("tab-link");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        const activeTab = document.getElementById(tabName);
-        activeTab.style.display = "grid";
-        setTimeout(() => activeTab.classList.add("active"), 10);
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "grid";
+        setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
         evt.currentTarget.className += " active";
     }
 
+    // 3. TIMER
     function startTimer(duration, display) {
         let timer = duration, minutes, seconds;
         setInterval(function () {
@@ -276,18 +252,14 @@
         }, 1000);
     }
 
-    const locations = ["Austin, TX", "San Jose, CA", "Nashville, TN", "Phoenix, AZ", "Miami, FL", "Denver, CO"];
+    // 4. SOCIAL PROOF
+    const locations = ["Austin, TX", "Miami, FL", "Nashville, TN", "Phoenix, AZ", "Chicago, IL", "Denver, CO"];
     function showProof() {
         const loc = locations[Math.floor(Math.random() * locations.length)];
         document.getElementById('proof-text').innerText = `Someone in ${loc} just joined!`;
         const proof = document.getElementById('live-proof');
         proof.style.transform = "translateY(0)";
         setTimeout(() => { proof.style.transform = "translateY(200%)"; }, 5000);
-    }
-
-    function handleSync(e) {
-        e.preventDefault();
-        document.getElementById('sync-msg').style.display = 'block';
     }
 
     window.onload = function () {
