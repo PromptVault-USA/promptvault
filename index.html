@@ -15,33 +15,27 @@
         .hero { padding: 80px 20px 60px; background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%); text-align: center; }
         .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* FEATURE 1: PROMPT OF THE DAY (Styled to match original dark UI) */
         .daily-prompt { background: var(--glass); border: 1px solid var(--secondary); border-radius: 24px; padding: 30px; margin: 40px 0; position: relative; backdrop-filter: blur(10px); }
         .daily-tag { background: var(--secondary); color: #000; font-size: 0.7rem; font-weight: 800; padding: 4px 12px; border-radius: 50px; position: absolute; top: 20px; right: 20px; }
 
-        /* TABS & CARDS */
-        .tab-menu { display: flex; justify-content: center; gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
-        .tab-link { background: var(--glass); border: 1px solid var(--border); padding: 14px 28px; border-radius: 50px; color: #94a3b8; cursor: pointer; transition: 0.3s; font-weight: 700; }
+        .tab-menu { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+        .tab-link { background: var(--glass); border: 1px solid var(--border); padding: 12px 24px; border-radius: 50px; color: #94a3b8; cursor: pointer; transition: 0.3s; font-weight: 700; font-size: 0.9rem; }
         .tab-link.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .tab-content { display: none; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; animation: fadeIn 0.5s ease; }
+        
+        .tab-content { display: none; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: center; animation: fadeIn 0.5s ease; }
         .tab-content.active { display: grid; }
         .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 32px; padding: 40px; backdrop-filter: blur(20px); }
-        .price-hero { font-size: 3.5rem; font-weight: 800; margin: 15px 0; }
+        .price-hero { font-size: 3rem; font-weight: 800; margin: 15px 0; }
         .buy-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-decoration: none; padding: 20px 45px; border-radius: 16px; display: inline-block; font-weight: 800; transition: 0.3s; width: 100%; text-align: center; box-sizing: border-box; }
 
-        /* FEATURE 2: BEFORE & AFTER GALLERY */
-        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .gallery-item { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); position: relative; }
-        .gallery-item img { width: 100%; height: auto; display: block; filter: brightness(0.8); transition: 0.5s; }
-        .gallery-item:hover img { filter: brightness(1); }
-        .gallery-label { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); font-size: 0.7rem; padding: 4px 10px; border-radius: 5px; }
+        .gallery-item { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); position: relative; background: #000; }
+        .gallery-item img { width: 100%; height: 280px; object-fit: cover; filter: brightness(0.7); display: block; }
+        .gallery-label { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.8); font-size: 0.7rem; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border); }
 
-        /* FEATURE 3: TOOL TABLE */
         .comparison-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.02); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
         .comparison-table th { background: rgba(255,255,255,0.05); padding: 15px; text-align: left; font-size: 0.8rem; color: var(--secondary); }
         .comparison-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
 
-        /* LIVE PROOF (Back by popular demand) */
         #live-proof { position: fixed; bottom: 25px; left: 25px; background: white; color: #020617; border-radius: 16px; padding: 15px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 15px; transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -54,77 +48,96 @@
 
 <section class="hero">
     <h1>Command Success with <br><span class="highlight">Professional AI.</span></h1>
-    <p>Premium high-conversion prompt engineering for Real Estate & Shopify.</p>
+    <p>Premium prompt engineering for modern professionals.</p>
 </section>
 
 <div class="container">
 
-    <!-- SUCCESS BOX -->
     <div id="success-box" style="display:none; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); border-radius: 24px; padding: 40px; margin: 40px auto; text-align: center;">
         <h2 style="color: var(--success);">✅ Access Granted!</h2>
         <a href="https://docs.google.com/spreadsheets/d/1hJYr4gmah-9R-XiWk0vr7NJVHkzPL1y26XauVc7So8M/edit?usp=sharing" target="_blank" class="buy-btn" style="background: var(--success); width: auto;">🔓 OPEN MASTER DASHBOARD</a>
     </div>
 
-    <!-- DAILY PROMPT -->
     <div class="daily-prompt">
         <span class="daily-tag">FREE DAILY PROMPT</span>
-        <h3 style="margin-top:0;">🏡 Real Estate: The "Insta-Luxury" Listing</h3>
-        <p style="color: #94a3b8; font-size: 0.85rem;">"Act as a luxury realtor. Rewrite property details into a sensory-driven emotional story..."</p>
+        <h3 style="margin-top:0;">🏡 The "Insta-Luxury" Listing</h3>
+        <p style="color: #94a3b8; font-size: 0.85rem;">"Act as a luxury realtor. Rewrite property details into an emotional story..."</p>
         <button onclick="alert('Copied to clipboard!')" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">Copy Prompt</button>
     </div>
 
-    <!-- TABS -->
     <div class="tab-menu">
         <div class="tab-link active" onclick="openTab(event, 'realestate')">🏠 Real Estate</div>
+        <div class="tab-link" onclick="openTab(event, 'freelance')">💼 Freelance</div>
         <div class="tab-link" onclick="openTab(event, 'shopify')">🛒 Shopify</div>
         <div class="tab-link" style="border-color:var(--accent); color:var(--accent);" onclick="openTab(event, 'vip')">🚀 VIP Vault</div>
     </div>
 
     <div id="realestate" class="tab-content active">
         <div class="glass-card">
-            <h2>Real Estate Power-Pack</h2>
-            <p>50+ Prompts for luxury listings & lead conversion.</p>
+            <h2>Real Estate Pack</h2>
+            <p>50+ Prompts for high-end listings and lead conversion.</p>
             <div class="price-hero">$7.00</div>
             <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="buy-btn">GET ACCESS NOW</a>
         </div>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=500&q=80" alt="Result">
-                <div class="gallery-label">PROMPT RESULT: Real Estate Photo</div>
-            </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=500&q=80">
+            <div class="gallery-label">RESULT: Luxury Listing Visual</div>
         </div>
     </div>
 
-    <!-- VIP VAULT -->
+    <div id="freelance" class="tab-content">
+        <div class="glass-card">
+            <h2>Freelance Edge</h2>
+            <p>Master high-ticket proposals and LinkedIn outreach hooks.</p>
+            <div class="price-hero">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=500&q=80">
+            <div class="gallery-label">RESULT: Winning Proposal Text</div>
+        </div>
+    </div>
+
+    <div id="shopify" class="tab-content">
+        <div class="glass-card">
+            <h2>Shopify Seller Pack</h2>
+            <p>Viral TikTok scripts and SEO product description prompts.</p>
+            <div class="price-hero">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80">
+            <div class="gallery-label">RESULT: Product SEO Listing</div>
+        </div>
+    </div>
+
     <div id="vip" class="tab-content">
         <div class="glass-card" style="border-color: var(--accent);">
             <h2 style="color:var(--accent);">Weekly VIP Vault</h2>
-            <p>Everything above + 10 fresh prompts every Monday morning.</p>
+            <p>Access everything above + 10 fresh prompts every Monday morning.</p>
             <div class="price-hero">$9.00/mo</div>
             <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="buy-btn" style="background:var(--accent);">JOIN THE ELITE</a>
         </div>
-        <div class="glass-card"><h3>Next Drop: Monday @ 9AM</h3><p>Join 1,200+ members receiving weekly updates.</p></div>
+        <div class="glass-card"><h3>Next Drop: Monday</h3><p>Weekly strategic AI updates for 1,200+ members.</p></div>
     </div>
 
-    <!-- TOOL TABLE -->
     <div class="glass-card" style="margin-top: 60px;">
-        <h3>🛠️ The Professional AI Toolkit</h3>
+        <h3>🛠️ The AI Toolkit</h3>
         <table class="comparison-table">
             <thead><tr><th>Tool</th><th>Best For...</th><th>Verdict</th></tr></thead>
             <tbody>
-                <tr><td><b>ChatGPT-5</b></td><td>Copywriting</td><td><span style="color:var(--success)">MASTER</span></td></tr>
-                <tr><td><b>Midjourney</b></td><td>Hyper-Realism</td><td><span style="color:var(--primary)">IMAGE KING</span></td></tr>
+                <tr><td><b>ChatGPT-5</b></td><td>Complex Copy</td><td><span style="color:var(--success)">MASTER</span></td></tr>
+                <tr><td><b>Midjourney</b></td><td>Visuals</td><td><span style="color:var(--primary)">IMAGE KING</span></td></tr>
             </tbody>
         </table>
     </div>
 
 </div>
 
-<!-- LIVE PROOF POPUP -->
 <div id="live-proof">
     <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">US</div>
     <div>
-        <div id="proof-text" style="font-size: 0.8rem; font-weight: 800;">Someone in Chicago just joined!</div>
+        <div id="proof-text" style="font-size: 0.8rem; font-weight: 800;">Someone just joined!</div>
         <div style="font-size: 0.65rem; color: #64748b;">Verified Purchase • Just Now</div>
     </div>
 </div>
@@ -146,7 +159,7 @@
         evt.currentTarget.className += " active";
     }
 
-    const locations = ["Chicago, IL", "Austin, TX", "Miami, FL", "Nashville, TN", "Phoenix, AZ"];
+    const locations = ["Chicago, IL", "Austin, TX", "Miami, FL", "Nashville, TN", "Denver, CO", "Phoenix, AZ"];
     function showProof() {
         const loc = locations[Math.floor(Math.random() * locations.length)];
         document.getElementById('proof-text').innerText = `Someone in ${loc} just joined!`;
