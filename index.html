@@ -24,8 +24,9 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: var(--dark); color: white; overflow-x: hidden; scroll-behavior: smooth; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        nav { position: sticky; top: 0; width: 100%; z-index: 1000; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; }
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; }
+        nav { position: sticky; top: 0; width: 100%; z-index: 1000; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 10px 50px; }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
+        .logo-img { height: 40px; width: 40px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
 
         .hero { padding: 60px 20px 30px; background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%); text-align: center; }
         .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } 
@@ -40,13 +41,20 @@
         .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 32px; padding: 40px; backdrop-filter: blur(20px); position: relative; }
         .price-hero { font-size: 3rem; font-weight: 800; margin: 10px 0; letter-spacing: -2px; }
 
-        .buy-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-decoration: none; padding: 18px 30px; border-radius: 16px; display: inline-block; font-weight: 800; transition: 0.3s; width: 100%; text-align: center; cursor: pointer; border: none; } 
+        .buy-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-decoration: none; padding: 18px 30px; border-radius: 16px; display: inline-block; font-weight: 800; transition: 0.3s; width: 100%; text-align: center; border: none; } 
         .buy-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 112, 186, 0.4); }
 
         .gallery-item { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); background: #000; }
         .gallery-item img { width: 100%; height: 350px; object-fit: cover; }
 
-        .vip-badge { position: absolute; top: 20px; right: 20px; background: var(--accent); color: black; font-weight: 900; font-size: 0.7rem; padding: 5px 12px; border-radius: 50px; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.02); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+        .comparison-table th { background: rgba(255,255,255,0.05); padding: 15px; text-align: left; font-size: 0.8rem; color: var(--secondary); }
+        .comparison-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.8rem; } 
+
+        #live-proof { position: fixed; bottom: 25px; left: 25px; background: white; color: #020617; border-radius: 16px; padding: 15px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 15px; transform: translateY(250%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; } 
+
+        .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 60px 0; }
+        .testi-card { background: var(--glass); padding: 30px; border-radius: 24px; border: 1px solid var(--border); font-style: italic; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 900px) { .tab-content.active { grid-template-columns: 1fr; } }
@@ -54,38 +62,45 @@
 </head>
 <body> 
 
-<nav><div class="logo">PROMPT<span style="color:var(--primary)">VAULT</span> USA</div></nav> 
+<nav>
+    <div class="logo-area">
+        <img src="logo.png" alt="Logo" class="logo-img">
+        PROMPT<span style="color:var(--primary)">VAULT</span> USA
+    </div>
+</nav> 
 
 <section class="hero">
     <div class="container">
         <h1>Command the <span class="highlight">AI Economy.</span></h1>
-        <p style="color: #94a3b8;">High-conversion prompt engineering for modern founders.</p>
+        <p style="color: #94a3b8;">The elite resource for prompt engineering.</p>
     </div>
 </section> 
 
 <div class="container"> 
+    
     <div id="success-box" style="display:none; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); border-radius: 24px; padding: 40px; margin: 40px auto; text-align: center;">
-        <h2 style="color: var(--success);">✅ Payment Successful!</h2>
-        <p>Your premium AI vaults are ready for download:</p>
+        <h2 style="color: var(--success);">✅ Access Granted!</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 25px;">
-            <a href="https://docs.google.com/spreadsheets/d/111GJ0nL3JABToKBLbv1rV0y1cMmwOjOsQhuKdPHaSQs/edit?usp=drivesdk" target="_blank" class="buy-btn" style="background: var(--primary); font-size: 0.8rem;">🎯 Hyper-Realism Masterclass</a>
-            <a href="https://docs.google.com/spreadsheets/d/1vjnSfmmca7BLKjl9gAjRyFxJqs0MewycOyhCanCHLrU/edit?usp=drivesdk" target="_blank" class="buy-btn" style="background: var(--success); font-size: 0.8rem;">📸 Instagram Client Vault</a>
-            <a href="https://drive.google.com/file/d/17qqYoXIW31033Hyz8ZoDl1o3R_C7gzkV/view?usp=drivesdk" target="_blank" class="buy-btn" style="background: var(--accent); color: black; font-size: 0.8rem;">📱 TikTok/Reels Viral Pack</a>
+            <a href="https://docs.google.com/spreadsheets/d/111GJ0nL3JABToKBLbv1rV0y1cMmwOjOsQhuKdPHaSQs/edit?usp=drivesdk" target="_blank" class="buy-btn" style="background: var(--primary);">🎯 Hyper-Realism Masterclass</a>
+            <a href="https://docs.google.com/spreadsheets/d/1vjnSfmmca7BLKjl9gAjRyFxJqs0MewycOyhCanCHLrU/edit?usp=drivesdk" target="_blank" class="buy-btn" style="background: var(--success);">📸 Instagram Client Vault</a>
+            <a href="https://drive.google.com/file/d/17qqYoXIW31033Hyz8ZoDl1o3R_C7gzkV/view?usp=drivesdk" target="_blank" class="buy-btn" style="background: var(--accent); color: black;">📱 TikTok/Reels Viral Pack</a>
         </div>
     </div> 
 
     <div class="tab-menu">
         <div class="tab-link active" onclick="openTab(event, 'hyperreal')">🎯 Hyper-Realism</div>
-        <div class="tab-link" onclick="openTab(event, 'instagram')">📸 Instagram Clients</div>
+        <div class="tab-link" onclick="openTab(event, 'instagram')">📸 Instagram</div>
         <div class="tab-link" onclick="openTab(event, 'viral')">📱 TikTok/Reels</div>
         <div class="tab-link" onclick="openTab(event, 'realestate')">🏠 Real Estate</div>
+        <div class="tab-link" onclick="openTab(event, 'freelance')">💼 Freelance</div>
         <div class="tab-link" onclick="openTab(event, 'vip')" style="border-color:var(--accent); color:var(--accent);">🚀 VIP VAULT</div>
+        <div class="tab-link" onclick="openTab(event, 'affiliate')">🤝 AFFILIATE</div>
     </div> 
 
     <div id="hyperreal" class="tab-content active">
         <div class="glass-card">
             <h2>Hyper-Realism Masterclass</h2>
-            <p>80+ Premium prompts for photorealistic humans, cinematic environments, and macro textures.</p>
+            <p>80+ Premium prompts for photorealistic humans and cinematic textures.</p>
             <div class="price-hero">$9.99</div>
             <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="buy-btn">UNLOCK MASTERCLASS</a>
         </div>
@@ -95,7 +110,7 @@
     <div id="instagram" class="tab-content">
         <div class="glass-card">
             <h2>61 AI Instagram Prompts</h2>
-            <p>The "Zero-to-Client" blueprint. Get high-ticket clients from Instagram even with 0 followers.</p>
+            <p>Get high-ticket clients even with 0 followers.</p>
             <div class="price-hero">$9.99</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET INSTAGRAM PACK</a>
         </div>
@@ -105,7 +120,7 @@
     <div id="viral" class="tab-content">
         <div class="glass-card">
             <h2>TikTok/Reels Viral Pack</h2>
-            <p>Stop the scroll. Scripting prompts for 9:16 vertical video that drive millions of views.</p>
+            <p>Scripting prompts for 9:16 vertical video dominance.</p>
             <div class="price-hero">$7.00</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET VIRAL PACK</a>
         </div>
@@ -115,30 +130,69 @@
     <div id="realestate" class="tab-content">
         <div class="glass-card">
             <h2>Real Estate Edge</h2>
-            <p>Luxury listing descriptions and social posts engineered for realtors.</p>
+            <p>Luxury listing descriptions engineered for high-end realtors.</p>
             <div class="price-hero">$7.00</div>
             <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="buy-btn">GET RE PACK</a>
         </div>
         <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80"></div>
     </div>
 
+    <div id="freelance" class="tab-content">
+        <div class="glass-card">
+            <h2>Freelance Edge</h2>
+            <p>Winning proposals for LinkedIn & Upwork.</p>
+            <div class="price-hero">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET FREELANCE PACK</a>
+        </div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80"></div>
+    </div>
+
     <div id="vip" class="tab-content">
         <div class="glass-card" style="border-color: var(--accent);">
-            <div class="vip-badge">ELITE ACCESS</div>
             <h2 style="color:var(--accent);">Weekly VIP Vault</h2>
-            <p>Get ALL packs + 10 fresh, high-performance prompts delivered every Monday morning.</p>
+            <p>Get ALL current and future packs + weekly fresh updates.</p>
             <div class="price-hero">$9.00<span style="font-size: 1rem;">/mo</span></div>
-            <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="buy-btn" style="background:var(--accent);">JOIN THE ELITE</a>
+            <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="buy-btn" style="background:var(--accent); color:black;">JOIN THE ELITE</a>
         </div>
-        <div class="glass-card" style="text-align: center;">
-            <h3 style="color: var(--accent);">Next Update: Monday</h3>
-            <p>Join 1,200+ professionals getting the weekly AI edge.</p>
-        </div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&w=600&q=80"></div>
     </div> 
+
+    <div id="affiliate" class="tab-content">
+        <div class="glass-card">
+            <h2>Partner With Us</h2>
+            <p>Earn 40% commission on every referral. Join the PromptVault USA partner network.</p>
+            <a href="#" class="buy-btn">JOIN AFFILIATE PROGRAM</a>
+        </div>
+        <div class="glass-card" style="margin-top: 20px;">
+            <h3>🛠️ The AI Toolkit</h3>
+            <table class="comparison-table">
+                <thead><tr><th>AI Tool</th><th>Specialization</th><th>Verdict</th></tr></thead>
+                <tbody>
+                    <tr><td><b>ChatGPT Plus</b></td><td>Complex Logic & Copy</td><td><span style="color:var(--success)">MASTER</span></td></tr>
+                    <tr><td><b>Midjourney</b></td><td>High-End Visuals</td><td><span style="color:var(--primary)">IMAGE KING</span></td></tr>
+                    <tr><td><b>Claude 3.5</b></td><td>Natural Voice</td><td><span style="color:var(--secondary)">WRITER</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="testi-grid">
+        <div class="testi-card">"The Hyper-Realism pack completely changed my workflow. My clients think I spent hours on lighting when it only took minutes." - <b>Sarah K., Digital Artist</b></div>
+        <div class="testi-card">"I landed my first $2k Instagram client using the client-getting prompts. This is the real deal." - <b>Marcus T., Freelancer</b></div>
+        <div class="testi-card">"Finally, prompts that actually produce professional results. Worth every penny." - <b>Dave R., Realtor</b></div>
+    </div>
 
 </div> 
 
-<footer style="text-align: center; padding: 60px 20px; color: #64748b; font-size: 0.8rem;">
+<div id="live-proof">
+    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">US</div>
+    <div>
+        <div id="proof-text" style="font-size: 0.8rem; font-weight: 800;">Someone in Chicago just joined!</div>
+        <div style="font-size: 0.65rem; color: #64748b;">Verified Purchase • Just Now</div>
+    </div>
+</div> 
+
+<footer style="text-align: center; padding: 40px; color: #64748b; font-size: 0.8rem;">
     <p>&copy; 2026 PromptVault USA. All Rights Reserved.</p>
 </footer> 
 
@@ -155,7 +209,14 @@
         sel.style.display = "grid";
         setTimeout(() => sel.classList.add("active"), 10);
         evt.currentTarget.classList.add("active");
-    } 
+    }
+
+    function showProof() {
+        const proof = document.getElementById('live-proof');
+        proof.style.transform = "translateY(0)";
+        setTimeout(() => { proof.style.transform = "translateY(250%)"; }, 5000);
+    }
+    window.onload = () => { setTimeout(showProof, 3000); setInterval(showProof, 15000); };
 </script>
 </body>
 </html>
