@@ -3,38 +3,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PromptVault USA</title>
+    <title>PromptVault USA | The Professional's AI Advantage</title>
     
-    <!-- Pinterest Verification - DO NOT REMOVE -->
+    <!-- Pinterest Verification -->
     <meta name="p:domain_verify" content="d052050534f657b1bdfe18653599cb3d"/>
 
+    <!-- SEO & Social Sharing -->
+    <meta name="description" content="Unlock the Professional's AI Advantage with PromptVault USA. Premium prompts for Real Estate, Freelancing, and E-commerce.">
+    <meta property="og:title" content="PromptVault USA | AI Advantage">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://promptvaultusa.shop">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
-        .container { background: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        .price { font-size: 24px; color: #27ae60; font-weight: bold; }
-        .btn { background: #0070ba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; }
+        :root { 
+            --primary: #0070ba; 
+            --secondary: #00d4ff; 
+            --dark: #020617; 
+            --accent: #f59e0b; 
+            --success: #10b981; 
+            --border: rgba(255, 255, 255, 0.1); 
+            --glass: rgba(255, 255, 255, 0.03); 
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            background: var(--dark); 
+            color: white; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        nav { 
+            position: sticky; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+            background: rgba(2, 6, 23, 0.85); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 50px; 
+        }
+
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; }
+
+        .hero { 
+            padding: 100px 20px 60px; 
+            background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%); 
+            text-align: center; 
+        }
+
+        .highlight { 
+            background: linear-gradient(to right, #38bdf8, #818cf8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        } 
+
+        .daily-prompt { 
+            background: var(--glass); 
+            border: 1px solid var(--secondary); 
+            border-radius: 24px; 
+            padding: 30px; 
+            margin: 40px 0; 
+            position: relative; 
+            backdrop-filter: blur(10px); 
+        }
+
+        .daily-tag { 
+            background: var(--secondary); 
+            color: #000; 
+            font-size: 0.7rem; 
+            font-weight: 800; 
+            padding: 4px 12px; 
+            border-radius: 50px; 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+        } 
+
+        .tab-menu { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-bottom: 40px; 
+            flex-wrap: wrap; 
+        }
+
+        .tab-link { 
+            background: var(--glass); 
+            border: 1px solid var(--border); 
+            padding: 12px 24px; 
+            border-radius: 50px; 
+            color: #94a3b8; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+        }
+
+        .tab-link.active { 
+            background: var(--primary); 
+            color: white; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 20px rgba(0, 112, 186, 0.4);
+        }
+        
+        .tab-content { 
+            display: none; 
+            grid-template-columns: 1.2fr 0.8fr; 
+            gap: 30px; 
+            align-items: center; 
+            animation: fadeIn 0.5s ease forwards; 
+        }
+
+        .tab-content.active { display: grid; }
+
+        .glass-card { 
+            background: var(--glass); 
+            border: 1px solid var(--border); 
+            border-radius: 32px; 
+            padding: 40px; 
+            backdrop-filter: blur(20px); 
+        }
+
+        .price-hero { font-size: 3.5rem; font-weight: 800; margin: 15px 0; letter-spacing: -2px; }
+
+        .buy-btn { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; 
+            text-decoration: none; 
+            padding: 20px 45px; 
+            border-radius: 16px; 
+            display: inline-block; 
+            font-weight: 800; 
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            width: 100%; 
+            text-align: center; 
+        } 
+
+        .buy-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 112, 186, 0.4);
+        }
+
+        .gallery-item { 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: 1px solid var(--border); 
+            position: relative; 
+            background: #000; 
+        }
+
+        .gallery-item img { 
+            width: 100%; 
+            height: 320px; 
+            object-fit: cover; 
+            filter: brightness(0.8); 
+            display: block; 
+            transition: 0.5s;
+        }
+
+        .gallery-item:hover img { transform: scale(1.05); filter: brightness(1); }
+
+        .gallery-label { 
+            position: absolute; 
+            bottom: 15px; 
+            left: 15px; 
+            background: rgba(0,0,0,0.8); 
+            font-size: 0.75rem; 
+            padding: 6px 14px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            backdrop-filter: blur(4px);
+        } 
+
+        .comparison-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            background: rgba(255,255,255,0.02); 
+            border-radius: 16px; 
+            overflow: hidden; 
+            border: 1px solid var(--border); 
+        }
+
+        .comparison-table th { background: rgba(255,255,255,0.05); padding: 15px; text-align: left; font-size: 0.8rem; color: var(--secondary); }
+        .comparison-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.8rem; } 
+
+        #live-proof { 
+            position: fixed; 
+            bottom: 25px; 
+            left: 25px; 
+            background: white; 
+            color: #020617; 
+            border-radius: 16px; 
+            padding: 15px 20px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            transform: translateY(250%); 
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 2000; 
+        } 
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        @media (max-width: 900px) { 
+            .tab-content.active { grid-template-columns: 1fr; } 
+            nav { padding: 15px 20px; }
+            .hero h1 { font-size: 2rem; }
+        }
     </style>
 </head>
-<body>
+<body> 
 
+<nav>
+    <div class="logo">PROMPT<span style="color:var(--primary)">VAULT</span> USA</div>
+</nav> 
+
+<section class="hero">
     <div class="container">
-        <h1>PromptVault USA</h1>
-        <p>Premium AI Prompts for Hyper-Realistic Content</p>
-        <hr>
-        
-        <h3>Pack #1: Hyper-Realism Masterclass</h3>
-        <p class="price">$9.99</p>
-        <!-- Replace the '#' below with your PayPal Link -->
-        <a href="#" class="btn">Buy Now with PayPal</a>
+        <h1>Command Success with <br><span class="highlight">Professional AI.</span></h1>
+        <p style="color: #94a3b8; font-size: 1.1rem;">Engineered prompts for real estate, business, and viral growth.</p>
+    </div>
+</section> 
 
-        <br><br>
+<div class="container"> 
 
-        <h3>Pack #2: 9:16 Vertical Video Pack</h3>
-        <p class="price">$14.99</p>
-        <!-- Replace the '#' below with your PayPal Link -->
-        <a href="#" class="btn">Buy Now with PayPal</a>
+    <!-- Success Box (Shows after PayPal redirect) -->
+    <div id="success-box" style="display:none; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); border-radius: 24px; padding: 40px; margin: 40px auto; text-align: center; animation: fadeIn 0.5s ease;">
+        <h2 style="color: var(--success);">✅ Access Granted!</h2>
+        <p>Thank you for your purchase. Your master dashboard is ready.</p>
+        <a href="https://docs.google.com/spreadsheets/d/1hJYr4gmah-9R-XiWk0vr7NJVHkzPL1y26XauVc7So8M/edit?usp=sharing" target="_blank" class="buy-btn" style="background: var(--success); width: auto; margin-top: 20px;">🔓 OPEN MASTER DASHBOARD</a>
+    </div> 
+
+    <!-- Free Daily Lead Magnet -->
+    <div class="daily-prompt">
+        <span class="daily-tag">FREE DAILY PROMPT</span>
+        <h3 style="margin-top:0;">🏡 The "Insta-Luxury" Listing</h3>
+        <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">"Act as a luxury realtor. Rewrite property details into an emotional story..."</p>
+        <button onclick="copyDailyPrompt()" id="copy-btn" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; transition: 0.3s;">Copy Prompt</button>
+    </div> 
+
+    <!-- Navigation Tabs -->
+    <div class="tab-menu">
+        <div class="tab-link active" onclick="openTab(event, 'realestate')">🏠 Real Estate</div>
+        <div class="tab-link" onclick="openTab(event, 'freelance')">💼 Freelance</div>
+        <div class="tab-link" onclick="openTab(event, 'shopify')">🛒 Shopify</div>
+        <div class="tab-link" onclick="openTab(event, 'hyperreal')">📸 Hyper-Realism</div>
+        <div class="tab-link" style="border-color:var(--accent); color:var(--accent);" onclick="openTab(event, 'vip')">🚀 VIP Vault</div>
+    </div> 
+
+    <!-- Real Estate Content -->
+    <div id="realestate" class="tab-content active">
+        <div class="glass-card">
+            <h2>Real Estate Pack</h2>
+            <p>50+ High-conversion prompts for listings, social media, and client emails.</p>
+            <div class="price-hero">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="buy-btn">GET ACCESS NOW</a>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Luxury Real Estate">
+            <div class="gallery-label">RESULT: Luxury Listing Visual</div>
+        </div>
+    </div> 
+
+    <!-- Freelance Content -->
+    <div id="freelance" class="tab-content">
+        <div class="glass-card">
+            <h2>Freelance Edge</h2>
+            <p>Master the art of the proposal. Prompts for Upwork, LinkedIn, and Cold Outreach.</p>
+            <div class="price-hero">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80" alt="Freelance Workspace">
+            <div class="gallery-label">RESULT: High-Ticket Proposal</div>
+        </div>
+    </div> 
+
+    <!-- Shopify Content -->
+    <div id="shopify" class="tab-content">
+        <div class="glass-card">
+            <h2>Shopify Seller Pack</h2>
+            <p>Viral product descriptions, TikTok scripts, and Facebook Ad copy prompts.</p>
+            <div class="price-hero">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="Product Photography">
+            <div class="gallery-label">RESULT: Viral Product SEO</div>
+        </div>
     </div>
 
+    <!-- NEW: Hyper-Realism Content -->
+    <div id="hyperreal" class="tab-content">
+        <div class="glass-card">
+            <h2>Hyper-Realism Masterclass</h2>
+            <p>Secrets to photorealistic Midjourney & DALL-E 3 images for ads and brands.</p>
+            <div class="price-hero">$9.99</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">UNLOCK REALISM</a>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="AI Realism">
+            <div class="gallery-label">RESULT: Studio Grade AI Photo</div>
+        </div>
+    </div>
+
+    <!-- VIP Content -->
+    <div id="vip" class="tab-content">
+        <div class="glass-card" style="border-color: var(--accent);">
+            <h2 style="color:var(--accent);">Weekly VIP Vault</h2>
+            <p>Get everything above plus 10 fresh, high-performance prompts delivered every Monday.</p>
+            <div class="price-hero">$9.00<span style="font-size: 1rem;">/mo</span></div>
+            <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="buy-btn" style="background:var(--accent);">JOIN THE ELITE</a>
+        </div>
+        <div class="glass-card" style="text-align: center;">
+            <h3 style="color: var(--accent);">Next Update: Monday</h3>
+            <p>Join 1,200+ professionals getting the edge on AI.</p>
+        </div>
+    </div> 
+
+    <!-- Tools Table -->
+    <div class="glass-card" style="margin-top: 60px;">
+        <h3>🛠️ The AI Toolkit</h3>
+        <table class="comparison-table">
+            <thead><tr><th>AI Tool</th><th>Specialization</th><th>Verdict</th></tr></thead>
+            <tbody>
+                <tr><td><b>ChatGPT Plus</b></td><td>Complex Logic & Copy</td><td><span style="color:var(--success)">MASTER</span></td></tr>
+                <tr><td><b>Midjourney</b></td><td>High-End Visuals</td><td><span style="color:var(--primary)">IMAGE KING</span></td></tr>
+                <tr><td><b>Claude 3.5</b></td><td>Natural Voice</td><td><span style="color:var(--secondary)">WRITER</span></td></tr>
+            </tbody>
+        </table>
+    </div> 
+
+</div> 
+
+<!-- Live Social Proof Notification -->
+<div id="live-proof">
+    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">US</div>
+    <div>
+        <div id="proof-text" style="font-size: 0.8rem; font-weight: 800;">Someone just joined!</div>
+        <div style="font-size: 0.65rem; color: #64748b;">Verified Purchase • Just Now</div>
+    </div>
+</div> 
+
+<footer style="text-align: center; padding: 60px 20px; color: #64748b; font-size: 0.8rem;">
+    <p>&copy; 2026 PromptVault USA. All Rights Reserved.</p>
+</footer> 
+
+<script>
+    // 1. Success Message Logic
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'success') { 
+        document.getElementById('success-box').style.display = 'block'; 
+        window.scrollTo(0, document.getElementById('success-box').offsetTop - 100);
+    }
+    
+    // 2. Optimized Tab Switcher
+    function openTab(evt, tabName) {
+        const contents = document.querySelectorAll(".tab-content");
+        const links = document.querySelectorAll(".tab-link");
+
+        contents.forEach(content => {
+            content.classList.remove("active");
+            content.style.display = "none";
+        });
+        
+        links.forEach(link => link.classList.remove("active"));
+
+        const selectedTab = document.getElementById(tabName);
+        selectedTab.style.display = "grid";
+        setTimeout(() => selectedTab.classList.add("active"), 10);
+        evt.currentTarget.classList.add("active");
+    } 
+
+    // 3. Copy Functionality
+    function copyDailyPrompt() {
+        const text = 'Act as a luxury realtor. Rewrite property details into an emotional story...';
+        navigator.clipboard.writeText(text);
+        const btn = document.getElementById('copy-btn');
+        btn.innerText = 'Copied!';
+        btn.style.background = 'var(--success)';
+        setTimeout(() => {
+            btn.innerText = 'Copy Prompt';
+            btn.style.background = 'var(--primary)';
+        }, 2000);
+    }
+
+    // 4. Social Proof Engine
+    const locations = ["Chicago, IL", "Austin, TX", "Miami, FL", "Nashville, TN", "Denver, CO", "Phoenix, AZ", "Seattle, WA"];
+    function showProof() {
+        const loc = locations[Math.floor(Math.random() * locations.length)];
+        const proofText = document.getElementById('proof-text');
+        if(proofText) {
+            proofText.innerText = `Someone in ${loc} just joined!`;
+            const proof = document.getElementById('live-proof');
+            proof.style.transform = "translateY(0)";
+            setTimeout(() => { proof.style.transform = "translateY(250%)"; }, 5000);
+        }
+    }
+    
+    window.onload = () => {
+        setTimeout(showProof, 3000);
+        setInterval(showProof, 15000);
+    };
+</script>
 </body>
 </html>
