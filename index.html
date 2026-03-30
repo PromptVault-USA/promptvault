@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | The Professional's AI Advantage</title>
     
+    <!-- 🟢 GOOGLE FAVICON LINK (Ensures the logo shows in the search circle) -->
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <!-- Pinterest Verification -->
     <meta name="p:domain_verify" content="d052050534f657b1bdfe18653599cb3d"/>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -25,8 +29,8 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
         nav { position: sticky; top: 0; width: 100%; z-index: 1000; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 10px 50px; }
-        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
-        .logo-img { height: 40px; width: 40px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; }
+        .logo-img { height: 42px; width: 42px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); }
 
         .hero { padding: 60px 20px 30px; background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%); text-align: center; }
         .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } 
@@ -41,7 +45,7 @@
         .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 32px; padding: 40px; backdrop-filter: blur(20px); position: relative; }
         .price-hero { font-size: 3rem; font-weight: 800; margin: 10px 0; letter-spacing: -2px; }
 
-        .buy-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-decoration: none; padding: 18px 30px; border-radius: 16px; display: inline-block; font-weight: 800; transition: 0.3s; width: 100%; text-align: center; border: none; } 
+        .buy-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-decoration: none; padding: 18px 30px; border-radius: 16px; display: inline-block; font-weight: 800; transition: 0.3s; width: 100%; text-align: center; border: none; cursor: pointer; } 
         .buy-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 112, 186, 0.4); }
 
         .gallery-item { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); background: #000; }
@@ -54,7 +58,7 @@
         #live-proof { position: fixed; bottom: 25px; left: 25px; background: white; color: #020617; border-radius: 16px; padding: 15px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 15px; transform: translateY(250%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; } 
 
         .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 60px 0; }
-        .testi-card { background: var(--glass); padding: 30px; border-radius: 24px; border: 1px solid var(--border); font-style: italic; }
+        .testi-card { background: var(--glass); padding: 30px; border-radius: 24px; border: 1px solid var(--border); font-style: italic; font-size: 0.9rem; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 900px) { .tab-content.active { grid-template-columns: 1fr; } }
@@ -69,15 +73,9 @@
     </div>
 </nav> 
 
-<section class="hero">
-    <div class="container">
-        <h1>Command the <span class="highlight">AI Economy.</span></h1>
-        <p style="color: #94a3b8;">The elite resource for prompt engineering.</p>
-    </div>
-</section> 
-
 <div class="container"> 
     
+    <!-- Success Box for all links -->
     <div id="success-box" style="display:none; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); border-radius: 24px; padding: 40px; margin: 40px auto; text-align: center;">
         <h2 style="color: var(--success);">✅ Access Granted!</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 25px;">
@@ -87,6 +85,7 @@
         </div>
     </div> 
 
+    <!-- 7 PACK TABS -->
     <div class="tab-menu">
         <div class="tab-link active" onclick="openTab(event, 'hyperreal')">🎯 Hyper-Realism</div>
         <div class="tab-link" onclick="openTab(event, 'instagram')">📸 Instagram</div>
@@ -97,10 +96,11 @@
         <div class="tab-link" onclick="openTab(event, 'affiliate')">🤝 AFFILIATE</div>
     </div> 
 
+    <!-- Tab Contents -->
     <div id="hyperreal" class="tab-content active">
         <div class="glass-card">
             <h2>Hyper-Realism Masterclass</h2>
-            <p>80+ Premium prompts for photorealistic humans and cinematic textures.</p>
+            <p>80+ Premium prompts for photorealistic humans, environments, and textures.</p>
             <div class="price-hero">$9.99</div>
             <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="buy-btn">UNLOCK MASTERCLASS</a>
         </div>
@@ -110,7 +110,7 @@
     <div id="instagram" class="tab-content">
         <div class="glass-card">
             <h2>61 AI Instagram Prompts</h2>
-            <p>Get high-ticket clients even with 0 followers.</p>
+            <p>The blueprint to landing high-ticket clients even with zero followers.</p>
             <div class="price-hero">$9.99</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET INSTAGRAM PACK</a>
         </div>
@@ -120,7 +120,7 @@
     <div id="viral" class="tab-content">
         <div class="glass-card">
             <h2>TikTok/Reels Viral Pack</h2>
-            <p>Scripting prompts for 9:16 vertical video dominance.</p>
+            <p>Stop the scroll. Engineered hooks and scripts for vertical video dominance.</p>
             <div class="price-hero">$7.00</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET VIRAL PACK</a>
         </div>
@@ -130,7 +130,7 @@
     <div id="realestate" class="tab-content">
         <div class="glass-card">
             <h2>Real Estate Edge</h2>
-            <p>Luxury listing descriptions engineered for high-end realtors.</p>
+            <p>Luxury listing descriptions and social content for top-tier agents.</p>
             <div class="price-hero">$7.00</div>
             <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="buy-btn">GET RE PACK</a>
         </div>
@@ -140,9 +140,9 @@
     <div id="freelance" class="tab-content">
         <div class="glass-card">
             <h2>Freelance Edge</h2>
-            <p>Winning proposals for LinkedIn & Upwork.</p>
+            <p>High-conversion proposals and templates for LinkedIn & Upwork.</p>
             <div class="price-hero">$7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET FREELANCE PACK</a>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="buy-btn">GET ACCESS NOW</a>
         </div>
         <div class="gallery-item"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80"></div>
     </div>
@@ -150,7 +150,7 @@
     <div id="vip" class="tab-content">
         <div class="glass-card" style="border-color: var(--accent);">
             <h2 style="color:var(--accent);">Weekly VIP Vault</h2>
-            <p>Get ALL current and future packs + weekly fresh updates.</p>
+            <p>Unlock every pack plus 10 fresh updates delivered every Monday morning.</p>
             <div class="price-hero">$9.00<span style="font-size: 1rem;">/mo</span></div>
             <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="buy-btn" style="background:var(--accent); color:black;">JOIN THE ELITE</a>
         </div>
@@ -159,31 +159,33 @@
 
     <div id="affiliate" class="tab-content">
         <div class="glass-card">
-            <h2>Partner With Us</h2>
-            <p>Earn 40% commission on every referral. Join the PromptVault USA partner network.</p>
-            <a href="#" class="buy-btn">JOIN AFFILIATE PROGRAM</a>
+            <h2>Affiliate Partner Program</h2>
+            <p>Earn 40% commission on every referral. Join the PromptVault USA network.</p>
+            <a href="#" class="buy-btn">JOIN PARTNER PROGRAM</a>
         </div>
         <div class="glass-card" style="margin-top: 20px;">
-            <h3>🛠️ The AI Toolkit</h3>
+            <h3>🛠️ The Professional AI Toolkit</h3>
             <table class="comparison-table">
                 <thead><tr><th>AI Tool</th><th>Specialization</th><th>Verdict</th></tr></thead>
                 <tbody>
-                    <tr><td><b>ChatGPT Plus</b></td><td>Complex Logic & Copy</td><td><span style="color:var(--success)">MASTER</span></td></tr>
-                    <tr><td><b>Midjourney</b></td><td>High-End Visuals</td><td><span style="color:var(--primary)">IMAGE KING</span></td></tr>
+                    <tr><td><b>ChatGPT Plus</b></td><td>Logic & Copy</td><td><span style="color:var(--success)">MASTER</span></td></tr>
+                    <tr><td><b>Midjourney</b></td><td>Visuals</td><td><span style="color:var(--primary)">IMAGE KING</span></td></tr>
                     <tr><td><b>Claude 3.5</b></td><td>Natural Voice</td><td><span style="color:var(--secondary)">WRITER</span></td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- 3 PROFESSIONAL REVIEWS -->
     <div class="testi-grid">
         <div class="testi-card">"The Hyper-Realism pack completely changed my workflow. My clients think I spent hours on lighting when it only took minutes." - <b>Sarah K., Digital Artist</b></div>
-        <div class="testi-card">"I landed my first $2k Instagram client using the client-getting prompts. This is the real deal." - <b>Marcus T., Freelancer</b></div>
-        <div class="testi-card">"Finally, prompts that actually produce professional results. Worth every penny." - <b>Dave R., Realtor</b></div>
+        <div class="testi-card">"I landed my first $2k Instagram client using the client-getting prompts. This is the real deal for freelancers." - <b>Marcus T., Consultant</b></div>
+        <div class="testi-card">"Finally, prompts that actually produce professional-grade results. Worth every penny for our agency." - <b>Dave R., Realtor</b></div>
     </div>
 
 </div> 
 
+<!-- SOCIAL PROOF NOTIFICATION -->
 <div id="live-proof">
     <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">US</div>
     <div>
@@ -213,10 +215,12 @@
 
     function showProof() {
         const proof = document.getElementById('live-proof');
-        proof.style.transform = "translateY(0)";
-        setTimeout(() => { proof.style.transform = "translateY(250%)"; }, 5000);
+        if(proof) {
+            proof.style.transform = "translateY(0)";
+            setTimeout(() => { proof.style.transform = "translateY(250%)"; }, 5000);
+        }
     }
-    window.onload = () => { setTimeout(showProof, 3000); setInterval(showProof, 15000); };
+    window.onload = () => { setTimeout(showProof, 4000); setInterval(showProof, 20000); };
 </script>
 </body>
 </html>
