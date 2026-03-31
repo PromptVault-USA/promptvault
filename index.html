@@ -1,292 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PromptVault USA | Strategic AI Advantage</title>
-
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<style>
-:root { 
-    --primary:#0070ba; 
-    --secondary:#00d4ff; 
-    --dark:#020617; 
-    --card:#0f172a;
-    --accent:#f59e0b; 
-    --success:#10b981; 
-    --border:rgba(255,255,255,0.1); 
-}
-
-*{box-sizing:border-box}
-body{
-    margin:0;
-    font-family:'Plus Jakarta Sans',sans-serif;
-    background:var(--dark);
-    color:white;
-}
-
-.container{max-width:1200px;margin:auto;padding:20px}
-
-/* NAV */
-nav{
-    position:sticky;top:0;
-    display:flex;justify-content:space-between;
-    padding:15px 30px;
-    background:rgba(2,6,23,.9);
-    backdrop-filter:blur(20px);
-    border-bottom:1px solid var(--border);
-}
-
-.logo-area{display:flex;gap:10px;align-items:center;font-weight:800;cursor:pointer}
-.logo-img{width:36px;border-radius:8px}
-
-.btn{
-    padding:10px 16px;
-    border-radius:10px;
-    border:none;
-    cursor:pointer;
-    font-weight:700;
-}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-google{background:#fff;color:#000}
-
-/* HERO */
-.hero{text-align:center;padding:60px 20px}
-.highlight{
-    background:linear-gradient(to right,#38bdf8,#818cf8);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-/* TABS */
-.tab-menu{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.tab-link{
-    padding:10px 18px;
-    border-radius:50px;
-    background:rgba(255,255,255,.05);
-    cursor:pointer;
-    font-size:.8rem;
-}
-.tab-link.active{background:var(--primary);color:#fff}
-
-.tab-content{display:none;margin-top:30px}
-.tab-content.active{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-
-.glass{
-    background:var(--card);
-    padding:25px;
-    border-radius:20px;
-    border:1px solid var(--border);
-}
-
-/* MODAL */
-.modal{
-    display:none;
-    position:fixed;inset:0;
-    background:rgba(0,0,0,.9);
-    justify-content:center;align-items:center;
-}
-.modal.show{display:flex}
-
-.modal-card{
-    background:var(--card);
-    padding:30px;
-    border-radius:20px;
-    width:90%;max-width:400px;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:10px;
-    border:1px solid var(--border);
-    background:var(--dark);
-    color:#fff;
-}
-
-/* CHAT */
-.chat-box{height:250px;overflow:auto;margin-bottom:10px}
-.msg{padding:10px;border-radius:12px;margin:5px 0}
-.user{background:#1e293b;text-align:right}
-.bot{background:var(--primary)}
-
-.buy-btn{
-    display:block;
-    padding:15px;
-    border-radius:12px;
-    text-align:center;
-    font-weight:800;
-    text-decoration:none;
-    background:linear-gradient(135deg,var(--primary),var(--secondary));
-    color:#fff;
-    margin-top:10px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptVault USA | Premium AI Assets</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .notification-toast { transform: translateX(120%); transition: transform 0.5s ease-in-out; }
+        .notification-toast.show { transform: translateX(0); }
+    </style>
 </head>
+<body class="bg-slate-900 text-white font-sans">
 
-<body>
+    <nav class="border-b border-slate-800 p-4 sticky top-0 bg-slate-900 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                PromptVault USA
+            </h1>
+            <div class="space-x-6 hidden md:flex" id="nav-links">
+                <button onclick="showPage('home')" class="hover:text-blue-400 transition">Home</button>
+                <button onclick="showPage('browse')" class="hover:text-blue-400 transition">Browse</button>
+                <button onclick="showPage('custom')" class="hover:text-blue-400 transition">AI Lab</button>
+                <button onclick="showPage('guide')" class="hover:text-blue-400 transition">Guide</button>
+            </div>
+            <div id="auth-status">
+                <button onclick="loginGoogle()" class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">
+                    Login with Google
+                </button>
+            </div>
+        </div>
+    </nav>
 
-<nav>
-<div class="logo-area" id="reload">
-<img src="logo.png" class="logo-img">
-PROMPT<span style="color:var(--primary)">VAULT</span>
-</div>
+    <div id="social-toast" class="fixed bottom-5 right-5 bg-white text-slate-900 p-4 rounded-xl shadow-2xl flex items-center gap-3 z-50 notification-toast">
+        <div class="bg-green-100 p-2 rounded-full">💰</div>
+        <div>
+            <p class="text-xs font-bold" id="toast-msg">Someone from Chicago just purchased VIP Access!</p>
+            <p class="text-[10px] text-gray-500">4 minutes ago</p>
+        </div>
+    </div>
 
-<div>
-<button class="btn btn-google" id="googleBtn">Google</button>
-<button class="btn btn-primary" id="emailBtn">Email</button>
-</div>
-</nav>
+    <main class="max-w-7xl mx-auto p-6">
+        
+        <section id="home" class="page-section active py-20 text-center">
+            <h2 class="text-5xl font-extrabold mb-6">Unlock the Power of <span class="text-blue-500">Pro-Level</span> AI</h2>
+            <p class="text-slate-400 text-xl mb-10">Premium prompts, custom tools, and the 7-Product Logic for creators.</p>
+            <button onclick="showPage('browse')" class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 rounded-full text-lg font-bold hover:scale-105 transition">
+                Start Browsing
+            </button>
+        </section>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-<div class="modal-card">
-<h3>Login</h3>
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="pass" placeholder="Password">
-<button class="buy-btn" id="loginBtn">Enter</button>
-</div>
-</div>
+        <section id="browse" class="page-section">
+            <h2 class="text-3xl font-bold mb-8">Our Premium Catalog</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="product-grid">
+                <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                    <span class="text-xs font-bold text-blue-400 tracking-widest uppercase">Masterclass</span>
+                    <h3 class="text-xl font-bold mt-2">AI Mastery Course</h3>
+                    <p class="text-slate-400 text-sm my-4">Everything you need to scale your affiliate brand.</p>
+                    <a href="https://www.paypal.com/ncp/payment/YOUR_ID_1" target="_blank" class="block text-center bg-blue-600 py-3 rounded-lg font-bold">Buy Now</a>
+                </div>
+                </div>
+        </section>
 
-<section class="hero">
-<h1>Command the <span class="highlight">AI Economy</span></h1>
-</section>
+        <section id="custom" class="page-section bg-slate-800 p-8 rounded-3xl border border-slate-700">
+            <h2 class="text-3xl font-bold mb-4 italic">Engineer Prompt Tool</h2>
+            <p class="text-slate-400 mb-6">Turn simple ideas into hyper-realistic 9:16 prompts.</p>
+            <textarea id="promptInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-blue-500 outline-none" rows="4" placeholder="Describe your image (e.g., a girl in a cafe)..."></textarea>
+            <button onclick="engineerPrompt()" class="mt-4 bg-purple-600 w-full py-4 rounded-xl font-bold hover:bg-purple-700 transition">
+                Engineer Prompt ($0 Cost)
+            </button>
+            <div id="promptOutput" class="mt-6 p-4 bg-slate-900 rounded-xl border border-dashed border-slate-600 hidden">
+                <p class="text-xs text-slate-500 mb-2 uppercase">Result:</p>
+                <code id="outputText" class="text-blue-300 break-words"></code>
+            </div>
+        </section>
 
-<div class="container">
+        <section id="guide" class="page-section">
+            <h2 class="text-3xl font-bold mb-6">User Guide</h2>
+            <div class="prose prose-invert max-w-none">
+                <p class="text-slate-300">Learn how to maximize your PromptVault USA assets and integrate them into your workflow.</p>
+            </div>
+        </section>
 
-<div class="tab-menu">
-<div class="tab-link active" data-tab="home">Home</div>
-<div class="tab-link" data-tab="lab">AI Lab</div>
-<div class="tab-link" data-tab="vip">VIP</div>
-</div>
+    </main>
 
-<!-- HOME -->
-<div id="home" class="tab-content active">
-<div class="glass">
-<h2>Guide</h2>
-<p>Use GPT + Midjourney for best output.</p>
-</div>
-<div class="glass">
-<h3>Tip</h3>
-<p>Precision = power.</p>
-</div>
-</div>
+    <script>
+        // FIREBASE CONFIGURATION (Sync'd with your Project)
+        const firebaseConfig = {
+            apiKey: "AIzaSy...your_key", 
+            authDomain: "promptvaultusa-shop.firebaseapp.com",
+            projectId: "promptvaultusa-shop",
+            appId: "1:..."
+        };
+        firebase.initializeApp(firebaseConfig);
 
-<!-- LAB -->
-<div id="lab" class="tab-content">
-<div class="glass">
-<div class="chat-box" id="chat"></div>
-<input id="chatInput" placeholder="Ask...">
-<button class="btn btn-primary" id="sendBtn">Send</button>
-</div>
+        // PAGE NAVIGATION LOGIC
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0,0);
+        }
 
-<div class="glass">
-<h3>Upgrade</h3>
-<button class="buy-btn" id="openModal">Join Free</button>
-</div>
-</div>
+        // AI LAB: ENGINEER PROMPT LOGIC
+        function engineerPrompt() {
+            const input = document.getElementById('promptInput').value;
+            const outputDiv = document.getElementById('promptOutput');
+            const outputText = document.getElementById('outputText');
+            
+            if(!input) return alert("Please enter a description!");
 
-<!-- VIP -->
-<div id="vip" class="tab-content">
-<div class="glass">
-<h2>VIP</h2>
-<p>$9/month</p>
-<a href="#" class="buy-btn">Join</a>
-</div>
-</div>
+            // Engineering logic for 9:16 hyper-realistic outputs
+            const engineered = `Hyper-realistic, cinematic lighting, 8k resolution, highly detailed, photorealistic, cinematic shot of ${input}, ultra-fine textures, 9:16 aspect ratio, masterpiece quality --v 6.0`;
+            
+            outputText.innerText = engineered;
+            outputDiv.classList.remove('hidden');
+        }
 
-</div>
+        // SOCIAL PROOF LOGIC (Chicago Notification)
+        setTimeout(() => {
+            const toast = document.getElementById('social-toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 6000);
+        }, 4000);
 
-<footer style="text-align:center;padding:40px;color:#64748b">
-© 2026 PromptVault USA
-</footer>
-
-<!-- 🔥 SCRIPT -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
-getAuth,
-signInWithPopup,
-GoogleAuthProvider,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-const firebaseConfig = {
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-projectId:"YOUR_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-/* DOM */
-const modal = document.getElementById("modal");
-
-/* NAV */
-document.getElementById("reload").onclick=()=>location.reload();
-
-/* MODAL */
-document.getElementById("emailBtn").onclick=()=>modal.classList.add("show");
-document.getElementById("openModal").onclick=()=>modal.classList.add("show");
-
-modal.onclick=e=>{
-if(e.target===modal) modal.classList.remove("show");
-};
-
-/* AUTH */
-document.getElementById("googleBtn").onclick=async()=>{
-try{
-await signInWithPopup(auth,provider);
-alert("Logged in!");
-modal.classList.remove("show");
-}catch(e){alert(e.message)}
-};
-
-document.getElementById("loginBtn").onclick=async()=>{
-const email=document.getElementById("email").value;
-const pass=document.getElementById("pass").value;
-
-try{
-await signInWithEmailAndPassword(auth,email,pass);
-}catch{
-await createUserWithEmailAndPassword(auth,email,pass);
-}
-alert("Welcome!");
-modal.classList.remove("show");
-};
-
-/* TABS */
-document.querySelectorAll(".tab-link").forEach(tab=>{
-tab.onclick=()=>{
-document.querySelectorAll(".tab-link").forEach(t=>t.classList.remove("active"));
-document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-
-tab.classList.add("active");
-document.getElementById(tab.dataset.tab).classList.add("active");
-};
-});
-
-/* CHAT */
-const chat=document.getElementById("chat");
-document.getElementById("sendBtn").onclick=()=>{
-const input=document.getElementById("chatInput");
-if(!input.value) return;
-
-chat.innerHTML+=`<div class="msg user">${input.value}</div>`;
-setTimeout(()=>{
-chat.innerHTML+=`<div class="msg bot">Use Hyper-Realism prompts.</div>`;
-chat.scrollTop=chat.scrollHeight;
-},500);
-
-input.value="";
-};
-</script>
-
+        // GOOGLE AUTH LOGIC
+        function loginGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider).then((result) => {
+                document.getElementById('auth-status').innerHTML = `<span class='text-sm text-green-400'>Welcome, ${result.user.displayName}</span>`;
+            }).catch((error) => console.error(error));
+        }
+    </script>
 </body>
 </html>
