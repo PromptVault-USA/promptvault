@@ -34,7 +34,7 @@
         .spotlight {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 60%);
             pointer-events: none; z-index: 0;
         }
 
@@ -50,6 +50,7 @@
         .logo-box { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border); }
         .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
         
+        /* Sign In Button */
         .signin-pill { 
             background: white; color: black; padding: 8px 18px; 
             border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none;
@@ -66,14 +67,12 @@
             border-radius: 28px; border: 1px solid var(--border); text-align: center;
             animation: fadeIn 0.3s ease;
         }
-        .auth-modal h3 { margin-top: 0; font-size: 1.5rem; }
         .auth-input {
             width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05);
             border: 1px solid var(--border); border-radius: 12px; color: white; outline: none;
         }
         .auth-toggle { font-size: 0.8rem; color: var(--secondary); cursor: pointer; margin-top: 15px; display: block; }
 
-        /* --- REST OF ORIGINAL STYLES --- */
         .hero { text-align: center; padding: 40px 10px; animation: fadeIn 0.8s ease; }
         .hero-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.7rem; color: var(--secondary); margin-bottom: 15px; }
         .hero h2 { font-size: 3.2rem; line-height: 0.9; margin: 0 0 15px 0; font-weight: 800; letter-spacing: -2px; }
@@ -113,35 +112,43 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
+        // YOUR UPDATED FIREBASE CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyDGB5seZrnWvXV---Yr_z11P00k1k05CLFU",
-            authDomain: "promptvaultusa.firebaseapp.com",
-            projectId: "promptvaultusa",
-            storageBucket: "promptvaultusa.firebasestorage.app",
-            messagingSenderId: "960105895017",
-            appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
+          apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
+          authDomain: "promptvaultusa.firebaseapp.com",
+          projectId: "promptvaultusa",
+          storageBucket: "promptvaultusa.firebasestorage.app",
+          messagingSenderId: "960105895017",
+          appId: "1:960105895017:web:1aa79742d36960d2bfbef8",
+          measurementId: "G-1LJT99PB2S"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // AUTH FUNCTIONS
+        // FORCED ACCOUNT SELECTION FOR GOOGLE
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        // GLOBAL AUTH FUNCTIONS
         window.handleGoogle = async () => {
             try { await signInWithPopup(auth, provider); closeModal(); } 
-            catch (e) { alert(e.message); }
+            catch (e) { alert("Error: " + e.message); }
         };
 
         window.handleEmailAuth = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-            const isSignUp = document.getElementById('auth-title').innerText === "Create Account";
+            const title = document.getElementById('auth-title').innerText;
 
-            if (!email || !pass) return alert("Fill in all fields");
+            if (!email || !pass) return alert("Please enter credentials");
 
             try {
-                if (isSignUp) await createUserWithEmailAndPassword(auth, email, pass);
-                else await signInWithEmailAndPassword(auth, email, pass);
+                if (title === "Create Account") {
+                    await createUserWithEmailAndPassword(auth, email, pass);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
                 closeModal();
             } catch (e) { alert(e.message); }
         };
@@ -162,19 +169,19 @@
 
 <div class="spotlight"></div>
 
-<!-- AUTH MODAL -->
+<!-- --- AUTH MODAL OVERLAY --- -->
 <div class="auth-overlay" id="auth-overlay">
     <div class="auth-modal">
-        <h3 id="auth-title">Sign In</h3>
+        <h3 id="auth-title" style="margin-bottom: 20px;">Sign In</h3>
         <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
         <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
-        <button class="btn-main" style="margin: 10px 0;" onclick="handleEmailAuth()">Continue</button>
-        <div style="font-size: 0.7rem; color: #666; margin: 5px 0;">OR</div>
+        <button class="btn-main" style="margin: 15px 0;" onclick="handleEmailAuth()">Continue</button>
+        <div style="font-size: 0.7rem; color: #666; margin-bottom: 15px;">OR</div>
         <button class="btn-outline" style="background: white; color: black; border: none;" onclick="handleGoogle()">
             Continue with Google
         </button>
-        <span class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">New here? Create an account</span>
-        <span class="auth-toggle" style="color: #666;" onclick="closeModal()">Maybe later</span>
+        <span class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">New member? Create account</span>
+        <span class="auth-toggle" style="color: #666; font-size: 0.7rem; margin-top: 20px;" onclick="closeModal()">Maybe later</span>
     </div>
 </div>
 
@@ -256,11 +263,11 @@
                 </div>
                 <div class="accordion-item" onclick="toggleAccordion(this)">
                     <button class="accordion-trigger">Verified Scaling<span>+</span></button>
-                    <div class="accordion-content">Trusted by 20,000+ digital entrepreneurs and agencies.</div>
+                    <div class="accordion-content">Trusted by 20,000+ digital entrepreneurs and agencies to automate content creation.</div>
                 </div>
                 <div class="accordion-item" onclick="toggleAccordion(this)">
                     <button class="accordion-trigger">Weekly Updates<span>+</span></button>
-                    <div class="accordion-content">Members receive fresh logic updates every Monday.</div>
+                    <div class="accordion-content">The AI world moves fast. Our VIP members receive fresh logic updates every Monday.</div>
                 </div>
             </div>
 
@@ -324,7 +331,7 @@
         <div class="glass-card">
             <h2>Engineering Lab</h2>
             <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:250px; overflow-y:auto; font-size:0.85rem; margin-bottom:15px;">
-                <div style="color:var(--secondary)">Bot: Lab Assistant ready.</div>
+                <div style="color:var(--secondary)">Bot: Lab Assistant ready. How can we optimize your niche today?</div>
             </div>
             <input type="text" id="chatInput" placeholder="Describe your challenge..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
             <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="sendMsg()">Send to AI</button>
@@ -337,6 +344,7 @@
             <h2>Deployment Guide</h2>
             <p><strong>1. Environment:</strong> Use GPT-4o or Midjourney v6.</p>
             <p><strong>2. Setup:</strong> Paste DNA logic into 'Custom Instructions'.</p>
+            <p><strong>3. Execute:</strong> Inject Vault prompt and refine.</p>
         </div>
     </div>
 
@@ -350,6 +358,7 @@
 </nav>
 
 <script>
+    // PAGE NAVIGATION
     window.changePage = (pageId, element) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
@@ -358,6 +367,7 @@
         window.scrollTo(0, 0);
     }
     
+    // MODAL CONTROL
     window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
     window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
     
@@ -369,16 +379,17 @@
             toggle.innerText = "Already have an account? Sign in";
         } else {
             title.innerText = "Sign In";
-            toggle.innerText = "New here? Create an account";
+            toggle.innerText = "New member? Create account";
         }
     }
 
+    // UTILITIES
     window.sendMsg = () => {
         const i = document.getElementById('chatInput');
         const b = document.getElementById('chatBox');
         if(!i.value) return;
         b.innerHTML += `<div style="text-align:right; margin:10px 0; color:#fff;">${i.value}</div>`;
-        setTimeout(() => { b.innerHTML += `<div style="color:var(--primary); margin:10px 0;">Bot: Analysis complete.</div>`; b.scrollTop = b.scrollHeight; }, 600);
+        setTimeout(() => { b.innerHTML += `<div style="color:var(--primary); margin:10px 0;">Bot: Analysis complete. Strategy generated.</div>`; b.scrollTop = b.scrollHeight; }, 600);
         i.value = '';
     }
 
