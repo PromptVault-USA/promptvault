@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PromptVault USA | Premium AI Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>PromptVault USA | The Professional's AI Advantage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
-            --surface: #1a1a1a;
-            --accent: #ffffff;
-            --primary: #0070ba;
-            --text-muted: #a1a1a1;
-            --glass: rgba(255, 255, 255, 0.05);
+            --primary: #0070ba; /* Your Original Blue */
+            --secondary: #00d4ff;
+            --bg: #020617; /* Original Dark Slate */
+            --surface: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --accent: #f59e0b;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -22,165 +22,207 @@
             background-color: var(--bg);
             color: white;
             margin: 0;
-            padding-bottom: 80px; /* Space for bottom nav */
+            padding-bottom: 90px;
             overflow-x: hidden;
         }
 
-        /* Top Header */
+        /* --- Header & Sign In --- */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
-
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .logo-box {
-            width: 35px; height: 35px; background: var(--surface);
-            border: 1px solid var(--border); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .brand-text h1 { font-size: 1.1rem; margin: 0; font-weight: 800; }
-        .brand-text p { font-size: 0.7rem; margin: 0; color: var(--text-muted); }
-
-        .sign-in {
-            background: white; color: black; border: none;
-            padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; }
+        .logo span { color: var(--primary); }
+        
+        .sign-in-btn {
+            background: white; color: black; border: none; padding: 8px 16px;
+            border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
         }
 
-        /* Hero Sections */
+        /* --- Hero Section --- */
         .hero {
-            padding: 60px 20px;
-            text-align: center;
-            background: radial-gradient(circle at center top, #222 0%, #000 100%);
+            padding: 50px 20px; text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%);
         }
+        .hero h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
+        .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: #94a3b8; font-size: 1rem; margin-bottom: 25px; }
 
-        .hero h2 { font-size: 2.8rem; line-height: 1.1; font-weight: 800; margin-bottom: 20px; }
-        .hero p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; }
+        /* --- Content Layout --- */
+        .container { padding: 0 20px; max-width: 800px; margin: 0 auto; }
+        .section-title { font-size: 1.2rem; font-weight: 800; margin: 30px 0 15px; display: flex; align-items: center; justify-content: space-between; }
+        .view-all { color: var(--primary); font-size: 0.8rem; text-decoration: none; }
 
-        /* Buttons */
-        .btn-main {
-            background: white; color: black; text-decoration: none;
-            padding: 15px 40px; border-radius: 50px; font-weight: 800;
-            display: inline-flex; align-items: center; gap: 10px; margin: 10px;
+        /* --- Cards & Grids --- */
+        .glass-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 20px; margin-bottom: 15px;
+            backdrop-filter: blur(10px);
         }
-        .btn-outline {
-            background: var(--glass); color: white; border: 1px solid var(--border);
-            padding: 15px 40px; border-radius: 50px; font-weight: 800; display: inline-block;
+        
+        .pack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .mini-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 15px; text-align: center;
         }
+        .mini-card h3 { font-size: 0.85rem; margin: 10px 0 5px; }
+        .price { color: var(--success); font-weight: 800; font-size: 0.9rem; }
 
-        /* Tab Content Areas */
-        .page-content { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
-        .page-content.active { display: block; }
+        /* --- Ratings & Why Choose --- */
+        .rating-box { display: flex; align-items: center; gap: 5px; color: #facc15; font-size: 0.9rem; margin-bottom: 10px; }
+        .feature-item { display: flex; gap: 12px; margin-bottom: 15px; align-items: flex-start; }
+        .feature-icon { color: var(--primary); font-size: 1.2rem; }
+        .feature-text b { display: block; font-size: 0.95rem; }
+        .feature-text span { font-size: 0.8rem; color: #94a3b8; }
 
-        .card {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 20px; padding: 25px; margin-bottom: 20px;
-        }
-
-        /* Bottom Nav */
+        /* --- Navigation --- */
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; height: 70px;
-            background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(15px);
+            position: fixed; bottom: 0; width: 100%; height: 75px;
+            background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(20px);
             display: flex; justify-content: space-around; align-items: center;
             border-top: 1px solid var(--border); z-index: 1000;
         }
-
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            color: var(--text-muted); text-decoration: none; font-size: 0.7rem; font-weight: 600;
-            cursor: pointer; transition: 0.2s;
+            color: #64748b; text-decoration: none; font-size: 0.7rem; font-weight: 600; cursor: pointer;
         }
-
         .nav-item.active { color: white; }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 4px; }
+        .nav-icon { font-size: 1.3rem; margin-bottom: 4px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Pricing Table Styling */
-        .price-badge { background: var(--primary); padding: 5px 12px; border-radius: 6px; font-weight: 800; margin-top: 15px; display: inline-block; }
+        .btn-buy {
+            background: var(--primary); color: white; border: none; width: 100%;
+            padding: 10px; border-radius: 8px; font-weight: 700; margin-top: 10px; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">
-            <div class="logo-box">📦</div>
-            <div class="brand-text">
-                <h1>PromptVault USA</h1>
-                <p>Premium AI Prompts</p>
-            </div>
-        </div>
-        <button class="sign-in">Sign In</button>
+        <div class="logo">PROMPT<span>VAULT</span> USA</div>
+        <button class="sign-in-btn" onclick="alert('Sign In system coming soon!')">Sign In</button>
     </header>
 
-    <!-- HOME PAGE -->
-    <div id="home" class="page-content active">
+    <!-- HOME TAB -->
+    <main id="home-page" class="page active">
         <section class="hero">
-            <h2>Style Stunning Websites with AI</h2>
-            <p>Professional AI prompts for stunning websites. Download instantly.</p>
-            <a href="#" onclick="showPage('browse')" class="btn-main">Browse Themes →</a>
-            <a href="#" class="btn-outline">Best Practices</a>
+            <h1>Command Success with <br><span class="highlight">Professional AI.</span></h1>
+            <p>Premium prompt engineering for modern professionals.</p>
+            <div class="rating-box" style="justify-content: center;">
+                ⭐⭐⭐⭐⭐ <span style="color:white; font-weight:700; margin-left:5px;">4.9/5</span> 
+                <span style="color:#94a3b8; font-size:0.75rem;">(1,200+ Users)</span>
+            </div>
         </section>
-    </div>
 
-    <!-- BROWSE PAGE (All Products) -->
-    <div id="browse" class="page-content">
-        <h2>Browse Prompt Themes</h2>
-        <p style="color:var(--text-muted)">Discover your professional edge.</p>
-        
-        <div class="card">
-            <h3>Hyper-Realism Masterclass</h3>
-            <p>8K Photorealistic Image Prompts</p>
-            <div class="price-badge">$9.99</div>
-        </div>
+        <div class="container">
+            <div class="section-title">Featured Pack</div>
+            <div class="glass-card" style="border-color: var(--primary);">
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--primary); font-weight:800; font-size:0.7rem;">TOP RATED</span>
+                    <span class="price">$9.99</span>
+                </div>
+                <h3>Hyper-Realism Masterclass</h3>
+                <p style="font-size:0.85rem; color:#94a3b8;">The definitive guide to 8K photorealistic AI generation.</p>
+                <button class="btn-buy">Get Access Now</button>
+            </div>
 
-        <div class="card">
-            <h3>Instagram Growth Pack</h3>
-            <p>Viral Captions & Story Prompts</p>
-            <div class="price-badge">$7.00</div>
-        </div>
+            <div class="section-title">
+                Browse Prompt Packs 
+                <a href="#" onclick="showPage('browse')" class="view-all">View All</a>
+            </div>
+            <div class="pack-grid">
+                <div class="mini-card" onclick="showPage('browse')">
+                    <div style="font-size:1.5rem;">📱</div>
+                    <h3>Instagram</h3>
+                    <span class="price">$7.00</span>
+                </div>
+                <div class="mini-card" onclick="showPage('browse')">
+                    <div style="font-size:1.5rem;">🏠</div>
+                    <h3>Real Estate</h3>
+                    <span class="price">$7.00</span>
+                </div>
+            </div>
 
-        <div class="card">
-            <h3>9:16 Vertical Video Pack</h3>
-            <p>TikTok, Reels, & Shorts Scripts</p>
-            <div class="price-badge">$7.00</div>
-        </div>
-    </div>
-
-    <!-- CUSTOM PAGE -->
-    <div id="custom" class="page-content">
-        <div style="text-align:center; padding: 40px 0;">
-            <div style="font-size: 3rem;">👑</div>
-            <h2>Premium Restyling Service</h2>
-            <p>Let our experts transform your existing website with a professional redesign.</p>
-            <div class="card">
-                <p>⏱ 3-7 Day Delivery</p>
-                <p>✅ 100% Custom</p>
-                <p>✨ Professional Quality</p>
-                <button class="btn-main" style="width:100%">Get Your Quote</button>
+            <div class="section-title">Why PromptVault USA?</div>
+            <div class="glass-card">
+                <div class="feature-item">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-text">
+                        <b>Engineered Accuracy</b>
+                        <span>Tested across ChatGPT-5, Claude, and Midjourney.</span>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">
+                        <b>Instant Delivery</b>
+                        <span>Access your dashboard immediately after purchase.</span>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-text">
+                        <b>Weekly Updates</b>
+                        <span>New prompts added every Monday for VIP members.</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- GUIDE PAGE -->
-    <div id="guide" class="page-content">
-        <div style="text-align:center;">
-            <div style="font-size: 3rem;">📖</div>
-            <h2>How to Use Your Prompts</h2>
-            <p>Get the most out of your PromptVault purchases.</p>
+    <!-- BROWSE TAB -->
+    <main id="browse-page" class="page">
+        <div class="container">
+            <div class="section-title">All Prompt Packs</div>
+            <!-- $9.99 Pack -->
+            <div class="glass-card">
+                <h3>Pack #1: Hyper-Realism Masterclass</h3>
+                <span class="price">$9.99</span>
+                <button class="btn-buy">Buy Pack</button>
+            </div>
+            <!-- $7.00 Packs -->
+            <div class="glass-card">
+                <h3>Pack #2: Instagram Growth Pack</h3>
+                <span class="price">$7.00</span>
+                <button class="btn-buy">Buy Pack</button>
+            </div>
+            <div class="glass-card">
+                <h3>Pack #3: 9:16 Vertical Video Pack</h3>
+                <span class="price">$7.00</span>
+                <button class="btn-buy">Buy Pack</button>
+            </div>
+            <!-- Add others as needed -->
         </div>
-        <div class="card">
-            <h3>The Golden Rule</h3>
-            <p style="color:var(--text-muted)">Always use your prompt in your first message when creating a new app.</p>
+    </main>
+
+    <!-- CUSTOM TAB -->
+    <main id="custom-page" class="page">
+        <div class="container" style="text-align:center; padding-top:40px;">
+            <div style="font-size:3rem; margin-bottom:10px;">👑</div>
+            <h2>Custom Restyling</h2>
+            <p style="color:#94a3b8;">Expert redesigns for your AI apps.</p>
+            <div class="glass-card">
+                <p>Sign in to request a custom quote.</p>
+                <button class="sign-in-btn" style="width:100%; padding:15px;">Sign In</button>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <!-- GUIDE TAB -->
+    <main id="guide-page" class="page">
+        <div class="container">
+            <div class="section-title">Mastering Prompts</div>
+            <div class="glass-card">
+                <h3>The Golden Rule</h3>
+                <p style="font-size:0.9rem; color:#94a3b8;">Always use your prompt in your first message when creating a new session.</p>
+            </div>
+        </div>
+    </main>
 
     <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
@@ -204,18 +246,26 @@
 
     <script>
         function showPage(pageId, element) {
-            // Hide all pages
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            // Show selected page
-            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + '-page').classList.add('active');
             
-            // Update Nav styling
             if(element) {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 element.classList.add('active');
             }
             window.scrollTo(0,0);
         }
+
+        // Live Proof Notification (Someone from Chicago joined)
+        function showProof() {
+            const proof = document.createElement('div');
+            proof.style = "position:fixed; bottom:90px; left:20px; background:white; color:black; padding:10px 15px; border-radius:12px; font-size:0.8rem; font-weight:700; box-shadow:0 10px 20px rgba(0,0,0,0.5); z-index:2000; animation: fadeIn 0.5s ease;";
+            proof.innerHTML = "🔔 Someone from Chicago just joined!";
+            document.body.appendChild(proof);
+            setTimeout(() => { proof.style.opacity = "0"; setTimeout(() => proof.remove(), 500); }, 4000);
+        }
+        
+        window.onload = () => { setTimeout(showProof, 3000); };
     </script>
 </body>
 </html>
