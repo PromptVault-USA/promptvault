@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | The Professional's AI Advantage</title>
     
-    <!-- SEO & Metadata -->
-    <meta name="description" content="Unlock the Professional's AI Advantage. Premium engineered prompts for Hyper-Realism, Social Growth, Real Estate, and Business Scaling.">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -38,7 +36,6 @@
             padding: 20px; 
             margin-bottom: 15px; 
             backdrop-filter: blur(12px);
-            transition: 0.3s;
         }
 
         /* --- Header --- */
@@ -50,53 +47,18 @@
         }
         .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; }
         .logo span { color: var(--primary); }
-        
-        .sign-in-btn {
-            background: white; color: black; border: none; padding: 8px 16px;
-            border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
-        }
+        .sign-in-btn { background: white; color: black; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
 
-        .user-profile { display: none; align-items: center; gap: 10px; cursor: pointer; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
-
-        /* --- Auth Modal --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 3000;
-        }
-        .modal-content {
-            background: #0f172a; border: 1px solid var(--border);
-            width: 90%; max-width: 400px; padding: 30px; border-radius: 24px;
-            text-align: center; position: relative; animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .auth-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 12px 15px; border-radius: 12px; color: white; margin-bottom: 15px; outline: none; }
-        .auth-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 800; cursor: pointer; }
-
-        /* --- Hero --- */
-        .hero {
-            padding: 40px 20px; text-align: center;
-            background: radial-gradient(circle at 50% 0%, rgba(0, 112, 186, 0.2) 0%, transparent 75%);
-        }
-        .hero h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
-        .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { color: #94a3b8; font-size: 1rem; margin-bottom: 20px; }
-        .rating-box { display: flex; align-items: center; gap: 5px; color: #facc15; font-size: 0.9rem; margin-bottom: 10px; }
+        /* --- AI Prompt Lab (New Feature) --- */
+        .ai-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: white; margin-top: 10px; font-family: inherit; outline: none; border-left: 3px solid var(--secondary); }
+        .ai-result-box { background: rgba(0, 112, 186, 0.1); border: 1px solid var(--primary); border-radius: 12px; padding: 15px; margin-top: 15px; font-size: 0.85rem; display: none; line-height: 1.6; border-left: 4px solid var(--secondary); animation: fadeIn 0.5s ease; }
+        .lab-badge { background: var(--secondary); color: black; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; display: inline-block; }
 
         /* --- Sections --- */
         .container { padding: 0 20px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 1.2rem; font-weight: 800; margin: 30px 0 15px; display: flex; align-items: center; justify-content: space-between; }
-        .price { color: var(--success); font-weight: 800; font-size: 1.1rem; }
         .btn-buy { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; margin-top: 10px; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: 0.2s; }
-        .btn-buy:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 112, 186, 0.4); }
-
-        /* --- Home Mini Grid --- */
-        .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .mini-tab-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .mini-tab-card:hover { border-color: var(--primary); background: rgba(0, 112, 186, 0.1); }
-        .mini-tab-card div { font-size: 1.5rem; margin-bottom: 5px; }
-        .mini-tab-card span { font-size: 0.8rem; font-weight: 700; color: white; }
+        .price { color: var(--success); font-weight: 800; font-size: 1.1rem; }
 
         /* --- Navigation --- */
         .bottom-nav {
@@ -113,12 +75,10 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Proof Notification */
         #live-proof {
             position: fixed; bottom: 90px; left: 20px; background: white; color: black;
             padding: 10px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700;
-            z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            display: none; animation: fadeIn 0.5s ease;
+            z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: none;
         }
     </style>
 </head>
@@ -126,51 +86,34 @@
 
     <header>
         <div class="logo">PROMPT<span>VAULT</span> USA</div>
-        <button id="login-trigger" class="sign-in-btn" onclick="toggleModal('open')">Sign In</button>
-        <div id="user-header" class="user-profile" onclick="handleLogout()">
-            <span id="user-name" style="font-size: 0.85rem; font-weight: 600;"></span>
-            <div class="user-avatar">US</div>
-        </div>
+        <button class="sign-in-btn">Sign In</button>
     </header>
-
-    <!-- AUTH MODAL -->
-    <div id="auth-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span style="position:absolute; top:15px; right:20px; cursor:pointer;" onclick="toggleModal('close')">&times;</span>
-            <h2 id="auth-title">Welcome Back</h2>
-            <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
-            <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
-            <button class="auth-submit" onclick="performAuth()">Continue</button>
-        </div>
-    </div>
 
     <!-- HOME PAGE -->
     <main id="home-page" class="page active">
-        <section class="hero">
-            <h1>Command Success with <br><span class="highlight">Professional AI.</span></h1>
-            <p>Premium prompt engineering for modern professionals.</p>
-            <div class="rating-box" style="justify-content: center;">
-                ⭐⭐⭐⭐⭐ <span style="color:white; font-weight:700; margin-left:5px;">4.9/5</span> 
-            </div>
+        <section style="text-align:center; padding: 40px 20px;">
+            <h1 style="font-size: 2.2rem; margin-bottom: 10px;">Command Success.</h1>
+            <p style="color:#94a3b8;">Premium prompt engineering for modern professionals.</p>
         </section>
 
         <div class="container">
-            <div class="section-title">Browse Your Packs</div>
-            <div class="mini-grid">
-                <div class="mini-tab-card" onclick="showPage('browse', document.querySelectorAll('.nav-item')[1])">
-                    <div>📱</div><span>Social</span>
+            <!-- AI PROMPT LAB FEATURE -->
+            <div class="section-title">🧪 Prompt Lab (Free AI)</div>
+            <div class="glass-card" style="border-color: var(--secondary);">
+                <span class="lab-badge">INSTANT PREVIEW</span>
+                <p style="font-size: 0.85rem; color: #94a3b8;">Enter a niche (e.g. Real Estate) to see our engineering logic.</p>
+                <input type="text" id="userInput" class="ai-input" placeholder="Enter topic here...">
+                
+                <div id="aiResult" class="ai-result-box">
+                    <div id="typedText" style="white-space: pre-wrap; color: #d1d5db;"></div>
+                    <hr style="border:0; border-top: 1px solid var(--border); margin: 15px 0;">
+                    <p style="font-size: 0.7rem; color: var(--accent); font-weight: 800; text-align: center;">🔓 UNLOCK 10X MORE LOGIC IN THE $9.99 MASTERCLASS</p>
                 </div>
-                <div class="mini-tab-card" onclick="showPage('browse', document.querySelectorAll('.nav-item')[1])">
-                    <div>🏠</div><span>Real Estate</span>
-                </div>
-                <div class="mini-tab-card" onclick="showPage('browse', document.querySelectorAll('.nav-item')[1])">
-                    <div>💼</div><span>Business</span>
-                </div>
-                <div class="mini-tab-card" onclick="showPage('browse', document.querySelectorAll('.nav-item')[1])">
-                    <div>🛒</div><span>Shopify</span>
-                </div>
+                
+                <button class="btn-buy" onclick="runFreeAI()" style="background: var(--secondary); color: black;">Engineer Prompt Now</button>
             </div>
 
+            <!-- FEATURED PACK -->
             <div class="section-title">Featured Pack</div>
             <div class="glass-card" style="border-color: var(--primary);">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
@@ -178,7 +121,6 @@
                     <span class="price">$9.99</span>
                 </div>
                 <h3>Pack #1: Hyper-Realism Masterclass</h3>
-                <p style="font-size:0.85rem; color:#94a3b8;">8K Photorealistic Image Prompts.</p>
                 <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Get Access Now</a>
             </div>
         </div>
@@ -188,48 +130,13 @@
     <main id="browse-page" class="page">
         <div class="container">
             <div class="section-title">Product Catalog</div>
-            
-            <div class="glass-card">
-                <h3>Pack #1: Hyper-Realism Masterclass</h3>
-                <div class="price">$9.99</div>
-                <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Buy Now</a>
-            </div>
-
-            <div class="glass-card">
-                <h3>Pack #2: Instagram Growth Pack</h3>
-                <div class="price">$7.00</div>
-                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a>
-            </div>
-
-            <div class="glass-card">
-                <h3>Pack #3: 9:16 Vertical Video Pack</h3>
-                <div class="price">$7.00</div>
-                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a>
-            </div>
-
-            <div class="glass-card">
-                <h3>The Real Estate Advantage</h3>
-                <div class="price">$7.00</div>
-                <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Buy Now</a>
-            </div>
-
-            <div class="glass-card">
-                <h3>The Freelance Edge</h3>
-                <div class="price">$7.00</div>
-                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a>
-            </div>
-
-            <div class="glass-card">
-                <h3>The Shopify Seller Pack</h3>
-                <div class="price">$7.00</div>
-                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a>
-            </div>
-
-            <div class="glass-card" style="border-color: var(--accent); background: rgba(245, 158, 11, 0.05);">
-                <h3 style="color:var(--accent)">Weekly VIP Vault</h3>
-                <div class="price">$9.00/mo</div>
-                <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-buy" style="background:var(--accent)">Join VIP Elite</a>
-            </div>
+            <div class="glass-card"><h3>Pack #1: Hyper-Realism Masterclass</h3><div class="price">$9.99</div><a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Buy Now</a></div>
+            <div class="glass-card"><h3>Pack #2: Instagram Growth Pack</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
+            <div class="glass-card"><h3>Pack #3: 9:16 Vertical Video Pack</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
+            <div class="glass-card"><h3>The Real Estate Advantage</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Buy Now</a></div>
+            <div class="glass-card"><h3>The Freelance Edge</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
+            <div class="glass-card"><h3>The Shopify Seller Pack</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
+            <div class="glass-card" style="border-color: var(--accent); background: rgba(245, 158, 11, 0.05);"><h3 style="color:var(--accent)">Weekly VIP Vault</h3><div class="price">$9.00/mo</div><a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-buy" style="background:var(--accent)">Join VIP Elite</a></div>
         </div>
     </main>
 
@@ -238,14 +145,9 @@
         <div class="container" style="padding-top:40px;">
             <div class="glass-card" style="text-align:center; border-color: var(--primary);">
                 <div style="font-size:3rem; margin-bottom:10px;">👑</div>
-                <h2>Premium Restyling</h2>
+                <h2>Custom Restyling</h2>
                 <p style="color:#94a3b8; font-size:0.9rem;">Expert redesigns for your existing apps and websites.</p>
-                <div style="margin-top:20px; text-align:left; font-size:0.85rem;">
-                    <p>✅ 3-7 Day Delivery</p>
-                    <p>✅ 100% Custom Architecture</p>
-                    <p>✅ AI-First Professional Logic</p>
-                </div>
-                <button class="btn-buy" onclick="toggleModal('open')">Sign In to Request Quote</button>
+                <button class="btn-buy">Sign In to Request Quote</button>
             </div>
         </div>
     </main>
@@ -256,11 +158,7 @@
             <div class="section-title">Success Guide</div>
             <div class="glass-card">
                 <h3>The Golden Rule</h3>
-                <p style="font-size:0.9rem; color:#94a3b8; line-height:1.6;">Always paste your prompt into a <b>fresh chat session</b>. This prevents the AI from being influenced by old context, ensuring 100% precision.</p>
-            </div>
-            <div class="glass-card">
-                <h3>The Master Dashboard</h3>
-                <p style="font-size:0.9rem; color:#94a3b8; line-height:1.6;">After purchase, you will receive a Google Sheets link. Bookmark this link; it is updated every Monday with fresh strategies.</p>
+                <p style="font-size:0.9rem; color:#94a3b8; line-height:1.6;">Always paste your prompt into a <b>fresh chat session</b> for 100% precision.</p>
             </div>
         </div>
     </main>
@@ -270,61 +168,43 @@
 
     <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('home', this)">
-            <span class="nav-icon">🏠</span><span>Home</span>
-        </div>
-        <div class="nav-item" onclick="showPage('browse', this)">
-            <span class="nav-icon">⊞</span><span>Browse</span>
-        </div>
-        <div class="nav-item" onclick="showPage('custom', this)">
-            <span class="nav-icon">👑</span><span>Custom</span>
-        </div>
-        <div class="nav-item" onclick="showPage('guide', this)">
-            <span class="nav-icon">📖</span><span>Guide</span>
-        </div>
+        <div class="nav-item active" onclick="showPage('home', this)"><span class="nav-icon">🏠</span><span>Home</span></div>
+        <div class="nav-item" onclick="showPage('browse', this)"><span class="nav-icon">⊞</span><span>Browse</span></div>
+        <div class="nav-item" onclick="showPage('custom', this)"><span class="nav-icon">👑</span><span>Custom</span></div>
+        <div class="nav-item" onclick="showPage('guide', this)"><span class="nav-icon">📖</span><span>Guide</span></div>
     </nav>
 
     <script>
-        function showPage(pageId, element) {
+        function showPage(pId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId + '-page').classList.add('active');
-            if(element) {
+            document.getElementById(pId + '-page').classList.add('active');
+            if(el) {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                element.classList.add('active');
+                el.classList.add('active');
             }
             window.scrollTo(0,0);
         }
 
-        function toggleModal(action) {
-            document.getElementById('auth-modal').style.display = (action === 'open') ? 'flex' : 'none';
-        }
+        // --- FREE AI ENGINE ---
+        function runFreeAI() {
+            const topic = document.getElementById('userInput').value;
+            const res = document.getElementById('aiResult');
+            const txt = document.getElementById('typedText');
+            if(!topic) return alert("Please enter a topic!");
 
-        function performAuth() {
-            const email = document.getElementById('auth-email').value;
-            if(!email) return alert("Enter email");
-            localStorage.setItem('pv_user', email.split('@')[0]);
-            updateUI();
-            toggleModal('close');
-        }
+            const engineering = `[SYSTEM]: Act as an Elite Expert in ${topic}.
+[ENGINEERED PROMPT]: Write a high-conversion, professional strategy for ${topic} that prioritizes hyper-realism and algorithm efficiency. 
+[CONSTRAINTS]: Luxury tone, no fluff, optimized for modern AI models.`;
 
-        function updateUI() {
-            const user = localStorage.getItem('pv_user');
-            document.getElementById('login-trigger').style.display = user ? 'none' : 'block';
-            document.getElementById('user-header').style.display = user ? 'flex' : 'none';
-            if(user) document.getElementById('user-name').innerText = user;
-        }
-
-        function handleLogout() {
-            if(confirm("Logout?")) { localStorage.removeItem('pv_user'); updateUI(); }
+            res.style.display = 'block';
+            txt.innerText = engineering;
         }
 
         window.onload = () => { 
-            updateUI(); 
-            // Trigger Chicago Notification
             setTimeout(() => {
                 const proof = document.getElementById('live-proof');
                 proof.style.display = 'block';
-                setTimeout(() => { proof.style.opacity = '0'; }, 4000);
+                setTimeout(() => proof.style.opacity = '0', 4000);
             }, 3000);
         };
     </script>
