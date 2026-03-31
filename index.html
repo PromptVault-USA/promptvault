@@ -28,16 +28,6 @@
             overflow-x: hidden;
         }
 
-        /* --- Global Glass Styling --- */
-        .glass-card {
-            background: var(--surface); 
-            border: 1px solid var(--border);
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 15px; 
-            backdrop-filter: blur(12px);
-        }
-
         /* --- Header --- */
         header {
             display: flex; justify-content: space-between; align-items: center;
@@ -49,16 +39,33 @@
         .logo span { color: var(--primary); }
         .sign-in-btn { background: white; color: black; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
 
-        /* --- AI Prompt Lab (New Feature) --- */
+        /* --- Glassmorphism UI Elements --- */
+        .glass-card {
+            background: var(--surface); 
+            border: 1px solid var(--border);
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            backdrop-filter: blur(12px);
+        }
+
+        /* --- AI Prompt Lab ($0 Cost) --- */
         .ai-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: white; margin-top: 10px; font-family: inherit; outline: none; border-left: 3px solid var(--secondary); }
         .ai-result-box { background: rgba(0, 112, 186, 0.1); border: 1px solid var(--primary); border-radius: 12px; padding: 15px; margin-top: 15px; font-size: 0.85rem; display: none; line-height: 1.6; border-left: 4px solid var(--secondary); animation: fadeIn 0.5s ease; }
         .lab-badge { background: var(--secondary); color: black; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; display: inline-block; }
 
-        /* --- Sections --- */
+        /* --- Layout & Typography --- */
         .container { padding: 0 20px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 1.2rem; font-weight: 800; margin: 30px 0 15px; display: flex; align-items: center; justify-content: space-between; }
         .btn-buy { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; margin-top: 10px; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: 0.2s; }
         .price { color: var(--success); font-weight: 800; font-size: 1.1rem; }
+        .highlight { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- Why Choose Us List --- */
+        .feature-item { display: flex; gap: 12px; margin-bottom: 15px; align-items: flex-start; text-align: left; }
+        .feature-icon { color: var(--primary); font-size: 1.2rem; }
+        .feature-text b { display: block; font-size: 0.95rem; }
+        .feature-text span { font-size: 0.8rem; color: #94a3b8; }
 
         /* --- Navigation --- */
         .bottom-nav {
@@ -75,6 +82,7 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- Social Proof Notification --- */
         #live-proof {
             position: fixed; bottom: 90px; left: 20px; background: white; color: black;
             padding: 10px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700;
@@ -86,42 +94,68 @@
 
     <header>
         <div class="logo">PROMPT<span>VAULT</span> USA</div>
-        <button class="sign-in-btn">Sign In</button>
+        <button class="sign-in-btn" onclick="showPage('custom')">Sign In</button>
     </header>
 
     <!-- HOME PAGE -->
     <main id="home-page" class="page active">
         <section style="text-align:center; padding: 40px 20px;">
-            <h1 style="font-size: 2.2rem; margin-bottom: 10px;">Command Success.</h1>
-            <p style="color:#94a3b8;">Premium prompt engineering for modern professionals.</p>
+            <h1 style="font-size: 2.2rem; margin-bottom: 10px;">Command <span class="highlight">Success.</span></h1>
+            <p style="color:#94a3b8;">Unlock the Professional AI Advantage.</p>
         </section>
 
         <div class="container">
-            <!-- AI PROMPT LAB FEATURE -->
-            <div class="section-title">🧪 Prompt Lab (Free AI)</div>
+            <!-- AI PROMPT LAB (Logic Demo) -->
+            <div class="section-title">🧪 AI Prompt Lab</div>
             <div class="glass-card" style="border-color: var(--secondary);">
-                <span class="lab-badge">INSTANT PREVIEW</span>
-                <p style="font-size: 0.85rem; color: #94a3b8;">Enter a niche (e.g. Real Estate) to see our engineering logic.</p>
-                <input type="text" id="userInput" class="ai-input" placeholder="Enter topic here...">
+                <span class="lab-badge">INSTANT ENGINEERING PREVIEW</span>
+                <p style="font-size: 0.85rem; color: #94a3b8;">Input a topic to see our proprietary engineering logic in action.</p>
+                <input type="text" id="userInput" class="ai-input" placeholder="e.g. Luxury Real Estate, TikTok Strategy...">
                 
                 <div id="aiResult" class="ai-result-box">
-                    <div id="typedText" style="white-space: pre-wrap; color: #d1d5db;"></div>
+                    <div id="typedText" style="white-space: pre-wrap; color: #d1d5db; font-family: monospace;"></div>
                     <hr style="border:0; border-top: 1px solid var(--border); margin: 15px 0;">
-                    <p style="font-size: 0.7rem; color: var(--accent); font-weight: 800; text-align: center;">🔓 UNLOCK 10X MORE LOGIC IN THE $9.99 MASTERCLASS</p>
+                    <p style="font-size: 0.7rem; color: var(--accent); font-weight: 800; text-align: center;">🚀 UNLOCK FULL LOGIC IN THE $9.99 MASTERCLASS</p>
                 </div>
                 
                 <button class="btn-buy" onclick="runFreeAI()" style="background: var(--secondary); color: black;">Engineer Prompt Now</button>
             </div>
 
+            <!-- WHY CHOOSE PROMPTVAULT USA -->
+            <div class="section-title">Why Choose PromptVault USA?</div>
+            <div class="glass-card">
+                <div class="feature-item">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-text">
+                        <b>Engineered Accuracy</b>
+                        <span>Tested across ChatGPT-5, Claude 3, and Midjourney for flawless output.</span>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">
+                        <b>Instant Professional Edge</b>
+                        <span>Go from zero to pro in seconds with pre-engineered system architectures.</span>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-text">
+                        <b>Dynamic Growth</b>
+                        <span>Our Vault is updated weekly to keep you ahead of the AI algorithm.</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- FEATURED PACK -->
-            <div class="section-title">Featured Pack</div>
+            <div class="section-title">Best Seller</div>
             <div class="glass-card" style="border-color: var(--primary);">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span style="color:var(--primary); font-weight:800; font-size:0.7rem;">BEST SELLER</span>
+                    <span style="color:var(--primary); font-weight:800; font-size:0.7rem;">TOP RATED</span>
                     <span class="price">$9.99</span>
                 </div>
                 <h3>Pack #1: Hyper-Realism Masterclass</h3>
-                <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Get Access Now</a>
+                <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Unlock Master Vault</a>
             </div>
         </div>
     </main>
@@ -129,14 +163,20 @@
     <!-- BROWSE PAGE (All 7 Products) -->
     <main id="browse-page" class="page">
         <div class="container">
-            <div class="section-title">Product Catalog</div>
+            <div class="section-title">The Master Catalog</div>
+            
             <div class="glass-card"><h3>Pack #1: Hyper-Realism Masterclass</h3><div class="price">$9.99</div><a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Buy Now</a></div>
             <div class="glass-card"><h3>Pack #2: Instagram Growth Pack</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
             <div class="glass-card"><h3>Pack #3: 9:16 Vertical Video Pack</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
             <div class="glass-card"><h3>The Real Estate Advantage</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-buy">Buy Now</a></div>
             <div class="glass-card"><h3>The Freelance Edge</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
             <div class="glass-card"><h3>The Shopify Seller Pack</h3><div class="price">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-buy">Buy Now</a></div>
-            <div class="glass-card" style="border-color: var(--accent); background: rgba(245, 158, 11, 0.05);"><h3 style="color:var(--accent)">Weekly VIP Vault</h3><div class="price">$9.00/mo</div><a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-buy" style="background:var(--accent)">Join VIP Elite</a></div>
+            
+            <div class="glass-card" style="border-color: var(--accent); background: rgba(245, 158, 11, 0.05);">
+                <h3 style="color:var(--accent)">Weekly VIP Elite Vault</h3>
+                <div class="price">$9.00/mo</div>
+                <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-buy" style="background:var(--accent)">Join Elite Membership</a>
+            </div>
         </div>
     </main>
 
@@ -145,9 +185,14 @@
         <div class="container" style="padding-top:40px;">
             <div class="glass-card" style="text-align:center; border-color: var(--primary);">
                 <div style="font-size:3rem; margin-bottom:10px;">👑</div>
-                <h2>Custom Restyling</h2>
-                <p style="color:#94a3b8; font-size:0.9rem;">Expert redesigns for your existing apps and websites.</p>
-                <button class="btn-buy">Sign In to Request Quote</button>
+                <h2>Premium Restyling</h2>
+                <p style="color:#94a3b8; font-size:0.9rem;">Expert architectural redesigns for your AI-driven platforms.</p>
+                <div style="margin-top:20px; text-align:left; font-size:0.85rem;">
+                    <p>✅ 3-7 Day Delivery Cycle</p>
+                    <p>✅ Bespoke System Architecture</p>
+                    <p>✅ Enterprise-Grade AI Logic</p>
+                </div>
+                <button class="btn-buy" onclick="alert('Please sign in to request a custom quote.')">Sign In to Request Quote</button>
             </div>
         </div>
     </main>
@@ -157,8 +202,8 @@
         <div class="container">
             <div class="section-title">Success Guide</div>
             <div class="glass-card">
-                <h3>The Golden Rule</h3>
-                <p style="font-size:0.9rem; color:#94a3b8; line-height:1.6;">Always paste your prompt into a <b>fresh chat session</b> for 100% precision.</p>
+                <h3>The Vault Protocol</h3>
+                <p style="font-size:0.9rem; color:#94a3b8; line-height:1.6;">To ensure 100% fidelity, always initialize your engineered prompt in a <b>fresh session</b>. This eliminates contextual drift and maximizes model accuracy.</p>
             </div>
         </div>
     </main>
@@ -185,21 +230,24 @@
             window.scrollTo(0,0);
         }
 
-        // --- FREE AI ENGINE ---
+        // --- FREE AI SIMULATOR ENGINE ---
         function runFreeAI() {
             const topic = document.getElementById('userInput').value;
             const res = document.getElementById('aiResult');
             const txt = document.getElementById('typedText');
-            if(!topic) return alert("Please enter a topic!");
+            if(!topic) return alert("Please enter a topic to engineer!");
 
-            const engineering = `[SYSTEM]: Act as an Elite Expert in ${topic}.
-[ENGINEERED PROMPT]: Write a high-conversion, professional strategy for ${topic} that prioritizes hyper-realism and algorithm efficiency. 
-[CONSTRAINTS]: Luxury tone, no fluff, optimized for modern AI models.`;
+            const engineering = `[SYSTEM ARCHITECTURE]: Senior Prompt Engineer.
+[OBJECTIVE]: Professional Optimization for "${topic}".
+[CONSTRAINTS]: Luxury Tone, Zero Hallucination, High-Fidelity.
+[ENGINEERED PROMPT]: Write a comprehensive, algorithm-optimized strategy for "${topic}" that prioritizes enterprise-grade visual and structural logic. 
+[PROTOCOL]: Deliver in Markdown with hierarchical logic structures.`;
 
             res.style.display = 'block';
             txt.innerText = engineering;
         }
 
+        // --- CHICAGO NOTIFICATION LOGIC ---
         window.onload = () => { 
             setTimeout(() => {
                 const proof = document.getElementById('live-proof');
