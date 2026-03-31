@@ -11,46 +11,99 @@
     
     <style>
         :root { 
-            --primary: #0070ba; --secondary: #00d4ff; --dark: #020617; 
-            --card-bg: #0f172a; --accent: #f59e0b; --border: rgba(255, 255, 255, 0.1); 
+            --primary: #0070ba; 
+            --secondary: #00d4ff; 
+            --dark: #020617; 
+            --card-bg: #0f172a;
+            --accent: #f59e0b; 
+            --success: #10b981; 
+            --border: rgba(255, 255, 255, 0.1); 
             --glass: rgba(255, 255, 255, 0.05);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: var(--dark); color: white; padding-bottom: 90px; overflow-x: hidden; }
-        .spotlight { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            background: var(--dark); 
+            color: white; 
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
         .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; position: sticky; top: 0; z-index: 100; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 25px; position: sticky; top: 0; z-index: 100;
+            background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+        }
         .logo-group { display: flex; align-items: center; gap: 10px; }
         .logo-box { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border); }
         .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
-        .signin-pill { background: white; color: black; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none; cursor: pointer; }
+        
+        .signin-pill { 
+            background: white; color: black; padding: 8px 18px; 
+            border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none;
+            cursor: pointer;
+        }
 
-        /* MODAL STYLES */
-        .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; }
-        .auth-modal { background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px; border-radius: 28px; border: 1px solid var(--border); text-align: center; }
-        .auth-input { width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: white; outline: none; }
+        /* --- AUTH MODAL STYLES --- */
+        .auth-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center;
+        }
+        .auth-modal {
+            background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px;
+            border-radius: 28px; border: 1px solid var(--border); text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .auth-modal h3 { margin-top: 0; font-size: 1.5rem; }
+        .auth-input {
+            width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); border-radius: 12px; color: white; outline: none;
+        }
         .auth-toggle { font-size: 0.8rem; color: var(--secondary); cursor: pointer; margin-top: 15px; display: block; }
 
-        /* MEMBER LOCK STYLES */
-        .lock-screen { text-align: center; padding: 60px 20px; animation: fadeIn 0.5s ease; }
-        .lock-icon { font-size: 4rem; margin-bottom: 20px; display: block; }
-
-        .hero { text-align: center; padding: 40px 10px; }
+        /* --- UI STYLES --- */
+        .hero { text-align: center; padding: 40px 10px; animation: fadeIn 0.8s ease; }
+        .hero-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.7rem; color: var(--secondary); margin-bottom: 15px; }
         .hero h2 { font-size: 3.2rem; line-height: 0.9; margin: 0 0 15px 0; font-weight: 800; letter-spacing: -2px; }
         .stats-ribbon { display: flex; justify-content: space-around; background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 12px 5px; margin: 20px 0; }
+        .stat-item { text-align: center; }
         .stat-val { display: block; font-weight: 800; color: var(--secondary); font-size: 0.85rem; }
-        .stat-lbl { font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
-        .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; cursor: pointer; }
+        .stat-lbl { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .rating-row { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px; color: var(--accent); font-size: 0.9rem; font-weight: 700; }
+        .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-bottom: 12px; cursor: pointer; border: none; }
         .btn-outline { background: transparent; color: white; width: 100%; padding: 18px; border-radius: 40px; font-weight: 700; border: 1px solid var(--border); text-decoration: none; display: block; text-align: center; cursor: pointer; }
         .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; border-bottom: 4px solid var(--primary); position: relative; }
-        
+        .featured-gallery { margin: 30px 0; }
+        .gallery-item { margin-bottom: 25px; border-radius: 20px; overflow: hidden; background: var(--card-bg); border: 1px solid var(--border); }
+        .gallery-img { width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid var(--border); }
+        .gallery-info { padding: 15px; }
+        .gallery-title { font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 5px; }
+        .gallery-desc { font-size: 0.75rem; color: #94a3b8; }
+        .why-tabs { margin-top: 40px; }
+        .why-header { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-align: center; }
+        .accordion-item { border: 1px solid var(--border); border-radius: 15px; margin-bottom: 10px; overflow: hidden; }
+        .accordion-trigger { width: 100%; padding: 15px; background: var(--glass); border: none; color: white; text-align: left; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: space-between; }
+        .accordion-content { display: none; padding: 15px; font-size: 0.8rem; color: #94a3b8; background: rgba(0,0,0,0.2); }
+        .accordion-item.active .accordion-content { display: block; }
+        #live-proof { position: fixed; bottom: 100px; left: 20px; right: 20px; background: white; color: #020617; border-radius: 16px; padding: 12px 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 12px; transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; max-width: 460px; margin: auto; }
+        .review-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid var(--border); }
+        .reviewer { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-weight: 700; color: var(--secondary); }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; backdrop-filter: blur(20px); }
         .nav-item { text-align: center; color: #64748b; font-size: 0.65rem; text-decoration: none; flex: 1; font-weight: 600; }
         .nav-item.active { color: var(--secondary); }
         .nav-icon { font-size: 1.3rem; margin-bottom: 5px; display: block; }
-
         .page { display: none; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; } }
@@ -60,155 +113,212 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
-        // SECURITY UPDATE: Using a config object that pulls from environment variables 
-        // or a restricted global variable instead of hardcoding.
+        // --- STEP 1: UPDATED API KEY ---
         const firebaseConfig = {
-          apiKey: window.CONFIG?.FIREBASE_API_KEY || "YOUR_RESTRICTED_API_KEY_HERE",
-          authDomain: "promptvaultusa.firebaseapp.com",
-          projectId: "promptvaultusa",
-          storageBucket: "promptvaultusa.firebasestorage.app",
-          messagingSenderId: "960105895017",
-          appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
+            apiKey: "AIzaSyDw1jTglcxP3wvZNfNLntBcBjZyZOSLoXM",
+            authDomain: "promptvaultusa.firebaseapp.com",
+            projectId: "promptvaultusa",
+            storageBucket: "promptvaultusa.firebasestorage.app",
+            messagingSenderId: "960105895017",
+            appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
 
-        window.isUserLoggedIn = false;
-
+        // AUTH FUNCTIONS
         window.handleGoogle = async () => {
-            try { await signInWithPopup(auth, provider); closeModal(); } 
-            catch (e) { alert(e.message); }
+            try { 
+                await signInWithPopup(auth, provider); 
+                window.closeModal(); 
+            } catch (e) { 
+                alert("Google Sign-In Error: " + e.message); 
+            }
         };
 
         window.handleEmailAuth = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
             const title = document.getElementById('auth-title').innerText;
+
+            if (!email || !pass) return alert("Please fill in all fields");
+            if (pass.length < 6) return alert("Password should be at least 6 characters");
+
             try {
-                if (title === "Create Account") await createUserWithEmailAndPassword(auth, email, pass);
-                else await signInWithEmailAndPassword(auth, email, pass);
-                closeModal();
-            } catch (e) { alert(e.message); }
+                if (title === "Create Account") {
+                    await createUserWithEmailAndPassword(auth, email, pass);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
+                window.closeModal();
+            } catch (e) { 
+                alert("Auth Error: " + e.message); 
+            }
         };
 
+        // TRACK AUTH STATE
         onAuthStateChanged(auth, (user) => {
             const btn = document.getElementById('login-pill');
-            const locks = document.querySelectorAll('.member-lock-content');
-            const lockedPages = document.querySelectorAll('.page-locked');
-
             if (user) { 
-                window.isUserLoggedIn = true;
                 btn.innerText = "Logout"; 
-                btn.onclick = () => signOut(auth);
-                lockedPages.forEach(p => p.style.display = 'none');
-                locks.forEach(l => l.style.display = 'block');
+                btn.onclick = () => {
+                    if(confirm("Sign out of PromptVault?")) signOut(auth);
+                }; 
             } else { 
-                window.isUserLoggedIn = false;
                 btn.innerText = "Sign In"; 
-                btn.onclick = openModal;
-                lockedPages.forEach(p => p.style.display = 'block');
-                locks.forEach(l => l.style.display = 'none');
+                btn.onclick = window.openModal; 
             }
         });
     </script>
 </head>
 <body>
-<!-- Rest of your HTML remains exactly the same -->
+
 <div class="spotlight"></div>
 
+<!-- AUTH MODAL -->
 <div class="auth-overlay" id="auth-overlay">
     <div class="auth-modal">
         <h3 id="auth-title">Sign In</h3>
         <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
         <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
-        <button class="btn-main" onclick="handleEmailAuth()">Continue</button>
-        <button class="btn-outline" style="background:white; color:black; border:none; margin-top:10px;" onclick="handleGoogle()">Google Login</button>
-        <span class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">New member? Create account</span>
-        <span class="auth-toggle" style="color:#666;" onclick="closeModal()">Maybe later</span>
+        <button class="btn-main" style="margin: 10px 0;" onclick="handleEmailAuth()">Continue</button>
+        <div style="font-size: 0.7rem; color: #666; margin: 5px 0;">OR</div>
+        <button class="btn-outline" style="background: white; color: black; border: none; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="handleGoogle()">
+            Continue with Google
+        </button>
+        <span class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">New here? Create an account</span>
+        <span class="auth-toggle" style="color: #666;" onclick="closeModal()">Maybe later</span>
     </div>
 </div>
 
 <header>
-    <div class="logo-group"><img src="logo.png" class="logo-box"><h1>PromptVault</h1></div>
+    <div class="logo-group">
+        <img src="logo.png" class="logo-box">
+        <div class="logo-text"><h1>PromptVault</h1></div>
+    </div>
     <button class="signin-pill" id="login-pill">Sign In</button>
 </header>
+
+<div id="live-proof">
+    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">US</div>
+    <div>
+        <div style="font-size: 0.8rem; font-weight: 800; color: #020617;">Someone from Chicago joined the Vault!</div>
+        <div style="font-size: 0.65rem; color: #64748b;">Verified Member • Just Now</div>
+    </div>
+</div>
 
 <div class="container">
     
     <!-- 🏠 HOME PAGE -->
     <div id="home" class="page active">
         <div class="hero">
+            <div class="hero-tag">Verified Elite AI Marketplace</div>
             <h2>Command the AI Economy</h2>
-            <div class="stats-ribbon">
-                <div class="stat-item"><span class="stat-val">9 Premium</span><span class="stat-lbl">Packs</span></div>
-                <div class="stat-item"><span class="stat-val">4.9/5</span><span class="stat-lbl">Rating</span></div>
-                <div class="stat-item"><span class="stat-val">20k+</span><span class="stat-lbl">Customers</span></div>
+            
+            <div class="rating-row">
+                <span>⭐⭐⭐⭐⭐</span>
+                <span>4.9 Average Rating</span>
             </div>
-            <a href="javascript:void(0)" class="btn-main" onclick="changePage('browse')">Browse Vaults <span>→</span></a>
+
+            <div class="stats-ribbon">
+                <div class="stat-item">
+                    <span class="stat-val">7 Premium</span>
+                    <span class="stat-lbl">Packs</span>
+                </div>
+                <div class="stat-item" style="border-left: 1px solid var(--border); border-right: 1px solid var(--border); padding: 0 15px;">
+                    <span class="stat-val">4.9/5</span>
+                    <span class="stat-lbl">Rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val">20k+</span>
+                    <span class="stat-lbl">Customers</span>
+                </div>
+            </div>
+
+            <a href="javascript:void(0)" class="btn-main" onclick="changePage('browse')">Browse Strategic Packs <span>→</span></a>
+            
+            <div class="featured-gallery">
+                <h3 style="font-size: 1.1rem; text-align: left; margin-bottom: 20px;">Featured Collections</h3>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Hyperrealism">
+                    <div class="gallery-info">
+                        <div class="gallery-title">🎯 Hyper-Realism DNA</div>
+                        <div class="gallery-desc">Engineered for cinematic photorealism in MJ & Flux.</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Social Media">
+                    <div class="gallery-info">
+                        <div class="gallery-title">📸 Social Outreach Vault</div>
+                        <div class="gallery-desc">High-conversion scripts for Instagram & LinkedIn.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="border-bottom: 4px solid var(--accent);">
+                <span style="color:var(--accent); font-weight:800; font-size:0.7rem;">FREE PROMPT OF THE DAY</span>
+                <p style="font-size:0.85rem; color:#fff; margin:10px 0;">"Generate a cinematic 8k photorealistic portrait of [Subject] with dramatic chiaroscuro lighting..."</p>
+                <button class="btn-outline" style="padding:10px; font-size:0.8rem;" onclick="copyPrompt()">Copy Free Prompt</button>
+            </div>
+
+            <div class="why-tabs">
+                <div class="why-header">Why Choose PromptVaultUSA?</div>
+                <div class="accordion-item" onclick="toggleAccordion(this)">
+                    <button class="accordion-trigger">Strategic Logic<span>+</span></button>
+                    <div class="accordion-content">Unlike generic prompts, ours are engineered with "Contextual DNA" to ensure the AI follows complex brand rules.</div>
+                </div>
+                <div class="accordion-item" onclick="toggleAccordion(this)">
+                    <button class="accordion-trigger">Verified Scaling<span>+</span></button>
+                    <div class="accordion-content">Trusted by 20,000+ digital entrepreneurs and agencies.</div>
+                </div>
+                <div class="accordion-item" onclick="toggleAccordion(this)">
+                    <button class="accordion-trigger">Weekly Updates<span>+</span></button>
+                    <div class="accordion-content">Members receive fresh logic updates every Monday.</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- ⊞ BROWSE PAGE -->
     <div id="browse" class="page">
-        <h2 style="text-align:center;">Strategic Vaults</h2>
-        
-        <div class="glass-card" style="border-color: var(--secondary);">
-            <span class="hero-tag">NEW RELEASE</span>
-            <h3>🎬 Faceless YouTube Creator</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$12.00</div>
+        <h2 style="text-align:center; margin-bottom:25px;">Strategic Vaults</h2>
+        <div class="glass-card">
+            <h3>🎯 Hyper-Realism Masterclass</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
+            <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>📸 Instagram Client Vault</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
         </div>
-
-        <div class="glass-card" style="border-color: var(--secondary);">
-            <span class="hero-tag">NEW RELEASE</span>
-            <h3>🏛️ AI Architect & Staging</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$15.00</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+        <!-- Simplified browse items for clarity -->
+        <div class="glass-card">
+            <h3>🤝 Affiliate Partner Program</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">Earn 40%</div>
+            <a href="#" class="btn-main" style="padding:12px;">Join Network</a>
         </div>
-
-        <div class="glass-card"><h3>🎯 Hyper-Realism DNA</h3><div style="font-size: 1.5rem; font-weight: 800;">$9.99</div><a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:10px;">Get Access</a></div>
-        <div class="glass-card"><h3>📸 Instagram Vault</h3><div style="font-size: 1.5rem; font-weight: 800;">$9.99</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:10px;">Get Access</a></div>
     </div>
 
-    <!-- 👑 CUSTOM (MEMBER LOCKED) -->
+    <!-- 👑 CUSTOM -->
     <div id="custom" class="page">
-        <div class="page-locked">
-            <div class="lock-screen">
-                <span class="lock-icon">🔒</span>
-                <h2>Engineering Lab Locked</h2>
-                <p>Sign in to access the AI Lab Assistant.</p>
-                <button class="btn-main" onclick="openModal()">Unlock Now</button>
+        <div class="glass-card">
+            <h2>Engineering Lab</h2>
+            <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:250px; overflow-y:auto; font-size:0.85rem; margin-bottom:15px;">
+                <div style="color:var(--secondary)">Bot: Lab Assistant ready.</div>
             </div>
-        </div>
-        <div class="member-lock-content" style="display:none;">
-            <div class="glass-card">
-                <h2>Engineering Lab</h2>
-                <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:200px; overflow-y:auto; margin-bottom:15px;">Bot: Welcome Member. Lab is ready.</div>
-                <input type="text" id="chatInput" placeholder="Describe your challenge..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
-                <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="sendMsg()">Send to AI</button>
-            </div>
+            <input type="text" id="chatInput" placeholder="Describe your challenge..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
+            <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="sendMsg()">Send to AI</button>
         </div>
     </div>
 
-    <!-- 📖 GUIDE (MEMBER LOCKED) -->
+    <!-- 📖 GUIDE PAGE -->
     <div id="guide" class="page">
-        <div class="page-locked">
-            <div class="lock-screen">
-                <span class="lock-icon">🔒</span>
-                <h2>Deployment Guide Locked</h2>
-                <p>Strategic instructions are for members only.</p>
-                <button class="btn-main" onclick="openModal()">Sign In to View</button>
-            </div>
-        </div>
-        <div class="member-lock-content" style="display:none;">
-            <div class="glass-card">
-                <h2>VIP Deployment Guide</h2>
-                <p><strong>Step 1:</strong> Use GPT-4o for logic.</p>
-                <p><strong>Step 2:</strong> Paste DNA logic into 'Custom Instructions'.</p>
-            </div>
+        <div class="glass-card">
+            <h2>Deployment Guide</h2>
+            <p><strong>1. Environment:</strong> Use GPT-4o or Midjourney v6.</p>
+            <p><strong>2. Setup:</strong> Paste DNA logic into 'Custom Instructions'.</p>
         </div>
     </div>
 
@@ -222,6 +332,7 @@
 </nav>
 
 <script>
+    // NAVIGATION LOGIC
     window.changePage = (pageId, element) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
@@ -229,14 +340,53 @@
         if(element) element.classList.add('active');
         window.scrollTo(0, 0);
     }
+    
+    // MODAL LOGIC
     window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
     window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
+    
     window.toggleAuthMode = () => {
         const title = document.getElementById('auth-title');
         const toggle = document.getElementById('auth-toggle');
-        title.innerText = (title.innerText === "Sign In") ? "Create Account" : "Sign In";
-        toggle.innerText = (title.innerText === "Sign In") ? "New member? Create account" : "Already have an account? Sign in";
+        if (title.innerText === "Sign In") {
+            title.innerText = "Create Account";
+            toggle.innerText = "Already have an account? Sign in";
+        } else {
+            title.innerText = "Sign In";
+            toggle.innerText = "New here? Create an account";
+        }
     }
+
+    // UTILITIES
+    window.sendMsg = () => {
+        const i = document.getElementById('chatInput');
+        const b = document.getElementById('chatBox');
+        if(!i.value) return;
+        b.innerHTML += `<div style="text-align:right; margin:10px 0; color:#fff;">${i.value}</div>`;
+        setTimeout(() => { 
+            b.innerHTML += `<div style="color:var(--primary); margin:10px 0;">Bot: Analysis complete.</div>`; 
+            b.scrollTop = b.scrollHeight; 
+        }, 600);
+        i.value = '';
+    }
+
+    window.copyPrompt = () => {
+        const text = "Generate a cinematic 8k photorealistic portrait of [Subject] with dramatic chiaroscuro lighting...";
+        navigator.clipboard.writeText(text).then(() => alert("Free Prompt Copied!"));
+    }
+
+    window.toggleAccordion = (el) => el.classList.toggle('active');
+
+    // LIVE PROOF NOTIFICATION
+    window.onload = () => {
+        setTimeout(() => {
+            const proof = document.getElementById('live-proof');
+            if(proof) {
+                proof.style.transform = "translateY(0)";
+                setTimeout(() => { proof.style.transform = "translateY(200%)"; }, 6000);
+            }
+        }, 4000);
+    };
 </script>
 
 </body>
