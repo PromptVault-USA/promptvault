@@ -27,9 +27,9 @@
         .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
         .signin-pill { background: white; color: black; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none; cursor: pointer; }
 
-        /* DASHBOARD ELEMENT */
-        .user-badge { background: var(--glass); padding: 15px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px; font-size: 0.8rem; }
-        .user-badge b { color: var(--secondary); }
+        /* DASHBOARD UI ADDITIONS */
+        .user-badge { background: var(--glass); padding: 15px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px; font-size: 0.8rem; line-height: 1.5; }
+        .user-badge b { color: var(--secondary); font-weight: 800; }
 
         /* MODAL STYLES */
         .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; }
@@ -80,15 +80,17 @@
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // Helper: Initialize User in Firestore
-        async function provisionUser(user) {
+        window.isUserLoggedIn = false;
+
+        // Function to ensure user has a profile document in Firestore
+        async function syncUserProfile(user) {
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
             if (!userSnap.exists()) {
                 await setDoc(userRef, {
                     email: user.email,
-                    purchasedPrompts: [],
-                    createdAt: new Date().toISOString()
+                    purchasedPrompts: [], // This will store IDs like 'faceless-youtube'
+                    memberSince: new Date().toISOString()
                 });
             }
         }
@@ -96,7 +98,7 @@
         window.handleGoogle = async () => {
             try { 
                 const result = await signInWithPopup(auth, provider); 
-                await provisionUser(result.user);
+                await syncUserProfile(result.user);
                 closeModal(); 
             } 
             catch (e) { alert(e.message); }
@@ -109,7 +111,7 @@
             try {
                 if (title === "Create Account") {
                     const result = await createUserWithEmailAndPassword(auth, email, pass);
-                    await provisionUser(result.user);
+                    await syncUserProfile(result.user);
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);
                 }
@@ -121,22 +123,25 @@
             const btn = document.getElementById('login-pill');
             const locks = document.querySelectorAll('.member-lock-content');
             const lockedPages = document.querySelectorAll('.page-locked');
-            const userEmailDisplays = document.querySelectorAll('.user-display-email');
-            const userVaultCounts = document.querySelectorAll('.user-vault-count');
+            const userEmailFields = document.querySelectorAll('.user-email-display');
+            const userVaultFields = document.querySelectorAll('.user-vault-display');
 
             if (user) { 
+                window.isUserLoggedIn = true;
                 btn.innerText = "Logout"; 
                 btn.onclick = () => signOut(auth);
                 lockedPages.forEach(p => p.style.display = 'none');
                 locks.forEach(l => l.style.display = 'block');
-                
-                // Fetch Data for Dashboard
-                const userSnap = await getDoc(doc(db, "users", user.uid));
-                const userData = userSnap.data();
-                userEmailDisplays.forEach(el => el.innerText = user.email);
-                userVaultCounts.forEach(el => el.innerText = userData?.purchasedPrompts?.length || 0);
 
+                // Load User Data from Firestore
+                const userSnap = await getDoc(doc(db, "users", user.uid));
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    userEmailFields.forEach(el => el.innerText = user.email);
+                    userVaultFields.forEach(el => el.innerText = data.purchasedPrompts?.length || 0);
+                }
             } else { 
+                window.isUserLoggedIn = false;
                 btn.innerText = "Sign In"; 
                 btn.onclick = openModal;
                 lockedPages.forEach(p => p.style.display = 'block');
@@ -186,12 +191,14 @@
         <h2 style="text-align:center;">Strategic Vaults</h2>
         
         <div class="glass-card" style="border-color: var(--secondary);">
+            <span class="hero-tag">NEW RELEASE</span>
             <h3>🎬 Faceless YouTube Creator</h3>
             <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$12.00</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
         </div>
 
         <div class="glass-card" style="border-color: var(--secondary);">
+            <span class="hero-tag">NEW RELEASE</span>
             <h3>🏛️ AI Architect & Staging</h3>
             <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$15.00</div>
             <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
@@ -201,7 +208,7 @@
         <div class="glass-card"><h3>📸 Instagram Vault</h3><div style="font-size: 1.5rem; font-weight: 800;">$9.99</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:10px;">Get Access</a></div>
     </div>
 
-    <!-- 👑 CUSTOM (DASHBOARD) -->
+    <!-- 👑 CUSTOM (MEMBER LOCKED) -->
     <div id="custom" class="page">
         <div class="page-locked">
             <div class="lock-screen">
@@ -213,19 +220,19 @@
         </div>
         <div class="member-lock-content" style="display:none;">
             <div class="user-badge">
-                ID: <b class="user-display-email">...</b><br>
-                Vaults Owned: <b class="user-vault-count">0</b>
+                Logged in as: <b class="user-email-display">...</b><br>
+                Vaults Access: <b class="user-vault-display">0</b>
             </div>
             <div class="glass-card">
                 <h2>Engineering Lab</h2>
-                <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:150px; overflow-y:auto; margin-bottom:15px; font-size:0.9rem;">Assistant: Welcome back. Your prompt engineering workspace is ready.</div>
-                <input type="text" id="chatInput" placeholder="Describe your challenge..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
-                <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="alert('Lab Processing...')">Send to AI</button>
+                <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:150px; overflow-y:auto; margin-bottom:15px; font-size:0.85rem;">Assistant: Vault database connected. How can I assist your engineering today?</div>
+                <input type="text" id="chatInput" placeholder="Describe your challenge..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px; outline:none;">
+                <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="alert('Sending to AI Lab...')">Send to AI</button>
             </div>
         </div>
     </div>
 
-    <!-- 📖 GUIDE (DASHBOARD) -->
+    <!-- 📖 GUIDE (MEMBER LOCKED) -->
     <div id="guide" class="page">
         <div class="page-locked">
             <div class="lock-screen">
@@ -236,12 +243,12 @@
             </div>
         </div>
         <div class="member-lock-content" style="display:none;">
-            <div class="user-badge">Member: <b class="user-display-email">...</b></div>
+            <div class="user-badge">Member Status: <b style="color:var(--secondary)">Verified</b></div>
             <div class="glass-card">
                 <h2>VIP Deployment Guide</h2>
-                <p><strong>Step 1:</strong> Use GPT-4o for complex logic.</p>
-                <p><strong>Step 2:</strong> Download your purchased DNA from 'My Vaults'.</p>
-                <p><strong>Step 3:</strong> Apply Custom Instructions to the AI agent.</p>
+                <p><strong>Step 1:</strong> Use GPT-4o for logic.</p>
+                <p><strong>Step 2:</strong> Paste DNA logic into 'Custom Instructions'.</p>
+                <p><strong>Step 3:</strong> Access your specific packs via the Browse tab after purchase.</p>
             </div>
         </div>
     </div>
