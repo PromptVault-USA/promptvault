@@ -50,12 +50,14 @@
         .logo-box { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border); }
         .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
         
+        /* Sign In Button */
         .signin-pill { 
             background: white; color: black; padding: 8px 18px; 
             border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none;
             cursor: pointer;
         }
 
+        /* --- AUTH MODAL STYLES --- */
         .auth-overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center;
@@ -109,9 +111,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // IMPORT APP CHECK
-        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check.js";
         
+        // YOUR UPDATED FIREBASE CONFIG
         const firebaseConfig = {
           apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
           authDomain: "promptvaultusa.firebaseapp.com",
@@ -123,23 +124,13 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        
-        // INITIALIZE APP CHECK
-        // Enable debug mode for localhost development
-        if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-            self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-        }
-
-        const appCheck = initializeAppCheck(app, {
-          provider: new ReCaptchaV3Provider('6Lfn1KAsAAAAAI0zan9QmMEEljtqSsX-ABw9QBe0'),
-          isTokenAutoRefreshEnabled: true
-        });
-
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
+        // FORCED ACCOUNT SELECTION FOR GOOGLE
         provider.setCustomParameters({ prompt: 'select_account' });
 
+        // GLOBAL AUTH FUNCTIONS
         window.handleGoogle = async () => {
             try { await signInWithPopup(auth, provider); closeModal(); } 
             catch (e) { alert("Error: " + e.message); }
@@ -175,8 +166,10 @@
     </script>
 </head>
 <body>
+
 <div class="spotlight"></div>
 
+<!-- --- AUTH MODAL OVERLAY --- -->
 <div class="auth-overlay" id="auth-overlay">
     <div class="auth-modal">
         <h3 id="auth-title" style="margin-bottom: 20px;">Sign In</h3>
@@ -209,14 +202,18 @@
 </div>
 
 <div class="container">
+    
+    <!-- 🏠 HOME PAGE -->
     <div id="home" class="page active">
         <div class="hero">
             <div class="hero-tag">Verified Elite AI Marketplace</div>
             <h2>Command the AI Economy</h2>
+            
             <div class="rating-row">
                 <span>⭐⭐⭐⭐⭐</span>
                 <span>4.9 Average Rating</span>
             </div>
+
             <div class="stats-ribbon">
                 <div class="stat-item">
                     <span class="stat-val">7 Premium</span>
@@ -231,7 +228,9 @@
                     <span class="stat-lbl">Customers</span>
                 </div>
             </div>
+
             <a href="javascript:void(0)" class="btn-main" onclick="changePage('browse')">Browse Strategic Packs <span>→</span></a>
+            
             <div class="featured-gallery">
                 <h3 style="font-size: 1.1rem; text-align: left; margin-bottom: 20px;">Featured Collections</h3>
                 <div class="gallery-item">
@@ -249,11 +248,13 @@
                     </div>
                 </div>
             </div>
+
             <div class="glass-card" style="border-bottom: 4px solid var(--accent);">
                 <span style="color:var(--accent); font-weight:800; font-size:0.7rem;">FREE PROMPT OF THE DAY</span>
                 <p style="font-size:0.85rem; color:#fff; margin:10px 0;">"Generate a cinematic 8k photorealistic portrait of [Subject] with dramatic chiaroscuro lighting..."</p>
                 <button class="btn-outline" style="padding:10px; font-size:0.8rem;" onclick="copyPrompt()">Copy Free Prompt</button>
             </div>
+
             <div class="why-tabs">
                 <div class="why-header">Why Choose PromptVaultUSA?</div>
                 <div class="accordion-item" onclick="toggleAccordion(this)">
@@ -269,21 +270,63 @@
                     <div class="accordion-content">The AI world moves fast. Our VIP members receive fresh logic updates every Monday.</div>
                 </div>
             </div>
+
+            <div style="text-align:left; margin-top:40px;">
+                <h3 style="font-size:1.2rem; margin-bottom:20px;">What Founders Say</h3>
+                <div class="review-card">
+                    "The Hyper-Realism pack literally changed my design workflow overnight. 10/10."
+                    <div class="reviewer">Sarah K. • Creative Director</div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- ⊞ BROWSE PAGE -->
     <div id="browse" class="page">
         <h2 style="text-align:center; margin-bottom:25px;">Strategic Vaults</h2>
-        <div class="glass-card"><h3>🎯 Hyper-Realism Masterclass</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div><a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get Access</a></div>
-        <div class="glass-card"><h3>📸 Instagram Client Vault</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a></div>
-        <div class="glass-card"><h3>📱 TikTok/Reels Viral Pack</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a></div>
-        <div class="glass-card"><h3>🏠 Real Estate Edge</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div><a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-main" style="padding:12px;">Get Access</a></div>
-        <div class="glass-card"><h3>💼 Freelance Proposal Edge</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a></div>
-        <div class="glass-card"><h3>🛒 Shopify Seller Master Pack</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div><a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a></div>
-        <div class="glass-card"><h3>🤝 Affiliate Partner Program</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">Earn 40%</div><a href="#" class="btn-main" style="padding:12px;">Join Network</a></div>
-        <div class="glass-card" style="border-color: var(--accent);"><h3 style="color:var(--accent);">🚀 VIP VAULT (All Access)</h3><div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.00/mo</div><a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-main" style="padding:12px; background:var(--accent);">Join Elite</a></div>
+        <div class="glass-card">
+            <h3>🎯 Hyper-Realism Masterclass</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
+            <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>📸 Instagram Client Vault</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>📱 TikTok/Reels Viral Pack</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>🏠 Real Estate Edge</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>💼 Freelance Proposal Edge</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>🛒 Shopify Seller Master Pack</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
+            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+        </div>
+        <div class="glass-card">
+            <h3>🤝 Affiliate Partner Program</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">Earn 40%</div>
+            <a href="#" class="btn-main" style="padding:12px;">Join Network</a>
+        </div>
+        <div class="glass-card" style="border-color: var(--accent);">
+            <h3 style="color:var(--accent);">🚀 VIP VAULT (All Access)</h3>
+            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.00/mo</div>
+            <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-main" style="padding:12px; background:var(--accent);">Join Elite</a>
+        </div>
     </div>
 
+    <!-- 👑 CUSTOM -->
     <div id="custom" class="page">
         <div class="glass-card">
             <h2>Engineering Lab</h2>
@@ -295,6 +338,7 @@
         </div>
     </div>
 
+    <!-- 📖 GUIDE PAGE -->
     <div id="guide" class="page">
         <div class="glass-card">
             <h2>Deployment Guide</h2>
@@ -303,6 +347,7 @@
             <p><strong>3. Execute:</strong> Inject Vault prompt and refine.</p>
         </div>
     </div>
+
 </div>
 
 <nav class="bottom-nav">
@@ -313,6 +358,7 @@
 </nav>
 
 <script>
+    // PAGE NAVIGATION
     window.changePage = (pageId, element) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
@@ -321,6 +367,7 @@
         window.scrollTo(0, 0);
     }
     
+    // MODAL CONTROL
     window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
     window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
     
@@ -336,6 +383,7 @@
         }
     }
 
+    // UTILITIES
     window.sendMsg = () => {
         const i = document.getElementById('chatInput');
         const b = document.getElementById('chatBox');
