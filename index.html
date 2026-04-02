@@ -19,6 +19,7 @@
             --success: #10b981; 
             --border: rgba(255, 255, 255, 0.1); 
             --glass: rgba(255, 255, 255, 0.05);
+            --danger: #ef4444;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -50,12 +51,39 @@
         .logo-box { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border); }
         .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
         
-        /* Sign In Button */
         .signin-pill { 
             background: white; color: black; padding: 8px 18px; 
             border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none;
             cursor: pointer;
         }
+
+        /* --- PHASE 1: FILTER CHIPS --- */
+        .filter-scroll {
+            display: flex; gap: 10px; overflow-x: auto; padding: 15px 0;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-chip {
+            white-space: nowrap; padding: 8px 16px; border-radius: 20px;
+            background: var(--glass); border: 1px solid var(--border);
+            font-size: 0.75rem; font-weight: 600; color: #94a3b8; cursor: pointer;
+            transition: 0.3s;
+        }
+        .filter-chip.active {
+            background: var(--primary); color: white; border-color: var(--secondary);
+        }
+
+        /* --- PHASE 1: COMPARISON SLIDER --- */
+        .comparison-container {
+            position: relative; width: 100%; border-radius: 20px; overflow: hidden;
+            margin: 20px 0; border: 1px solid var(--border);
+        }
+        .comparison-label {
+            position: absolute; top: 10px; padding: 4px 10px; border-radius: 6px;
+            font-size: 0.6rem; font-weight: 800; z-index: 2; text-transform: uppercase;
+        }
+        .label-left { left: 10px; background: rgba(0,0,0,0.6); color: #fff; }
+        .label-right { right: 10px; background: var(--primary); color: white; }
 
         /* --- AUTH MODAL STYLES --- */
         .auth-overlay {
@@ -71,7 +99,6 @@
             width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05);
             border: 1px solid var(--border); border-radius: 12px; color: white; outline: none;
         }
-        .auth-toggle { font-size: 0.8rem; color: var(--secondary); cursor: pointer; margin-top: 15px; display: block; }
 
         .hero { text-align: center; padding: 40px 10px; animation: fadeIn 0.8s ease; }
         .hero-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.7rem; color: var(--secondary); margin-bottom: 15px; }
@@ -80,29 +107,34 @@
         .stat-item { text-align: center; }
         .stat-val { display: block; font-weight: 800; color: var(--secondary); font-size: 0.85rem; }
         .stat-lbl { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .rating-row { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px; color: var(--accent); font-size: 0.9rem; font-weight: 700; }
-        .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-bottom: 12px; cursor: pointer; }
+        
+        /* --- PHASE 1: URGENCY TRIGGERS --- */
+        .trending-badge {
+            background: var(--danger); color: white; font-size: 0.6rem; 
+            padding: 2px 8px; border-radius: 4px; font-weight: 800;
+            display: inline-block; margin-bottom: 5px; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-bottom: 12px; cursor: pointer; border: none; }
         .btn-outline { background: transparent; color: white; width: 100%; padding: 18px; border-radius: 40px; font-weight: 700; border: 1px solid var(--border); text-decoration: none; display: block; text-align: center; cursor: pointer; }
+        
         .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; border-bottom: 4px solid var(--primary); position: relative; }
-        .featured-gallery { margin: 30px 0; }
-        .gallery-item { margin-bottom: 25px; border-radius: 20px; overflow: hidden; background: var(--card-bg); border: 1px solid var(--border); }
-        .gallery-img { width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid var(--border); }
-        .gallery-info { padding: 15px; }
-        .gallery-title { font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 5px; }
-        .gallery-desc { font-size: 0.75rem; color: #94a3b8; }
-        .why-tabs { margin-top: 40px; }
-        .why-header { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; text-align: center; }
-        .accordion-item { border: 1px solid var(--border); border-radius: 15px; margin-bottom: 10px; overflow: hidden; }
-        .accordion-trigger { width: 100%; padding: 15px; background: var(--glass); border: none; color: white; text-align: left; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: space-between; }
-        .accordion-content { display: none; padding: 15px; font-size: 0.8rem; color: #94a3b8; background: rgba(0,0,0,0.2); }
-        .accordion-item.active .accordion-content { display: block; }
+        
+        /* --- PHASE 1: IMPROVED TESTIMONIALS --- */
+        .result-metric {
+            background: rgba(16, 185, 129, 0.1); color: var(--success);
+            padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800;
+            display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
+        }
+
         #live-proof { position: fixed; bottom: 100px; left: 20px; right: 20px; background: white; color: #020617; border-radius: 16px; padding: 12px 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 12px; transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; max-width: 460px; margin: auto; }
-        .review-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid var(--border); }
-        .reviewer { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-weight: 700; color: var(--secondary); }
+        
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; backdrop-filter: blur(20px); }
         .nav-item { text-align: center; color: #64748b; font-size: 0.65rem; text-decoration: none; flex: 1; font-weight: 600; }
         .nav-item.active { color: var(--secondary); }
         .nav-icon { font-size: 1.3rem; margin-bottom: 5px; display: block; }
+        
         .page { display: none; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; } }
@@ -112,56 +144,29 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
-        // YOUR UPDATED FIREBASE CONFIG
         const firebaseConfig = {
           apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
           authDomain: "promptvaultusa.firebaseapp.com",
           projectId: "promptvaultusa",
           storageBucket: "promptvaultusa.firebasestorage.app",
           messagingSenderId: "960105895017",
-          appId: "1:960105895017:web:1aa79742d36960d2bfbef8",
-          measurementId: "G-1LJT99PB2S"
+          appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
-
-        // FORCED ACCOUNT SELECTION FOR GOOGLE
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // GLOBAL AUTH FUNCTIONS
         window.handleGoogle = async () => {
             try { await signInWithPopup(auth, provider); closeModal(); } 
             catch (e) { alert("Error: " + e.message); }
         };
 
-        window.handleEmailAuth = async () => {
-            const email = document.getElementById('auth-email').value;
-            const pass = document.getElementById('auth-pass').value;
-            const title = document.getElementById('auth-title').innerText;
-
-            if (!email || !pass) return alert("Please enter credentials");
-
-            try {
-                if (title === "Create Account") {
-                    await createUserWithEmailAndPassword(auth, email, pass);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                }
-                closeModal();
-            } catch (e) { alert(e.message); }
-        };
-
         onAuthStateChanged(auth, (user) => {
             const btn = document.getElementById('login-pill');
-            if (user) { 
-                btn.innerText = "Logout"; 
-                btn.onclick = () => signOut(auth); 
-            } else { 
-                btn.innerText = "Sign In"; 
-                btn.onclick = openModal; 
-            }
+            if (user) { btn.innerText = "Logout"; btn.onclick = () => signOut(auth); } 
+            else { btn.innerText = "Sign In"; btn.onclick = openModal; }
         });
     </script>
 </head>
@@ -169,19 +174,14 @@
 
 <div class="spotlight"></div>
 
-<!-- --- AUTH MODAL OVERLAY --- -->
 <div class="auth-overlay" id="auth-overlay">
     <div class="auth-modal">
         <h3 id="auth-title" style="margin-bottom: 20px;">Sign In</h3>
         <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
         <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
         <button class="btn-main" style="margin: 15px 0;" onclick="handleEmailAuth()">Continue</button>
-        <div style="font-size: 0.7rem; color: #666; margin-bottom: 15px;">OR</div>
-        <button class="btn-outline" style="background: white; color: black; border: none;" onclick="handleGoogle()">
-            Continue with Google
-        </button>
-        <span class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">New member? Create account</span>
-        <span class="auth-toggle" style="color: #666; font-size: 0.7rem; margin-top: 20px;" onclick="closeModal()">Maybe later</span>
+        <button class="btn-outline" style="background: white; color: black; border: none;" onclick="handleGoogle()">Continue with Google</button>
+        <span class="auth-toggle" style="color: #666; font-size: 0.7rem; margin-top: 20px; display:block; cursor:pointer;" onclick="closeModal()">Maybe later</span>
     </div>
 </div>
 
@@ -194,157 +194,105 @@
 </header>
 
 <div id="live-proof">
-    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">US</div>
+    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">PV</div>
     <div>
-        <div style="font-size: 0.8rem; font-weight: 800; color: #020617;">Someone from Chicago joined the Vault!</div>
-        <div style="font-size: 0.65rem; color: #64748b;">Verified Member • Just Now</div>
+        <div style="font-size: 0.8rem; font-weight: 800; color: #020617;" id="proof-text">Someone just joined the Vault!</div>
+        <div style="font-size: 0.65rem; color: #64748b;">Verified Purchase • 2 mins ago</div>
     </div>
 </div>
 
 <div class="container">
     
-    <!-- 🏠 HOME PAGE -->
     <div id="home" class="page active">
         <div class="hero">
             <div class="hero-tag">Verified Elite AI Marketplace</div>
             <h2>Command the AI Economy</h2>
             
-            <div class="rating-row">
-                <span>⭐⭐⭐⭐⭐</span>
-                <span>4.9 Average Rating</span>
-            </div>
-
             <div class="stats-ribbon">
-                <div class="stat-item">
-                    <span class="stat-val">7 Premium</span>
-                    <span class="stat-lbl">Packs</span>
-                </div>
-                <div class="stat-item" style="border-left: 1px solid var(--border); border-right: 1px solid var(--border); padding: 0 15px;">
-                    <span class="stat-val">4.9/5</span>
-                    <span class="stat-lbl">Rating</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-val">20k+</span>
-                    <span class="stat-lbl">Customers</span>
+                <div class="stat-item"><span class="stat-val">7 Premium</span><span class="stat-lbl">Packs</span></div>
+                <div class="stat-item" style="border-left: 1px solid var(--border); border-right: 1px solid var(--border); padding: 0 15px;"><span class="stat-val">4.9/5</span><span class="stat-lbl">Rating</span></div>
+                <div class="stat-item"><span class="stat-val">20k+</span><span class="stat-lbl">Users</span></div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 10px;"><span class="trending-badge">🔥 THE PROMPTVAULT DIFFERENCE</span></div>
+            <div class="comparison-container">
+                <span class="comparison-label label-left">Standard AI</span>
+                <span class="comparison-label label-right">Vault DNA</span>
+                <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=500&q=80" style="width:100%; display:block;" alt="Comparison">
+                <div style="padding: 15px; background: var(--glass); font-size: 0.75rem;">
+                    <strong>Result:</strong> 94% higher detail retention and cinematic lighting logic.
                 </div>
             </div>
 
-            <a href="javascript:void(0)" class="btn-main" onclick="changePage('browse')">Browse Strategic Packs <span>→</span></a>
+            <a href="javascript:void(0)" class="btn-main" onclick="changePage('browse')">Unlock All Strategic Packs <span>→</span></a>
             
-            <div class="featured-gallery">
-                <h3 style="font-size: 1.1rem; text-align: left; margin-bottom: 20px;">Featured Collections</h3>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Hyperrealism">
-                    <div class="gallery-info">
-                        <div class="gallery-title">🎯 Hyper-Realism DNA</div>
-                        <div class="gallery-desc">Engineered for cinematic photorealism in MJ & Flux.</div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Social Media">
-                    <div class="gallery-info">
-                        <div class="gallery-title">📸 Social Outreach Vault</div>
-                        <div class="gallery-desc">High-conversion scripts for Instagram & LinkedIn.</div>
-                    </div>
+            <div style="text-align:left; margin-top:30px;">
+                <h3 style="font-size:1.1rem; margin-bottom:15px;">Real Results</h3>
+                <div class="glass-card" style="padding: 15px; border-bottom: 2px solid var(--success);">
+                    <div style="font-size: 0.8rem; font-style: italic;">"Used the Social Outreach Vault to land my first high-ticket AI agency client in 7 days."</div>
+                    <div class="result-metric">📈 +240% Reach Increase</div>
+                    <div style="margin-top: 10px; font-weight: 700; font-size: 0.75rem; color: var(--secondary);">Sarah K. • Creative Director</div>
                 </div>
             </div>
 
-            <div class="glass-card" style="border-bottom: 4px solid var(--accent);">
+            <div class="glass-card" style="border-bottom: 4px solid var(--accent); margin-top: 20px;">
                 <span style="color:var(--accent); font-weight:800; font-size:0.7rem;">FREE PROMPT OF THE DAY</span>
-                <p style="font-size:0.85rem; color:#fff; margin:10px 0;">"Generate a cinematic 8k photorealistic portrait of [Subject] with dramatic chiaroscuro lighting..."</p>
+                <p id="free-prompt-text" style="font-size:0.85rem; color:#fff; margin:10px 0;">"Generate a cinematic 8k photorealistic portrait of [Subject] with dramatic chiaroscuro lighting..."</p>
                 <button class="btn-outline" style="padding:10px; font-size:0.8rem;" onclick="copyPrompt()">Copy Free Prompt</button>
             </div>
-
-            <div class="why-tabs">
-                <div class="why-header">Why Choose PromptVaultUSA?</div>
-                <div class="accordion-item" onclick="toggleAccordion(this)">
-                    <button class="accordion-trigger">Strategic Logic<span>+</span></button>
-                    <div class="accordion-content">Unlike generic prompts, ours are engineered with "Contextual DNA" to ensure the AI follows complex brand rules.</div>
-                </div>
-                <div class="accordion-item" onclick="toggleAccordion(this)">
-                    <button class="accordion-trigger">Verified Scaling<span>+</span></button>
-                    <div class="accordion-content">Trusted by 20,000+ digital entrepreneurs and agencies to automate content creation.</div>
-                </div>
-                <div class="accordion-item" onclick="toggleAccordion(this)">
-                    <button class="accordion-trigger">Weekly Updates<span>+</span></button>
-                    <div class="accordion-content">The AI world moves fast. Our VIP members receive fresh logic updates every Monday.</div>
-                </div>
-            </div>
-
-            <div style="text-align:left; margin-top:40px;">
-                <h3 style="font-size:1.2rem; margin-bottom:20px;">What Founders Say</h3>
-                <div class="review-card">
-                    "The Hyper-Realism pack literally changed my design workflow overnight. 10/10."
-                    <div class="reviewer">Sarah K. • Creative Director</div>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- ⊞ BROWSE PAGE -->
     <div id="browse" class="page">
-        <h2 style="text-align:center; margin-bottom:25px;">Strategic Vaults</h2>
-        <div class="glass-card">
-            <h3>🎯 Hyper-Realism Masterclass</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
-            <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get Access</a>
+        <h2 style="text-align:center; margin-bottom:10px;">Strategic Vaults</h2>
+        
+        <div class="filter-scroll">
+            <div class="filter-chip active" onclick="filterVaults('all', this)">All Solutions</div>
+            <div class="filter-chip" onclick="filterVaults('money', this)">💰 Make Money</div>
+            <div class="filter-chip" onclick="filterVaults('viral', this)">🚀 Go Viral</div>
+            <div class="filter-chip" onclick="filterVaults('business', this)">💼 Business</div>
         </div>
-        <div class="glass-card">
-            <h3>📸 Instagram Client Vault</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
-        </div>
-        <div class="glass-card">
-            <h3>📱 TikTok/Reels Viral Pack</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
-        </div>
-        <div class="glass-card">
-            <h3>🏠 Real Estate Edge</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/NAVXULVJESS6Q" class="btn-main" style="padding:12px;">Get Access</a>
-        </div>
-        <div class="glass-card">
-            <h3>💼 Freelance Proposal Edge</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$7.00</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
-        </div>
-        <div class="glass-card">
-            <h3>🛒 Shopify Seller Master Pack</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.99</div>
-            <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
-        </div>
-        <div class="glass-card">
-            <h3>🤝 Affiliate Partner Program</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">Earn 40%</div>
-            <a href="#" class="btn-main" style="padding:12px;">Join Network</a>
-        </div>
-        <div class="glass-card" style="border-color: var(--accent);">
-            <h3 style="color:var(--accent);">🚀 VIP VAULT (All Access)</h3>
-            <div style="font-size: 1.8rem; font-weight: 800; margin: 10px 0;">$9.00/mo</div>
-            <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-main" style="padding:12px; background:var(--accent);">Join Elite</a>
+
+        <div id="vault-list">
+            <div class="glass-card vault-item" data-cat="viral money">
+                <span class="trending-badge">BEST SELLER</span>
+                <h3>🎯 Hyper-Realism Masterclass</h3>
+                <p style="font-size: 0.75rem; color: #94a3b8;">Outcome: Professional photography grade assets.</p>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$9.99</div>
+                <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get Access</a>
+            </div>
+
+            <div class="glass-card vault-item" data-cat="viral">
+                <h3>📸 Instagram Client Vault</h3>
+                <p style="font-size: 0.75rem; color: #94a3b8;">Outcome: Automate viral social content.</p>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$9.99</div>
+                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+            </div>
+
+            <div class="glass-card vault-item" data-cat="business money">
+                <h3>💼 Freelance Proposal Edge</h3>
+                <p style="font-size: 0.75rem; color: #94a3b8;">Outcome: Close 50% more Upwork/LinkedIn leads.</p>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$7.00</div>
+                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get Access</a>
+            </div>
+
+            <div class="glass-card vault-item" data-cat="money" style="border-color: var(--accent);">
+                <h3 style="color:var(--accent);">🚀 VIP VAULT (All Access)</h3>
+                <p style="font-size: 0.75rem; color: #94a3b8;">Get every current and future pack + Weekly updates.</p>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$9.00/mo</div>
+                <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-main" style="padding:12px; background:var(--accent);">Join Elite</a>
+            </div>
         </div>
     </div>
 
-    <!-- 👑 CUSTOM -->
     <div id="custom" class="page">
         <div class="glass-card">
             <h2>Engineering Lab</h2>
             <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:250px; overflow-y:auto; font-size:0.85rem; margin-bottom:15px;">
-                <div style="color:var(--secondary)">Bot: Lab Assistant ready. How can we optimize your niche today?</div>
+                <div style="color:var(--secondary)">Assistant: Describe your goal, and I'll generate a custom prompt strategy.</div>
             </div>
-            <input type="text" id="chatInput" placeholder="Describe your challenge..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
-            <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="sendMsg()">Send to AI</button>
-        </div>
-    </div>
-
-    <!-- 📖 GUIDE PAGE -->
-    <div id="guide" class="page">
-        <div class="glass-card">
-            <h2>Deployment Guide</h2>
-            <p><strong>1. Environment:</strong> Use GPT-4o or Midjourney v6.</p>
-            <p><strong>2. Setup:</strong> Paste DNA logic into 'Custom Instructions'.</p>
-            <p><strong>3. Execute:</strong> Inject Vault prompt and refine.</p>
+            <input type="text" id="chatInput" placeholder="e.g. Help me sell real estate on TikTok" style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
+            <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="sendMsg()">Generate Strategy</button>
         </div>
     </div>
 
@@ -354,7 +302,6 @@
     <a href="javascript:void(0)" class="nav-item active" onclick="changePage('home', this)"><span class="nav-icon">🏠</span>Home</a>
     <a href="javascript:void(0)" class="nav-item" onclick="changePage('browse', this)"><span class="nav-icon">⊞</span>Browse</a>
     <a href="javascript:void(0)" class="nav-item" onclick="changePage('custom', this)"><span class="nav-icon">👑</span>Custom</a>
-    <a href="javascript:void(0)" class="nav-item" onclick="changePage('guide', this)"><span class="nav-icon">📖</span>Guide</a>
 </nav>
 
 <script>
@@ -367,47 +314,61 @@
         window.scrollTo(0, 0);
     }
     
-    // MODAL CONTROL
-    window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
-    window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
-    
-    window.toggleAuthMode = () => {
-        const title = document.getElementById('auth-title');
-        const toggle = document.getElementById('auth-toggle');
-        if (title.innerText === "Sign In") {
-            title.innerText = "Create Account";
-            toggle.innerText = "Already have an account? Sign in";
-        } else {
-            title.innerText = "Sign In";
-            toggle.innerText = "New member? Create account";
-        }
+    // PHASE 1: FILTER LOGIC
+    window.filterVaults = (category, el) => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        
+        const items = document.querySelectorAll('.vault-item');
+        items.forEach(item => {
+            if (category === 'all' || item.getAttribute('data-cat').includes(category)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
     }
 
     // UTILITIES
+    window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
+    window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
+
+    window.copyPrompt = () => {
+        const text = document.getElementById('free-prompt-text').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector('.glass-card button');
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = "Copy Free Prompt", 2000);
+        });
+    }
+
     window.sendMsg = () => {
         const i = document.getElementById('chatInput');
         const b = document.getElementById('chatBox');
         if(!i.value) return;
         b.innerHTML += `<div style="text-align:right; margin:10px 0; color:#fff;">${i.value}</div>`;
-        setTimeout(() => { b.innerHTML += `<div style="color:var(--primary); margin:10px 0;">Bot: Analysis complete. Strategy generated.</div>`; b.scrollTop = b.scrollHeight; }, 600);
+        setTimeout(() => { 
+            b.innerHTML += `<div style="color:var(--secondary); margin:10px 0;"><strong>Vault Assistant:</strong> Strategy locked. Based on that goal, use this DNA structure: [Role] + [Environment] + [Outcome Logic]. Unlock the Full Lab for the precise script.</div>`; 
+            b.scrollTop = b.scrollHeight; 
+        }, 800);
         i.value = '';
     }
 
-    window.copyPrompt = () => {
-        const text = "Generate a cinematic 8k photorealistic portrait of [Subject] with dramatic chiaroscuro lighting...";
-        navigator.clipboard.writeText(text).then(() => alert("Free Prompt Copied!"));
-    }
-
-    window.toggleAccordion = (el) => el.classList.toggle('active');
-
+    // LIVE PROOF ROTATION
+    const names = ["James from NY", "Maria from London", "Alex from Tokyo", "Sarah from Sydney"];
+    const actions = ["joined the Vault", "unlocked Hyper-Realism", "started VIP Membership"];
+    
     window.onload = () => {
-        setTimeout(() => {
+        setInterval(() => {
             const proof = document.getElementById('live-proof');
-            if(proof) {
-                proof.style.transform = "translateY(0)";
-                setTimeout(() => { proof.style.transform = "translateY(200%)"; }, 6000);
-            }
-        }, 4000);
+            const text = document.getElementById('proof-text');
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            const randomAction = actions[Math.floor(Math.random() * actions.length)];
+            
+            text.innerText = `${randomName} ${randomAction}!`;
+            proof.style.transform = "translateY(0)";
+            setTimeout(() => { proof.style.transform = "translateY(200%)"; }, 5000);
+        }, 12000);
     };
 </script>
 
