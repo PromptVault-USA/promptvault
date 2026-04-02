@@ -6,7 +6,6 @@
     <title>PromptVault USA | Global AI Intelligence</title>
     
     <link rel="stylesheet" href="css/style.css">
-    
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
@@ -133,7 +132,9 @@
     <div id="browse" class="page">
         <div style="padding: 40px 0;">
             <h2 style="font-size:2.5rem;">The <span class="highlight-text">Asset</span> Vault</h2>
-            <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px; margin-top:30px;"></div>
+            <p style="color:#94a3b8; margin-bottom:30px;">Select a specialized pack to scale your business instantly.</p>
+            <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px;">
+                </div>
         </div>
     </div>
 </div>
@@ -188,26 +189,28 @@
         }
     };
 
-    // Updated product list with paths to individual pages
-    const products = [
-        { id: 1, name: "Hyper-Realism DNA v6", price: 15.00, img: "1000098630.jpg", link: "products/hyper-realism.html" },
-        { id: 2, name: "E-comm Lifestyle Pack", price: 12.00, img: "1000098629.jpg", link: "#" },
-        { id: 3, name: "Viral Space Hooks", price: 9.00, img: "1000098632.jpg", link: "#" }
-    ];
-
+    // THE AUTOMATION SCRIPT
     function renderProducts() {
         const list = document.getElementById('product-list');
-        list.innerHTML = products.map(p => `
-            <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px;">
-                <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border);">
-                    <img src="${p.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300?text=Vault+Preview'">
-                </div>
-                <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
-                <div style="color:var(--secondary); font-weight:800; font-size:1.3rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                
-                <a href="${p.link}" class="btn-main" style="padding:12px; font-size:0.95rem; text-decoration:none;">View Details</a>
-            </div>
-        `).join('');
+        list.innerHTML = '<p style="color:white; text-align:center; width:100%;">Loading Vaults...</p>';
+
+        fetch('products.json')
+            .then(res => res.json())
+            .then(products => {
+                list.innerHTML = products.map(p => `
+                    <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px;">
+                        <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border);">
+                            <img src="${p.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300?text=Vault+Preview'">
+                        </div>
+                        <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
+                        <div style="color:var(--secondary); font-weight:800; font-size:1.3rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                        <a href="product.html?id=${p.id}" class="btn-main" style="padding:12px; font-size:0.95rem; text-decoration:none;">View Details</a>
+                    </div>
+                `).join('');
+            })
+            .catch(err => {
+                list.innerHTML = '<p style="color:red;">Error loading products. Check products.json</p>';
+            });
     }
 </script>
 
