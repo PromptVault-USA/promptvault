@@ -19,10 +19,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: var(--dark); color: white; padding-bottom: 120px; overflow-x: hidden; }
 
-        /* DESKTOP BACKGROUND ENHANCEMENT */
         .spotlight { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 10%, rgba(0, 112, 186, 0.15) 0%, transparent 70%); pointer-events: none; z-index: 0; }
-        
-        /* THE GATEKEEPER: Responsive Container */
         .container { max-width: 1100px; margin: 0 auto; padding: 0 25px; position: relative; z-index: 1; }
         
         header { display: flex; justify-content: center; align-items: center; padding: 20px; position: sticky; top: 0; z-index: 100; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
@@ -30,65 +27,50 @@
 
         .logo-box { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); object-fit: cover; }
         .signin-pill { background: white; color: black; padding: 12px 24px; border-radius: 30px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: 0.3s; }
-        .signin-pill:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
 
-        /* HERO SCALING & HIGHLIGHTS */
+        /* HERO & HEADLINES */
         .hero { text-align: center; padding: 80px 10px 40px; max-width: 900px; margin: 0 auto; }
         .hero h2 { font-size: clamp(3rem, 10vw, 5.5rem); line-height: 0.85; margin: 0; font-weight: 800; letter-spacing: -3px; }
-        .hero h2 span { color: var(--secondary); text-shadow: 0 0 30px rgba(0, 212, 255, 0.3); }
-        
+        .hero h2 span { color: var(--secondary); }
         .hero-niche { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 600; display: block; margin-top: 20px; color: #94a3b8; }
-        .highlight-yellow { color: var(--accent); font-weight: 800; }
 
-        /* SALES POPUP */
-        #sales-popup { position: fixed; bottom: 120px; left: 30px; background: var(--card-bg); border: 1px solid var(--border); padding: 15px 22px; border-radius: 20px; display: flex; align-items: center; gap: 15px; z-index: 2000; box-shadow: 0 15px 40px rgba(0,0,0,0.6); transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #sales-popup.active { transform: translateY(0); }
-        .popup-dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 15px var(--success); animation: pulse 1.5s infinite; }
-
-        /* PLAN TOGGLE (Visible & Bold) */
+        /* PLAN TOGGLE */
         .plan-toggle { display: flex; background: var(--glass); padding: 8px; border-radius: 60px; margin: 40px auto; width: fit-content; border: 1px solid var(--border); }
         .toggle-btn { padding: 14px 32px; border-radius: 50px; font-size: 1rem; font-weight: 800; cursor: pointer; border: none; background: transparent; color: #64748b; transition: 0.3s; }
         .toggle-btn.active { background: var(--primary); color: white; box-shadow: 0 10px 25px rgba(0, 112, 186, 0.4); }
 
-        /* VIP CARD */
-        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; padding: clamp(25px, 5vw, 45px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        /* CARDS & GRIDS */
+        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; padding: clamp(25px, 5vw, 45px); margin-bottom: 40px; }
         .vip-card { border-bottom: 6px solid var(--accent); max-width: 600px; margin-left: auto; margin-right: auto; }
         
-        /* GRIDS (Responsive 1 col mobile, 2 col tablet, 3+ col desktop) */
-        .proof-grid, .vault-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-            gap: 25px; 
-            margin-top: 40px; 
-        }
-
-        .proof-item { aspect-ratio: 9/16; background: #1e293b; border-radius: 24px; overflow: hidden; border: 1px solid var(--border); position: relative; transition: 0.4s; }
-        .proof-item:hover { transform: translateY(-10px); border-color: var(--secondary); }
+        .proof-grid, .vault-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-top: 40px; }
+        .proof-item { aspect-ratio: 9/16; background: #1e293b; border-radius: 24px; overflow: hidden; border: 1px solid var(--border); position: relative; }
         .proof-item img { width: 100%; height: 100%; object-fit: cover; }
         .proof-label { position: absolute; bottom: 20px; left: 20px; font-size: 0.75rem; background: rgba(0,0,0,0.85); padding: 8px 16px; border-radius: 10px; backdrop-filter: blur(8px); font-weight: 800; border: 1px solid rgba(255,255,255,0.1); }
 
-        .btn-main { background: white; color: black; width: 100%; padding: 22px; border-radius: 50px; font-weight: 800; font-size: 1.2rem; border: none; cursor: pointer; transition: 0.3s; }
-        .btn-main:hover { background: var(--secondary); color: white; transform: scale(1.02); }
+        .btn-main { background: white; color: black; width: 100%; padding: 22px; border-radius: 50px; font-weight: 800; font-size: 1.2rem; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; text-decoration: none; }
 
-        /* NAVIGATION UPGRADE */
+        /* NAVIGATION */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.98); border-top: 1px solid var(--border); display: flex; justify-content: center; padding: 20px 0 40px; z-index: 1000; backdrop-filter: blur(20px); }
         .nav-wrap { width: 100%; max-width: 800px; display: flex; justify-content: space-around; }
-        .nav-item { text-align: center; color: #64748b; font-size: 1rem; text-decoration: none; font-weight: 800; flex: 1; transition: 0.3s; }
+        .nav-item { text-align: center; color: #64748b; font-size: 1rem; text-decoration: none; font-weight: 800; flex: 1; transition: 0.3s; cursor: pointer; }
         .nav-item.active { color: var(--secondary); transform: translateY(-5px); }
         .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 5px; }
 
-        /* CART SIDEBAR */
+        /* CART */
         #cart-sidebar { position: fixed; top: 0; right: -100%; width: 100%; max-width: 450px; height: 100%; background: var(--dark); z-index: 4000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-left: 1px solid var(--border); }
         .cart-open { right: 0 !important; box-shadow: -50px 0 100px rgba(0,0,0,0.8); }
 
-        @media (max-width: 768px) {
-            .hero h2 { font-size: 3.5rem; }
-            .proof-grid, .vault-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
-        }
+        /* SALES POPUP */
+        #sales-popup { position: fixed; bottom: 120px; left: 30px; background: var(--card-bg); border: 1px solid var(--border); padding: 15px 22px; border-radius: 20px; display: flex; align-items: center; gap: 15px; z-index: 2000; box-shadow: 0 15px 40px rgba(0,0,0,0.6); transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #sales-popup.active { transform: translateY(0); }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
     </style>
 
     <script type="module">
-        // Firebase initialization kept intact for functionality
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
@@ -122,19 +104,19 @@
 <div class="spotlight"></div>
 
 <div id="sales-popup">
-    <div class="popup-dot"></div>
+    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 15px var(--success);"></div>
     <div class="popup-text" id="popup-content">Global access granted...</div>
 </div>
 
 <div id="cart-sidebar">
     <div style="padding: 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0; font-size: 1.5rem;">Your Vault Cart</h3>
+        <h3 style="margin: 0; font-size: 1.5rem;">Cart</h3>
         <span onclick="toggleCart()" style="cursor: pointer; font-size: 1.5rem; font-weight: 800;">✕</span>
     </div>
     <div id="cart-list" style="flex: 1; overflow-y: auto; padding: 25px;"></div>
     <div style="padding: 30px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border);">
         <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-            <span style="color: #94a3b8; font-weight: 700; font-size: 1.1rem;">Order Total</span>
+            <span style="font-weight: 700; font-size: 1.1rem;">Total</span>
             <span id="cart-total" style="font-weight: 800; font-size: 1.8rem; color: var(--secondary);">$0.00</span>
         </div>
         <button class="btn-main" style="background: var(--success); color: white;" onclick="processCheckout()">Secure Checkout</button>
@@ -160,10 +142,10 @@
         <div class="hero">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px;">
                 <span style="color: var(--accent); font-size: 1.2rem;">★★★★★</span>
-                <span class="rating-text"><span style="color: white;">4.9/5 Rating</span> from 20k+ Global Customers</span>
+                <span style="font-size: 0.9rem; color: #94a3b8; font-weight: 600;"><span style="color: white;">4.9/5 Rating</span> from 20k+ Global Customers</span>
             </div>
             <h2>Command the <span>AI Economy</span></h2>
-            <span class="hero-niche">Premium DNA Prompts for <span class="highlight-yellow">Digital Entrepreneurs</span></span>
+            <span class="hero-niche">Premium DNA Prompts for <span style="color: var(--accent); font-weight: 800;">Digital Entrepreneurs</span></span>
             
             <div class="plan-toggle">
                 <button class="toggle-btn active" onclick="setPlan('monthly', this)">Monthly</button>
@@ -180,25 +162,17 @@
                 <h4 style="margin-bottom: 25px; font-size: 1.1rem; letter-spacing: 2px; color: var(--secondary); text-transform: uppercase; font-weight: 800; text-align: left;">The Vault Preview</h4>
                 <div class="proof-grid">
                     <div class="proof-item">
-                        <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=600&q=80" alt="Cinematic">
-                        <span class="proof-label">9:16 CINEMATIC</span>
+                        <img src="1000098632.jpg" alt="Viral Hooks">
+                        <span class="proof-label">9:16 VIRAL HOOKS</span>
                     </div>
                     <div class="proof-item">
-                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80" alt="Hyper-Realism">
+                        <img src="1000098630.jpg" alt="Hyper-Realism">
                         <span class="proof-label">HYPER-REALISM</span>
                     </div>
                     <div class="proof-item">
-                        <img src="https://images.unsplash.com/photo-1675557009875-436f599393e1?auto=format&fit=crop&w=600&q=80" alt="Short Form">
-                        <span class="proof-label">VIRAL HOOKS</span>
+                        <img src="1000098629.jpg" alt="Cinematic Render">
+                        <span class="proof-label">CINEMATIC DNA</span>
                     </div>
-                </div>
-            </div>
-
-            <div class="why-us" style="margin-top: 100px;">
-                <h3 style="font-size: 2rem; margin-bottom: 40px; text-align: center;">Why <span style="color: var(--secondary);">PromptVaultUSA</span>?</h3>
-                <div style="display: flex; gap: 25px; margin-bottom: 30px; align-items: center;">
-                    <span style="font-size: 2.5rem; background: var(--glass); padding: 15px; border-radius: 20px;">⚡</span>
-                    <p style="font-size: 1.1rem; color: #cbd5e1; margin: 0; line-height: 1.5;">Engineered for <span style="color: var(--success); font-weight: 800;">high-fidelity accuracy</span> across Midjourney, ChatGPT, and Claude.</p>
                 </div>
             </div>
         </div>
@@ -207,35 +181,29 @@
     <div id="browse" class="page">
         <div style="padding: 60px 0;">
             <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Strategy Vaults</h2>
-            <p style="font-size: 1.1rem; color: #94a3b8; margin-bottom: 50px;">Scale your brand with <span class="highlight-yellow">industry-leading</span> AI assets.</p>
+            <p style="font-size: 1.1rem; color: #94a3b8; margin-bottom: 50px;">Scale your brand with <span style="color: var(--accent); font-weight: 800;">industry-leading</span> AI assets.</p>
             <div class="vault-grid" id="product-list"></div>
         </div>
     </div>
+
+    <div id="custom" class="page"><h2 style="padding: 60px 0;">Prompt Engineering Lab</h2></div>
+    <div id="academy" class="page"><h2 style="padding: 60px 0;">AI Academy</h2></div>
 </div>
 
 <nav class="bottom-nav">
     <div class="nav-wrap">
-        <a href="javascript:void(0)" class="nav-item active" onclick="changePage('home', this)">
-            <span class="nav-icon">🏠</span> Home
-        </a>
-        <a href="javascript:void(0)" class="nav-item" onclick="changePage('browse', this)">
-            <span class="nav-icon">⊞</span> Vaults
-        </a>
-        <a href="javascript:void(0)" class="nav-item" onclick="changePage('custom', this)">
-            <span class="nav-icon">👑</span> Lab
-        </a>
-        <a href="javascript:void(0)" class="nav-item" onclick="changePage('academy', this)">
-            <span class="nav-icon">📖</span> Academy
-        </a>
+        <a class="nav-item active" onclick="changePage('home', this)"><span class="nav-icon">🏠</span> Home</a>
+        <a class="nav-item" onclick="changePage('browse', this)"><span class="nav-icon">⊞</span> Vaults</a>
+        <a class="nav-item" onclick="changePage('custom', this)"><span class="nav-icon">👑</span> Lab</a>
+        <a class="nav-item" onclick="changePage('academy', this)"><span class="nav-icon">📖</span> Academy</a>
     </div>
 </nav>
 
 <script>
-    // CORE FUNCTIONAL JS (Simplified for brevity but fully operational)
     const products = [
-        { id: 1, name: "Hyper-Realism DNA v6", price: 15.00, img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400" },
-        { id: 2, name: "E-comm Lifestyle Pack", price: 12.00, img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=400" },
-        { id: 3, name: "Short-Form Video Hooks", price: 9.00, img: "https://images.unsplash.com/photo-1675557009875-436f599393e1?w=400" }
+        { id: 1, name: "Hyper-Realism DNA v6", price: 15.00, img: "1000098630.jpg" },
+        { id: 2, name: "E-comm Lifestyle Pack", price: 12.00, img: "1000098629.jpg" },
+        { id: 3, name: "Viral Space Hooks", price: 9.00, img: "1000098632.jpg" }
     ];
 
     let cart = [];
@@ -283,7 +251,6 @@
         toggleCart();
     };
 
-    window.removeFromCart = (i) => { cart.splice(i, 1); /* update logic here */ };
     renderProducts();
 </script>
 
