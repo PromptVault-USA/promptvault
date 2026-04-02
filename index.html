@@ -26,17 +26,23 @@
         .logo-box { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); object-fit: cover; }
         .signin-pill { background: white; color: black; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.75rem; border: none; cursor: pointer; }
 
-        /* SALES POPUP (TOAST) */
+        /* SALES POPUP */
         #sales-popup { position: fixed; bottom: 100px; left: 20px; background: var(--card-bg); border: 1px solid var(--border); padding: 12px 18px; border-radius: 18px; display: flex; align-items: center; gap: 12px; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(150%); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #sales-popup.active { transform: translateY(0); }
         .popup-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); animation: pulse 1.5s infinite; }
         .popup-text { font-size: 0.7rem; color: #cbd5e1; line-height: 1.3; }
 
-        /* DASHBOARD & CART STYLES */
+        /* CART SIDEBAR */
         #cart-sidebar { position: fixed; top: 0; right: -100%; width: 100%; max-width: 350px; height: 100%; background: var(--card-bg); z-index: 4000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 1px solid var(--border); display: flex; flex-direction: column; }
         .cart-open { right: 0 !important; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; background: var(--glass); padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.75rem; }
 
+        /* HERO PREVIEW SIZE FIX */
+        .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .proof-item { aspect-ratio: 9/16; background: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+        .proof-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+        .proof-label { position: absolute; bottom: 8px; left: 8px; font-size: 0.55rem; background: rgba(0,0,0,0.7); padding: 3px 8px; border-radius: 4px; backdrop-filter: blur(4px); font-weight: 700; color: white; }
+
+        /* DASHBOARD GRID */
         .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         .product-card { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; padding: 12px; text-align: left; }
         .product-thumb { aspect-ratio: 9/16; background: #020617; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
@@ -44,10 +50,9 @@
         .product-title { font-size: 0.75rem; font-weight: 800; margin-bottom: 5px; height: 35px; overflow: hidden; }
         .product-price { color: var(--secondary); font-weight: 800; font-size: 0.9rem; }
 
-        /* REUSABLE UI */
-        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; position: relative; overflow: hidden; }
         .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
         .btn-sm { padding: 8px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 800; border: none; cursor: pointer; }
+        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; position: relative; overflow: hidden; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 35px 0; z-index: 1000; backdrop-filter: blur(20px); }
         .nav-item { text-align: center; color: #64748b; font-size: 0.65rem; text-decoration: none; flex: 1; font-weight: 600; }
@@ -55,7 +60,6 @@
 
         .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 5000; align-items: center; justify-content: center; }
         .auth-modal { background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px; border-radius: 28px; border: 1px solid var(--border); text-align: center; }
-        .auth-input { width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: white; outline: none; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         .page { display: none; }
@@ -95,15 +99,12 @@
 
         onAuthStateChanged(auth, (user) => {
             const btn = document.getElementById('login-pill');
-            const claimBtn = document.getElementById('claim-kit-btn');
             if (user) { 
                 btn.innerText = "Logout"; 
                 btn.onclick = () => signOut(auth); 
-                if(claimBtn) claimBtn.innerText = "Download Starter Kit";
             } else { 
                 btn.innerText = "Sign In"; 
                 btn.onclick = openModal; 
-                if(claimBtn) claimBtn.innerText = "Sign In to Claim Kit";
             }
         });
     </script>
@@ -114,7 +115,7 @@
 
 <div id="sales-popup">
     <div class="popup-dot"></div>
-    <div class="popup-text" id="popup-content">Checking global traffic...</div>
+    <div class="popup-text" id="popup-content">Global entrepreneurs are joining...</div>
 </div>
 
 <div id="cart-sidebar">
@@ -122,8 +123,7 @@
         <h3 style="margin: 0;">Global Cart</h3>
         <span onclick="toggleCart()" style="cursor: pointer; opacity: 0.5;">✕ Close</span>
     </div>
-    <div id="cart-list" style="flex: 1; overflow-y: auto; padding: 20px;">
-        </div>
+    <div id="cart-list" style="flex: 1; overflow-y: auto; padding: 20px;"></div>
     <div style="padding: 25px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border);">
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <span style="color: #94a3b8;">Subtotal</span>
@@ -140,7 +140,7 @@
         <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
         <button class="btn-main" onclick="handleEmailAuth()" style="margin-bottom:10px;">Continue</button>
         <button class="btn-main" style="background:#4285F4; color:white;" onclick="handleGoogle()">Google Sign In</button>
-        <span style="color: #666; font-size: 0.7rem; margin-top: 20px; display:block; cursor:pointer;" onclick="closeModal()">Back to site</span>
+        <span style="color: #666; font-size: 0.7rem; margin-top: 20px; display:block; cursor:pointer;" onclick="closeModal()">Back</span>
     </div>
 </div>
 
@@ -159,9 +159,9 @@
 <div class="container">
     <div id="home" class="page active">
         <div class="hero">
-            <div class="rating-box">
-                <span class="stars">★★★★★</span>
-                <span class="rating-text">4.9/5 Rating (20k+ Customers)</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
+                <span style="color: var(--accent); font-size: 0.9rem;">★★★★★</span>
+                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">4.9/5 Rating (20k+ Customers)</span>
             </div>
             <h2>Command the AI Economy</h2>
             <span class="hero-niche">For Global Digital Entrepreneurs</span>
@@ -178,12 +178,6 @@
             <div class="glass-card vip-card">
                 <h3 style="text-align: left; margin: 0;">🚀 All-Access VIP Vault</h3>
                 <div id="main-price" style="font-size: 2.5rem; font-weight: 800; text-align: left; margin: 10px 0;">$9.00<small style="font-size: 0.9rem; color: #64748b;">/mo</small></div>
-                <ul class="check-list">
-                    <li>1,000+ Premium DNA Prompts</li>
-                    <li>Weekly "AI Budol" Market Trends</li>
-                    <li>Exclusive Hyper-Realism Modules</li>
-                    <li>Global Entrepreneur Community</li>
-                </ul>
                 <button class="btn-main" style="background: var(--accent);">Unlock Everything Now</button>
             </div>
 
@@ -191,30 +185,23 @@
                 <h4 style="margin: 0; font-size: 0.8rem; letter-spacing: 1px; color: var(--secondary); text-transform: uppercase;">The Vault Preview</h4>
                 <div class="proof-grid">
                     <div class="proof-item">
-                        <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=600&q=80" alt="Cinematic">
+                        <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=600&q=80" alt="Cinematic Preview">
                         <span class="proof-label">9:16 CINEMATIC</span>
                     </div>
                     <div class="proof-item">
-                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80" alt="Hyper-Realism">
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80" alt="Hyper-Realism Preview">
                         <span class="proof-label">HYPER-REALISM</span>
                     </div>
                 </div>
             </div>
 
             <div class="why-us">
-                <h3 style="font-size: 1.2rem; margin-bottom: 25px;">Why Choose PromptVaultUSA?</h3>
+                <h3 style="font-size: 1.2rem; margin: 40px 0 25px;">Why Choose PromptVaultUSA?</h3>
                 <div class="why-item">
                     <div class="why-icon">⚡</div>
                     <div>
                         <div class="why-title">Engineered for Accuracy</div>
-                        <div class="why-desc">Our DNA prompts are tested across Midjourney v6 and Claude 3 Opus.</div>
-                    </div>
-                </div>
-                <div class="why-item">
-                    <div class="why-icon">🌎</div>
-                    <div>
-                        <div class="why-title">Global Advantage</div>
-                        <div class="why-desc">Join 20,000+ entrepreneurs using our library to dominate markets.</div>
+                        <div class="why-desc">DNA prompts tested for high-fidelity results.</div>
                     </div>
                 </div>
             </div>
@@ -229,23 +216,13 @@
 
     <div id="browse" class="page">
         <div style="padding-top: 20px;">
-            <h2 style="font-size: 1.5rem; margin-bottom: 5px;">Strategy Vaults</h2>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 25px;">Select DNA packs to add to your global library.</p>
-            
-            <div class="vault-grid" id="product-list">
-                </div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 25px;">Strategy Vaults</h2>
+            <div class="vault-grid" id="product-list"></div>
         </div>
     </div>
 
-    <div id="custom" class="page">
-        <h2 style="margin-top: 20px;">Prompt Lab</h2>
-        <p style="font-size: 0.8rem; color: #94a3b8;">Custom prompt engineering tools for VIP members.</p>
-    </div>
-
-    <div id="academy" class="page">
-        <h2 style="margin-top: 20px;">AI Academy</h2>
-        <p style="font-size: 0.8rem; color: #94a3b8;">Masterclasses for digital entrepreneurs.</p>
-    </div>
+    <div id="custom" class="page"><h2>Lab</h2></div>
+    <div id="academy" class="page"><h2>Academy</h2></div>
 </div>
 
 <nav class="bottom-nav">
@@ -256,37 +233,25 @@
 </nav>
 
 <script>
-    // DYNAMIC PRODUCTS DATA
     const products = [
         { id: 1, name: "Hyper-Realism DNA v6", price: 15.00, img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=300" },
         { id: 2, name: "E-comm Lifestyle Pack", price: 12.00, img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=300" },
-        { id: 3, name: "Short-Form Video Hooks", price: 9.00, img: "https://images.unsplash.com/photo-1675557009875-436f599393e1?w=300" },
-        { id: 4, name: "Cinematic Portrait DNA", price: 10.00, img: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300" }
+        { id: 3, name: "Short-Form Video Hooks", price: 9.00, img: "https://images.unsplash.com/photo-1675557009875-436f599393e1?w=300" }
     ];
 
     let cart = [];
 
-    // POPUP LOGIC
-    const sales = ["London, UK", "New York, US", "Tokyo, JP", "Sydney, AU", "Berlin, DE"];
-    const popup = document.getElementById('sales-popup');
-    const content = document.getElementById('popup-content');
+    // POPUP
+    const sales = ["London, UK", "New York, US", "Tokyo, JP", "Sydney, AU"];
     let saleIndex = 0;
+    setInterval(() => {
+        document.getElementById('popup-content').innerHTML = `Someone from <strong>${sales[saleIndex]}</strong> just purchased a Vault Pack!`;
+        document.getElementById('sales-popup').classList.add('active');
+        setTimeout(() => { document.getElementById('sales-popup').classList.remove('active'); saleIndex = (saleIndex + 1) % sales.length; }, 4000);
+    }, 9000);
 
-    function showPopup() {
-        content.innerHTML = `Someone from <strong>${sales[saleIndex]}</strong> just purchased a Vault Pack!`;
-        popup.classList.add('active');
-        setTimeout(() => {
-            popup.classList.remove('active');
-            saleIndex = (saleIndex + 1) % sales.length;
-        }, 4000);
-    }
-    setInterval(showPopup, 9000);
-    setTimeout(showPopup, 2000);
-
-    // CORE UI LOGIC
     window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
     window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
-
     window.toggleCart = () => document.getElementById('cart-sidebar').classList.toggle('cart-open');
 
     window.changePage = (id, el) => {
@@ -299,19 +264,14 @@
     window.setPlan = (plan, el) => {
         document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
-        const priceTag = document.getElementById('main-price');
-        priceTag.innerHTML = plan === 'lifetime' ? "$97.00 <small>one-time</small>" : "$9.00 <small>/mo</small>";
+        document.getElementById('main-price').innerHTML = plan === 'lifetime' ? "$97.00 <small>one-time</small>" : "$9.00 <small>/mo</small>";
     };
 
-    window.handleClaimKit = () => {
-        if (window.auth && window.auth.currentUser) alert("Success! Check your member area for download.");
-        else openModal();
-    };
+    window.handleClaimKit = () => { if (window.auth && window.auth.currentUser) alert("Ready for download!"); else openModal(); };
 
-    // CART SYSTEM
+    // CART
     function renderProducts() {
-        const container = document.getElementById('product-list');
-        container.innerHTML = products.map(p => `
+        document.getElementById('product-list').innerHTML = products.map(p => `
             <div class="product-card">
                 <div class="product-thumb"><img src="${p.img}"></div>
                 <div class="product-title">${p.name}</div>
@@ -322,35 +282,18 @@
     }
 
     window.addToCart = (id) => {
-        const p = products.find(x => x.id === id);
-        cart.push(p);
-        updateCartUI();
-        toggleCart();
+        cart.push(products.find(x => x.id === id));
+        updateUI(); toggleCart();
     };
 
-    function updateCartUI() {
+    function updateUI() {
         document.getElementById('cart-count').innerText = cart.length;
-        const list = document.getElementById('cart-list');
-        list.innerHTML = cart.map((item, i) => `
-            <div class="cart-item">
-                <span>${item.name}</span>
-                <span onclick="removeFromCart(${i})" style="color:var(--danger); cursor:pointer;">✕</span>
-            </div>
-        `).join('');
-        const total = cart.reduce((s, x) => s + x.price, 0);
-        document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+        document.getElementById('cart-list').innerHTML = cart.map((item, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:var(--glass); padding:10px; border-radius:10px; font-size:0.75rem;"><span>${item.name}</span><span onclick="removeFromCart(${i})" style="color:var(--danger); cursor:pointer;">✕</span></div>`).join('');
+        document.getElementById('cart-total').innerText = `$${cart.reduce((s, x) => s + x.price, 0).toFixed(2)}`;
     }
 
-    window.removeFromCart = (i) => { cart.splice(i, 1); updateCartUI(); };
-
-    window.processCheckout = () => {
-        if (!window.auth.currentUser) {
-            alert("Please Sign In to complete your purchase.");
-            openModal();
-        } else {
-            alert("Redirecting to secure global checkout...");
-        }
-    };
+    window.removeFromCart = (i) => { cart.splice(i, 1); updateUI(); };
+    window.processCheckout = () => { if (!window.auth.currentUser) openModal(); else alert("Redirecting..."); };
 
     renderProducts();
 </script>
