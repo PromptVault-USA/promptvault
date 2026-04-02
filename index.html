@@ -3,94 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PromptVault USA | AI Business Systems</title>
+    <title>PromptVault USA | Premium AI Advantage</title>
     
     <link rel="icon" type="image/png" href="logo.png">
+    <meta name="p:domain_verify" content="d052050534f657b1bdfe18653599cb3d"/>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --primary: #0070ba; --secondary: #00d4ff; --dark: #020617; 
-            --card-bg: #0f172a; --accent: #f59e0b; --success: #10b981; 
-            --border: rgba(255, 255, 255, 0.1); --glass: rgba(255, 255, 255, 0.05);
+            --primary: #0070ba; 
+            --secondary: #00d4ff; 
+            --dark: #020617; 
+            --card-bg: #0f172a;
+            --accent: #f59e0b; 
+            --success: #10b981; 
+            --border: rgba(255, 255, 255, 0.1); 
+            --glass: rgba(255, 255, 255, 0.05);
             --danger: #ef4444;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: var(--dark); color: white; padding-bottom: 90px; overflow-x: hidden; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            background: var(--dark); 
+            color: white; 
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
 
-        .spotlight { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+        .spotlight {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 60%);
+            pointer-events: none; z-index: 0;
+        }
+
         .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; position: sticky; top: 0; z-index: 100; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 25px; position: sticky; top: 0; z-index: 100;
+            background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+        }
         .logo-group { display: flex; align-items: center; gap: 10px; }
         .logo-box { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border); }
+        .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
         
-        /* --- PHASE 2: RECURRING REVENUE TOGGLE --- */
-        .revenue-toggle { display: flex; background: var(--glass); padding: 5px; border-radius: 50px; margin: 25px auto; width: fit-content; border: 1px solid var(--border); }
-        .toggle-opt { padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; cursor: pointer; border: none; background: transparent; color: #64748b; transition: 0.3s; }
-        .toggle-opt.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3); }
+        .signin-pill { 
+            background: white; color: black; padding: 8px 18px; 
+            border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none;
+            cursor: pointer;
+        }
 
-        /* --- PHASE 2: SYSTEM CARDS --- */
-        .system-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; position: relative; overflow: hidden; border-bottom: 4px solid var(--primary); transition: 0.3s; }
-        .system-card:hover { transform: translateY(-5px); border-color: var(--secondary); }
-        .system-includes { list-style: none; padding: 0; margin: 15px 0; border-top: 1px solid var(--border); padding-top: 15px; }
-        .system-includes li { font-size: 0.7rem; color: #94a3b8; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .system-includes li::before { content: "✓"; color: var(--success); font-weight: 800; }
+        /* --- PHASE 2: SUBSCRIPTION TOGGLE --- */
+        .plan-toggle { display: flex; background: var(--glass); padding: 5px; border-radius: 50px; margin: 20px auto; width: fit-content; border: 1px solid var(--border); }
+        .toggle-btn { padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; cursor: pointer; border: none; background: transparent; color: #64748b; transition: 0.3s; }
+        .toggle-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3); }
 
-        .hero { text-align: center; padding: 30px 10px; animation: fadeIn 0.8s ease; }
-        .hero h2 { font-size: 3.2rem; line-height: 0.9; margin: 15px 0; font-weight: 800; letter-spacing: -2px; }
-        .hero-niche { color: var(--secondary); font-size: 1.1rem; font-weight: 600; display: block; margin-top: 5px; min-height: 1.5rem; }
+        /* --- PHASE 2: SYSTEM BULLETS --- */
+        .system-list { list-style: none; padding: 0; margin: 15px 0; border-top: 1px solid var(--border); padding-top: 15px; }
+        .system-list li { font-size: 0.7rem; color: #94a3b8; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .system-list li::before { content: "✓"; color: var(--success); font-weight: 800; }
 
-        .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; border: none; cursor: pointer; }
-        .badge-hot { background: var(--danger); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: 800; position: absolute; top: 20px; right: 20px; animation: pulse 2s infinite; }
+        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; }
+        .filter-chip { white-space: nowrap; padding: 8px 16px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: #94a3b8; cursor: pointer; }
+        .filter-chip.active { background: var(--primary); color: white; border-color: var(--secondary); }
 
+        .comparison-container { position: relative; width: 100%; border-radius: 20px; overflow: hidden; margin: 20px 0; border: 1px solid var(--border); }
+        .comparison-label { position: absolute; top: 10px; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: 800; z-index: 2; text-transform: uppercase; }
+        .label-left { left: 10px; background: rgba(0,0,0,0.6); color: #fff; }
+        .label-right { right: 10px; background: var(--primary); color: white; }
+
+        .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; }
+        .auth-modal { background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px; border-radius: 28px; border: 1px solid var(--border); text-align: center; }
+        .auth-input { width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: white; outline: none; }
+
+        .hero { text-align: center; padding: 40px 10px; animation: fadeIn 0.8s ease; }
+        .hero-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.7rem; color: var(--secondary); margin-bottom: 15px; }
+        .hero h2 { font-size: 3.2rem; line-height: 0.9; margin: 0 0 10px 0; font-weight: 800; letter-spacing: -2px; }
+        .hero-niche { color: var(--secondary); font-size: 1.1rem; font-weight: 600; display: block; margin-bottom: 20px; min-height: 1.5rem; }
+
+        .stats-ribbon { display: flex; justify-content: space-around; background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 12px 5px; margin: 20px 0; }
+        .stat-item { text-align: center; }
+        .stat-val { display: block; font-weight: 800; color: var(--secondary); font-size: 0.85rem; }
+        .stat-lbl { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .trending-badge { background: var(--danger); color: white; font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 5px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-bottom: 12px; cursor: pointer; border: none; }
+        .btn-outline { background: transparent; color: white; width: 100%; padding: 18px; border-radius: 40px; font-weight: 700; border: 1px solid var(--border); text-decoration: none; display: block; text-align: center; cursor: pointer; }
+        
+        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; border-bottom: 4px solid var(--primary); position: relative; transition: 0.3s; }
+        .glass-card:hover { transform: translateY(-3px); border-color: var(--secondary); }
+
+        .result-metric { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; }
+
+        #live-proof { position: fixed; bottom: 100px; left: 20px; right: 20px; background: white; color: #020617; border-radius: 16px; padding: 12px 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 12px; transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; max-width: 460px; margin: auto; }
+        
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; backdrop-filter: blur(20px); }
         .nav-item { text-align: center; color: #64748b; font-size: 0.65rem; text-decoration: none; flex: 1; font-weight: 600; }
         .nav-item.active { color: var(--secondary); }
+        .nav-icon { font-size: 1.3rem; margin-bottom: 5px; display: block; }
+        
         .page { display: none; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; } }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
+          authDomain: "promptvaultusa.firebaseapp.com",
+          projectId: "promptvaultusa",
+          storageBucket: "promptvaultusa.firebasestorage.app",
+          messagingSenderId: "960105895017",
+          appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        window.handleGoogle = async () => {
+            try { await signInWithPopup(auth, provider); closeModal(); } 
+            catch (e) { alert("Error: " + e.message); }
+        };
+
+        window.handleEmailAuth = async () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            if (!email || !pass) return alert("Enter credentials");
+            try { await signInWithEmailAndPassword(auth, email, pass); closeModal(); }
+            catch (e) { alert(e.message); }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const btn = document.getElementById('login-pill');
+            if (user) { btn.innerText = "Logout"; btn.onclick = () => signOut(auth); } 
+            else { btn.innerText = "Sign In"; btn.onclick = openModal; }
+        });
+    </script>
 </head>
 <body>
 
 <div class="spotlight"></div>
+
+<div class="auth-overlay" id="auth-overlay">
+    <div class="auth-modal">
+        <h3 id="auth-title" style="margin-bottom: 20px;">Sign In</h3>
+        <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
+        <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
+        <button class="btn-main" style="margin: 15px 0;" onclick="handleEmailAuth()">Continue</button>
+        <button class="btn-outline" style="background: white; color: black; border: none;" onclick="handleGoogle()">Continue with Google</button>
+        <span class="auth-toggle" style="color: #666; font-size: 0.7rem; margin-top: 20px; display:block; cursor:pointer;" onclick="closeModal()">Maybe later</span>
+    </div>
+</div>
 
 <header>
     <div class="logo-group">
         <img src="logo.png" class="logo-box">
         <div class="logo-text"><h1>PromptVault</h1></div>
     </div>
-    <button class="toggle-opt active" style="background: white; color: black; padding: 8px 15px;">Sign In</button>
+    <button class="signin-pill" id="login-pill">Sign In</button>
 </header>
+
+<div id="live-proof">
+    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">PV</div>
+    <div>
+        <div style="font-size: 0.8rem; font-weight: 800; color: #020617;" id="proof-text">Someone just joined the Vault!</div>
+        <div style="font-size: 0.65rem; color: #64748b;">Verified Purchase • 2 mins ago</div>
+    </div>
+</div>
 
 <div class="container">
     
     <div id="home" class="page active">
         <div class="hero">
-            <div style="background: var(--glass); padding: 6px 14px; border-radius: 20px; display: inline-block; font-size: 0.7rem; color: var(--secondary); border: 1px solid var(--border);">Elite AI Systems</div>
-            <h2 id="hero-headline">Command the AI Economy</h2>
-            <span id="hero-sub" class="hero-niche">For Digital Entrepreneurs</span>
+            <div class="hero-tag">Verified Elite AI Marketplace</div>
+            <h2 id="dynamic-headline">Command the AI Economy</h2>
+            <span id="dynamic-sub" class="hero-niche">For Digital Entrepreneurs</span>
             
-            <div class="revenue-toggle">
-                <button class="toggle-opt active" onclick="updatePricing('monthly', this)">Monthly Vault</button>
-                <button class="toggle-opt" onclick="updatePricing('lifetime', this)">Lifetime Pass</button>
+            <div class="plan-toggle">
+                <button class="toggle-btn active" onclick="setPlan('monthly', this)">Monthly Vault</button>
+                <button class="toggle-btn" onclick="setPlan('lifetime', this)">Lifetime Pass</button>
             </div>
 
-            <div class="system-card" style="border-bottom-color: var(--accent);">
-                <span class="badge-hot">BEST VALUE</span>
+            <div class="glass-card" style="border-bottom-color: var(--accent);">
+                <span class="badge-premium" style="background: var(--accent); color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; position: absolute; top: 15px; right: 15px;">BEST VALUE</span>
                 <h3 style="text-align: left; margin: 0;">🚀 VIP All-Access Vault</h3>
-                <p style="text-align: left; font-size: 0.8rem; color: #94a3b8;">Everything we build, updated every Monday.</p>
-                <ul class="system-includes">
-                    <li>7+ Premium DNA Prompt Packs</li>
+                <ul class="system-list">
+                    <li>All 7+ Premium DNA Prompt Packs</li>
                     <li>Done-For-You Business Workflows</li>
-                    <li>Weekly AI Strategy Drops</li>
-                    <li>Priority Engineering Support</li>
+                    <li>Weekly AI Logic Updates (Mondays)</li>
                 </ul>
                 <div id="main-price" style="font-size: 2.2rem; font-weight: 800; text-align: left; margin-bottom: 15px;">$9.00<small style="font-size: 0.9rem; color: #64748b;">/mo</small></div>
-                <button class="btn-main" style="background: var(--accent);">Unlock The Entire Vault</button>
+                <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-main" style="background: var(--accent);">Unlock Everything Now</a>
+            </div>
+
+            <div class="stats-ribbon">
+                <div class="stat-item"><span class="stat-val">7 Premium</span><span class="stat-lbl">Packs</span></div>
+                <div class="stat-item" style="border-left: 1px solid var(--border); border-right: 1px solid var(--border); padding: 0 15px;"><span class="stat-val">4.9/5</span><span class="stat-lbl">Rating</span></div>
+                <div class="stat-item"><span class="stat-val">20k+</span><span class="stat-lbl">Users</span></div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 10px;"><span class="trending-badge">🔥 THE PROMPTVAULT DIFFERENCE</span></div>
+            <div class="comparison-container">
+                <span class="comparison-label label-left">Standard AI</span>
+                <span class="comparison-label label-right">Vault DNA</span>
+                <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=500&q=80" style="width:100%; display:block;" alt="Comparison">
             </div>
         </div>
     </div>
@@ -98,86 +225,84 @@
     <div id="browse" class="page">
         <h2 style="text-align:center; margin-bottom:10px;">Strategic Systems</h2>
         
-        <div class="system-card">
-            <h3>🎬 TikTok/Reels Viral System</h3>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Go from raw idea to viral AI video in 15 minutes.</p>
-            <ul class="system-includes">
-                <li>Retention-Engine DNA Prompts</li>
-                <li>Midjourney-to-Luma Workflow</li>
-                <li>Viral Hook Script Templates</li>
-            </ul>
-            <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 15px;">$19.00</div>
-            <button class="btn-main" style="background: var(--glass); color: white; border: 1px solid var(--border);">Get The System</button>
+        <div class="filter-scroll">
+            <div class="filter-chip active" onclick="filterVaults('all', this)">All Solutions</div>
+            <div class="filter-chip" onclick="filterVaults('money', this)">💰 Make Money</div>
+            <div class="filter-chip" onclick="filterVaults('viral', this)">🚀 Go Viral</div>
+            <div class="filter-chip" onclick="filterVaults('business', this)">💼 Business</div>
         </div>
 
-        <div class="system-card">
-            <h3>🏠 Real Estate Edge System</h3>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Dominate listings with cinematic property AI.</p>
-            <ul class="system-includes">
-                <li>Architectural Realism Prompts</li>
-                <li>Listing Description Generator</li>
-                <li>Social Media Ad Templates</li>
-            </ul>
-            <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 15px;">$19.00</div>
-            <button class="btn-main" style="background: var(--glass); color: white; border: 1px solid var(--border);">Get The System</button>
-        </div>
+        <div id="vault-list">
+            <div class="glass-card vault-item" data-cat="viral money">
+                <span class="trending-badge">BEST SELLER</span>
+                <h3>🎯 Hyper-Realism Masterclass</h3>
+                <ul class="system-list">
+                    <li>Midjourney V6 + Flux DNA</li>
+                    <li>Professional Photography Workflow</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$15.00</div>
+                <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get The System</a>
+            </div>
 
-        <div class="system-card" style="border-color: var(--success);">
-            <h3>🔥 6-Figure Freelancer Pack</h3>
-            <p style="font-size: 0.75rem; color: #94a3b8;">The exact prompts I use to close high-ticket clients.</p>
-            <ul class="system-includes">
-                <li>Proposal Logic DNA</li>
-                <li>Client Discovery Questionnaires</li>
-                <li>Portfolio Content Generators</li>
-            </ul>
-            <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 15px;">$25.00</div>
-            <button class="btn-main" style="background: var(--glass); color: white; border: 1px solid var(--border);">Get The System</button>
+            <div class="glass-card vault-item" data-cat="viral">
+                <h3>🎬 TikTok/Reels Viral System</h3>
+                <ul class="system-list">
+                    <li>Retention-Engine Script Prompts</li>
+                    <li>Viral Hook Logic Templates</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$15.00</div>
+                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get The System</a>
+            </div>
+
+            <div class="glass-card vault-item" data-cat="business money">
+                <h3>💼 Freelance Proposal Edge</h3>
+                <ul class="system-list">
+                    <li>High-Ticket Proposal DNA</li>
+                    <li>LinkedIn/Upwork Closing Scripts</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$12.00</div>
+                <a href="https://www.paypal.com/ncp/payment/ZCDF3DAHLCEBL" class="btn-main" style="padding:12px;">Get The System</a>
+            </div>
         </div>
     </div>
 
     <div id="custom" class="page">
-        <div class="system-card">
+        <div class="glass-card">
             <h2>Engineering Lab</h2>
-            <p style="font-size: 0.8rem; color: #94a3b8;">Describe your specific business challenge, and our AI will suggest a Vault System.</p>
-            <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:200px; overflow-y:auto; font-size:0.85rem; margin-bottom:15px; border: 1px solid var(--border);">
-                <div style="color:var(--secondary)">Lab AI: Ready to build. What are we scaling today?</div>
+            <div id="chatBox" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; height:250px; overflow-y:auto; font-size:0.85rem; margin-bottom:15px;">
+                <div style="color:var(--secondary)">Lab AI: Ready to build. Describe your business goal.</div>
             </div>
-            <input type="text" id="chatInput" placeholder="e.g. Help me grow my clothing brand..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px; margin-bottom: 10px;">
-            <button class="btn-main" onclick="sendMsg()">Run Analysis</button>
+            <input type="text" id="chatInput" placeholder="e.g. Help me grow my clothing brand..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px;">
+            <button class="btn-main" style="margin-top:10px; padding:12px;" onclick="sendMsg()">Run Analysis</button>
         </div>
     </div>
 
 </div>
 
 <nav class="bottom-nav">
-    <a href="javascript:void(0)" class="nav-item active" onclick="changePage('home', this)"><span style="display:block; font-size:1.2rem;">🏠</span>Home</a>
-    <a href="javascript:void(0)" class="nav-item" onclick="changePage('browse', this)"><span style="display:block; font-size:1.2rem;">⊞</span>Systems</a>
-    <a href="javascript:void(0)" class="nav-item" onclick="changePage('custom', this)"><span style="display:block; font-size:1.2rem;">👑</span>Lab</a>
+    <a href="javascript:void(0)" class="nav-item active" onclick="changePage('home', this)"><span class="nav-icon">🏠</span>Home</a>
+    <a href="javascript:void(0)" class="nav-item" onclick="changePage('browse', this)"><span class="nav-icon">⊞</span>Systems</a>
+    <a href="javascript:void(0)" class="nav-item" onclick="changePage('custom', this)"><span class="nav-icon">👑</span>Lab</a>
 </nav>
 
 <script>
     // PHASE 2: DYNAMIC NICHE LOGIC
-    // Check URL for ?niche=realestate or ?niche=tiktok
-    const urlParams = new URLSearchParams(window.location.search);
-    const niche = urlParams.get('niche');
-    const headline = document.getElementById('hero-headline');
-    const subline = document.getElementById('hero-sub');
-
+    const params = new URLSearchParams(window.location.search);
+    const niche = params.get('niche');
     if(niche === 'realestate') {
-        headline.innerText = "Command the Property Market";
-        subline.innerText = "High-End AI for Real Estate Pros";
+        document.getElementById('dynamic-headline').innerText = "Command the Property Market";
+        document.getElementById('dynamic-sub').innerText = "AI Systems for Modern Realtors";
     } else if(niche === 'tiktok') {
-        headline.innerText = "Command the FYP Feed";
-        subline.innerText = "Viral AI Systems for Creators";
+        document.getElementById('dynamic-headline').innerText = "Command the FYP Feed";
+        document.getElementById('dynamic-sub').innerText = "Viral Workflows for Content Creators";
     }
 
-    // PHASE 2: PRICING ANCHOR LOGIC
-    window.updatePricing = (mode, el) => {
-        document.querySelectorAll('.toggle-opt').forEach(opt => opt.classList.remove('active'));
+    // PHASE 2: PRICING LOGIC
+    window.setPlan = (plan, el) => {
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
         const priceTag = document.getElementById('main-price');
-        
-        if(mode === 'lifetime') {
+        if(plan === 'lifetime') {
             priceTag.innerHTML = "$97.00 <small style='font-size: 0.9rem; color: #64748b;'>one-time</small>";
         } else {
             priceTag.innerHTML = "$9.00 <small style='font-size: 0.9rem; color: #64748b;'>/mo</small>";
@@ -191,6 +316,19 @@
         if(element) element.classList.add('active');
         window.scrollTo(0, 0);
     }
+    
+    window.filterVaults = (category, el) => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        const items = document.querySelectorAll('.vault-item');
+        items.forEach(item => {
+            if (category === 'all' || item.getAttribute('data-cat').includes(category)) item.style.display = 'block';
+            else item.style.display = 'none';
+        });
+    }
+
+    window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
+    window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
 
     window.sendMsg = () => {
         const i = document.getElementById('chatInput');
@@ -198,11 +336,23 @@
         if(!i.value) return;
         b.innerHTML += `<div style="text-align:right; margin:10px 0; color:#fff;">${i.value}</div>`;
         setTimeout(() => { 
-            b.innerHTML += `<div style="color:var(--secondary); margin:10px 0;"><strong>Lab AI:</strong> Goal analyzed. You need the <strong>TikTok Viral System</strong> paired with our <strong>Retention DNA</strong>. Unlock the VIP Vault to download these workflows immediately.</div>`; 
+            b.innerHTML += `<div style="color:var(--secondary); margin:10px 0;"><strong>Lab AI:</strong> Analysis complete. To scale this, you need the <strong>Viral System</strong> + <strong>Outcome Logic</strong>. Access both in the VIP Vault.</div>`; 
             b.scrollTop = b.scrollHeight; 
         }, 1000);
         i.value = '';
     }
+
+    window.onload = () => {
+        setInterval(() => {
+            const proof = document.getElementById('live-proof');
+            const text = document.getElementById('proof-text');
+            const names = ["James from NY", "Maria from London", "Alex from Tokyo"];
+            const actions = ["joined the Vault", "unlocked Hyper-Realism"];
+            text.innerText = `${names[Math.floor(Math.random()*names.length)]} ${actions[Math.floor(Math.random()*actions.length)]}!`;
+            proof.style.transform = "translateY(0)";
+            setTimeout(() => { proof.style.transform = "translateY(200%)"; }, 5000);
+        }, 15000);
+    };
 </script>
 
 </body>
