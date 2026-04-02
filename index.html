@@ -11,51 +11,24 @@
     
     <style>
         :root { 
-            --primary: #0070ba; 
-            --secondary: #00d4ff; 
-            --dark: #020617; 
-            --card-bg: #0f172a;
-            --accent: #f59e0b; 
-            --success: #10b981; 
-            --border: rgba(255, 255, 255, 0.1); 
-            --glass: rgba(255, 255, 255, 0.05);
+            --primary: #0070ba; --secondary: #00d4ff; --dark: #020617; 
+            --card-bg: #0f172a; --accent: #f59e0b; --success: #10b981; 
+            --border: rgba(255, 255, 255, 0.1); --glass: rgba(255, 255, 255, 0.05);
             --danger: #ef4444;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0; 
-            background: var(--dark); 
-            color: white; 
-            padding-bottom: 90px;
-            overflow-x: hidden;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: var(--dark); color: white; padding-bottom: 90px; overflow-x: hidden; }
 
-        .spotlight {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 60%);
-            pointer-events: none; z-index: 0;
-        }
-
+        .spotlight { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 20%, rgba(0, 112, 186, 0.15) 0%, transparent 60%); pointer-events: none; z-index: 0; }
         .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px 25px; position: sticky; top: 0; z-index: 100;
-            background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border);
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; position: sticky; top: 0; z-index: 100; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
         .logo-group { display: flex; align-items: center; gap: 10px; }
         .logo-box { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border); }
         .logo-text h1 { font-size: 1rem; margin: 0; font-weight: 800; }
         
-        .signin-pill { 
-            background: white; color: black; padding: 8px 18px; 
-            border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none;
-            cursor: pointer;
-        }
+        .signin-pill { background: white; color: black; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: none; cursor: pointer; }
 
         .plan-toggle { display: flex; background: var(--glass); padding: 5px; border-radius: 50px; margin: 20px auto; width: fit-content; border: 1px solid var(--border); }
         .toggle-btn { padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; cursor: pointer; border: none; background: transparent; color: #64748b; transition: 0.3s; }
@@ -65,52 +38,25 @@
         .system-list li { font-size: 0.7rem; color: #94a3b8; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .system-list li::before { content: "✓"; color: var(--success); font-weight: 800; }
 
-        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; }
-        .filter-chip { white-space: nowrap; padding: 8px 16px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: #94a3b8; cursor: pointer; }
-        .filter-chip.active { background: var(--primary); color: white; border-color: var(--secondary); }
-
-        .comparison-container { position: relative; width: 100%; border-radius: 20px; overflow: hidden; margin: 20px 0; border: 1px solid var(--border); }
-        .comparison-label { position: absolute; top: 10px; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: 800; z-index: 2; text-transform: uppercase; }
-        .label-left { left: 10px; background: rgba(0,0,0,0.6); color: #fff; }
-        .label-right { right: 10px; background: var(--primary); color: white; }
-
         .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; }
         .auth-modal { background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px; border-radius: 28px; border: 1px solid var(--border); text-align: center; }
         .auth-input { width: 100%; padding: 14px; margin: 8px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: white; outline: none; }
 
         .hero { text-align: center; padding: 40px 10px; animation: fadeIn 0.8s ease; }
-        .hero-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); font-size: 0.7rem; color: var(--secondary); margin-bottom: 15px; }
         .hero h2 { font-size: 3.2rem; line-height: 0.9; margin: 0 0 10px 0; font-weight: 800; letter-spacing: -2px; }
-        .hero-niche { color: var(--secondary); font-size: 1.1rem; font-weight: 600; display: block; margin-bottom: 20px; min-height: 1.5rem; }
-
-        .stats-ribbon { display: flex; justify-content: space-around; background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 12px 5px; margin: 20px 0; }
-        .stat-item { text-align: center; }
-        .stat-val { display: block; font-weight: 800; color: var(--secondary); font-size: 0.85rem; }
-        .stat-lbl { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .trending-badge { background: var(--danger); color: white; font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 5px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        .hero-niche { color: var(--secondary); font-size: 1.1rem; font-weight: 600; display: block; margin-bottom: 20px; }
 
         .btn-main { background: white; color: black; width: 100%; padding: 18px; border-radius: 40px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; margin-bottom: 12px; cursor: pointer; border: none; }
         .btn-outline { background: transparent; color: white; width: 100%; padding: 18px; border-radius: 40px; font-weight: 700; border: 1px solid var(--border); text-decoration: none; display: block; text-align: center; cursor: pointer; }
         
         .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; border-bottom: 4px solid var(--primary); position: relative; transition: 0.3s; }
-        .glass-card:hover { transform: translateY(-3px); border-color: var(--secondary); }
-
-        /* Academy Styles */
-        .lesson-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .lesson-card { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 15px; text-align: left; transition: 0.3s; cursor: pointer; }
-        .lesson-card:hover { border-color: var(--secondary); background: rgba(255,255,255,0.08); }
-        .lesson-icon { font-size: 1.2rem; margin-bottom: 10px; display: block; }
-        .lesson-card h4 { font-size: 0.8rem; margin: 0 0 5px 0; }
-        .lesson-card span { font-size: 0.6rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
-
-        #live-proof { position: fixed; bottom: 100px; left: 20px; right: 20px; background: white; color: #020617; border-radius: 16px; padding: 12px 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 12px; transform: translateY(200%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; max-width: 460px; margin: auto; }
         
+        .lesson-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .lesson-card { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 15px; text-align: left; }
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; backdrop-filter: blur(20px); }
         .nav-item { text-align: center; color: #64748b; font-size: 0.65rem; text-decoration: none; flex: 1; font-weight: 600; }
         .nav-item.active { color: var(--secondary); }
-        .nav-icon { font-size: 1.3rem; margin-bottom: 5px; display: block; }
         
         .page { display: none; }
         .page.active { display: block; }
@@ -135,6 +81,9 @@
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
 
+        // MAKE AUTH ACCESSIBLE GLOBALLY
+        window.auth = auth;
+
         window.handleGoogle = async () => {
             try { await signInWithPopup(auth, provider); closeModal(); } 
             catch (e) { alert("Error: " + e.message); }
@@ -143,16 +92,13 @@
         window.handleEmailAuth = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-            if (!email || !pass) return alert("Enter credentials");
             try { await signInWithEmailAndPassword(auth, email, pass); closeModal(); }
             catch (e) { alert(e.message); }
         };
 
-        // SHARED AUTH LISTENER FOR ALL BUTTONS
         onAuthStateChanged(auth, (user) => {
             const btn = document.getElementById('login-pill');
             const claimBtn = document.getElementById('claim-kit-btn');
-            
             if (user) { 
                 btn.innerText = "Logout"; 
                 btn.onclick = () => signOut(auth); 
@@ -171,12 +117,12 @@
 
 <div class="auth-overlay" id="auth-overlay">
     <div class="auth-modal">
-        <h3 id="auth-title" style="margin-bottom: 20px;">Sign In</h3>
-        <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
+        <h3>Sign In</h3>
+        <input type="email" id="auth-email" class="auth-input" placeholder="Email">
         <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
-        <button class="btn-main" style="margin: 15px 0;" onclick="handleEmailAuth()">Continue</button>
-        <button class="btn-outline" style="background: white; color: black; border: none;" onclick="handleGoogle()">Continue with Google</button>
-        <span class="auth-toggle" style="color: #666; font-size: 0.7rem; margin-top: 20px; display:block; cursor:pointer;" onclick="closeModal()">Maybe later</span>
+        <button class="btn-main" onclick="handleEmailAuth()">Continue</button>
+        <button class="btn-outline" style="background:white; color:black;" onclick="handleGoogle()">Google Sign In</button>
+        <span style="color: #666; font-size: 0.7rem; margin-top: 20px; display:block; cursor:pointer;" onclick="closeModal()">Close</span>
     </div>
 </div>
 
@@ -188,89 +134,48 @@
     <button class="signin-pill" id="login-pill">Sign In</button>
 </header>
 
-<div id="live-proof">
-    <div style="background: var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">PV</div>
-    <div>
-        <div style="font-size: 0.8rem; font-weight: 800; color: #020617;" id="proof-text">Someone just joined the Vault!</div>
-        <div style="font-size: 0.65rem; color: #64748b;">Verified Purchase • 2 mins ago</div>
-    </div>
-</div>
-
 <div class="container">
-    
     <div id="home" class="page active">
         <div class="hero">
-            <div class="hero-tag">Verified Elite AI Marketplace</div>
-            <h2 id="dynamic-headline">Command the AI Economy</h2>
-            <span id="dynamic-sub" class="hero-niche">For Digital Entrepreneurs</span>
+            <h2>Command the AI Economy</h2>
+            <span class="hero-niche">For Digital Entrepreneurs</span>
             
             <div class="plan-toggle">
-                <button class="toggle-btn active" onclick="setPlan('monthly', this)">Monthly Vault</button>
-                <button class="toggle-btn" onclick="setPlan('lifetime', this)">Lifetime Pass</button>
+                <button class="toggle-btn active" onclick="setPlan('monthly', this)">Monthly</button>
+                <button class="toggle-btn" onclick="setPlan('lifetime', this)">Lifetime</button>
             </div>
 
             <div class="glass-card" style="border-bottom-color: var(--accent);">
-                <span class="badge-premium" style="background: var(--accent); color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; position: absolute; top: 15px; right: 15px;">BEST VALUE</span>
-                <h3 style="text-align: left; margin: 0;">🚀 VIP All-Access Vault</h3>
-                <ul class="system-list">
-                    <li>All 7+ Premium DNA Prompt Packs</li>
-                    <li>Done-For-You Business Workflows</li>
-                    <li>Weekly AI Logic Updates (Mondays)</li>
-                </ul>
-                <div id="main-price" style="font-size: 2.2rem; font-weight: 800; text-align: left; margin-bottom: 15px;">$9.00<small style="font-size: 0.9rem; color: #64748b;">/mo</small></div>
-                <a href="https://www.paypal.com/ncp/payment/5AP4R4GTLDQV4" class="btn-main" style="background: var(--accent);">Unlock Everything Now</a>
+                <h3 style="text-align: left; margin: 0;">🚀 All-Access VIP Vault</h3>
+                <div id="main-price" style="font-size: 2.2rem; font-weight: 800; text-align: left; margin: 15px 0;">$9.00<small style="font-size: 0.9rem; color: #64748b;">/mo</small></div>
+                <button class="btn-main" style="background: var(--accent);">Unlock Everything Now</button>
             </div>
 
             <div class="glass-card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
                 <span style="color:var(--success); font-weight:800; font-size:0.65rem;">FREE RESOURCE</span>
                 <h4 style="margin: 10px 0;">Download 2026 AI Starter Kit</h4>
-                <p style="font-size: 0.75rem; color: #94a3b8;">5 Premium DNA Prompts to start your AI business journey.</p>
+                <p style="font-size: 0.75rem; color: #94a3b8;">5 Premium DNA Prompts to start your journey.</p>
                 <button id="claim-kit-btn" class="btn-main" style="padding: 12px; font-size: 0.85rem;" onclick="handleClaimKit()">Sign In to Claim Kit</button>
             </div>
         </div>
     </div>
 
     <div id="browse" class="page">
-        <h2 style="text-align:center; margin-bottom:10px;">Strategic Vaults</h2>
-        
-        <div class="filter-scroll">
-            <div class="filter-chip active" onclick="filterVaults('all', this)">All Solutions</div>
-            <div class="filter-chip" onclick="filterVaults('money', this)">💰 Make Money</div>
-            <div class="filter-chip" onclick="filterVaults('viral', this)">🚀 Go Viral</div>
-            <div class="filter-chip" onclick="filterVaults('business', this)">💼 Business</div>
-        </div>
-
-        <div id="vault-list">
-            <div class="glass-card vault-item" data-cat="viral money">
-                <span class="trending-badge">BEST SELLER</span>
-                <h3>🎯 Hyper-Realism Masterclass</h3>
-                <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$15.00</div>
-                <a href="https://www.paypal.com/ncp/payment/U652KXLN348HW" class="btn-main" style="padding:12px;">Get The System</a>
-            </div>
-        </div>
-
-        <div style="background: var(--glass); border: 1px dashed var(--border); padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px;">
-            <h4 style="margin: 0 0 10px 0;">Sell Your Prompts</h4>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 15px;">Apply to sell your custom packs on PromptVault.</p>
-            <button class="btn-main" style="background: transparent; border: 1px solid white; color: white; font-size: 0.8rem;">Apply as Creator</button>
+        <h2 style="text-align:center;">Strategic Vaults</h2>
+        <div class="glass-card">
+            <h3>🎯 Hyper-Realism DNA</h3>
+            <div style="font-size: 1.5rem; font-weight: 800; margin: 10px 0;">$15.00</div>
+            <button class="btn-main">Get Access</button>
         </div>
     </div>
 
     <div id="custom" class="page">
         <div class="glass-card">
-            <h2 style="margin-bottom: 10px;">Engineering Lab</h2>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 20px;">Input your niche to generate a Base DNA Structure.</p>
-            
-            <input type="text" id="nicheInput" placeholder="e.g. Real Estate, Fitness" style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px; margin-bottom: 20px;">
-            
+            <h2>Engineering Lab</h2>
+            <input type="text" id="nicheInput" placeholder="Enter your niche..." style="width:100%; background:#000; border:1px solid var(--border); padding:15px; color:white; border-radius:12px; margin-bottom: 20px;">
             <button class="btn-main" onclick="generatePrompt()">Generate Base Prompt</button>
-
             <div id="resultBox" style="display:none; margin-top: 25px; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--secondary);">
-                <span style="font-size: 0.6rem; color: var(--secondary); font-weight: 800;">BASE DNA OUTPUT:</span>
-                <p id="generatedText" style="font-size: 0.85rem; color: #fff; margin: 10px 0; font-family: monospace;"></p>
-                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--accent);">
-                    🔒 [High-Retention Logic] locked. Upgrade to VIP to unlock.
-                </div>
+                <p id="generatedText" style="font-size: 0.85rem; font-family: monospace;"></p>
             </div>
         </div>
     </div>
@@ -279,78 +184,56 @@
         <div style="text-align: center;">
             <h2>Prompt Academy</h2>
             <div class="lesson-grid">
-                <div class="lesson-card">
-                    <span class="lesson-icon">💡</span>
-                    <span>Lesson 1</span>
-                    <h4>DNA Logic 101</h4>
-                </div>
-                <div class="lesson-card">
-                    <span class="lesson-icon">🎬</span>
-                    <span>Lesson 2</span>
-                    <h4>Video Hooks</h4>
-                </div>
+                <div class="lesson-card"><h4>DNA Logic 101</h4></div>
+                <div class="lesson-card"><h4>Video Hooks</h4></div>
             </div>
         </div>
     </div>
-
 </div>
 
 <nav class="bottom-nav">
-    <a href="javascript:void(0)" class="nav-item active" onclick="changePage('home', this)"><span class="nav-icon">🏠</span>Home</a>
-    <a href="javascript:void(0)" class="nav-item" onclick="changePage('browse', this)"><span class="nav-icon">⊞</span>Vaults</a>
-    <a href="javascript:void(0)" class="nav-item" onclick="changePage('custom', this)"><span class="nav-icon">👑</span>Lab</a>
-    <a href="javascript:void(0)" class="nav-item" onclick="changePage('academy', this)"><span class="nav-icon">📖</span>Academy</a>
+    <a href="javascript:void(0)" class="nav-item active" onclick="changePage('home', this)">🏠 Home</a>
+    <a href="javascript:void(0)" class="nav-item" onclick="changePage('browse', this)">⊞ Vaults</a>
+    <a href="javascript:void(0)" class="nav-item" onclick="changePage('custom', this)">👑 Lab</a>
+    <a href="javascript:void(0)" class="nav-item" onclick="changePage('academy', this)">📖 Academy</a>
 </nav>
 
 <script>
-    // PAGE NAVIGATION
+    window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
+    window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
+
+    window.handleClaimKit = () => {
+        // Use the globally exposed auth object
+        if (window.auth && window.auth.currentUser) {
+            alert("Starter Kit access granted! Check your email or Lab for download link.");
+        } else {
+            openModal();
+        }
+    };
+
     window.changePage = (pageId, element) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         if(element) element.classList.add('active');
         window.scrollTo(0, 0);
-    }
+    };
 
-    // SMART CLAIM KIT LOGIC
-    window.handleClaimKit = () => {
-        const auth = document.querySelector('script[type="module"]').auth || getAuth(); 
-        if (auth.currentUser) {
-            alert("Starter Kit access granted! Redirecting to download...");
-            // window.location.href = 'your-file-link.pdf';
-        } else {
-            openModal();
-        }
-    }
-
-    // PROMPT GENERATOR
     window.generatePrompt = () => {
         const niche = document.getElementById('nicheInput').value;
         if(!niche) return alert("Enter a niche");
         const box = document.getElementById('resultBox');
         const text = document.getElementById('generatedText');
         box.style.display = 'block';
-        text.innerText = `[Expert ${niche} Logic] + [Standard Outcome] + [DNA-Module-Basic]...`;
-    }
+        text.innerText = `[Expert ${niche} Logic] + [DNA-Module-Basic]...`;
+    };
 
-    // PRICING
     window.setPlan = (plan, el) => {
         document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
         const priceTag = document.getElementById('main-price');
-        priceTag.innerHTML = plan === 'lifetime' ? "$97.00 <small style='font-size:0.9rem; color:#64748b;'>one-time</small>" : "$9.00 <small style='font-size:0.9rem; color:#64748b;'>/mo</small>";
-    }
-
-    window.openModal = () => document.getElementById('auth-overlay').style.display = 'flex';
-    window.closeModal = () => document.getElementById('auth-overlay').style.display = 'none';
-
-    // NICHE URL LOGIC
-    const params = new URLSearchParams(window.location.search);
-    const nicheParam = params.get('niche');
-    if(nicheParam === 'realestate') {
-        document.getElementById('dynamic-headline').innerText = "Command the Property Market";
-        document.getElementById('dynamic-sub').innerText = "AI Systems for Modern Realtors";
-    }
+        priceTag.innerHTML = plan === 'lifetime' ? "$97.00 <small>one-time</small>" : "$9.00 <small>/mo</small>";
+    };
 </script>
 
 </body>
