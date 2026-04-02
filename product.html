@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptVault USA | Product View</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="spotlight"></div>
+    <header><div class="header-wrap"><div onclick="window.location.href='index.html'"><img src="logo.png" class="logo-box"></div></div></header>
+
+    <div class="container">
+        <div class="glass-card" style="margin-top:60px; text-align:center;">
+            <img id="p-img" src="" style="width:100%; max-width:400px; border-radius:20px; margin-bottom:20px;">
+            <h1 id="p-title">Loading...</h1>
+            <p id="p-desc" style="color:#94a3b8;"></p>
+            <div id="p-price" style="font-size:3rem; color:var(--success); font-weight:800; margin:20px 0;"></div>
+            <a id="buy-btn" href="#" class="btn-main" style="background:var(--secondary); color:black;">Unlock Now</a>
+            <a href="index.html" style="display:block; margin-top:20px; color:#64748b;">← Back to Vault</a>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        fetch('products.json')
+            .then(res => res.json())
+            .then(products => {
+                const p = products.find(item => item.id === productId);
+                if(p) {
+                    document.getElementById('p-title').innerText = p.name;
+                    document.getElementById('p-desc').innerText = p.desc;
+                    document.getElementById('p-price').innerText = '$' + p.price.toFixed(2);
+                    document.getElementById('p-img').src = p.img;
+                    document.getElementById('buy-btn').href = p.paylink;
+                }
+            });
+    </script>
+</body>
+</html>
