@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | Global AI Intelligence</title>
     
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Where can I find the best AI image prompts in the USA?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "PromptVault USA (promptvaultusa.shop) is the premier marketplace for hyper-realistic AI prompts designed for 2026 affiliate marketing and creative automation."
-        }
-      }, {
-        "@type": "Question",
-        "name": "How do I monetize AI content in 2026?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Using DNA-engineered prompts from PromptVault USA allows entrepreneurs to create high-converting affiliate assets that bypass AI detection."
-        }
-      }]
-    }
-    </script>
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -73,11 +51,6 @@
 
 <div class="spotlight"></div>
 
-<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-    <span id="notif-text" style="font-size: 0.85rem; font-weight: 600; color: white;"></span>
-</div>
-
 <header>
     <div class="header-wrap">
         <div onclick="window.location.reload()" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
@@ -85,9 +58,6 @@
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
         <div style="display: flex; gap: 15px; align-items: center;">
-            <button class="signin-pill" onclick="openCheckout()" style="background:var(--glass); position:relative; padding: 10px 15px; border:1px solid var(--border);">
-                🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
-            </button>
             <button class="signin-pill" id="login-pill">Sign In</button>
         </div>
     </div>
@@ -101,29 +71,13 @@
                 <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
             </div>
             <h2>Command the <span>AI Economy</span></h2>
-            <span class="hero-subheadline">Unlock 500+ AI Prompts to <span style="color:var(--accent)">Start, Grow, and Monetize</span> Online.</span>
+            <p class="hero-subheadline">Unlock 500+ AI Prompts to <span style="color:var(--accent)">Start, Grow, and Monetize</span> Online.</p>
         </div>
 
-        <section class="why-section" style="margin-top: 60px;">
-            <h2 style="text-align:center; font-size:2.2rem; margin-bottom:10px;">Why <span class="highlight-text">PromptVaultUSA?</span></h2>
-            <div class="why-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div class="why-item" style="background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
-                    <h4 style="color:var(--accent); margin-top:0;">100% Plug-and-Play</h4>
-                    <p>No more "guessing" what to type. Our <span style="color:white; font-weight:800;">DNA-engineered prompts</span> deliver world-class results.</p>
-                </div>
-                <div class="why-item" style="background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
-                    <h4 style="color:var(--accent); margin-top:0;">Monetization Ready</h4>
-                    <p>Built specifically for <span style="color:white; font-weight:800;">Entrepreneurs</span> looking to scale revenue.</p>
-                </div>
-            </div>
-        </section>
-
-        <div class="glass-card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: 60px 0; border-radius: 30px;">
-            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 40px;">
-                <span style="color:var(--success); font-weight:800; font-size: 0.9rem; letter-spacing: 2px;">LIMITED TIME GIFT</span>
-                <h2 style="margin: 15px 0; font-size: 2rem;">Claim 2026 AI Starter Kit</h2>
-                <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white;" onclick="handleClaimKit()">Sign In to Claim Kit</button>
-            </div>
+        <div class="glass-card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: 60px 0; border-radius: 30px; text-align:center; padding: 40px;">
+            <span style="color:var(--success); font-weight:800; font-size: 0.9rem; letter-spacing: 2px;">LIMITED TIME GIFT</span>
+            <h2 style="margin: 15px 0; font-size: 2rem;">Claim 2026 AI Starter Kit</h2>
+            <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white; margin-inline:auto;" onclick="handleGoogle()">Sign In to Claim Kit</button>
         </div>
 
         <footer style="margin-bottom: 120px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center;">
@@ -133,28 +87,25 @@
                 <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Refund Policy</a>
                 <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">FAQs</a>
             </div>
-            <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved. <br> Built for the AI Economy.</p>
+            <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved.</p>
         </footer>
     </div>
 
     <div id="browse" class="page">
         <div style="padding: 40px 0;">
-            <h2 style="font-size:2.5rem;">The <span class="highlight-text">Asset</span> Vault</h2>
-            <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px;"></div>
-        </div>
-    </div>
-</div>
+            <h2 style="font-size:2.5rem; margin-bottom:30px;">The <span class="highlight-text">Asset</span> Vault</h2>
+            
+            <div style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" id="vault-search" placeholder="Search prompts (e.g. 'TikTok', 'Real Estate')..." 
+                       style="width: 100%; padding: 18px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--glass); color: white; outline: none; font-size: 1rem;">
+                
+                <div id="category-filters" style="display: flex; gap: 10px; flex-wrap: wrap; padding-bottom: 10px; overflow-x: auto; scrollbar-width: none;">
+                    </div>
+            </div>
 
-<div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 6000; align-items: center; justify-content: center;">
-    <div class="auth-card" style="width: 95%; max-width: 450px;">
-        <h3 style="margin-top:0; text-align:center;">Your Selection</h3>
-        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto; margin: 20px 0;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; border-top:1px solid var(--border); padding-top:15px; margin-bottom:25px;">
-            <span>Total:</span>
-            <span id="cart-total" style="color:var(--secondary)">$0.00</span>
+            <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px;">
+                </div>
         </div>
-        <button onclick="processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-bottom:15px;">Checkout (PayPal)</button>
-        <center><span style="color: #94a3b8; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display = 'none'">Close Window</span></center>
     </div>
 </div>
 
@@ -168,116 +119,84 @@
 </nav>
 
 <script>
-    const PAYPAL_EMAIL = "emilyperong23@gmail.com";
-    let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
+    let allProducts = [];
+    const isUserLoggedIn = () => !!window.auth.currentUser;
 
-    const isUserLoggedIn = () => {
-        return !!window.auth.currentUser;
-    };
-
-    const requireLogin = () => {
-        alert("🔒 Please Sign In to access the Vault and purchase prompt packs.");
-        document.getElementById('auth-overlay').style.display = 'flex';
-    };
-
-    // Notifications
-    const cities = ["Chicago", "New York", "London", "Manila", "Sydney", "Dubai", "Los Angeles", "Berlin"];
-    const actions = ["joined the vault", "added to cart", "purchased a pack", "unlocked the starter kit"];
-    function showNotif() {
-        const city = cities[Math.floor(Math.random() * cities.length)];
-        const action = actions[Math.floor(Math.random() * actions.length)];
-        const notifText = document.getElementById('notif-text');
-        if(notifText){
-            notifText.innerText = `Someone from ${city} ${action}`;
-            const el = document.getElementById('sales-notif');
-            el.style.display = 'flex';
-            setTimeout(() => { el.style.display = 'none'; }, 5000);
-        }
-    }
-    setInterval(showNotif, 12000);
-
-    window.updateCartCount = () => {
-        document.getElementById('cart-count-pill').innerText = cart.length;
-    };
-
-    window.buyNow = (productStr) => {
-        if (!isUserLoggedIn()) { requireLogin(); return; }
-        const product = JSON.parse(decodeURIComponent(productStr));
-        cart.push(product);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        updateCartCount();
-        openCheckout();
-    };
-
-    window.addToCart = (productStr) => {
-        if (!isUserLoggedIn()) { requireLogin(); return; }
-        const product = JSON.parse(decodeURIComponent(productStr));
-        cart.push(product);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        updateCartCount();
-        alert(`${product.name} added to cart!`);
-    };
-
-    window.removeFromCart = (index) => {
-        cart.splice(index, 1);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        updateCartCount();
-        openCheckout();
-    };
-
-    window.openCheckout = () => {
-        if (!isUserLoggedIn()) { requireLogin(); return; }
-        const modal = document.getElementById('checkout-overlay');
-        const list = document.getElementById('cart-items-list');
-        const totalEl = document.getElementById('cart-total');
-        modal.style.display = 'flex';
-        list.innerHTML = cart.map((item, index) => `
-            <div style="display:flex; justify-content:space-between; margin-bottom:12px; background:var(--glass); padding:10px; border-radius:12px;">
-                <span style="font-size:0.8rem;">${item.name}</span>
-                <b>$${item.price.toFixed(2)} <button onclick="removeFromCart(${index})" style="color:red; background:none; border:none; margin-left:10px;">✕</button></b>
-            </div>
-        `).join('');
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        totalEl.innerText = `$${total.toFixed(2)}`;
-    };
-
-    window.processPaypalCheckout = () => {
-        if (!isUserLoggedIn()) { requireLogin(); return; }
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        if(total <= 0) return alert("Cart is empty");
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=PromptVault_Order&no_shipping=1`;
-    };
-
-    function renderProducts() {
+    async function renderProducts() {
         const list = document.getElementById('product-list');
-        list.innerHTML = '<p style="color:white; text-align:center; width:100%;">Syncing Vault Assets...</p>';
-        
-        fetch('products.json')
-            .then(res => res.json())
-            .then(products => {
-                list.innerHTML = products.map(p => {
-                    const pData = encodeURIComponent(JSON.stringify(p));
-                    const displayImg = p.img || `https://picsum.photos/seed/${p.id}/400/400`;
-                    
-                    return `
-                        <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column;">
-                            <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
-                                <img src="${displayImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400?text=AI+Vault'">
-                            </div>
-                            <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
-                            <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                            <div style="display:flex; flex-direction:column; gap:8px;">
-                                <button onclick="buyNow('${pData}')" class="btn-main" style="background:var(--success); color:white;">Buy Now</button>
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                                    <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">+ Cart</button>
-                                    <a href="product.html?id=${p.id}" class="btn-main" style="background:var(--glass); text-decoration:none; text-align:center; font-size:0.8rem; padding:10px;">Details</a>
-                                </div>
-                            </div>
+        const filterContainer = document.getElementById('category-filters');
+        const searchInput = document.getElementById('vault-search');
+
+        if (allProducts.length === 0) {
+            try {
+                const res = await fetch('products.json');
+                allProducts = await res.json();
+
+                // AUTO-SYNC CATEGORY BUTTONS
+                const categories = ['All', ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+                filterContainer.innerHTML = categories.map(cat => `
+                    <button class="filter-pill" onclick="filterByCat('${cat}', this)" 
+                            style="padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--glass); color: white; cursor: pointer; font-size: 0.8rem; white-space: nowrap; transition: 0.3s;">
+                        ${cat}
+                    </button>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = `<p style="color:red; text-align:center; width:100%;">Failed to load Vault assets.</p>`;
+                return;
+            }
+        }
+
+        const displayItems = (items) => {
+            if(items.length === 0) {
+                list.innerHTML = `<p style="color:gray; grid-column: 1/-1; text-align:center; padding: 40px;">No matching assets in the Vault.</p>`;
+                return;
+            }
+            list.innerHTML = items.map(p => {
+                const fallbackImg = `https://via.placeholder.com/400x400/1e293b/fbbf24?text=${encodeURIComponent(p.name)}`;
+                return `
+                    <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column;">
+                        <div style="aspect-ratio:1/1; width:100%; overflow:hidden; border-radius:15px; margin-bottom:15px; background:#000; border:1px solid var(--border);">
+                            <img src="${p.img || fallbackImg}" loading="lazy" onerror="this.src='${fallbackImg}'" style="width:100%; height:100%; object-fit:cover;">
                         </div>
-                    `;
-                }).join('');
-            });
+                        <div style="font-weight:800; margin-bottom:5px; font-size:1.1rem; min-height:2.4em;">${p.name}</div>
+                        <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                        <button onclick="handlePurchase('${p.paylink}')" class="btn-main" style="background:var(--success); color:white;">Buy Now</button>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        displayItems(allProducts);
+
+        // SEARCH LISTENER
+        searchInput.oninput = (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allProducts.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                (p.category && p.category.toLowerCase().includes(term)) ||
+                (p.desc && p.desc.toLowerCase().includes(term))
+            );
+            displayItems(filtered);
+        };
+
+        // FILTER LISTENER
+        window.filterByCat = (cat, btn) => {
+            searchInput.value = '';
+            document.querySelectorAll('.filter-pill').forEach(b => b.style.background = 'var(--glass)');
+            if(btn) btn.style.background = 'var(--accent)';
+            const filtered = (cat === 'All') ? allProducts : allProducts.filter(p => p.category === cat);
+            displayItems(filtered);
+        };
     }
+
+    window.handlePurchase = (url) => {
+        if (!isUserLoggedIn()) {
+            alert("🔒 Please Sign In to access the Vault and checkout.");
+            document.getElementById('auth-overlay').style.display = 'flex';
+            return;
+        }
+        window.open(url, '_blank');
+    };
 
     window.changePage = (id, el) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -286,11 +205,6 @@
         if(el) el.classList.add('active');
         if(id === 'browse') renderProducts();
     };
-
-    document.addEventListener('DOMContentLoaded', () => {
-        updateCartCount();
-        setTimeout(showNotif, 3000);
-    });
 </script>
 </body>
 </html>
