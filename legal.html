@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Center | PromptVault USA</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --text-gray: #b0b0b0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+
+        /* FAQ Accordion Styling */
+        .faq-item {
+            border-bottom: 1px solid #333;
+            padding: 15px 0;
+        }
+
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            color: var(--text-gray);
+            margin-top: 10px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-item.active .faq-question::after {
+            content: '-';
+        }
+
+        .faq-question::after {
+            content: '+';
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .footer-link {
+            display: block;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--gold);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>PromptVault USA</h1>
+        <p style="color: var(--text-gray);">Trust & Information Center</p>
+    </header>
+
+    <div class="section">
+        <h2>Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <button class="faq-question">How do I receive my prompts?</button>
+            <div class="faq-answer">
+                Immediately after checkout, a download link will be sent to your registered email. You can also access your "Vault" anytime by logging into your account.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Which AI tools do these work with?</button>
+            <div class="faq-answer">
+                Each pack is specifically labeled. Most are optimized for Midjourney v6/v7, DALL-E 3, or specific video AI like HeyGen.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Can I use the images for business?</button>
+            <div class="faq-answer">
+                Yes. Our prompts are designed for professional, commercial-ready AI content creation.
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Refund & Return Policy</h2>
+        <p>Because our products are <strong>digital assets</strong> delivered via instant download, all sales are final. Once a prompt pack has been accessed or downloaded, we cannot offer a refund.</p>
+        <p>Exceptions are made only for duplicate purchases or technical corruption of the file itself.</p>
+    </div>
+
+    <div class="section">
+        <h2>Terms & Conditions</h2>
+        <p>By using PromptVault USA, you agree that you are purchasing a license to <em>use</em> these prompts. You are <strong>prohibited</strong> from reselling or redistributing the raw prompt strings as your own product.</p>
+    </div>
+
+    <a href="index.html" class="footer-link">← Return to Vault</a>
+</div>
+
+<script>
+    // Logic for FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(button => {
+        button.addEventListener('click', () => {
+            const faqItem = button.parentElement;
+            faqItem.classList.toggle('active');
+        });
+    });
+</script>
+
+</body>
+</html>
