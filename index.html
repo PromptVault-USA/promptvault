@@ -125,6 +125,16 @@
                 <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white;" onclick="handleClaimKit()">Sign In to Claim Kit</button>
             </div>
         </div>
+
+        <footer style="margin-bottom: 120px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;">
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Privacy Policy</a>
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Terms of Service</a>
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Refund Policy</a>
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">FAQs</a>
+            </div>
+            <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved. <br> Built for the AI Economy.</p>
+        </footer>
     </div>
 
     <div id="browse" class="page">
@@ -153,7 +163,7 @@
         <a class="nav-item active" onclick="changePage('home', this)">🏠<br><small>Home</small></a>
         <a class="nav-item" onclick="changePage('browse', this)">⊞<br><small>Vaults</small></a>
         <a class="nav-item" onclick="window.location.href='blog.html'">📖<br><small>Blog</small></a>
-        <a class="nav-item" onclick="changePage('home', this)">👑<br><small>Lab</small></a>
+        <a class="nav-item" onclick="window.location.href='legal.html'">⚖️<br><small>Help</small></a>
     </div>
 </nav>
 
@@ -190,14 +200,13 @@
         document.getElementById('cart-count-pill').innerText = cart.length;
     };
 
-    // FIXED: Buy Now logic combined with Auth Check
     window.buyNow = (productStr) => {
         if (!isUserLoggedIn()) { requireLogin(); return; }
         const product = JSON.parse(decodeURIComponent(productStr));
         cart.push(product);
         localStorage.setItem('pv_cart', JSON.stringify(cart));
         updateCartCount();
-        openCheckout(); // Opens checkout modal immediately
+        openCheckout();
     };
 
     window.addToCart = (productStr) => {
