@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | Global AI Intelligence</title>
     
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Where can I find the best AI image prompts in the USA?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "PromptVault USA (promptvaultusa.shop) is the premier marketplace for hyper-realistic AI prompts designed for 2026 affiliate marketing and creative automation."
-        }
-      }, {
-        "@type": "Question",
-        "name": "How do I monetize AI content in 2026?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Using DNA-engineered prompts from PromptVault USA allows entrepreneurs to create high-converting affiliate assets that bypass AI detection."
-        }
-      }]
-    }
-    </script>
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -51,20 +29,21 @@
 
         onAuthStateChanged(auth, (user) => {
             const loginBtn = document.getElementById('login-pill');
-            const kitBtn = document.getElementById('claim-kit-btn');
             if (user) {
                 loginBtn.innerText = "Logout";
                 loginBtn.onclick = () => signOut(auth);
-                if(kitBtn) kitBtn.innerText = "Download Starter Kit Now";
+                showSystemNotif(`Welcome back, ${user.displayName.split(' ')[0]}!`);
             } else {
                 loginBtn.innerText = "Sign In / Join";
                 loginBtn.onclick = () => handleGoogle();
-                if(kitBtn) kitBtn.innerText = "Sign In to Claim Kit";
             }
         });
 
         window.handleGoogle = async () => {
-            try { await signInWithPopup(auth, provider); } catch(e) { console.error(e.message); }
+            try { 
+                await signInWithPopup(auth, provider); 
+                showSystemNotif("Successfully joined the Vault!");
+            } catch(e) { console.error(e.message); }
         };
     </script>
 </head>
@@ -72,8 +51,13 @@
 
 <div class="spotlight"></div>
 
+<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
+    <span id="notif-text" style="font-size: 0.85rem; font-weight: 600; color: white;"></span>
+</div>
+
 <header>
-    <div class="header-wrap">
+    <div class="header-wrap" style="max-width: 1200px; margin: 0 auto; padding: 10px 20px;">
         <div onclick="window.location.reload()" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
             <img src="logo.png" class="logo-box" onerror="this.src='https://via.placeholder.com/40?text=PV'">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
@@ -88,73 +72,73 @@
 </header>
 
 <div class="container">
-    <div id="home" class="page active">
-        <div class="hero">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; background: rgba(255,255,255,0.05); width: fit-content; margin-inline: auto; padding: 8px 16px; border-radius: 100px;">
-                <span style="color: #fbbf24;">★★★★★</span>
-                <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
-            </div>
-            <h2>Command the <span>AI Economy</span></h2>
-            <p class="hero-subheadline" style="max-width: 800px; margin-inline: auto;">
+    <div id="home" class="page active" style="max-width: 1100px; margin: 0 auto;">
+        <div class="hero" style="padding: 80px 20px; text-align: center;">
+            <h1 style="font-size: clamp(2.5rem, 8vw, 4rem); line-height: 1.1; margin-bottom: 25px;">Command the <span class="highlight-text">AI Economy</span></h1>
+            <p style="color: #94a3b8; font-size: 1.1rem; max-width: 800px; margin: 0 auto 30px;">
                 <strong>PromptVaultUSA</strong> is your all-in-one marketplace for powerful, ready-to-use AI prompts designed to help you start, grow, and monetize online faster.
             </p>
+            
+            <div id="home-vault-preview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 40px; opacity: 0.7;">
+                </div>
+            <button onclick="changePage('browse', document.querySelectorAll('.nav-item')[1])" class="btn-main" style="max-width: 280px; margin-top: 30px; background: var(--accent);">Explore Full Vault →</button>
         </div>
 
-        <section class="why-section" style="margin-top: 40px; text-align: center;">
-            <p style="font-size: 1.1rem; color: #94a3b8; max-width: 700px; margin: 0 auto 30px;">
-                Unlock <strong>500+ high-converting prompts</strong> for business, marketing, freelancing, content creation, and more—no experience needed.
-            </p>
-            <div style="display: inline-flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px;">
-                <span style="background: var(--glass); padding: 8px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--border);">⚡ Instant download</span>
-                <span style="background: var(--glass); padding: 8px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--border);">🌱 Beginner-friendly</span>
-                <span style="background: var(--glass); padding: 8px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--border);">🚫 No skills needed</span>
+        <section id="reviews" style="padding: 60px 20px; border-top: 1px solid var(--border);">
+            <h3 style="text-align:center; letter-spacing:3px; font-size:0.8rem; color:var(--text-gray); margin-bottom:40px;">CUSTOMER FEEDBACK</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                <div class="glass-card" style="padding:25px; border-radius:20px;">
+                    <div style="color:#fbbf24; margin-bottom:10px;">★★★★★</div>
+                    <p style="font-style:italic;">"Made my first $120 on TikTok using the affiliate prompts within 48 hours. Unreal."</p>
+                    <small style="color:var(--accent);">— Alex R., Affiliate Marketer</small>
+                </div>
+                <div class="glass-card" style="padding:25px; border-radius:20px;">
+                    <div style="color:#fbbf24; margin-bottom:10px;">★★★★★</div>
+                    <p style="font-style:italic;">"The real estate prompts saved me hours of copywriting. Worth every penny."</p>
+                    <small style="color:var(--accent);">— Sarah M., Realtor</small>
+                </div>
             </div>
         </section>
 
-        <div class="glass-card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: 40px 0; border-radius: 30px; border: 1px solid var(--border);">
-            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 40px;">
-                <h3 style="color:var(--success); font-weight:800; margin-bottom: 10px;">MAKE YOUR FIRST $100 USING AI</h3>
-                <h2 style="margin: 0 0 20px 0; font-size: 2rem;">Get Instant Access Now</h2>
-                <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white;" onclick="handleGoogle()">Sign In to Claim Kit</button>
+        <div style="text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.02); border-radius: 20px; margin: 40px 0;">
+            <p style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 20px;">SECURE PAYMENTS VIA</p>
+            <div style="display: flex; justify-content: center; gap: 20px; align-items: center; filter: grayscale(1) opacity(0.6);">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" width="80">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width="50">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" width="40">
             </div>
+            <p style="margin-top: 20px; font-weight: 800; color: var(--success);">“Instant download • Beginner-friendly • No skills needed”</p>
+            <h3 style="color:white; margin-top: 15px;">Make your first $100 using AI</h3>
         </div>
-
-        <footer style="margin-bottom: 120px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center;">
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;">
-                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Privacy Policy</a>
-                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Terms of Service</a>
-                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Refund Policy</a>
-                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">FAQs</a>
-            </div>
-            <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved.</p>
-        </footer>
     </div>
 
     <div id="browse" class="page">
-        <div style="padding: 40px 0;">
+        <div style="padding: 40px 20px;">
             <h2 style="font-size:2.5rem; margin-bottom: 20px;">The <span class="highlight-text">Asset</span> Vault</h2>
-            
-            <div style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;">
-                <input type="text" id="vault-search" placeholder="Search 500+ prompts (e.g. 'Marketing', 'Business')..." 
-                       style="width: 100%; padding: 18px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--glass); color: white; outline: none; font-size: 1rem;">
-                <div id="category-filters" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
-            </div>
-
+            <input type="text" id="vault-search" placeholder="Search 500+ prompts..." 
+                   style="width: 100%; padding: 18px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--glass); color: white; outline: none; margin-bottom: 30px;">
             <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px;"></div>
         </div>
     </div>
 </div>
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 6000; align-items: center; justify-content: center;">
-    <div class="auth-card" style="width: 95%; max-width: 450px; background: #111; padding: 30px; border-radius: 24px; border: 1px solid #333;">
-        <h3 style="margin-top:0; text-align:center; color: white;">Your Selection</h3>
-        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto; margin: 20px 0;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; border-top:1px solid var(--border); padding-top:15px; margin-bottom:25px; color: white;">
-            <span>Total:</span>
-            <span id="cart-total" style="color:var(--secondary)">$0.00</span>
+    <div class="auth-card" style="width: 95%; max-width: 450px; background: #0f172a; padding: 30px; border-radius: 24px; border: 1px solid #333;">
+        <h3 style="margin-top:0; text-align:center; color: white;">Complete Your Order</h3>
+        <div id="cart-items-list" style="max-height: 200px; overflow-y: auto; margin: 20px 0;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; border-top:1px solid #333; padding-top:15px; margin-bottom:25px; color: white;">
+            <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
-        <button onclick="processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-bottom:15px; color: white;">Checkout (PayPal)</button>
-        <center><span style="color: #94a3b8; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display = 'none'">Close Window</span></center>
+        
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button onclick="processCheckout('paypal')" class="btn-main" style="background:#ffc439; color: #003087; display:flex; align-items:center; justify-content:center; gap:10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" height="20"> Checkout
+            </button>
+            <button onclick="processCheckout('card')" class="btn-main" style="background:var(--success); color: white;">
+                💳 Debit or Credit Card
+            </button>
+        </div>
+        <center style="margin-top:20px;"><span style="color: gray; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display = 'none'">Cancel</span></center>
     </div>
 </div>
 
@@ -172,114 +156,93 @@
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
     let allProducts = [];
 
-    const isUserLoggedIn = () => !!window.auth.currentUser;
-
-    window.updateCartCount = () => {
-        document.getElementById('cart-count-pill').innerText = cart.length;
-    };
-
-    window.buyNow = (productStr) => {
-        if (!isUserLoggedIn()) { alert("🔒 Please Sign In to buy."); return; }
-        const product = JSON.parse(decodeURIComponent(productStr));
-        cart.push(product);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
+    async function init() {
+        const res = await fetch('products.json');
+        allProducts = await res.json();
+        renderHomePreview();
         updateCartCount();
-        openCheckout();
-    };
+        startSocialProof();
+    }
+
+    function renderHomePreview() {
+        const preview = document.getElementById('home-vault-preview');
+        preview.innerHTML = allProducts.slice(0, 6).map(p => `
+            <div style="background:var(--glass); padding:10px; border-radius:15px; text-align:center;">
+                <img src="${p.img}" style="width:100%; aspect-ratio:1/1; border-radius:10px; object-fit:cover;">
+                <div style="font-size:0.6rem; font-weight:800; margin-top:5px;">${p.name}</div>
+            </div>
+        `).join('');
+    }
+
+    // STEP 3: SOCIAL PROOF POPUPS
+    function showSystemNotif(text) {
+        const el = document.getElementById('sales-notif');
+        document.getElementById('notif-text').innerText = text;
+        el.style.display = 'flex';
+        setTimeout(() => el.style.display = 'none', 4000);
+    }
+
+    function startSocialProof() {
+        const names = ["James K.", "Maria S.", "Wei L.", "Hassan A.", "Chloe B.", "Mark T."];
+        const items = ["TikTok Affiliate Pack", "Real Estate Prompts", "YouTube Automation", "SEO Pack"];
+        setInterval(() => {
+            const name = names[Math.floor(Math.random() * names.length)];
+            const item = items[Math.floor(Math.random() * items.length)];
+            showSystemNotif(`${name} just purchased ${item}!`);
+        }, 15000);
+    }
 
     window.addToCart = (productStr) => {
-        if (!isUserLoggedIn()) { alert("🔒 Please Sign In to add to cart."); return; }
-        const product = JSON.parse(decodeURIComponent(productStr));
-        cart.push(product);
+        if (!window.auth.currentUser) { alert("Sign in first!"); return; }
+        const p = JSON.parse(decodeURIComponent(productStr));
+        cart.push(p);
         localStorage.setItem('pv_cart', JSON.stringify(cart));
         updateCartCount();
-        alert(`${product.name} added to cart!`);
-    };
-
-    window.removeFromCart = (index) => {
-        cart.splice(index, 1);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        updateCartCount();
-        openCheckout();
+        showSystemNotif(`Added ${p.name} to cart!`);
     };
 
     window.openCheckout = () => {
-        if (!isUserLoggedIn()) return;
         const modal = document.getElementById('checkout-overlay');
         const list = document.getElementById('cart-items-list');
-        const totalEl = document.getElementById('cart-total');
         modal.style.display = 'flex';
-        list.innerHTML = cart.map((item, index) => `
-            <div style="display:flex; justify-content:space-between; margin-bottom:12px; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; color: white;">
-                <span style="font-size:0.8rem;">${item.name}</span>
-                <b>$${item.price.toFixed(2)} <button onclick="removeFromCart(${index})" style="color:red; background:none; border:none; margin-left:10px;">✕</button></b>
+        list.innerHTML = cart.map((item, idx) => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:white; font-size:0.85rem;">
+                <span>${item.name}</span><b>$${item.price.toFixed(2)}</b>
             </div>
         `).join('');
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        totalEl.innerText = `$${total.toFixed(2)}`;
+        const total = cart.reduce((sum, i) => sum + i.price, 0);
+        document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
     };
 
-    window.processPaypalCheckout = () => {
-        if (!isUserLoggedIn()) return;
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
+    // STEP 6: DUAL PAYMENT LOGIC
+    window.processCheckout = (method) => {
+        const total = cart.reduce((sum, i) => sum + i.price, 0);
         if(total <= 0) return alert("Cart is empty");
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=PromptVault_Order&no_shipping=1`;
+        
+        // PayPal & Card both use PayPal's secure gateway (which handles debit/credit automatically)
+        const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=PromptVault_Order&no_shipping=1`;
+        
+        if(method === 'card') {
+            // Force the PayPal "Guest Checkout" view for credit/debit
+            window.location.href = paypalURL + "&billing_type=GUEST";
+        } else {
+            window.location.href = paypalURL;
+        }
     };
 
     async function renderProducts() {
         const list = document.getElementById('product-list');
-        const filterContainer = document.getElementById('category-filters');
-        const searchInput = document.getElementById('vault-search');
-
-        if (allProducts.length === 0) {
-            const res = await fetch('products.json');
-            allProducts = await res.json();
-
-            const categories = ['All', ...new Set(allProducts.map(p => p.category).filter(Boolean))];
-            filterContainer.innerHTML = categories.map(cat => `
-                <button class="filter-pill" onclick="filterByCat('${cat}', this)" 
-                        style="padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--glass); color: white; cursor: pointer; font-size: 0.8rem;">
-                    ${cat}
-                </button>
-            `).join('');
-        }
-
-        const displayItems = (items) => {
-            list.innerHTML = items.map(p => {
-                const pData = encodeURIComponent(JSON.stringify(p));
-                const displayImg = p.img || `https://picsum.photos/seed/${p.id}/400/400`;
-                return `
-                    <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column;">
-                        <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
-                            <img src="${displayImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400?text=AI+Vault'">
-                        </div>
-                        <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
-                        <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                        <div style="display:flex; flex-direction:column; gap:8px;">
-                            <button onclick="buyNow('${pData}')" class="btn-main" style="background:var(--success); color:white;">Buy Now</button>
-                            <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">+ Add to Cart</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        };
-
-        displayItems(allProducts);
-
-        searchInput.oninput = (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = allProducts.filter(p => 
-                p.name.toLowerCase().includes(term) || 
-                (p.category && p.category.toLowerCase().includes(term))
-            );
-            displayItems(filtered);
-        };
-
-        window.filterByCat = (cat, btn) => {
-            searchInput.value = '';
-            const filtered = (cat === 'All') ? allProducts : allProducts.filter(p => p.category === cat);
-            displayItems(filtered);
-        };
+        list.innerHTML = allProducts.map(p => {
+            const pData = encodeURIComponent(JSON.stringify(p));
+            return `
+                <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px;">
+                    <img src="${p.img}" style="width:100%; aspect-ratio:1/1; border-radius:15px; object-fit:cover; margin-bottom:15px;">
+                    <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
+                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                    <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--success); color:white;">+ Add to Cart</button>
+                </div>
+            `;
+        }).join('');
     }
 
     window.changePage = (id, el) => {
@@ -290,9 +253,9 @@
         if(id === 'browse') renderProducts();
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        updateCartCount();
-    });
+    window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
+
+    document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
