@@ -5,68 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | Global AI Intelligence</title>
     
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Where can I find the best AI image prompts in the USA?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "PromptVault USA (promptvaultusa.shop) is the premier marketplace for hyper-realistic AI prompts designed for 2026 affiliate marketing and creative automation."
+        }
+      }, {
+        "@type": "Question",
+        "name": "How do I monetize AI content in 2026?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Using DNA-engineered prompts from PromptVault USA allows entrepreneurs to create high-converting affiliate assets that bypass AI detection."
+        }
+      }]
+    }
+    </script>
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <style>
-        /* CRITICAL GRID STABILITY */
-        .vault-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-        }
-        .product-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            transition: transform 0.2s;
-        }
-        .product-card:hover { transform: translateY(-5px); }
-        
-        .img-box {
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: #111; /* Prevents layout collapse */
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .p-name {
-            font-weight: 800;
-            font-size: 1rem;
-            color: white;
-            margin-bottom: 10px;
-            min-height: 2.5em; /* Fixes alignment for short/long titles */
-        }
-        .highlight-gold { color: #fbbf24; font-weight: 800; }
-        
-        .btn-explore {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            color: white !important;
-            font-weight: 800;
-            padding: 16px 40px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-    </style>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -106,8 +70,10 @@
 </head>
 <body>
 
+<div class="spotlight"></div>
+
 <header>
-    <div class="header-wrap" style="max-width: 1200px; margin: 0 auto; padding: 10px 20px;">
+    <div class="header-wrap">
         <div onclick="window.location.reload()" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
             <img src="logo.png" class="logo-box" onerror="this.src='https://via.placeholder.com/40?text=PV'">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
@@ -122,50 +88,74 @@
 </header>
 
 <div class="container">
-    <div id="home" class="page active" style="max-width: 1100px; margin: 0 auto;">
-        <div class="hero" style="padding: 100px 20px; text-align: center;">
-            <div style="background: rgba(251, 191, 36, 0.1); color: #fbbf24; padding: 8px 20px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 25px; border: 1px solid rgba(251, 191, 36, 0.2);">
-                SYSTEM STATUS: 2026 ASSETS READY FOR DEPLOYMENT
+    <div id="home" class="page active">
+        <div class="hero">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; background: rgba(255,255,255,0.05); width: fit-content; margin-inline: auto; padding: 8px 16px; border-radius: 100px;">
+                <span style="color: #fbbf24;">★★★★★</span>
+                <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
             </div>
-            <h1 style="font-size: clamp(2.8rem, 8vw, 4.5rem); line-height: 1; margin-bottom: 25px;">Command the <span class="highlight-text">AI Economy</span></h1>
-            <p style="color: #94a3b8; font-size: 1.2rem; max-width: 750px; margin: 0 auto 40px; line-height: 1.6;">
-                Access the world's most powerful library of <span class="highlight-gold">DNA-Engineered Prompts.</span> Stop guessing and start <span style="color:white; font-weight:700;">dominating</span> the creative market with monetization-ready automation.
-            </p>
-            
-            <div id="featured-preview" style="display: flex; gap: 10px; justify-content: center; overflow: hidden; opacity: 0.4; pointer-events: none; margin-bottom: 40px;">
+            <h2>Command the <span>AI Economy</span></h2>
+            <span class="hero-subheadline">Unlock 500+ AI Prompts to <span style="color:var(--accent)">Start, Grow, and Monetize</span> Online.</span>
+        </div>
+
+        <section class="why-section" style="margin-top: 60px;">
+            <h2 style="text-align:center; font-size:2.2rem; margin-bottom:10px;">Why <span class="highlight-text">PromptVaultUSA?</span></h2>
+            <div class="why-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div class="why-item" style="background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
+                    <h4 style="color:var(--accent); margin-top:0;">100% Plug-and-Play</h4>
+                    <p>No more "guessing" what to type. Our <span style="color:white; font-weight:800;">DNA-engineered prompts</span> deliver world-class results.</p>
                 </div>
+                <div class="why-item" style="background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
+                    <h4 style="color:var(--accent); margin-top:0;">Monetization Ready</h4>
+                    <p>Built specifically for <span style="color:white; font-weight:800;">Entrepreneurs</span> looking to scale revenue.</p>
+                </div>
+            </div>
+        </section>
 
-            <button onclick="changePage('browse', document.querySelectorAll('.nav-item')[1])" class="btn-explore">
-                Explore Full Vault →
-            </button>
+        <div class="glass-card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: 60px 0; border-radius: 30px;">
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 40px;">
+                <span style="color:var(--success); font-weight:800; font-size: 0.9rem; letter-spacing: 2px;">LIMITED TIME GIFT</span>
+                <h2 style="margin: 15px 0; font-size: 2rem;">Claim 2026 AI Starter Kit</h2>
+                <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white;" onclick="handleGoogle()">Sign In to Claim Kit</button>
+            </div>
         </div>
 
-        <div class="glass-card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: 60px 20px; border-radius: 30px; text-align:center; padding: 60px 20px; border: 1px solid var(--border);">
-            <h2 style="font-size: 2.2rem; margin-bottom: 10px;">Claim the <span style="color:var(--success)">2026 AI Starter Kit</span></h2>
-            <p style="color:#94a3b8; margin-bottom: 30px;">Includes our viral monetization framework and secret prompt tuners.</p>
-            <button id="claim-kit-btn" class="btn-main" style="max-width:300px; background:var(--success); color:white; margin-inline:auto;" onclick="handleGoogle()">Download Kit</button>
-        </div>
+        <footer style="margin-bottom: 120px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;">
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Privacy Policy</a>
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Terms of Service</a>
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Refund Policy</a>
+                <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">FAQs</a>
+            </div>
+            <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved.</p>
+        </footer>
     </div>
 
     <div id="browse" class="page">
-        <div style="padding: 40px 20px; max-width: 1200px; margin: 0 auto;">
-            <h2 style="font-size:2.5rem; margin-bottom:10px;">The <span class="highlight-text">Asset</span> Vault</h2>
-            <input type="text" id="vault-search" placeholder="Search prompts (e.g. TikTok, SEO, Business)..." 
-                   style="width: 100%; padding: 20px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--glass); color: white; outline: none; margin-bottom: 30px; font-size: 1.1rem;">
-            <div id="product-list" class="vault-grid"></div>
+        <div style="padding: 40px 0;">
+            <h2 style="font-size:2.5rem; margin-bottom: 20px;">The <span class="highlight-text">Asset</span> Vault</h2>
+            
+            <div style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" id="vault-search" placeholder="Search prompts (e.g. 'TikTok', 'SEO')..." 
+                       style="width: 100%; padding: 18px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--glass); color: white; outline: none; font-size: 1rem;">
+                <div id="category-filters" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+            </div>
+
+            <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px;"></div>
         </div>
     </div>
 </div>
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 6000; align-items: center; justify-content: center;">
-    <div class="auth-card" style="width: 90%; max-width: 400px; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #333;">
-        <h3 style="margin-top:0; text-align:center; color:white;">Your Selection</h3>
-        <div id="cart-items-list" style="max-height: 200px; overflow-y: auto; margin: 20px 0; border-bottom: 1px solid #333; padding-bottom: 15px;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.3rem; margin-bottom:25px; color:white;">
-            <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
+    <div class="auth-card" style="width: 95%; max-width: 450px; background: #111; padding: 30px; border-radius: 24px; border: 1px solid #333;">
+        <h3 style="margin-top:0; text-align:center;">Your Selection</h3>
+        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto; margin: 20px 0;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; border-top:1px solid var(--border); padding-top:15px; margin-bottom:25px;">
+            <span>Total:</span>
+            <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
-        <button onclick="processPaypalCheckout()" class="btn-main" style="background:var(--success); color:white; margin-bottom:10px;">Checkout with PayPal</button>
-        <center><span style="color:gray; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display = 'none'">Close</span></center>
+        <button onclick="processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-bottom:15px; color: white;">Checkout (PayPal)</button>
+        <center><span style="color: #94a3b8; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display = 'none'">Close Window</span></center>
     </div>
 </div>
 
@@ -183,85 +173,122 @@
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
     let allProducts = [];
 
-    async function initApp() {
-        const res = await fetch('products.json');
-        allProducts = await res.json();
-        renderHomePreview();
-        updateCartCount();
-    }
+    const isUserLoggedIn = () => !!window.auth.currentUser;
 
-    function renderHomePreview() {
-        const preview = document.getElementById('featured-preview');
-        preview.innerHTML = allProducts.slice(0, 6).map(p => `
-            <img src="${p.img}" style="width:120px; height:120px; border-radius:15px; object-fit:cover;">
+    const requireLogin = () => {
+        alert("🔒 Please Sign In to access the Vault and checkout.");
+    };
+
+    window.updateCartCount = () => {
+        document.getElementById('cart-count-pill').innerText = cart.length;
+    };
+
+    window.buyNow = (productStr) => {
+        if (!isUserLoggedIn()) { requireLogin(); return; }
+        const product = JSON.parse(decodeURIComponent(productStr));
+        cart.push(product);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        updateCartCount();
+        openCheckout();
+    };
+
+    window.addToCart = (productStr) => {
+        if (!isUserLoggedIn()) { requireLogin(); return; }
+        const product = JSON.parse(decodeURIComponent(productStr));
+        cart.push(product);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        updateCartCount();
+        alert(`${product.name} added to cart!`);
+    };
+
+    window.removeFromCart = (index) => {
+        cart.splice(index, 1);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        updateCartCount();
+        openCheckout();
+    };
+
+    window.openCheckout = () => {
+        if (!isUserLoggedIn()) { requireLogin(); return; }
+        const modal = document.getElementById('checkout-overlay');
+        const list = document.getElementById('cart-items-list');
+        const totalEl = document.getElementById('cart-total');
+        modal.style.display = 'flex';
+        list.innerHTML = cart.map((item, index) => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">
+                <span style="font-size:0.8rem;">${item.name}</span>
+                <b>$${item.price.toFixed(2)} <button onclick="removeFromCart(${index})" style="color:red; background:none; border:none; margin-left:10px;">✕</button></b>
+            </div>
         `).join('');
-    }
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        totalEl.innerText = `$${total.toFixed(2)}`;
+    };
+
+    window.processPaypalCheckout = () => {
+        if (!isUserLoggedIn()) { requireLogin(); return; }
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        if(total <= 0) return alert("Cart is empty");
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=PromptVault_Order&no_shipping=1`;
+    };
 
     async function renderProducts() {
         const list = document.getElementById('product-list');
+        const filterContainer = document.getElementById('category-filters');
         const searchInput = document.getElementById('vault-search');
+
+        if (allProducts.length === 0) {
+            const res = await fetch('products.json');
+            allProducts = await res.json();
+
+            const categories = ['All', ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+            filterContainer.innerHTML = categories.map(cat => `
+                <button class="filter-pill" onclick="filterByCat('${cat}', this)" 
+                        style="padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--glass); color: white; cursor: pointer; font-size: 0.8rem;">
+                    ${cat}
+                </button>
+            `).join('');
+        }
 
         const displayItems = (items) => {
             list.innerHTML = items.map(p => {
                 const pData = encodeURIComponent(JSON.stringify(p));
-                const fallback = `https://via.placeholder.com/400x400/111111/fbbf24?text=PromptVault`;
+                const displayImg = p.img || `https://picsum.photos/seed/${p.id}/400/400`;
                 return `
-                    <div class="product-card">
-                        <div class="img-box">
-                            <img src="${p.img || fallback}" loading="lazy" onerror="this.src='${fallback}'">
+                    <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column;">
+                        <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
+                            <img src="${displayImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400?text=AI+Vault'">
                         </div>
-                        <div class="p-name">${p.name}</div>
-                        <div style="color:var(--secondary); font-weight:800; font-size:1.3rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:auto;">
-                            <button onclick="handleSingleBuy('${p.paylink}')" class="btn-main" style="background:var(--success); font-size:0.8rem; padding:10px;">Buy Now</button>
-                            <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--glass); font-size:0.8rem; padding:10px;">+Cart</button>
+                        <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
+                        <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <button onclick="buyNow('${pData}')" class="btn-main" style="background:var(--success); color:white;">Buy Now</button>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">+ Cart</button>
+                                <a href="product.html?id=${p.id}" class="btn-main" style="background:var(--glass); text-decoration:none; text-align:center; font-size:0.8rem; padding:10px;">Details</a>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
         };
+
         displayItems(allProducts);
 
         searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
-            displayItems(allProducts.filter(p => p.name.toLowerCase().includes(term) || (p.category && p.category.toLowerCase().includes(term))));
+            const filtered = allProducts.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                (p.category && p.category.toLowerCase().includes(term))
+            );
+            displayItems(filtered);
+        };
+
+        window.filterByCat = (cat, btn) => {
+            searchInput.value = '';
+            const filtered = (cat === 'All') ? allProducts : allProducts.filter(p => p.category === cat);
+            displayItems(filtered);
         };
     }
-
-    window.addToCart = (productStr) => {
-        if (!window.auth.currentUser) { alert("Please Sign In to add to cart."); return; }
-        cart.push(JSON.parse(decodeURIComponent(productStr)));
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        updateCartCount();
-        alert("Added to cart!");
-    };
-
-    window.handleSingleBuy = (url) => {
-        if (!window.auth.currentUser) { alert("Please Sign In to purchase."); return; }
-        window.open(url, '_blank');
-    };
-
-    window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
-
-    window.openCheckout = () => {
-        if (!window.auth.currentUser) { alert("Please Sign In to view cart."); return; }
-        document.getElementById('checkout-overlay').style.display = 'flex';
-        const list = document.getElementById('cart-items-list');
-        list.innerHTML = cart.map((item, idx) => `
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:white; font-size:0.85rem;">
-                <span>${item.name}</span>
-                <b>$${item.price.toFixed(2)}</b>
-            </div>
-        `).join('');
-        const total = cart.reduce((sum, i) => sum + i.price, 0);
-        document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
-    };
-
-    window.processPaypalCheckout = () => {
-        const total = cart.reduce((sum, i) => sum + i.price, 0);
-        if(total === 0) return alert("Cart is empty");
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=PromptVault_Order`;
-    };
 
     window.changePage = (id, el) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -271,7 +298,9 @@
         if(id === 'browse') renderProducts();
     };
 
-    document.addEventListener('DOMContentLoaded', initApp);
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCartCount();
+    });
 </script>
 </body>
 </html>
