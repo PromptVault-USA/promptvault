@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Intelligence Blog | PromptVault USA</title>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "PromptVault USA Intelligence Blog",
+      "description": "Expert insights on AI prompt engineering and affiliate marketing monetization.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "PromptVault USA"
+      }
+    }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
+          authDomain: "promptvaultusa.firebaseapp.com",
+          projectId: "promptvaultusa",
+          storageBucket: "promptvaultusa.firebasestorage.app",
+          messagingSenderId: "960105895017",
+          appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        window.auth = auth;
+
+        onAuthStateChanged(auth, (user) => {
+            const loginBtn = document.getElementById('login-pill');
+            if (user) {
+                loginBtn.innerText = "Logout";
+                loginBtn.onclick = () => signOut(auth);
+            } else {
+                loginBtn.innerText = "Sign In / Join";
+                loginBtn.onclick = () => window.location.href = 'index.html'; // Redirect to login on home
+            }
+        });
+    </script>
+</head>
+<body>
+
+<div class="spotlight"></div>
+
+<header>
+    <div class="header-wrap">
+        <div onclick="window.location.href='index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+            <img src="logo.png" class="logo-box" onerror="this.src='https://via.placeholder.com/40?text=PV'">
+            <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <button class="signin-pill" id="login-pill">Sign In</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div id="blog-feed" class="page active" style="padding: 40px 0;">
+        <div style="text-align:center; margin-bottom: 50px;">
+            <h2 style="font-size:2.8rem; margin-bottom: 10px;">AI <span class="highlight-text">Intelligence</span> Blog</h2>
+            <p style="color: #94a3b8;">Strategies to help you dominate the 2026 AI Economy.</p>
+        </div>
+
+        <div style="display: grid; gap: 25px; max-width: 800px; margin: 0 auto;">
+            
+            <article style="background: var(--glass); border: 1px solid var(--border); padding: 30px; border-radius: 24px;">
+                <span style="color:var(--accent); font-weight:800; font-size:0.8rem; letter-spacing:1px;">STRATEGY GUIDE</span>
+                <h3 style="font-size:1.8rem; margin: 15px 0; color: white;">The 2026 Guide to AI Affiliate Marketing</h3>
+                <p style="color: #94a3b8; line-height: 1.6; margin-bottom: 20px;">
+                    How do you stand out when everyone is using AI? The secret lies in "DNA-Engineered" prompts. 
+                    PromptVault USA helps you create hyper-realistic visuals that bypass detection and drive sales...
+                </p>
+                <a href="#" class="btn-main" style="width:fit-content; background:var(--border); text-decoration:none; padding: 12px 25px; display:inline-block;">Read Full Article</a>
+            </article>
+
+            <article style="background: var(--glass); border: 1px solid var(--border); padding: 30px; border-radius: 24px;">
+                <span style="color:var(--success); font-weight:800; font-size:0.8rem; letter-spacing:1px;">MONETIZATION</span>
+                <h3 style="font-size:1.8rem; margin: 15px 0; color: white;">How to Automate Your Creative Agency</h3>
+                <p style="color: #94a3b8; line-height: 1.6; margin-bottom: 20px;">
+                    Scale your high-ticket creative work by implementing automated prompt workflows. 
+                    Learn how to deliver world-class results in seconds instead of hours...
+                </p>
+                <a href="#" class="btn-main" style="width:fit-content; background:var(--border); text-decoration:none; padding: 12px 25px; display:inline-block;">Read Full Article</a>
+            </article>
+
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <div style="width:100%; max-width:600px; display:flex; justify-content:space-around;">
+        <a class="nav-item" href="index.html">🏠<br><small>Home</small></a>
+        <a class="nav-item" href="index.html?page=browse">⊞<br><small>Vaults</small></a>
+        <a class="nav-item" href="index.html">👑<br><small>Lab</small></a>
+        <a class="nav-item active" href="blog.html">📖<br><small>Blog</small></a>
+    </div>
+</nav>
+
+</body>
+</html>
