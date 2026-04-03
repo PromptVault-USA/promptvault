@@ -3,350 +3,450 @@
     "id": "niche_001",
     "name": "Real Estate Lead Generation",
     "price": 15.00,
+    "category": "Real Estate",
     "desc": "AI prompts for listing descriptions, cold outreach, and follow-ups to attract buyers and sellers.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_002",
     "name": "Freelancer Client Acquisition",
     "price": 15.00,
+    "category": "Business",
     "desc": "Prompts for proposals, outreach messages, and negotiation scripts for freelancers.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1521791136064-7986c2923216?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_003",
     "name": "TikTok Affiliate Marketing",
     "price": 15.00,
+    "category": "Marketing",
     "desc": "Viral hooks, captions, and scripts for promoting affiliate products on TikTok.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_004",
     "name": "YouTube Automation",
     "price": 15.00,
+    "category": "Video",
     "desc": "Scripts, video ideas, and content planning prompts for faceless YouTube channels.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_005",
     "name": "E-commerce Product Descriptions",
     "price": 15.00,
+    "category": "E-commerce",
     "desc": "High-converting product descriptions for Shopify, Amazon, and dropshipping stores.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1556742044-3c52d6e88c62?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_006",
     "name": "Copywriting Sales Pages",
     "price": 15.00,
+    "category": "Copywriting",
     "desc": "Prompts to create persuasive landing pages and sales funnels.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_007",
     "name": "Email Marketing Campaigns",
     "price": 15.00,
+    "category": "Marketing",
     "desc": "Email sequences for promotions, newsletters, and customer retention.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_008",
     "name": "Instagram Growth",
     "price": 15.00,
+    "category": "Marketing",
     "desc": "Captions, reels ideas, and engagement strategies for Instagram.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_009",
     "name": "Facebook Ads Copy",
     "price": 15.00,
+    "category": "Ads",
     "desc": "High-converting ad copy for Facebook and Meta campaigns.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1611926653458-09294b3142bf?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_010",
     "name": "Personal Branding",
+    "category": "Business",
     "price": 15.00,
     "desc": "Content ideas and storytelling prompts to build authority online.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_011",
     "name": "Resume & Job Applications",
+    "category": "Career",
     "price": 15.00,
     "desc": "Resume writing, cover letters, and interview preparation prompts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1586281380349-631531a744c2?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_012",
     "name": "Startup Pitch Decks",
+    "category": "Business",
     "price": 15.00,
     "desc": "Prompts to create investor-ready presentations and business pitches.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_013",
     "name": "Blog Content Creation",
+    "category": "Writing",
     "price": 15.00,
     "desc": "SEO blog outlines, articles, and keyword strategies.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_014",
     "name": "SEO Optimization",
+    "category": "SEO",
     "price": 15.00,
     "desc": "Prompts for keyword research, meta descriptions, and ranking strategies.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1571721795195-a2ca2d3370a9?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_015",
     "name": "Podcast Scripts",
+    "category": "Audio",
     "price": 15.00,
     "desc": "Episode outlines, intros, and storytelling frameworks for podcasts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_016",
     "name": "Online Course Creation",
+    "category": "Education",
     "price": 15.00,
     "desc": "Prompts for structuring and launching digital courses.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_017",
     "name": "Digital Product Sales",
+    "category": "E-commerce",
     "price": 15.00,
     "desc": "Ideas and marketing prompts for ebooks, templates, and guides.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1589561253898-768105ca91a8?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_018",
     "name": "AI Art Generation",
+    "category": "Creative",
     "price": 15.00,
     "desc": "Creative prompts for generating unique AI artwork.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_019",
     "name": "Midjourney Prompt Pack",
+    "category": "Creative",
     "price": 15.00,
     "desc": "Highly detailed prompts for creating stunning AI images.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1675557009875-436f09789900?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_020",
     "name": "Chatbot Scripts",
+    "category": "Tech",
     "price": 15.00,
     "desc": "Prompts for building conversational AI flows and responses.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_021",
     "name": "Customer Support Replies",
+    "category": "Business",
     "price": 15.00,
     "desc": "Templates for professional and fast customer service responses.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_022",
     "name": "Cold Email Outreach",
+    "category": "Sales",
     "price": 15.00,
     "desc": "Effective cold email scripts for lead generation.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_023",
     "name": "LinkedIn Networking",
+    "category": "Career",
     "price": 15.00,
     "desc": "Connection messages and personal branding prompts for LinkedIn.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_024",
     "name": "Dropshipping Store Setup",
+    "category": "E-commerce",
     "price": 15.00,
     "desc": "Prompts for product selection, store branding, and marketing.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_025",
     "name": "Affiliate Blog Writing",
+    "category": "Writing",
     "price": 15.00,
     "desc": "Product reviews and comparison posts for affiliate earnings.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_026",
     "name": "Motivational Content",
+    "category": "Social Media",
     "price": 15.00,
     "desc": "Inspirational scripts and quotes for social media.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_027",
     "name": "Fitness Coaching",
+    "category": "Health",
     "price": 15.00,
     "desc": "Workout plans, diet advice, and client communication prompts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_028",
     "name": "Dating Profile Optimization",
+    "category": "Lifestyle",
     "price": 15.00,
     "desc": "Prompts for bios, messages, and attraction strategies.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1518104593124-ac2e82a5eb9d?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_029",
     "name": "Travel Content Creation",
+    "category": "Lifestyle",
     "price": 15.00,
     "desc": "Captions, itineraries, and storytelling prompts for travel creators.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_030",
     "name": "Finance & Budgeting",
+    "category": "Finance",
     "price": 15.00,
     "desc": "Prompts for saving, investing, and personal finance advice.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_031",
     "name": "Crypto Content",
+    "category": "Finance",
     "price": 15.00,
     "desc": "Educational and hype content prompts for cryptocurrency.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_032",
     "name": "NFT Marketing",
+    "category": "Marketing",
     "price": 15.00,
     "desc": "Prompts for promoting NFT collections and communities.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1644363832001-0876e81f37a7?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_033",
     "name": "Gaming Content",
+    "category": "Gaming",
     "price": 15.00,
     "desc": "Streaming scripts, commentary, and viral gaming ideas.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_034",
     "name": "Tech Reviews",
+    "category": "Tech",
     "price": 15.00,
     "desc": "Structured prompts for reviewing gadgets and software.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1461747541859-407a2774965c?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_035",
     "name": "Beauty & Skincare",
+    "category": "Lifestyle",
     "price": 15.00,
     "desc": "Product reviews, routines, and influencer content prompts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_036",
     "name": "Food & Recipes",
+    "category": "Lifestyle",
     "price": 15.00,
     "desc": "Recipe generation and food blogging prompts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_037",
     "name": "Parenting Advice",
+    "category": "Lifestyle",
     "price": 15.00,
     "desc": "Tips and storytelling prompts for parenting content.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_038",
     "name": "Educational Content",
+    "category": "Education",
     "price": 15.00,
     "desc": "Lesson plans and teaching prompts for educators.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_039",
     "name": "Language Learning",
+    "category": "Education",
     "price": 15.00,
     "desc": "Prompts for practicing and teaching new languages.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_040",
     "name": "Mindfulness & Meditation",
+    "category": "Health",
     "price": 15.00,
     "desc": "Guided meditation and wellness prompts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_041",
     "name": "Story Writing",
+    "category": "Writing",
     "price": 15.00,
     "desc": "Creative storytelling prompts for fiction writers.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_042",
     "name": "Scriptwriting for Films",
+    "category": "Writing",
     "price": 15.00,
     "desc": "Prompts for writing movie and short film scripts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_043",
     "name": "AI Business Ideas",
+    "category": "Business",
     "price": 15.00,
     "desc": "Prompts to generate startup and side hustle ideas.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1484417894907-623942c8ee29?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_044",
     "name": "Side Hustle Planning",
+    "category": "Business",
     "price": 15.00,
     "desc": "Step-by-step prompts for launching extra income streams.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_045",
     "name": "Marketing Funnels",
+    "category": "Marketing",
     "price": 15.00,
     "desc": "Prompts for building and optimizing sales funnels.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_046",
     "name": "Brand Naming",
+    "category": "Creative",
     "price": 15.00,
     "desc": "Creative prompts for business and product names.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_047",
     "name": "Logo Design Ideas",
+    "category": "Creative",
     "price": 15.00,
     "desc": "Prompts for generating logo concepts and branding.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1572044162444-ad60f128bde2?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_048",
     "name": "App Development Ideas",
+    "category": "Tech",
     "price": 15.00,
     "desc": "Prompts to brainstorm mobile and web app concepts.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_049",
     "name": "Content Repurposing",
+    "category": "Social Media",
     "price": 15.00,
     "desc": "Prompts to turn one piece of content into multiple formats.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=400&h=400&auto=format&fit=crop"
   },
   {
     "id": "niche_050",
     "name": "Viral Hook Generator",
+    "category": "Marketing",
     "price": 15.00,
     "desc": "High-impact hooks and opening lines for any content platform.",
-    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA"
+    "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
+    "img": "https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=400&h=400&auto=format&fit=crop"
   }
 ]
