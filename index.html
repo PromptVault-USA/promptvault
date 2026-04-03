@@ -39,7 +39,6 @@
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; }
         .p-name { font-weight: 800; min-height: 2.8em; color: white; margin-bottom: 5px; }
-        .highlight-gold { color: #fbbf24; font-weight: 800; }
         
         .btn-cart-vault {
             background: #6366f1 !important; 
@@ -69,7 +68,6 @@
             font-size: 0.75rem;
             margin: 0 10px;
         }
-        .trust-link-small:hover { color: white; }
     </style>
 
     <script type="module">
@@ -171,24 +169,11 @@
         <div style="padding: 40px 20px; max-width: 1200px; margin: 0 auto;">
             <h2 style="font-size: 2.5rem; margin-bottom: 20px;">The <span class="highlight-text">Asset</span> Vault</h2>
             
-            <input type="text" id="vault-search" placeholder="Search 500+ prompts (TikTok, Real Estate, SEO, YouTube...)" 
+            <input type="text" id="vault-search" placeholder="Search 500+ prompts (TikTok, SEO, Real Estate, YouTube Automation)..." 
                    style="width: 100%; padding: 20px 25px; border-radius: 50px; border: 1px solid var(--border); background: var(--glass); color: white; outline: none; margin-bottom: 30px; font-size: 1.1rem;">
             
             <div id="product-list" class="vault-grid"></div>
         </div>
-    </div>
-</div>
-
-<div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 6000; align-items: center; justify-content: center;">
-    <div class="auth-card" style="width: 90%; max-width: 400px; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #333;">
-        <h3 style="text-align:center; color:white;">Complete Order</h3>
-        <div id="cart-items-list" style="max-height: 200px; overflow-y: auto; margin: 20px 0; border-bottom: 1px solid #333;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; margin:20px 0; color:white;">
-            <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
-        </div>
-        <button onclick="processPay('paypal')" class="btn-main" style="background:#ffc439; color:#003087; margin-bottom:10px;">Checkout (PayPal)</button>
-        <button onclick="processPay('card')" class="btn-main" style="background:var(--success); color:white;">Debit or Credit Card</button>
-        <center style="margin-top:20px;"><span style="color:gray; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display='none'">Close</span></center>
     </div>
 </div>
 
@@ -231,7 +216,7 @@
 
     function renderHome() {
         const preview = document.getElementById('home-preview');
-        if(preview) {
+        if(preview && allProducts.length > 0) {
             preview.innerHTML = allProducts.slice(0, 6).map(p => `
                 <img src="${p.img}" style="width:100px; height:100px; border-radius:12px; object-fit:cover;">
             `).join('');
@@ -256,14 +241,18 @@
             }).join('');
         };
         display(allProducts);
+        
         searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
-            display(allProducts.filter(p => p.name.toLowerCase().includes(term) || (p.category && p.category.toLowerCase().includes(term))));
+            display(allProducts.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                (p.category && p.category.toLowerCase().includes(term))
+            ));
         };
     }
 
     window.addToCart = (productStr) => {
-        if (!window.auth.currentUser) { alert("Sign In first!"); return; }
+        if (!window.auth.currentUser) { alert("Please Sign In first!"); return; }
         cart.push(JSON.parse(decodeURIComponent(productStr)));
         localStorage.setItem('pv_cart', JSON.stringify(cart));
         updateCartCount();
@@ -271,12 +260,12 @@
     };
 
     window.handleBuyNow = (url) => {
-        if (!window.auth.currentUser) { alert("Sign In first!"); return; }
+        if (!window.auth.currentUser) { alert("Please Sign In first!"); return; }
         window.open(url, '_blank');
     };
 
     window.openCheckout = () => {
-        if (!window.auth.currentUser) { alert("Sign In first!"); return; }
+        if (!window.auth.currentUser) { alert("Please Sign In first!"); return; }
         document.getElementById('checkout-overlay').style.display = 'flex';
         const list = document.getElementById('cart-items-list');
         list.innerHTML = cart.map(i => `<div style="display:flex; justify-content:space-between; margin-bottom:10px; color:white; font-size:0.8rem;"><span>${i.name}</span><b>$${i.price.toFixed(2)}</b></div>`).join('');
@@ -291,16 +280,38 @@
     };
 
     window.changePage = (id, el) => {
+        // HIDE ALL PAGES
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // SHOW TARGET PAGE
         document.getElementById(id).classList.add('active');
+        // UPDATE NAV BAR VISUALS
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         if(el) el.classList.add('active');
+        
+        // RENDER PRODUCTS IF ENTERING VAULT
         if(id === 'browse') renderProducts();
+        
+        // AUTO-SCROLL TO TOP
+        window.scrollTo(0,0);
     };
 
     window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
 
     document.addEventListener('DOMContentLoaded', init);
 </script>
+
+<div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 6000; align-items: center; justify-content: center;">
+    <div class="auth-card" style="width: 90%; max-width: 400px; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #333;">
+        <h3 style="text-align:center; color:white;">Complete Order</h3>
+        <div id="cart-items-list" style="max-height: 200px; overflow-y: auto; margin: 20px 0; border-bottom: 1px solid #333;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; margin:20px 0; color:white;">
+            <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
+        </div>
+        <button onclick="processPay('paypal')" class="btn-main" style="background:#ffc439; color:#003087; margin-bottom:10px;">Checkout (PayPal)</button>
+        <button onclick="processPay('card')" class="btn-main" style="background:var(--success); color:white;">Debit or Credit Card</button>
+        <center style="margin-top:20px;"><span style="color:gray; cursor:pointer;" onclick="document.getElementById('checkout-overlay').style.display='none'">Close</span></center>
+    </div>
+</div>
+
 </body>
 </html>
