@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog | PromptVault USA</title>
+    <title>Intelligence Feed | PromptVault USA</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -17,26 +17,36 @@
             <img src="logo.png" class="logo-box" onerror="this.src='https://via.placeholder.com/40?text=PV'">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
+        <button class="signin-pill" onclick="window.location.href='index.html#browse'">Enter Vault</button>
     </div>
 </header>
 
-<div class="container" style="padding-top: 120px; padding-bottom: 100px;">
+<div class="container" style="padding-top: 120px; padding-bottom: 40px;">
     <h2 style="font-size:2.5rem; margin-bottom: 30px;">The <span class="highlight-text">Intelligence</span> Feed</h2>
     
-    <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:30px; margin-bottom:20px;">
+    <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:30px; margin-bottom:40px;">
         <span style="color:var(--accent); font-weight:800; font-size:0.8rem;">APRIL 3, 2026</span>
         <h3 style="margin:10px 0; font-size:1.8rem;">The Golden Prompt: Why One Prompt is Better Than a Thousand Guesses</h3>
-        <p style="color:#94a3b8; margin-bottom:20px;">Stop wasting time with generic AI outputs. Learn the S.P.E.C. framework we use inside the Vault.</p>
-        <a href="first-post.html" class="btn-main" style="display:inline-block; max-width:200px; text-decoration:none; text-align:center;">Read Article</a>
+        <p style="color:#94a3b8; margin-bottom:20px;">Stop wasting time with generic AI outputs. Learn the S.P.E.C. framework we use inside the Vault to bypass detection and maximize conversion.</p>
+        <a href="first-post.html" class="btn-main" style="display:inline-block; max-width:200px; text-decoration:none; text-align:center; background:var(--secondary); color:white;">Read Article</a>
     </div>
+
+    <footer style="margin-top: 80px; padding: 60px 20px; border-top: 1px solid var(--border); text-align: center;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 25px; font-size: 0.85rem; font-weight: 600;">
+            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Privacy Policy</a>
+            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Terms of Service</a>
+            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Refund Policy</a>
+            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Contact Support</a>
+        </div>
+        <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. Empowering the AI Economy.</p>
+    </footer>
 </div>
 
 <nav class="bottom-nav">
     <div style="width:100%; max-width:600px; display:flex; justify-content:space-around;">
         <a class="nav-item" onclick="window.location.href='index.html'">🏠<br><small>Home</small></a>
-        <a class="nav-item" onclick="window.location.href='index.html'">⊞<br><small>Vaults</small></a>
+        <a class="nav-item" onclick="window.location.href='index.html#browse'">⊞<br><small>Vaults</small></a>
         <a class="nav-item active" href="blog.html">📖<br><small>Blog</small></a>
-        <a class="nav-item" onclick="window.location.href='index.html'">👑<br><small>Lab</small></a>
     </div>
 </nav>
 
