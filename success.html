@@ -1,34 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success | PromptVault USA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="spotlight"></div>
+
 <div class="container" style="text-align:center; padding-top:150px;">
-    <div class="glass-card" style="max-width:500px; margin:0 auto;">
-        <h2 style="color:var(--success);">Payment Successful!</h2>
-        <p style="margin:20px 0; color:#94a3b8;">Your 2026 AI Intelligence assets are ready for immediate download.</p>
+    <div class="glass-card" style="max-width:500px; margin:0 auto; padding: 40px;">
+        <div style="font-size: 3rem; margin-bottom: 20px;">✅</div>
+        <h2 style="color:var(--success); margin-bottom: 10px;">Payment Successful!</h2>
+        <p style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem;">Your 2026 AI Intelligence assets have been unlocked and are ready for immediate use.</p>
         
         <div id="product-delivery-zone">
-            <p>Syncing your secure link...</p>
+            <div style="padding: 20px; border: 1px dashed var(--border); border-radius: 15px;">
+                <p style="color: var(--text-gray);">Syncing secure vault link...</p>
+            </div>
         </div>
+
+        <button onclick="window.location.href='index.html'" class="btn-main" style="margin-top: 30px; background: var(--glass); width: 100%; border: 1px solid var(--border);">Return to Dashboard</button>
     </div>
 </div>
 
 <script>
     window.onload = () => {
-        // 1. Get the product info from the phone's memory
-        const lastProduct = JSON.parse(localStorage.getItem('last_clicked_product'));
+        // 1. Retrieve the product data from browser memory
+        const data = localStorage.getItem('last_clicked_product');
         const displayArea = document.getElementById('product-delivery-zone');
 
-        if (lastProduct && lastProduct.download) {
+        if (data) {
+            const lastProduct = JSON.parse(data);
+            
+            if (lastProduct.download) {
+                displayArea.innerHTML = `
+                    <div style="background:rgba(16, 185, 129, 0.1); padding:25px; border-radius:20px; border:1px solid var(--success);">
+                        <h4 style="margin-bottom:5px; color: white;">${lastProduct.name}</h4>
+                        <p style="font-size: 0.75rem; color: var(--success); margin-bottom: 20px; font-weight: 800;">READY FOR DOWNLOAD</p>
+                        <a href="${lastProduct.download}" target="_blank" class="btn-main" 
+                           style="background:var(--success); color:white; display:block; text-decoration:none; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">
+                           📥 DOWNLOAD PDF ASSET
+                        </a>
+                    </div>
+                `;
+                // Security: Clear the memory after 5 minutes so the link doesn't sit there
+                setTimeout(() => { localStorage.removeItem('last_clicked_product'); }, 300000);
+            }
+        } else {
             displayArea.innerHTML = `
-                <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border:1px solid var(--border);">
-                    <h4 style="margin-bottom:15px;">${lastProduct.name}</h4>
-                    <a href="${lastProduct.download}" target="_blank" class="btn-main" 
-                       style="background:var(--success); color:white; display:block; text-decoration:none;">
-                       📥 DOWNLOAD PDF NOW
-                    </a>
+                <div style="padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 15px; border: 1px solid var(--error);">
+                    <p style="color: var(--error); font-size: 0.85rem;">Order session expired. If you just paid, please check your email for the direct link.</p>
                 </div>
             `;
-            // Optional: Clear memory after 5 minutes for security
-            setTimeout(() => { localStorage.removeItem('last_clicked_product'); }, 300000);
-        } else {
-            displayArea.innerHTML = `<p>Order details not found. Please check your email for your link.</p>`;
         }
     };
 </script>
+</body>
+</html>
