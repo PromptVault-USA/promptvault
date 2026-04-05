@@ -25,7 +25,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Global & Navigation Styles */
         .bottom-nav .nav-item { font-size: 1.1rem !important; padding: 10px 0; flex: 1; text-align: center; cursor: pointer; }
         .bottom-nav .nav-item small { font-size: 0.7rem !important; font-weight: 800; text-transform: uppercase; display: block; margin-top: 4px; }
         .payment-badges { display: flex; gap: 15px; justify-content: center; filter: grayscale(1); opacity: 0.5; margin: 20px 0; }
@@ -60,6 +59,7 @@
         window.db = db;
         window.allProducts = [];
 
+        // LIBRARY READ LOGIC (ARRAY-BASED)
         window.loadUserLibrary = async () => {
             const user = auth.currentUser;
             const grid = document.getElementById('user-library-grid');
@@ -73,7 +73,7 @@
                 if (userDocSnap.exists()) {
                     const prompts = userDocSnap.data().purchasedPrompts || [];
                     if (prompts.length === 0) {
-                        grid.innerHTML = `<div style="text-align:center; padding:40px; background:var(--glass); border-radius:20px;"><p style="color:#94a3b8;">Your library is currently empty.</p></div>`;
+                        grid.innerHTML = `<div style="text-align:center; padding:40px; background:var(--glass); border-radius:20px;"><p style="color:#94a3b8;">Your library is empty. Your purchases will appear here.</p></div>`;
                         return;
                     }
                     prompts.sort((a, b) => b.timestamp - a.timestamp);
@@ -82,10 +82,15 @@
                             <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Digital Asset Unlocked</small></div>
                             <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
                         </div>`).join('');
+                } else {
+                    grid.innerHTML = `<div style="text-align:center; padding:40px;"><p style="color:#94a3b8;">No profile found. Make a purchase to begin.</p></div>`;
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                grid.innerHTML = `<p style="color:red; text-align:center;">Sync failed. Please refresh.</p>`;
+            }
         };
 
+        // NAVIGATION
         window.changePage = (id, el) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const activePage = document.getElementById(id);
@@ -115,7 +120,7 @@
                 }
                 if(authOverlay) authOverlay.style.display = 'none';
             } else {
-                loginBtn.innerText = "Sign In";
+                loginBtn.innerText = "Sign In / Join";
                 loginBtn.onclick = () => authOverlay.style.display = 'flex';
                 if(kitBtn) {
                     kitBtn.innerText = "Sign In to Claim Kit";
@@ -123,6 +128,20 @@
                 }
             }
         }); 
+
+        window.handleGoogle = async () => {
+            try { await signInWithPopup(auth, provider); } catch(e) { alert(e.message); }
+        }; 
+
+        window.handleEmailAuth = async (mode) => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            if(!email || !pass) return alert("Please fill in all fields.");
+            try {
+                if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, pass);
+                else await signInWithEmailAndPassword(auth, email, pass);
+            } catch(e) { alert(e.message); }
+        };
     </script>
 </head>
 <body> 
@@ -132,7 +151,7 @@
 <div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
     <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
     <span id="notif-text" style="font-size: 0.85rem; font-weight: 600; color: white;"></span>
-</div>
+</div> 
 
 <header>
     <div class="header-wrap">
@@ -157,8 +176,7 @@
                 <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
             </div>
             <h2>Command the <span>AI Economy</span></h2>
-            <p class="hero-subheadline">Unlock 500+ High-Converting Prompts for Business and Marketing.</p> 
-            <button class="btn-main" style="background:var(--success); margin-top:20px;" onclick="changePage('browse')">Get Instant Access Now</button>
+            <p class="hero-subheadline">Unlock 500+ AI Prompts to Start, Grow, and Monetize Online.</p>
         </div> 
 
         <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 40px 0;">
@@ -180,7 +198,7 @@
             </div>
         </div> 
 
-        <div class="payment-badges" style="margin-top: 40px;">
+        <div class="payment-badges">
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
@@ -189,7 +207,7 @@
 
     <div id="browse" class="page">
         <div style="padding: 40px 0;">
-            <input type="text" id="vault-search" placeholder="Search prompts..." oninput="filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:30px; outline:none;">
+            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:30px; outline:none;">
             <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:25px;"></div>
         </div>
     </div>
@@ -274,7 +292,6 @@
         window.renderProducts(filtered);
     }; 
 
-    // SALES NOTIFICATION LOGIC
     const cities = ["Chicago", "New York", "London", "Manila", "Sydney"];
     setInterval(() => {
         const city = cities[Math.floor(Math.random() * cities.length)];
