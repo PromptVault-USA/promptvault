@@ -110,6 +110,8 @@
         onAuthStateChanged(auth, async (user) => {
             const loginBtn = document.getElementById('login-pill');
             const kitBtn = document.getElementById('claim-kit-btn');
+            const authOverlay = document.getElementById('auth-overlay');
+
             if (user) {
                 loginBtn.innerText = "Logout";
                 loginBtn.onclick = () => signOut(auth);
@@ -118,11 +120,13 @@
                     kitBtn.style.background = "var(--accent)";
                     kitBtn.onclick = () => window.changePage('library');
                 }
+                if(authOverlay) authOverlay.style.display = 'none';
             } else {
                 loginBtn.innerText = "Sign In";
+                loginBtn.onclick = () => authOverlay.style.display = 'flex';
                 if(kitBtn) {
                     kitBtn.innerText = "Get Instant Access Now";
-                    kitBtn.onclick = () => document.getElementById('auth-overlay').style.display = 'flex';
+                    kitBtn.onclick = () => authOverlay.style.display = 'flex';
                 }
             }
         }); 
@@ -269,7 +273,10 @@
 <script>
     const PAYPAL_EMAIL = "emilyperong23@gmail.com";
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
+    window.updateCartCount = () => { 
+        const pill = document.getElementById('cart-count-pill');
+        if(pill) pill.innerText = cart.length; 
+    };
 
     window.openCheckout = () => {
         const modal = document.getElementById('checkout-overlay');
@@ -348,9 +355,10 @@
 
     document.addEventListener('DOMContentLoaded', () => { 
         window.updateCartCount(); 
-        // Blog Redirect Fix
         const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('action') === 'browse') window.changePage('browse');
+        if(urlParams.get('action') === 'browse') {
+            window.changePage('browse', document.querySelectorAll('.nav-item')[1]);
+        }
     });
 </script>
 
