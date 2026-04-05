@@ -43,7 +43,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // UPDATED: Added doc and getDoc for reading the array
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         const firebaseConfig = {
           apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
@@ -63,7 +64,7 @@
         window.db = db;
         window.allProducts = [];
 
-        // --- LIBRARY PERSISTENCE LOGIC ---
+        // --- UPDATED LIBRARY LOGIC: Reads from purchasedPrompts Array ---
         window.loadUserLibrary = async () => {
             const user = auth.currentUser;
             const grid = document.getElementById('user-library-grid');
@@ -75,24 +76,35 @@
             }
 
             try {
-                const q = collection(db, "users", user.uid, "purchases");
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.empty) {
-                    grid.innerHTML = `<div style="text-align:center; padding:40px; background:var(--glass); border-radius:20px;"><p style="color:#94a3b8;">Your library is currently empty.</p></div>`;
-                    return;
-                }
-                grid.innerHTML = querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    return `
+                // Fetch the root user document
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (userDocSnap.exists()) {
+                    const data = userDocSnap.data();
+                    const prompts = data.purchasedPrompts || []; // Pull from array
+
+                    if (prompts.length === 0) {
+                        grid.innerHTML = `<div style="text-align:center; padding:40px; background:var(--glass); border-radius:20px;"><p style="color:#94a3b8;">Your library is currently empty. Purchases will appear here.</p></div>`;
+                        return;
+                    }
+
+                    // Sort newest first
+                    prompts.sort((a, b) => b.timestamp - a.timestamp);
+
+                    grid.innerHTML = prompts.map(item => `
                         <div class="library-card">
                             <div>
-                                <h4 style="margin:0; color:white;">${data.productName}</h4>
-                                <small style="color:var(--secondary);">Unlocked: ${new Date(data.timestamp).toLocaleDateString()}</small>
+                                <h4 style="margin:0; color:white;">${item.productName}</h4>
+                                <small style="color:var(--secondary);">Digital Asset Unlocked</small>
                             </div>
-                            <a href="${data.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
-                        </div>`;
-                }).join('');
+                            <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
+                        </div>`).join('');
+                } else {
+                    grid.innerHTML = `<div style="text-align:center; padding:40px;"><p style="color:#94a3b8;">No profile found. Make a purchase to begin.</p></div>`;
+                }
             } catch (e) {
+                console.error(e);
                 grid.innerHTML = `<p style="color:red; text-align:center;">Sync failed. Please refresh.</p>`;
             }
         };
@@ -229,15 +241,13 @@
         if(pill) pill.innerText = cart.length;
     };
     
-    // --- AUTOMATIC DELIVERY HANDSHAKE ---
     window.processDirectPurchase = (productStr) => {
         if (!isUserLoggedIn()) return requireLogin();
         const product = JSON.parse(decodeURIComponent(productStr));
         
-        // Save to memory so success.html can process the delivery
         localStorage.setItem('last_clicked_product', JSON.stringify({
             name: product.name,
-            download: product.download // Must exist in products.json
+            download: product.download 
         }));
 
         const total = product.price.toFixed(2);
