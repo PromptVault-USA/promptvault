@@ -59,50 +59,66 @@
         window.db = db;
         window.allProducts = [];
 
-        // --- AUTO-GIFT LOGIC FOR NEW USERS ---
+        // --- NEW USER PROVISIONING (Auto-Gift Welcome Assets) ---
         async function provisionNewUser(user) {
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
             if (!userSnap.exists()) {
                 await setDoc(userRef, {
                     email: user.email,
+                    joinedDate: new Date().toISOString(),
                     purchasedPrompts: [
                         {
-                            productName: "🎁 2026 AI Starter Kit (Free)",
-                            driveLink: "https://drive.google.com/file/d/YOUR_KIT_ID/view",
-                            timestamp: Date.now()
+                            productName: "✉️ Welcome Letter & Hub Guide",
+                            driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk",
+                            timestamp: Date.now() + 10
                         },
                         {
-                            productName: "✉️ Welcome Letter & Hub Guide",
-                            driveLink: "https://drive.google.com/file/d/YOUR_LETTER_ID/view",
-                            timestamp: Date.now() + 1
+                            productName: "🎁 2026 AI Starter Kit (Free)",
+                            driveLink: "https://drive.google.com/file/d/1MBGb8x24PmqMH5CUlkxJ5ckY7cDcVf4u/view?usp=drivesdk",
+                            timestamp: Date.now()
                         }
                     ]
                 });
             }
         }
 
+        // --- LIBRARY LOGIC: Reads from purchasedPrompts Array ---
         window.loadUserLibrary = async () => {
             const user = auth.currentUser;
             const grid = document.getElementById('user-library-grid');
-            if (!grid || !user) return;
+            if (!grid) return;
+            if (!user) {
+                grid.innerHTML = `<div style="text-align:center; padding:40px;"><p style="color:#94a3b8;">Sign in to access your Library.</p><button class="btn-main" onclick="document.getElementById('auth-overlay').style.display='flex'">Sign In Now</button></div>`;
+                return;
+            }
             try {
                 const userDocSnap = await getDoc(doc(db, "users", user.uid));
                 if (userDocSnap.exists()) {
-                    const prompts = userDocSnap.data().purchasedPrompts || [];
+                    const data = userDocSnap.data();
+                    const prompts = data.purchasedPrompts || [];
+                    if (prompts.length === 0) {
+                        grid.innerHTML = `<div style="text-align:center; padding:40px; background:var(--glass); border-radius:20px;"><p style="color:#94a3b8;">Your library is empty. Your purchases will appear here.</p></div>`;
+                        return;
+                    }
                     prompts.sort((a, b) => b.timestamp - a.timestamp);
                     grid.innerHTML = prompts.map(item => `
                         <div class="library-card">
-                            <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Unlocked Asset</small></div>
+                            <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Permanent Access</small></div>
                             <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
                         </div>`).join('');
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = `<p style="color:red; text-align:center;">Sync failed. Please refresh.</p>`;
+            }
         };
 
+        // --- SPA NAVIGATION ---
         window.changePage = (id, el) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const activePage = document.getElementById(id);
+            if (activePage) activePage.classList.add('active');
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             if(el) el.classList.add('active');
             if(id === 'browse' && window.allProducts.length === 0) {
@@ -117,27 +133,30 @@
         onAuthStateChanged(auth, async (user) => {
             const loginBtn = document.getElementById('login-pill');
             const kitBtn = document.getElementById('claim-kit-btn');
+            const authOverlay = document.getElementById('auth-overlay');
             if (user) {
                 loginBtn.innerText = "Logout";
                 loginBtn.onclick = () => signOut(auth);
                 if(kitBtn) {
                     kitBtn.innerText = "Access My Library";
                     kitBtn.style.background = "var(--accent)";
-                    kitBtn.onclick = () => changePage('library');
+                    kitBtn.onclick = () => window.changePage('library');
                 }
+                if(authOverlay) authOverlay.style.display = 'none';
             } else {
                 loginBtn.innerText = "Sign In / Join";
+                loginBtn.onclick = () => authOverlay.style.display = 'flex';
                 if(kitBtn) {
                     kitBtn.innerText = "Sign In to Claim Kit";
-                    kitBtn.onclick = () => document.getElementById('auth-overlay').style.display = 'flex';
+                    kitBtn.onclick = () => authOverlay.style.display = 'flex';
                 }
             }
         }); 
 
         window.handleGoogle = async () => {
             try { 
-                const result = await signInWithPopup(auth, provider);
-                await provisionNewUser(result.user);
+                const res = await signInWithPopup(auth, provider); 
+                await provisionNewUser(res.user);
             } catch(e) { alert(e.message); }
         }; 
 
@@ -158,11 +177,6 @@
 <body> 
 
 <div class="spotlight"></div> 
-
-<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-    <span id="notif-text" style="font-size: 0.85rem; font-weight: 600; color: white;"></span>
-</div> 
 
 <header>
     <div class="header-wrap">
@@ -187,27 +201,27 @@
                 <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
             </div>
             <h2>Command the <span>AI Economy</span></h2>
-            <p class="hero-subheadline">Unlock 500+ AI Prompts to Start, Grow, and Monetize Online.</p>
+            <p class="hero-subheadline">Unlock 500+ High-Converting Prompts for Business and Marketing.</p> 
+            <button id="claim-kit-btn" class="btn-main" style="background:var(--success); margin-top:20px;">Sign In to Claim Kit</button>
         </div> 
 
-        <div class="glass-card" style="margin-top: 40px;">
-            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 40px;">
-                <span style="color:var(--success); font-weight:800; font-size: 0.9rem; letter-spacing: 2px;">LIMITED TIME GIFT</span>
-                <h2 style="margin: 15px 0; font-size: 2rem;">Claim 2026 AI Starter Kit</h2>
-                <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white;">Sign In to Claim Kit</button>
+        <section class="info-center" style="margin-top: 60px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #111; border: 1px solid var(--border); border-radius: 24px; padding: 25px;">
+                    <h3 style="color: #fbbf24; margin-top: 0; font-size: 1.1rem;">REFUND POLICY</h3>
+                    <p style="font-size: 0.85rem;">Digital assets delivered via instant download are non-refundable.</p>
+                </div>
+                <div style="background: #111; border: 1px solid var(--border); border-radius: 24px; padding: 25px;">
+                    <h3 style="color: #fbbf24; margin-top: 0; font-size: 1.1rem;">TERMS & CONDITIONS</h3>
+                    <p style="font-size: 0.85rem;">Raw prompt files are for licensed use and cannot be resold.</p>
+                </div>
             </div>
-        </div> 
-
-        <div class="payment-badges" style="margin-top: 40px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-        </div>
+        </section> 
     </div> 
 
     <div id="browse" class="page">
         <div style="padding: 40px 0;">
-            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:30px; outline:none;">
+            <input type="text" id="vault-search" placeholder="Search prompts..." oninput="filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:30px; outline:none;">
             <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:25px;"></div>
         </div>
     </div>
@@ -216,19 +230,7 @@
         <div style="padding: 40px 0;">
             <h2 style="font-size:2.5rem;">My <span class="highlight-text">Library</span></h2>
             <div id="user-library-grid" style="margin-top:30px;">
-                 <p style="color:#94a3b8; text-align:center;">Syncing your assets...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="hub" class="page">
-        <div style="padding: 100px 0; text-align: center;">
-            <h2 style="font-size:3.5rem; margin-bottom: 20px;">The <span class="highlight-text">Hub</span></h2>
-            <div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 50px; border: 1px dashed var(--accent);">
-                <span style="background: var(--accent); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px;">ENGINEERING IN PROGRESS</span>
-                <h3 style="margin-top: 20px; font-size: 1.5rem;">Your AI Command Center</h3>
-                <p style="color: #94a3b8; line-height: 1.6; margin: 20px 0;">We are building a real-time Intelligence Dashboard featuring the AI Prompt Heatmap, Affiliate Command Center, and our exclusive Tool Stack. Access is launching soon.</p>
-                <div style="font-size: 2rem; color: var(--accent);">⏳</div>
+                 <p style="color:#94a3b8; text-align:center;">Syncing your secure vault assets...</p>
             </div>
         </div>
     </div>
@@ -240,7 +242,7 @@
         <a class="nav-item" onclick="changePage('browse', this)">⊞<br><small>Vaults</small></a>
         <a class="nav-item" onclick="changePage('library', this)">👤<br><small>Library</small></a>
         <a class="nav-item" onclick="window.location.href='blog.html'">📖<br><small>Blog</small></a>
-        <a class="nav-item" onclick="changePage('hub', this)">🎯<br><small>The Hub</small></a>
+        <a class="nav-item" onclick="changePage('home', this)">👑<br><small>Lab</small></a>
     </div>
 </nav> 
 
@@ -250,11 +252,20 @@
     window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
     
     window.processDirectPurchase = (productStr) => {
-        if (!window.auth.currentUser) { alert("🔒 Please Sign In."); return; }
+        if (!window.auth?.currentUser) { alert("🔒 Please Sign In."); return; }
         const product = JSON.parse(decodeURIComponent(productStr));
         localStorage.setItem('last_clicked_product', JSON.stringify({ name: product.name, download: product.download }));
         window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${product.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(product.name)}&no_shipping=1&return=${window.location.origin}/success.html`;
     };
+
+    window.addToCart = (productStr) => {
+        if (!window.auth?.currentUser) { alert("🔒 Please Sign In."); return; }
+        const product = JSON.parse(decodeURIComponent(productStr));
+        cart.push(product);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        window.updateCartCount();
+        alert(`${product.name} added!`);
+    }; 
 
     window.renderProducts = (productsToDisplay) => {
         const list = document.getElementById('product-list');
@@ -271,7 +282,7 @@
                     <div style="display:flex; flex-direction:column; gap:8px;">
                         <button onclick="processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border:none; border-radius:12px;">Buy Now</button>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                            <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">+ Cart</button>
+                            <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">+ Cart</button>
                             <a href="product.html?id=${p.id}" class="btn-main" style="background:var(--glass); text-decoration:none; text-align:center; font-size:0.8rem; padding:10px; color:white; border:1px solid var(--border);">Details</a>
                         </div>
                     </div>
@@ -279,30 +290,10 @@
         }).join('');
     };
 
-    window.addToCart = (productStr) => {
-        if (!window.auth.currentUser) { alert("🔒 Please Sign In."); return; }
-        const product = JSON.parse(decodeURIComponent(productStr));
-        cart.push(product);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        window.updateCartCount();
-        alert(`${product.name} added!`);
-    };
-
     window.filterProducts = (val) => {
         const filtered = window.allProducts.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
         window.renderProducts(filtered);
     }; 
-
-    const cities = ["Chicago", "New York", "London", "Manila", "Sydney"];
-    setInterval(() => {
-        const city = cities[Math.floor(Math.random() * cities.length)];
-        const textEl = document.getElementById('notif-text');
-        if(textEl) {
-            textEl.innerText = `Someone from ${city} joined the vault`;
-            document.getElementById('sales-notif').style.display = 'flex';
-            setTimeout(() => { document.getElementById('sales-notif').style.display = 'none'; }, 5000);
-        }
-    }, 12000);
 
     document.addEventListener('DOMContentLoaded', () => { window.updateCartCount(); });
 </script>
