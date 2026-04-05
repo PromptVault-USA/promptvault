@@ -303,10 +303,27 @@
         window.openCheckout();
     };
 
+    // --- HANDLES MULTI-ITEM CART CHECKOUT ---
     window.processPaypalCheckout = () => {
+        if (cart.length === 0) return;
         const total = cart.reduce((sum, item) => sum + item.price, 0);
         const itemNames = cart.map(i => i.name).join(', ');
+        
+        // Pass full cart array to success page
+        localStorage.setItem('pending_assets', JSON.stringify(cart));
+
         window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(itemNames)}&no_shipping=1&return=${window.location.origin}/success.html`;
+    };
+
+    // --- HANDLES INSTANT SINGLE ITEM PURCHASE ---
+    window.processDirectPurchase = (productStr) => {
+        if (!window.auth?.currentUser) { alert("🔒 Please Sign In."); return; }
+        const product = JSON.parse(decodeURIComponent(productStr));
+        
+        // Pass as array of one for consistent logic in success page
+        localStorage.setItem('pending_assets', JSON.stringify([product]));
+        
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${product.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(product.name)}&no_shipping=1&return=${window.location.origin}/success.html`;
     };
 
     window.addToCart = (productStr) => {
@@ -331,6 +348,7 @@
                     <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
                     <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
                     <div style="display:flex; flex-direction:column; gap:8px;">
+                        <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border:none; border-radius:12px;">Buy Now</button>
                         <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">Add to Cart</button>
                     </div>
                 </div>`;
