@@ -1,19 +1,24 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v1.6
- * Handles: Product Rendering, Search, Cart Persistence, and PayPal Integration.
+ * PROMPTVAULT USA - CORE ENGINE v1.7 (Integrated)
+ * Handles: Auth Guards, Search, Cart, and PayPal.
  */
 
 const PAYPAL_EMAIL = "emilyperong23@gmail.com";
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
 let allProducts = [];
 
-// --- 1. PRODUCT RENDERING & SEARCH (Step 6) ---
+// --- 1. AUTH HELPERS (Reused from Phase 2) ---
+const isUserLoggedIn = () => !!window.auth?.currentUser;
 
-/**
- * Renders the product grid with "Add to Cart" and "Details" functionality.
- * @param {Array} productsToDisplay - The filtered or full list of products.
- */
-export const renderProducts = (productsToDisplay) => {
+const requireLogin = () => {
+    alert("🔒 Please Sign In to access the Vault and purchase prompt packs.");
+    const overlay = document.getElementById('auth-overlay');
+    if (overlay) overlay.style.display = 'flex';
+};
+
+// --- 2. PRODUCT RENDERING & SEARCH ---
+
+window.renderProducts = (productsToDisplay) => {
     const list = document.getElementById('product-list');
     if (!list) return;
 
@@ -42,18 +47,15 @@ export const renderProducts = (productsToDisplay) => {
     }).join('');
 };
 
-/**
- * Filters the master product list based on user input.
- */
 window.filterProducts = (val) => {
     const filtered = allProducts.filter(p => 
         p.name.toLowerCase().includes(val.toLowerCase()) || 
         (p.category && p.category.toLowerCase().includes(val.toLowerCase()))
     );
-    renderProducts(filtered);
+    window.renderProducts(filtered);
 };
 
-// --- 2. CART OPERATIONS (Step 5) ---
+// --- 3. CART OPERATIONS ---
 
 window.updateCartCount = () => {
     const pill = document.getElementById('cart-count-pill');
@@ -61,31 +63,35 @@ window.updateCartCount = () => {
 };
 
 window.addToCart = (productStr) => {
+    if (!isUserLoggedIn()) return requireLogin();
+
     const product = JSON.parse(decodeURIComponent(productStr));
     cart.push(product);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
-    updateCartCount();
+    window.updateCartCount();
     
-    // UI Feedback
+    // Social Proof UI Feedback
     const notif = document.getElementById('sales-notif');
     const notifText = document.getElementById('notif-text');
     if (notif && notifText) {
-        notifText.innerText = `Added ${product.name} to your vault!`;
+        notifText.innerText = `Added ${product.name} to your selection!`;
         notif.style.display = 'flex';
-        setTimeout(() => { notif.style.display = 'none'; }, 3000);
+        setTimeout(() => { notif.style.display = 'none'; }, 4000);
     }
 };
 
 window.removeFromCart = (index) => {
     cart.splice(index, 1);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
-    updateCartCount();
-    openCheckout(); // Refresh the checkout UI
+    window.updateCartCount();
+    window.openCheckout(); // Refresh UI
 };
 
-// --- 3. CHECKOUT & PAYPAL (Step 7) ---
+// --- 4. CHECKOUT & PAYPAL ---
 
 window.openCheckout = () => {
+    if (!isUserLoggedIn()) return requireLogin();
+
     const modal = document.getElementById('checkout-overlay');
     const list = document.getElementById('cart-items-list');
     const totalEl = document.getElementById('cart-total');
@@ -96,7 +102,7 @@ window.openCheckout = () => {
     
     if (cart.length === 0) {
         list.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:20px;">Your selection is empty.</p>`;
-        totalEl.innerText = "$0.00";
+        if (totalEl) totalEl.innerText = "$0.00";
         return;
     }
 
@@ -111,53 +117,63 @@ window.openCheckout = () => {
     `).join('');
 
     const total = cart.reduce((sum, item) => sum + item.price, 0);
-    totalEl.innerText = `$${total.toFixed(2)}`;
+    if (totalEl) totalEl.innerText = `$${total.toFixed(2)}`;
 };
 
 window.processPaypalCheckout = () => {
+    if (!isUserLoggedIn()) return requireLogin();
+    
     const total = cart.reduce((sum, item) => sum + item.price, 0);
     if (total <= 0) return alert("Please add items to your cart first.");
 
-    // Dynamic standard PayPal redirect
-    const baseUrl = "https://www.paypal.com/cgi-bin/webscr";
     const params = new URLSearchParams({
         cmd: "_xclick",
         business: PAYPAL_EMAIL,
         currency_code: "USD",
         amount: total.toFixed(2),
         item_name: `PromptVault USA - ${cart.length} AI Assets`,
-        no_shipping: "1",
-        return: window.location.origin + "/success.html",
-        cancel_return: window.location.origin
+        no_shipping: "1"
     });
 
-    window.location.href = `${baseUrl}?${params.toString()}`;
+    window.location.href = `https://www.paypal.com/cgi-bin/webscr?${params.toString()}`;
 };
 
-// --- 4. NAVIGATION & INITIALIZATION ---
+// --- 5. NAVIGATION & SOCIAL PROOF ---
 
 window.changePage = (id, el) => {
-    // Switch visibility
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const activePage = document.getElementById(id);
     if (activePage) activePage.classList.add('active');
 
-    // Update Nav UI
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (el) el.classList.add('active');
 
-    // Load products only when entering the browse page
     if (id === 'browse' && allProducts.length === 0) {
         fetch('products.json')
             .then(res => res.json())
             .then(data => {
                 allProducts = data;
-                renderProducts(allProducts);
+                window.renderProducts(allProducts);
             })
             .catch(err => console.error("Vault Sync Error:", err));
     }
 };
 
+const showSalesNotif = () => {
+    const cities = ["Chicago", "New York", "London", "Manila", "Sydney", "Dubai", "Los Angeles"];
+    const actions = ["joined the vault", "purchased a pack", "unlocked the kit"];
+    const city = cities[Math.floor(Math.random() * cities.length)];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    const textEl = document.getElementById('notif-text');
+    if(textEl) {
+        textEl.innerText = `Someone from ${city} ${action}`;
+        const el = document.getElementById('sales-notif');
+        el.style.display = 'flex';
+        setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-    updateCartCount();
+    window.updateCartCount();
+    setInterval(showSalesNotif, 15000);
 });
