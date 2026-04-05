@@ -15,7 +15,7 @@
     <div class="glass-card" style="max-width:500px; margin:0 auto; padding: 40px;">
         <div id="status-icon" style="font-size: 3rem; margin-bottom: 20px;">✅</div>
         <h2 id="status-title" style="color:var(--success); margin-bottom: 10px;">Payment Successful!</h2>
-        <p id="status-msg" style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem;">Your AI Intelligence assets are being secured in your permanent library.</p>
+        <p id="status-msg" style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem;">Securing your AI Intelligence assets in your permanent library...</p>
         
         <div id="product-delivery-zone">
             <div style="padding: 20px; border: 1px dashed var(--border); border-radius: 15px;">
@@ -23,16 +23,15 @@
             </div>
         </div>
 
-        <button onclick="window.location.href='index.html'" class="btn-main" style="margin-top: 30px; background: var(--glass); width: 100%; border: 1px solid var(--border);">Go to My Library</button>
+        <button onclick="window.location.href='index.html'" class="btn-main" style="margin-top: 30px; background: var(--glass); width: 100%; border: 1px solid var(--border);">Return to Dashboard</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Standard Config
     const firebaseConfig = {
         apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
         authDomain: "promptvaultusa.firebaseapp.com",
@@ -49,14 +48,15 @@
     onAuthStateChanged(auth, async (user) => {
         const displayArea = document.getElementById('product-delivery-zone');
         const statusMsg = document.getElementById('status-msg');
+        const statusTitle = document.getElementById('status-title');
         
-        // Retrieve temporary session data
+        // 1. Check for product data in memory
         const data = localStorage.getItem('last_clicked_product');
 
         if (!user) {
             displayArea.innerHTML = `
                 <div style="padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 15px; border: 1px solid var(--error);">
-                    <p style="color: var(--error); font-size: 0.85rem;">Please Sign In to claim your assets to your permanent library.</p>
+                    <p style="color: var(--error); font-size: 0.85rem;">Please Sign In to sync your assets to your library.</p>
                 </div>`;
             return;
         }
@@ -65,18 +65,19 @@
             const product = JSON.parse(data);
             
             try {
-                // 1. Permanent Write to Firestore Array (purchasedPrompts)
+                // 2. ROBUST WRITE: Use setDoc with { merge: true } 
+                // This creates the 'users' document if it doesn't exist yet.
                 const userRef = doc(db, "users", user.uid);
-                await updateDoc(userRef, {
+                await setDoc(userRef, {
                     purchasedPrompts: arrayUnion({
                         productName: product.name,
-                        driveLink: product.download, // PDF Link
+                        driveLink: product.download,
                         timestamp: Date.now()
                     })
-                });
+                }, { merge: true });
 
-                // 2. UI Success Update
-                statusMsg.innerText = "Assets successfully synced to your permanent vault.";
+                // 3. UI Success Update
+                statusMsg.innerText = "Assets successfully synced to your account.";
                 displayArea.innerHTML = `
                     <div style="background:rgba(16, 185, 129, 0.1); padding:25px; border-radius:20px; border:1px solid var(--success);">
                         <h4 style="margin-bottom:5px; color: white;">${product.name}</h4>
@@ -88,16 +89,23 @@
                     </div>
                 `;
 
-                // 3. Cleanup
+                // 4. Final Cleanup
                 localStorage.removeItem('pv_cart');
                 localStorage.removeItem('last_clicked_product');
 
             } catch (error) {
-                console.error("Sync Error:", error);
-                displayArea.innerHTML = `<p style="color:red;">Database Sync Error. Your link is: <a href="${product.download}" style="color:white;">Click Here</a></p>`;
+                console.error("Fulfillment Error:", error);
+                statusTitle.innerText = "Syncing Issue";
+                displayArea.innerHTML = `
+                    <div style="padding:20px; background:rgba(239, 68, 68, 0.1); border-radius:15px; border:1px solid #ef4444;">
+                        <p style="color:#ef4444; font-size:0.9rem; margin-bottom:10px;">Database could not be updated, but your download is ready:</p>
+                        <a href="${product.download}" style="color:white; font-weight:800; text-decoration:underline;">CLICK HERE TO DOWNLOAD</a>
+                        <p style="font-size:0.7rem; color:#64748b; margin-top:15px;">Error: ${error.code || 'Permission Denied'}</p>
+                    </div>
+                `;
             }
         } else {
-            displayArea.innerHTML = `<p style="color:#94a3b8;">No pending unlocks found. Check your Library dashboard.</p>`;
+            displayArea.innerHTML = `<p style="color:#94a3b8;">Syncing complete. Visit your Library to view all assets.</p>`;
         }
     });
 </script>
