@@ -36,21 +36,89 @@ window.addToCart = (productId) => {
     cart.push(product);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
     
-    // Update Counter
     document.getElementById('cart-count-pill').innerText = cart.length;
     
-    // Visual Feedback (Sales Notif)
     const notif = document.getElementById('sales-notif');
     document.getElementById('notif-text').innerText = `Added ${product.name} to cart!`;
     notif.style.display = 'flex';
     setTimeout(() => notif.style.display = 'none', 3000);
 };
 
-// Step 2 & 7: Auth & Payment Placeholders
+// Step 5 Extension: Remove from Cart
+window.removeFromCart = (index) => {
+    cart.splice(index, 1);
+    localStorage.setItem('pv_cart', JSON.stringify(cart));
+    renderCartUI(); // Re-render the checkout list
+    document.getElementById('cart-count-pill').innerText = cart.length;
+};
+
+// Step 7: PayPal & Credit Card Integration
+window.initPayPalButtons = () => {
+    const container = document.getElementById("paypal-button-container");
+    if (!container || container.innerHTML !== "") return; 
+
+    paypal.Buttons({
+        style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'checkout' },
+        createOrder: (data, actions) => {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            return actions.order.create({
+                purchase_units: [{ amount: { value: total.toString() } }]
+            });
+        },
+        onApprove: (data, actions) => {
+            return actions.order.capture().then(details => {
+                alert('Success! Your AI Assets are ready for download.');
+                cart = []; 
+                localStorage.removeItem('pv_cart');
+                location.reload(); 
+            });
+        }
+    }).render('#paypal-button-container');
+};
+
+// Step 5/7: Render Checkout List
+window.renderCartUI = () => {
+    const list = document.getElementById('cart-items-list');
+    const totalEl = document.getElementById('cart-total');
+    if (!list) return;
+
+    if (cart.length === 0) {
+        list.innerHTML = "<p style='text-align:center; color:#94a3b8;'>Your vault is empty.</p>";
+        totalEl.innerText = "$0.00";
+        return;
+    }
+
+    list.innerHTML = cart.map((item, index) => `
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+            <span>${item.name}</span>
+            <div>
+                <strong>$${item.price}</strong>
+                <button onclick="removeFromCart(${index})" style="background:none; border:none; color:#ef4444; margin-left:10px; cursor:pointer;">✕</button>
+            </div>
+        </div>
+    `).join('');
+
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    totalEl.innerText = `$${total.toFixed(2)}`;
+};
+
+// Intercept UI.modal to update cart content
+const originalModal = window.UI.modal;
+window.UI.modal = (id, action) => {
+    if (id === 'checkout-overlay' && action === 'open') {
+        renderCartUI();
+        initPayPalButtons();
+    }
+    // Logic for showing/hiding
+    const modal = document.getElementById(id);
+    if(modal) modal.style.display = (action === 'open') ? 'flex' : 'none';
+};
+
+// Step 2: Auth Placeholder
 window.handleEmailAuth = () => {
     const email = document.getElementById('email-field').value;
     if(email) {
-        alert(`Welcome, ${email}! Accessing the Vault...`);
+        alert(`Welcome, ${email}!`);
         UI.modal('auth-overlay', 'close');
         document.getElementById('login-pill').innerText = "Account";
     }
@@ -59,13 +127,9 @@ window.handleEmailAuth = () => {
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
-    
-    // Event Listener for Search Bar
     const searchInput = document.getElementById('vault-search');
     if(searchInput) {
         searchInput.addEventListener('input', (e) => renderProducts(e.target.value));
     }
-    
-    // Sync cart count on load
     document.getElementById('cart-count-pill').innerText = cart.length;
 });
