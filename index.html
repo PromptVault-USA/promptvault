@@ -30,15 +30,27 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Step 1: Fix Nav Font Size */
+        .nav-item { font-size: 1.2rem !important; font-weight: 700; }
+        .nav-item small { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Payment Logo Styling */
+        .payment-methods { display: flex; gap: 15px; justify-content: center; filter: grayscale(1) opacity(0.7); margin-top: 20px; }
+        .payment-methods img { height: 25px; }
+
+        /* Review Styling */
+        .review-card { background: var(--glass); padding: 20px; border-radius: 15px; border: 1px solid var(--border); text-align: left; }
+        .stars { color: #fbbf24; font-size: 0.9rem; margin-bottom: 10px; }
+
+        /* Step 6: Search Bar */
+        .search-container { margin-bottom: 30px; position: relative; }
+        .search-bar { width: 100%; padding: 15px 25px; border-radius: 50px; background: var(--glass); border: 1px solid var(--border); color: white; font-size: 1rem; }
+    </style>
 </head>
 <body>
 
 <div class="spotlight"></div>
-
-<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-    <span id="notif-text" style="font-size: 0.85rem; font-weight: 600; color: white;"></span>
-</div>
 
 <header>
     <div class="header-wrap">
@@ -50,7 +62,7 @@
             <button class="signin-pill" onclick="UI.modal('checkout-overlay', 'open')" style="background:var(--glass); position:relative; padding: 10px 15px; border:1px solid var(--border);">
                 🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
             </button>
-            <button class="signin-pill" id="login-pill">Sign In</button>
+            <button class="signin-pill" id="login-pill" onclick="UI.modal('auth-overlay', 'open')">Sign In</button>
         </div>
     </div>
 </header>
@@ -63,18 +75,27 @@
                 <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
             </div>
             <h2>Command the <span>AI Economy</span></h2>
-            <p class="hero-subheadline">PromptVaultUSA is your all-in-one marketplace for powerful, ready-to-use AI prompts designed to help you start, grow, and monetize online faster.</p>
+            <p class="hero-subheadline">PromptVaultUSA is your all-in-one marketplace for powerful, ready-to-use AI prompts.</p>
+            
+            <div class="payment-methods">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+            </div>
         </div>
 
-        <section class="why-section" style="margin-top: 60px;">
-            <div class="why-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div class="why-item" style="background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
-                    <h4 style="color:var(--accent); margin-top:0;">100% Plug-and-Play</h4>
-                    <p>No more "guessing" what to type. Our <span style="color:white; font-weight:800;">DNA-engineered prompts</span> deliver world-class results.</p>
+        <section style="margin: 60px 0;">
+            <h3 style="text-align: center; margin-bottom: 30px;">Real Results from Users</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"The hyper-realistic prompts for real estate saved me 20 hours of content creation. Worth every penny."</p>
+                    <small>— Alex R., Affiliate Marketer</small>
                 </div>
-                <div class="why-item" style="background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
-                    <h4 style="color:var(--accent); margin-top:0;">Monetization Ready</h4>
-                    <p>Unlock 500+ high-converting prompts for business and marketing—no experience needed.</p>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Finally, prompts that actually bypass detection. My e-commerce blog traffic doubled in 30 days."</p>
+                    <small>— Sarah M., Store Owner</small>
                 </div>
             </div>
         </section>
@@ -83,8 +104,7 @@
             <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 40px;">
                 <span style="color:var(--success); font-weight:800; font-size: 0.9rem; letter-spacing: 2px;">LIMITED TIME GIFT</span>
                 <h2 style="margin: 15px 0; font-size: 2rem;">Claim 2026 AI Starter Kit</h2>
-                <p style="margin-bottom: 20px; color: #94a3b8;">Instant download • Beginner-friendly • No skills needed</p>
-                <button id="claim-kit-btn" class="btn-main" style="max-width:400px; background:var(--success); color:white;">Sign In to Claim Kit</button>
+                <button id="claim-kit-btn" class="btn-main" onclick="UI.modal('auth-overlay', 'open')" style="max-width:400px; background:var(--success); color:white;">Sign In to Claim Kit</button>
             </div>
         </div>
     </div>
@@ -92,42 +112,54 @@
     <div id="browse" class="page">
         <div style="padding: 40px 0;">
             <h2 style="font-size:2.5rem;">The <span class="highlight-text">Asset</span> Vault</h2>
+            
+            <div class="search-container">
+                <input type="text" id="vault-search" class="search-bar" placeholder="Search prompts (e.g. 'Real Estate', 'Cinematic')..." onkeyup="filterProducts()">
+            </div>
+
             <div class="vault-grid" id="product-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:25px;"></div>
         </div>
     </div>
 
     <footer style="margin-top: 80px; padding: 60px 20px; border-top: 1px solid var(--border); text-align: center;">
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 25px; font-size: 0.85rem; font-weight: 600;">
-            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Privacy Policy</a>
-            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Terms of Service</a>
-            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Refund Policy</a>
-            <a href="legal.html" style="color: var(--text-gray); text-decoration: none;">Contact Support</a>
+            <a href="legal.html" style="color: var(--text-gray);">Privacy Policy</a>
+            <a href="legal.html" style="color: var(--text-gray);">Terms</a>
+            <a href="legal.html" style="color: var(--text-gray);">Contact</a>
         </div>
-        <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. Empowering the AI Economy.</p>
+        <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA.</p>
     </footer>
 </div>
 
 <div id="auth-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 7000; align-items: center; justify-content: center; padding: 20px;">
     <div class="auth-card" style="width: 100%; max-width: 400px; text-align: center; background: var(--glass); border: 1px solid var(--border); padding: 40px; border-radius: 30px;">
         <h2 style="margin-bottom: 10px;">Welcome Back</h2>
-        <p style="color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem;">Make your first $100 using AI. Get Instant Access Now.</p>
-        <button onclick="handleGoogle()" class="btn-main" style="background: white; color: black; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800;">
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 25px;">
+            <input type="email" placeholder="Email Address" style="padding:12px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;">
+            <input type="password" placeholder="Password" style="padding:12px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;">
+            <button class="btn-main" style="background:var(--accent);">Sign In</button>
+        </div>
+        <div style="margin: 20px 0; color: #64748b;">OR</div>
+        <button onclick="handleGoogle()" class="btn-main" style="background: white; color: black; display: flex; align-items: center; justify-content: center; gap: 10px;">
             Continue with Google
         </button>
-        <button onclick="UI.modal('auth-overlay', 'close')" style="background: none; border: none; color: var(--accent); margin-top: 20px; cursor: pointer;">Maybe Later</button>
+        <button onclick="UI.modal('auth-overlay', 'close')" style="background: none; border: none; color: var(--accent); margin-top: 20px; cursor: pointer;">Close</button>
     </div>
 </div>
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 6000; align-items: center; justify-content: center;">
     <div class="auth-card" style="width: 95%; max-width: 450px;">
-        <h3 style="margin-top:0; text-align:center;">Your Selection</h3>
-        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto; margin: 20px 0;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4rem; border-top:1px solid var(--border); padding-top:15px; margin-bottom:25px;">
+        <h3 style="margin-top:0; text-align:center;">Checkout</h3>
+        <div id="cart-items-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:800; border-top:1px solid var(--border); padding-top:15px; margin-bottom:20px;">
             <span>Total:</span>
             <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
-        <button onclick="processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-bottom:15px;">Checkout (PayPal)</button>
-        <center><span style="color: #94a3b8; cursor:pointer;" onclick="UI.modal('checkout-overlay', 'close')">Close Window</span></center>
+        
+        <button onclick="processPaypalCheckout()" class="btn-main" style="background:#0070ba; margin-bottom:10px;">Pay with PayPal</button>
+        <button onclick="UI.modal('credit-card-fields', 'open')" class="btn-main" style="background:var(--glass); border:1px solid var(--border);">Pay with Debit/Credit Card</button>
+        
+        <center><span style="color: #94a3b8; cursor:pointer; display:block; margin-top:20px;" onclick="UI.modal('checkout-overlay', 'close')">Cancel</span></center>
     </div>
 </div>
 
@@ -140,5 +172,16 @@
 </nav>
 
 <script type="module" src="js/app.js"></script>
+<script>
+    // Local Filter Function for Step 6
+    function filterProducts() {
+        const query = document.getElementById('vault-search').value.toLowerCase();
+        const items = document.querySelectorAll('.product-card');
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+            item.style.display = text.includes(query) ? 'block' : 'none';
+        });
+    }
+</script>
 </body>
 </html>
