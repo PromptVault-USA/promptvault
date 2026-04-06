@@ -1,6 +1,6 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v2.5)
- * Status: Audited & Hardened
+ * PROJECT MEMORY: Main Entry Point (v2.6)
+ * Status: Blog Optimized & Audited
  * Responsibility: Orchestrating Services & Secure Auth-UI Bridging.
  */
 
@@ -26,7 +26,6 @@ window.openCheckout = () => {
 };
 
 // --- 2. Secure User Provisioning ---
-// Fixed: Added a simple lock to prevent double-calls during login
 let isProvisioning = false;
 async function ensureUserProfile(user) {
     if (isProvisioning) return;
@@ -63,7 +62,7 @@ onAuthStateChanged(auth, async (user) => {
         if (loginBtn) {
             loginBtn.innerText = "Logout";
             loginBtn.onclick = () => {
-                localStorage.removeItem('pv_cart'); // Privacy Fix: Clear cart on logout
+                localStorage.removeItem('pv_cart'); 
                 signOut(auth);
             };
         }
@@ -76,13 +75,13 @@ onAuthStateChanged(auth, async (user) => {
     } else {
         if (loginBtn) {
             loginBtn.innerText = "Sign In";
-            loginBtn.onclick = () => authOverlay.style.display = 'flex';
+            loginBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
         }
         if (kitBtn) {
             kitBtn.innerText = "Get Instant Access Now";
-            kitBtn.onclick = () => authOverlay.style.display = 'flex';
+            kitBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
         }
-        UIService.refreshCartUI(); // Ensure UI resets for guests
+        UIService.refreshCartUI(); 
     }
 });
 
@@ -104,14 +103,15 @@ window.handleEmailAuth = async (mode) => {
         if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, pass);
         else await signInWithEmailAndPassword(auth, email, pass);
     } catch(e) { 
-        UIService.showNotification("Auth Error: Check your credentials.", 'error'); 
+        UIService.showNotification("Auth Error: Check credentials.", 'error'); 
     }
 };
 
 // --- 4. Secure Commerce Logic ---
 window.addToCart = (productStr) => {
     if (!auth.currentUser) {
-        document.getElementById('auth-overlay').style.display = 'flex';
+        const overlay = document.getElementById('auth-overlay');
+        if(overlay) overlay.style.display = 'flex';
         return UIService.showNotification("Please Sign In to shop.", "info");
     }
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -134,18 +134,17 @@ window.processPaypalCheckout = async () => {
     try {
         UIService.showNotification("Securing transaction...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout(cart);
-        
         const itemNames = cart.map(i => i.name).join(', ');
-        // We don't remove cart yet in case payment fails/cancels
         SecurityService.initiatePayPal(txID, total, itemNames);
     } catch (e) { 
-        UIService.showNotification("Checkout Failed. Try again.", "error"); 
+        UIService.showNotification("Checkout Failed.", "error"); 
     }
 };
 
 window.processDirectPurchase = async (productStr) => {
     if (!auth.currentUser) {
-        document.getElementById('auth-overlay').style.display = 'flex';
+        const overlay = document.getElementById('auth-overlay');
+        if(overlay) overlay.style.display = 'flex';
         return;
     }
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -158,13 +157,17 @@ window.processDirectPurchase = async (productStr) => {
     }
 };
 
-// --- 5. Initialize ---
+// --- 5. Initialize & Routing ---
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Improved Deep Linking
+    // NEW: Logic for "Back to Stories" and SPA consistency
     if (urlParams.get('page') === 'library') UIService.changePage('library');
     else if (urlParams.get('action') === 'browse') UIService.changePage('browse');
     else if (urlParams.get('action') === 'checkout') window.openCheckout();
+    else if (urlParams.get('action') === 'blog') {
+        // If blog is a section in index.html, trigger it here:
+        // UIService.changePage('blog-section-id'); 
+    }
 });
