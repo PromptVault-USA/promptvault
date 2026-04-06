@@ -24,15 +24,15 @@ body {
     line-height: 1.6;
 }
 
-/* 🔦 The Spotlight Effect */
+/* 🔦 The Spotlight Effect - Boosted for Visual Depth */
 .spotlight {
     position: fixed;
     top: -100px;
     left: 50%;
     transform: translateX(-50%);
-    width: 600px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 75%);
     pointer-events: none;
     z-index: -1;
 }
@@ -41,14 +41,14 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 120px 20px; /* Increased top padding for header clearance */
+    padding: 120px 20px 140px; /* Increased bottom padding to clear the Pill Nav */
 }
 
 header {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(15px);
     z-index: 5000;
     border-bottom: 1px solid var(--border);
@@ -69,15 +69,16 @@ header {
     border-radius: 8px;
 }
 
-/* 🚀 HERO SECTION (Fixes the "Awful" Desktop Look) */
+/* 🚀 HERO SECTION (Optimized Spacing from Video Audit) */
 #home {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 70vh; /* Centers content vertically in the viewport */
+    min-height: 75vh;
     position: relative;
+    gap: 15px; /* Consistent spacing between elements */
 }
 
 .hero-glow {
@@ -86,26 +87,26 @@ header {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    max-width: 800px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
-    filter: blur(60px);
+    max-width: 900px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+    filter: blur(80px);
     z-index: -1;
 }
 
 #home h1 {
-    font-size: clamp(2.2rem, 8vw, 4rem); /* Responsive sizing */
+    font-size: clamp(2.4rem, 8vw, 4.5rem);
     font-weight: 800;
     letter-spacing: -2px;
     line-height: 1.1;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #home p {
-    max-width: 650px;
-    font-size: clamp(1rem, 2vw, 1.1rem);
+    max-width: 680px;
+    font-size: clamp(1rem, 2vw, 1.15rem);
     color: var(--text-gray);
-    margin-bottom: 35px;
+    margin-bottom: 25px;
 }
 
 /* 💎 Glass Cards */
@@ -115,33 +116,35 @@ header {
     border: 1px solid var(--border);
     border-radius: 24px;
     padding: 30px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     border-color: var(--secondary);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-/* 🚀 Buttons */
+/* 🚀 Buttons - Added Visual Breathing Room */
 .btn-main {
-    padding: 16px 32px;
+    padding: 18px 36px;
     border-radius: 50px;
     border: none;
     font-weight: 800;
-    font-size: 1rem;
+    font-size: 1.05rem;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     background: var(--accent);
     color: white;
-    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+    margin-bottom: 30px; /* Space above payment icons from video */
 }
 
 .btn-main:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5);
     filter: brightness(1.1);
 }
 
@@ -155,13 +158,11 @@ header {
     transition: 0.2s;
 }
 
-.signin-pill:hover { opacity: 0.9; transform: scale(1.05); }
-
 /* 📂 The Vault Grid */
 .vault-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 30px;
     margin-top: 40px;
 }
 
@@ -175,24 +176,24 @@ header {
     animation: fadeIn 0.4s ease-out;
 }
 
-/* FIXED BOTTOM PILL NAVIGATION */
+/* FIXED BOTTOM PILL NAVIGATION - Hardened against Overlap */
 .bottom-nav {
     position: fixed;
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(15, 23, 42, 0.96);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
-    padding: 10px 15px;
+    padding: 12px 10px;
     border-radius: 100px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 92%;
-    max-width: 420px;
+    width: 94%;
+    max-width: 440px;
     z-index: 6000;
-    box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.7);
 }
 
 .nav-item {
@@ -204,7 +205,7 @@ header {
     text-decoration: none;
     color: var(--text-gray);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.3s;
     min-width: 0;
 }
 
@@ -213,7 +214,7 @@ header {
 }
 
 .nav-item span {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     margin-bottom: 2px;
 }
 
@@ -221,8 +222,18 @@ header {
     font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     white-space: nowrap;
+}
+
+/* Payment Badges Alignment from Video Audit */
+.payment-badges {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+    margin-top: 10px;
 }
 
 @keyframes fadeIn {
