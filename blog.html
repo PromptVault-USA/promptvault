@@ -3,34 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Side Hustles 2026 | PromptVault USA</title>
+    <title>AI Intelligence Blog | PromptVault USA</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* CRITICAL UI PATCH: Fixes the cramped bottom nav seen in your screenshot */
-        .bottom-nav .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-width: 0;
-            text-align: center;
-        }
-        .bottom-nav small {
-            white-space: nowrap; /* Stops labels from overlapping */
-            font-size: 0.65rem !important;
-            margin-top: 2px;
-            display: block;
-            font-weight: 800;
-        }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 40px; }
+        .blog-card { background: var(--glass); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; }
+        .blog-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .blog-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid var(--border); }
+        .blog-info { padding: 20px; flex-grow: 1; }
+        .blog-tag { color: var(--accent); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Nav Fix */
+        .bottom-nav .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+        .bottom-nav small { white-space: nowrap; font-size: 0.65rem !important; margin-top: 2px; font-weight: 800; }
     </style>
 </head>
 <body>
 <div class="spotlight"></div>
 
-<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px);">
     <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
     <span id="notif-text" style="font-size: 0.82rem; font-weight: 600; color: white;"></span>
 </div>
@@ -38,7 +31,7 @@
 <header>
     <div class="header-wrap">
         <div onclick="window.location.href='index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-            <img src="logo.png" class="logo-box" onerror="this.src='https://via.placeholder.com/40?text=PV'">
+            <img src="logo.png" class="logo-box">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
         <div style="display: flex; gap: 15px; align-items: center;">
@@ -49,37 +42,29 @@
     </div>
 </header>
 
-<div class="container" style="padding-top: 120px; padding-bottom: 40px; max-width: 800px;">
-    <a href="./blog.html" style="color:var(--accent); text-decoration:none; font-weight:800; display: inline-flex; align-items: center; gap: 8px;">
-        <span style="font-size: 1.2rem;">&larr;</span> BACK TO ALL STORIES
-    </a>
-    
-    <h1 style="font-size:3rem; margin-top:20px; line-height:1.1;">5 High-Paying <span class="highlight-text">AI Side Hustles</span> You Can Start Today</h1>
-    <p style="color:#94a3b8; font-size:1.1rem; margin-top:20px;">The AI Gold Rush of 2026 isn't about building the tools—it's about knowing how to <strong>command</strong> them. Here is how "Prompt Architects" are quietly earning $2,000+ monthly.</p>
+<div class="container" style="padding-top: 120px; padding-bottom: 100px;">
+    <h2 style="font-size: 3rem; line-height: 1.1;">The AI <span class="highlight-text">Intelligence</span> Feed</h2>
+    <p style="color: #94a3b8; margin-top: 10px; font-size: 1.1rem;">Strategies, Side Hustles, and Prompt Engineering Secrets.</p>
 
-    <h2 style="color:white; margin-top:40px;">The 2026 Opportunity Stack</h2>
-    <ul style="color:#94a3b8; line-height:2; margin-bottom: 30px;">
-        <li><strong style="color:white;">1. Faceless TikTok Affiliate:</strong> Generate hyper-realistic visual stories.</li>
-        <li><strong style="color:white;">2. Real Estate Narrative Architect:</strong> Scroll-stopping emotional stories for high-end agents.</li>
-        <li><strong style="color:white;">3. AI Brand Voice Tuning:</strong> Help businesses sound human.</li>
-        <li><strong style="color:white;">4. Specialized Stock Packs:</strong> Sell curated, high-res AI image sets.</li>
-        <li><strong style="color:white;">5. Digital Intelligence Packs:</strong> Bundle niche prompts into passive products.</li>
-    </ul>
+    <div class="blog-grid">
+        <div class="blog-card" onclick="window.location.href='blog-side-hustles.html'">
+            <img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=600&auto=format&fit=crop" class="blog-img">
+            <div class="blog-info">
+                <span class="blog-tag">Monetization</span>
+                <h3 style="color:white; margin: 10px 0;">5 High-Paying AI Side Hustles You Can Start Today</h3>
+                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5;">Learn how Prompt Architects are quietly earning $2,000+ monthly using simple AI workflows.</p>
+            </div>
+        </div>
 
-    <div style="background:var(--glass); border:2px solid var(--accent); border-radius:20px; padding:30px; margin:40px 0;">
-        <h4 style="color:var(--accent); margin-top:0;">THE HUSTLE FORMULA:</h4>
-        <p style="color:white; font-size: 0.9rem; line-height: 1.6;">
-            Success in 2026 is simple: <strong>Problem + Prompt = Profit.</strong> Don't waste time "guessing" what works. Use a precision-engineered prompt from our vault to deliver results in seconds.
-        </p>
+        <div class="blog-card" style="opacity: 0.6; cursor: default;">
+            <div style="aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: 800;">COMING SOON</div>
+            <div class="blog-info">
+                <span class="blog-tag">Tutorial</span>
+                <h3 style="color:white; margin: 10px 0;">Mastering Hyper-Realistic Real Estate AI</h3>
+                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5;">A deep dive into lighting and camera settings for Midjourney 2026.</p>
+            </div>
+        </div>
     </div>
-
-    <div style="text-align:center; margin-top:60px;">
-        <button onclick="window.location.href='index.html?action=browse'" class="btn-main" style="background:var(--success); color:white; padding: 20px 40px; cursor:pointer; border:none; border-radius:50px; font-weight:800; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);">Start Your Hustle Now &rarr;</button>
-    </div>
-
-    <footer style="margin-top: 80px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center;">
-        <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved.</p>
-    </footer>
 </div>
 
 <nav class="bottom-nav">
@@ -92,6 +77,5 @@
 </nav>
 
 <script type="module" src="js/main.js"></script>
-
 </body>
 </html>
