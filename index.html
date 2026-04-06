@@ -10,26 +10,66 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
+        /* CORE PAGE ENGINE */
+        .page { 
+            display: none; 
+            width: 100%; 
+            opacity: 0; 
+            transition: opacity 0.4s ease;
+            flex-direction: column;
+            align-items: center;
+        }
+        .page.active { 
+            display: flex; 
+            opacity: 1; 
+        }
+
         /* HERO & SPACING */
-        #home { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 85vh; position: relative; padding: 20px; }
-        .hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
-        #home h2 { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; line-height: 1.1; }
+        #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; }
+        .hero-glow { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
+        #home h2 { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; line-height: 1.1; margin-top: 20px; }
         .sub-accent { color: var(--secondary); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: block; }
         .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1rem; line-height: 1.6; }
 
         /* FAQ / LEGAL STYLE */
         details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; text-align: left; width: 100%; max-width: 700px; margin-inline: auto; }
         summary { font-weight: 800; cursor: pointer; list-style: none; outline: none; color: white; }
-        .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 50px; text-align: center; padding: 20px; border-top: 1px solid var(--border); width: 100%; }
+        .legal-text { font-size: 0.7rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 25px; border-top: 1px solid var(--border); width: 100%; opacity: 0.6; }
 
-        /* NAV STABILITY (Hardened against Overlap) */
-        .bottom-nav { width: 92% !important; max-width: 450px !important; display: flex !important; justify-content: space-around !important; padding: 10px 5px !important; z-index: 10000; }
-        .bottom-nav .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; cursor: pointer; color: var(--text-gray); transition: 0.3s; }
+        /* MOBILE NAV FIX (Prevent Cutoff) */
+        .bottom-nav { 
+            width: 94% !important; 
+            max-width: 420px !important; 
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            display: flex !important; 
+            justify-content: space-around !important; 
+            padding: 10px 0 !important; 
+            bottom: 20px !important;
+            border-radius: 20px !important;
+        }
+        .bottom-nav .nav-item { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            cursor: pointer; 
+            color: var(--text-gray);
+            min-width: 65px; /* Ensures space for labels */
+        }
         .bottom-nav .nav-item.active { color: var(--secondary); }
-        .bottom-nav .nav-item small { white-space: nowrap; font-size: 0.65rem !important; font-weight: 800; margin-top: 4px; text-transform: uppercase; }
-        
-        .page { display: none; width: 100%; }
-        .page.active { display: flex; flex-direction: column; }
+        .bottom-nav .nav-item span { font-size: 1.2rem; }
+        .bottom-nav .nav-item small { 
+            white-space: nowrap; 
+            font-size: 0.6rem !important; 
+            font-weight: 800; 
+            margin-top: 4px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* VAULT GRID FIX */
+        .vault-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
     </style> 
 
     <script type="module">
@@ -96,21 +136,23 @@
         };
 
         window.changePage = (id, el) => {
-            // Hides everything strictly
+            // HIDE ALL PAGES STICKLY
             document.querySelectorAll('.page').forEach(p => {
-                p.style.display = 'none';
                 p.classList.remove('active');
+                p.style.display = 'none';
             });
-            // Shows targeted page
-            const activePage = document.getElementById(id);
-            if(activePage) {
-                activePage.style.display = 'flex';
-                activePage.classList.add('active');
+            // SHOW THE ONE PAGE
+            const target = document.getElementById(id);
+            if (target) {
+                target.style.display = 'flex';
+                // Small timeout to allow display:flex to register before opacity transition
+                setTimeout(() => { target.classList.add('active'); }, 10);
             }
-            // Nav update
+            // NAV UPDATE
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             if(el) el.classList.add('active');
-            // Logic triggers
+            
+            // LOGIC TRIGGERS
             if(id === 'browse' && window.allProducts.length === 0) {
                 fetch('products.json').then(res => res.json()).then(data => {
                     window.allProducts = data;
@@ -118,7 +160,7 @@
                 });
             }
             if (id === 'library') window.loadUserLibrary();
-            window.scrollTo(0,0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -142,7 +184,7 @@
 
 <div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
     <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-    <span id="notif-text" style="font-size: 0.82rem; font-weight: 600; color: white;"></span>
+    <span id="notif-text" style="font-size: 0.8rem; font-weight: 600; color: white;"></span>
 </div>
 
 <header>
@@ -151,59 +193,51 @@
             <img src="logo.png" class="logo-box">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <button class="signin-pill" onclick="window.openCheckout()" style="background:var(--glass); position:relative; padding: 10px 15px; border:1px solid var(--border);">
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <button class="signin-pill" onclick="window.openCheckout()" style="background:var(--glass); position:relative; padding: 10px 12px; border:1px solid var(--border);">
                 🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
             </button>
-            <button class="signin-pill" id="login-pill">Sign In</button>
+            <button class="signin-pill" id="login-pill" style="padding: 10px 18px;">Sign In</button>
         </div>
     </div>
 </header> 
 
 <div class="container">
-    <div id="home" class="page active" style="display: flex;">
+    <div id="home" class="page active" style="display:flex;">
         <div class="hero-glow"></div>
         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border);">
-            <span style="color: #fbbf24;">★★★★★</span>
-            <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8;">TRUSTED BY 20,000+ CUSTOMERS</span>
+            <span style="color: #fbbf24; font-size: 0.8rem;">★★★★★</span>
+            <span style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px;">20,000+ CUSTOMERS</span>
         </div>
         
         <h2>Command the <span class="highlight-text">AI Economy</span></h2>
         <span class="sub-accent">Make your first $100 using AI</span>
-        <p class="hero-subheadline">PromptVaultUSA is your all-in-one marketplace for powerful, ready-to-use AI prompts designed to help you start, grow, and monetize online faster.</p> 
-        <button id="claim-kit-btn" class="btn-main" style="background:var(--success); padding: 18px 45px; font-size: 1rem;">Unlock The Vault</button>
+        <p class="hero-subheadline">The all-in-one marketplace for ready-to-use AI prompts designed to help you start, grow, and monetize online faster.</p> 
+        <button id="claim-kit-btn" class="btn-main" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
         
         <div style="margin-top: 60px; width: 100%;">
-            <h3 style="margin-bottom: 20px;">🔥 Featured <span class="highlight-text">Vaults</span></h3>
-            <div id="featured-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
-                <div class="glass-card" onclick="window.changePage('browse')" style="padding:15px; cursor:pointer;">
+            <h3 style="margin-bottom: 20px; font-size: 1.2rem;">🔥 Featured <span class="highlight-text">Vaults</span></h3>
+            <div id="featured-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+                <div class="glass-card" onclick="window.changePage('browse')" style="padding:12px; cursor:pointer;">
                     <img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=200" style="width:100%; border-radius:8px;">
-                    <small style="display:block; margin-top:8px; font-weight:800;">TikTok Affiliate</small>
+                    <small style="display:block; margin-top:8px; font-weight:800; font-size:0.7rem;">TikTok Affiliate</small>
                 </div>
-                <div class="glass-card" onclick="window.changePage('browse')" style="padding:15px; cursor:pointer;">
+                <div class="glass-card" onclick="window.changePage('browse')" style="padding:12px; cursor:pointer;">
                     <img src="https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=200" style="width:100%; border-radius:8px;">
-                    <small style="display:block; margin-top:8px; font-weight:800;">Real Estate Leads</small>
-                </div>
-                <div class="glass-card" onclick="window.changePage('browse')" style="padding:15px; cursor:pointer;">
-                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=200" style="width:100%; border-radius:8px;">
-                    <small style="display:block; margin-top:8px; font-weight:800;">Midjourney Pack</small>
+                    <small style="display:block; margin-top:8px; font-weight:800; font-size:0.7rem;">Real Estate Leads</small>
                 </div>
             </div>
         </div>
 
         <div style="margin-top: 80px; width: 100%;">
-            <h3 style="margin-bottom: 30px;">FAQ <span class="highlight-text">& Legal</span></h3>
+            <h3 style="margin-bottom: 25px; font-size: 1.2rem;">FAQ <span class="highlight-text">& Legal</span></h3>
             <details>
                 <summary>How do I receive my prompts?</summary>
-                <p style="padding-top:10px; font-size:0.9rem; color:var(--text-gray);">After purchase, assets appear instantly in your "Library" tab. You will also receive a PDF guide via email.</p>
+                <p style="padding-top:10px; font-size:0.85rem; color:var(--text-gray);">Instantly via your "Library" tab after purchase. You also get an email backup.</p>
             </details>
             <details>
-                <summary>Is there a refund policy?</summary>
-                <p style="padding-top:10px; font-size:0.9rem; color:var(--text-gray);">Due to digital nature, all sales are final. We offer lifetime updates for all purchased vaults.</p>
-            </details>
-            <details>
-                <summary>Legal Disclaimer</summary>
-                <p style="padding-top:10px; font-size:0.8rem; color:var(--text-gray);">Independent provider of AI tools. Results vary based on individual effort.</p>
+                <summary>Refund Policy</summary>
+                <p style="padding-top:10px; font-size:0.85rem; color:var(--text-gray);">Digital assets are final sale. We provide lifetime updates for all products.</p>
             </details>
         </div>
 
@@ -211,16 +245,16 @@
     </div> 
 
     <div id="browse" class="page">
-        <div style="padding: 40px 0; width: 100%;">
-            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:30px; outline:none;">
+        <div style="padding: 30px 0; width: 100%;">
+            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:20px; outline:none;">
             <div class="vault-grid" id="product-list"></div>
         </div>
     </div>
 
     <div id="library" class="page">
-        <div style="padding: 40px 0; width: 100%;">
-            <h2 style="font-size:2.5rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
-            <div id="user-library-grid" style="margin-top:30px;"></div>
+        <div style="padding: 30px 0; width: 100%;">
+            <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
+            <div id="user-library-grid" style="margin-top:20px;"></div>
         </div>
     </div>
 </div> 
@@ -235,23 +269,23 @@
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 11000; align-items: center; justify-content: center;">
     <div class="glass-card" style="width: 90%; max-width: 450px;">
         <h3 style="text-align: center; margin-bottom: 20px;">Your Shopping Cart</h3>
-        <div id="cart-items-list" style="max-height: 300px; overflow-y: auto;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.2rem; border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
+        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.1rem; border-top:1px solid var(--border); padding-top:15px; margin-top:15px;">
             <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
         <button onclick="window.processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-top:20px; width: 100%;">Checkout with PayPal</button>
-        <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%;">Continue Browsing</button>
+        <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; font-size:0.8rem;">Continue Browsing</button>
     </div>
 </div>
 
 <div id="auth-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 12000; align-items: center; justify-content: center;">
     <div class="glass-card" style="width: 90%; max-width: 400px; text-align: center;">
-        <h2>Secure Access</h2>
+        <h2 style="margin-bottom:15px;">Secure Access</h2>
         <input type="email" id="auth-email" placeholder="Email" class="auth-input">
         <input type="password" id="auth-pass" placeholder="Password" class="auth-input">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 15px 0;">
-            <button onclick="window.handleEmailAuth('login')" class="btn-main" style="background:var(--accent); padding:12px;">Login</button>
-            <button onclick="window.handleEmailAuth('signup')" class="btn-main" style="background:var(--glass); padding:12px;">Join</button>
+            <button onclick="window.handleEmailAuth('login')" class="btn-main" style="background:var(--accent);">Login</button>
+            <button onclick="window.handleEmailAuth('signup')" class="btn-main" style="background:var(--glass);">Join</button>
         </div>
         <button onclick="window.handleGoogle()" class="btn-main" style="background: white; color: black; width: 100%;">Continue with Google</button>
     </div>
@@ -270,7 +304,7 @@
         modal.style.display = 'flex';
         list.innerHTML = cart.map((item, idx) => `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
-                <span style="font-size:0.85rem;">${item.name}</span>
+                <span style="font-size:0.8rem;">${item.name}</span>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <strong>$${item.price.toFixed(2)}</strong>
                     <button onclick="window.removeFromCart(${idx})" style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; cursor:pointer; font-weight:800; padding:2px 8px; border-radius:5px;">✕</button>
@@ -299,7 +333,7 @@
         const list = document.getElementById('product-list');
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            return `<div class="glass-card" style="display:flex; flex-direction:column;"><img src="${p.img}" style="width:100%; border-radius:12px; margin-bottom:15px;"><div style="font-weight:800;">${p.name}</div><div style="color:var(--secondary); font-weight:800; font-size:1.2rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div><button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); margin-bottom:8px;">Buy Now</button><button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--glass); font-size:0.8rem;">+ Cart</button></div>`;
+            return `<div class="glass-card" style="display:flex; flex-direction:column;"><img src="${p.img}" style="width:100%; border-radius:12px; margin-bottom:15px;"><div style="font-weight:800; font-size:0.85rem;">${p.name}</div><div style="color:var(--secondary); font-weight:800; font-size:1.1rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div><button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); margin-bottom:8px;">Buy Now</button><button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--glass); font-size:0.75rem;">+ Cart</button></div>`;
         }).join('');
     };
 
