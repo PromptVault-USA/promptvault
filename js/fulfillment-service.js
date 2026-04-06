@@ -1,11 +1,22 @@
 /**
- * PROJECT MEMORY: Fulfillment Service
+ * PROJECT MEMORY: Fulfillment Service (v2.8)
+ * Status: Hardened & Race-Condition Protected
  * Responsibility: Verifying PayPal transactions and unlocking Library assets.
  * REUSES: auth, db from firebase-config.js
  */
 
 import { auth, db } from './firebase-config.js';
 import { doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Helper: Waits for Firebase Auth to initialize before failing
+const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            unsubscribe();
+            resolve(user);
+        }, reject);
+    });
+};
 
 export const FulfillmentService = {
     /**
@@ -15,50 +26,56 @@ export const FulfillmentService = {
     verifyAndDeliver: async (txID) => {
         if (!txID) throw new Error("No transaction ID provided.");
 
-        // 1. Wait for Auth to initialize (Safety Check)
-        const user = auth.currentUser;
-        if (!user) throw new Error("User session not found. Please log in.");
+        // 1. Wait for Auth to initialize (Fixes the 'null user' race condition)
+        const user = await getCurrentUser();
+        if (!user) throw new Error("🔒 Please sign in to verify your purchase.");
 
-        // 2. Fetch the pending order from the 'orders' collection
+        // 2. Fetch the pending order
         const orderRef = doc(db, "orders", txID);
         const orderSnap = await getDoc(orderRef);
 
         if (!orderSnap.exists()) {
-            throw new Error("Order record not found.");
+            throw new Error("Order record not found in the Vault.");
         }
 
         const orderData = orderSnap.data();
 
-        // 3. Security: Ensure the order belongs to the logged-in user
+        // 3. Security: User Mismatch Check
         if (orderData.uid !== user.uid) {
-            throw new Error("Security Violation: User mismatch.");
+            throw new Error("Security Violation: This order belongs to another account.");
         }
 
-        // 4. Check if already completed (Prevents double-claiming on refresh)
+        // 4. Check if already completed (Prevents double-claiming)
+        // Standardize the item keys for the UI
+        const normalizedItems = orderData.items.map(item => ({
+            productName: item.name || item.productName, // Support both schemas
+            driveLink: item.driveLink || "https://promptvaultusa.shop/help",
+            timestamp: item.timestamp || Date.now()
+        }));
+
         if (orderData.status === 'completed') {
-            return { status: 'already_done', items: orderData.items };
+            return { status: 'already_done', items: normalizedItems };
         }
 
         // 5. Success! Unlock the items in the User's Profile
         const userRef = doc(db, "users", user.uid);
         
-        // Map products to the format the Library expects
-        const newAssets = orderData.items.map(item => ({
-            productName: item.name,
-            driveLink: item.driveLink || "https://promptvaultusa.shop/help", // Fallback
-            timestamp: Date.now()
-        }));
+        try {
+            // Update the User document with new assets
+            await updateDoc(userRef, {
+                purchasedPrompts: arrayUnion(...normalizedItems)
+            });
 
-        // Update the User document and the Order document simultaneously
-        await updateDoc(userRef, {
-            purchasedPrompts: arrayUnion(...newAssets)
-        });
+            // Mark the Order as delivered
+            await updateDoc(orderRef, {
+                status: 'completed',
+                deliveredAt: new Date().toISOString()
+            });
 
-        await updateDoc(orderRef, {
-            status: 'completed',
-            deliveredAt: new Date().toISOString()
-        });
-
-        return { status: 'success', items: newAssets };
+            return { status: 'success', items: normalizedItems };
+        } catch (e) {
+            console.error("Database Update Failed:", e);
+            throw new Error("Vault sync failed. Please refresh the page.");
+        }
     }
 };
