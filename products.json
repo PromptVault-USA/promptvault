@@ -227,6 +227,13 @@
     "desc": "Connection messages and personal branding prompts for LinkedIn.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
     "img": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=400&h=400&auto=format&fit=crop",
-    "download": "https://drive.google.com/file/d/1ELQeKBDWlrPBkN0PZgeub-iVunkx7EV0/view?usp=drivesdk"
-  }
-]
+    "download": "https://drive.google.com/file/d/1ELQeKBDWlrPBkN0PZgeub-iVunkx7EV0/view?usp=drivesdk
+},
+  {
+  "id": "test-999",
+  "name": "🛠️ System Test Asset",
+  "price": 0.01,
+  "driveLink": "https://drive.google.com/file/d/YOUR_TEST_PDF_LINK",
+  "img": "https://via.placeholder.com/400?text=TEST+ITEM"
+}
+{
