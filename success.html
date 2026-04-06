@@ -18,23 +18,26 @@
             margin: 20px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .success-item { background:rgba(16, 185, 129, 0.05); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px; text-align:left; display:flex; justify-content:space-between; align-items:center; }
     </style>
 </head>
 <body>
 <div class="spotlight"></div>
 
-<div class="container" style="text-align:center; padding-top:100px;">
-    <div class="glass-card" style="max-width:500px; margin:0 auto; padding: 40px;">
-        <div id="status-icon" style="font-size: 3rem; margin-bottom: 20px;">⏳</div>
-        <h2 id="status-title" style="color:var(--success); margin-bottom: 10px;">Verifying Payment...</h2>
-        <p id="status-msg" style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem;">Securing your AI Intelligence assets in your permanent vault.</p>
+<div class="container" style="text-align:center; padding-top:100px; padding-bottom: 60px;">
+    <div class="glass-card" style="max-width:500px; margin:0 auto; padding: 40px; border: 1px solid var(--border); border-radius: 32px;">
+        <div id="status-icon" style="font-size: 3.5rem; margin-bottom: 20px;">⏳</div>
+        <h2 id="status-title" style="color:var(--success); margin-bottom: 10px; font-weight: 800;">Verifying Payment...</h2>
+        <p id="status-msg" style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem; line-height: 1.6;">Securing your AI Intelligence assets in your permanent vault.</p>
         
         <div id="product-delivery-zone">
             <div id="loading-spinner" class="loader"></div>
-            <p id="verification-text" style="color: var(--text-gray); font-size: 0.8rem;">Executing secure database handshake...</p>
+            <p id="verification-text" style="color: #64748b; font-size: 0.8rem; font-weight: 600;">Executing secure database handshake...</p>
         </div>
 
-        <button onclick="window.location.href='index.html?page=library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--glass); width: 100%; border: 1px solid var(--border); display: none;">Go to My Library</button>
+        <button onclick="window.location.href='index.html?page=library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--success); color: white; width: 100%; border: none; display: none; padding: 18px; border-radius: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">View in My Library</button>
+        
+        <p style="margin-top: 25px; font-size: 0.75rem; color: #475569;">Transaction ID: <span id="display-tx" style="font-family: monospace; color: var(--accent);">---</span></p>
     </div>
 </div>
 
@@ -49,57 +52,70 @@
         const statusMsg = document.getElementById('status-msg');
         const statusIcon = document.getElementById('status-icon');
         const finishBtn = document.getElementById('finish-btn');
+        const txDisplay = document.getElementById('display-tx');
         
         const urlParams = new URLSearchParams(window.location.search);
         const txID = urlParams.get('tx');
 
+        if (txID) txDisplay.innerText = txID;
+
+        // 1. Auth Guard
         if (!user) {
+            statusIcon.innerText = "🔒";
+            statusTitle.innerText = "Sign In Required";
             displayArea.innerHTML = `
-                <div style="padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 15px; border: 1px solid var(--error);">
-                    <p style="color: var(--error); font-size: 0.85rem;">🔒 Please Sign In to verify your purchase.</p>
+                <div style="padding: 20px; background: rgba(239, 68, 68, 0.05); border-radius: 15px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                    <p style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">Please Sign In on the main page to unlock your purchased assets.</p>
+                    <button onclick="window.location.href='index.html'" class="btn-main" style="margin-top:15px; font-size:0.7rem; padding:10px;">Go to Login</button>
                 </div>`;
             return;
         }
 
+        // 2. Transaction Guard
         if (!txID) {
-            statusTitle.innerText = "Transaction ID Missing";
+            statusTitle.innerText = "ID Not Found";
             statusIcon.innerText = "❌";
-            displayArea.innerHTML = `<p style="color:#94a3b8;">We couldn't find a valid transaction ID. If you just paid, please check your email or contact support.</p>`;
+            statusTitle.style.color = "#ef4444";
+            displayArea.innerHTML = `<p style="color:#94a3b8; font-size:0.85rem;">We couldn't detect a valid transaction ID. If you completed payment, your assets will sync automatically in the background.</p>`;
             return;
         }
 
         try {
-            // REUSE: existing fulfillment logic from fulfillment-service.js
+            // 3. ATTEMPT FULFILLMENT
+            // Uses the txID locked by SecurityService.js
             const result = await FulfillmentService.verifyAndDeliver(txID);
 
-            // Update UI on Success
-            statusIcon.innerText = "✅";
-            statusTitle.innerText = "Success!";
-            statusMsg.innerText = "Your assets have been unlocked and synced to your vault.";
+            // 4. SUCCESS UI
+            statusIcon.innerText = "🚀";
+            statusTitle.innerText = "Assets Unlocked!";
+            statusTitle.style.color = "var(--success)";
+            statusMsg.innerText = "Your AI Prompt Packs have been successfully added to your permanent library.";
             finishBtn.style.display = "block";
             
             displayArea.innerHTML = result.items.map(item => `
-                <div style="background:rgba(16, 185, 129, 0.05); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px; text-align:left; display:flex; justify-content:space-between; align-items:center;">
+                <div class="success-item">
                     <div>
-                        <strong style="color:white; font-size:0.85rem;">${item.productName}</strong><br>
-                        <small style="color:var(--success);">Unlocked Permanently</small>
+                        <strong style="color:white; font-size:0.85rem;">${item.name}</strong><br>
+                        <small style="color:var(--success); font-weight:800; text-transform:uppercase; font-size:0.65rem;">Verified Access</small>
                     </div>
-                    <a href="${item.driveLink}" target="_blank" style="color:var(--success); font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
+                    <a href="${item.driveLink}" target="_blank" style="background:var(--glass); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:10px; font-weight:800; text-decoration:none; font-size:0.7rem;">OPEN ↗</a>
                 </div>
             `).join('');
 
-            // Cleanup any temporary browser data
+            // 5. CLEANUP
             localStorage.removeItem('pv_cart');
             localStorage.removeItem('pending_assets');
 
         } catch (error) {
             console.error("Fulfillment Error:", error);
             statusIcon.innerText = "⚠️";
-            statusTitle.innerText = "Sync in Progress";
+            statusTitle.innerText = "Verification Pending";
+            statusTitle.style.color = "#fbbf24";
             displayArea.innerHTML = `
-                <div style="padding: 15px; background: rgba(255, 191, 0, 0.1); border-radius: 12px; border: 1px solid #fbbf24;">
-                    <p style="color: #fbbf24; font-size: 0.8rem;">${error.message}</p>
-                    <p style="color: #94a3b8; font-size: 0.7rem; margin-top: 10px;">If you completed payment, your assets will appear in your Library within 5 minutes.</p>
+                <div style="padding: 20px; background: rgba(251, 191, 36, 0.05); border-radius: 15px; border: 1px solid rgba(251, 191, 36, 0.2); text-align:left;">
+                    <p style="color: #fbbf24; font-size: 0.85rem; font-weight: 800; margin-bottom:10px;">Handshake Delay</p>
+                    <p style="color: #94a3b8; font-size: 0.75rem; line-height: 1.5;">${error.message || "Your payment is processed, but the database is currently syncing."}</p>
+                    <button onclick="window.location.reload()" style="background:none; border:none; color:var(--accent); font-weight:800; cursor:pointer; padding:0; margin-top:10px; font-size:0.75rem;">Retry Sync &rarr;</button>
                 </div>`;
         }
     });
