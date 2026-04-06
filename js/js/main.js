@@ -1,5 +1,5 @@
 /**
- * PROJECT MEMORY: Main Entry Point
+ * PROJECT MEMORY: Main Entry Point (v2.3)
  * Responsibility: Coordinating all services and attaching them to the HTML.
  * REUSES: UIService, SecurityService, and Firebase Auth
  */
@@ -7,12 +7,26 @@
 import { auth } from './firebase-config.js';
 import { UIService } from './ui-service.js';
 import { SecurityService } from './security-service.js';
-import { onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+    onAuthStateChanged, 
+    signOut, 
+    signInWithPopup, 
+    GoogleAuthProvider, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // --- 1. Global Bridge (Mapping Services to HTML) ---
 window.changePage = UIService.changePage;
 window.filterProducts = UIService.filterProducts;
 window.updateCartCount = UIService.refreshCartUI;
+window.openCheckout = () => {
+    const modal = document.getElementById('checkout-overlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        UIService.refreshCartUI(); // Standardized UI update
+    }
+};
 
 // --- 2. Enhanced Authentication Logic ---
 onAuthStateChanged(auth, (user) => {
@@ -44,7 +58,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Auth Handlers (Reused from legacy logic but modernized)
+// Auth Handlers
 window.handleGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try { await signInWithPopup(auth, provider); } catch(e) { UIService.showNotification(e.message, 'error'); }
@@ -67,6 +81,12 @@ window.addToCart = (productStr) => {
     
     const product = JSON.parse(decodeURIComponent(productStr));
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
+    
+    // Check for duplicates in cart
+    if (cart.some(item => item.id === product.id)) {
+        return UIService.showNotification("Item already in cart", "info");
+    }
+
     cart.push(product);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
     
@@ -82,9 +102,8 @@ window.processPaypalCheckout = async () => {
         UIService.showNotification("Securing transaction...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout(cart);
         
-        // REUSE: Use SecurityService to handle the redirect
         const itemNames = cart.map(i => i.name).join(', ');
-        localStorage.removeItem('pv_cart'); // Clear local cart after locking DB
+        localStorage.removeItem('pv_cart'); 
         SecurityService.initiatePayPal(txID, total, itemNames);
         
     } catch (e) {
@@ -109,13 +128,15 @@ window.processDirectPurchase = async (productStr) => {
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
     
-    // Handle URL parameters for navigation
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('page') === 'library') UIService.changePage('library');
-    if(urlParams.get('action') === 'browse') UIService.changePage('browse');
-
-    // Load initial products if on browse page
-    if (document.getElementById('browse').classList.contains('active')) {
-        fetch('products.json').then(res => res.json()).then(data => UIService.renderProducts(data));
+    
+    // REUSE: Existing changePage logic to handle initial routing
+    if(urlParams.get('page') === 'library') {
+        UIService.changePage('library');
+    } else if(urlParams.get('action') === 'browse') {
+        UIService.changePage('browse');
+    } else {
+        // Default: Refresh UI state for current active page (likely 'home')
+        UIService.refreshCartUI();
     }
 });
