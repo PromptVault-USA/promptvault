@@ -1,7 +1,7 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v2.4)
- * Responsibility: Coordinating all services and attaching them to the HTML.
- * REUSES: UIService, SecurityService, and Firebase Auth
+ * PROJECT MEMORY: Main Entry Point (v2.5)
+ * Status: Audited & Hardened
+ * Responsibility: Orchestrating Services & Secure Auth-UI Bridging.
  */
 
 import { auth, db } from './firebase-config.js';
@@ -25,20 +25,30 @@ window.openCheckout = () => {
     }
 };
 
-// --- 2. User Provisioning (The "Welcome" Logic) ---
+// --- 2. Secure User Provisioning ---
+// Fixed: Added a simple lock to prevent double-calls during login
+let isProvisioning = false;
 async function ensureUserProfile(user) {
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-        await setDoc(userRef, {
-            email: user.email,
-            joinedDate: new Date().toISOString(),
-            purchasedPrompts: [
-                { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
-                { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
-            ]
-        });
-        UIService.showNotification("Vault Profile Created! Check your Library.", "success");
+    if (isProvisioning) return;
+    isProvisioning = true;
+    try {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+            await setDoc(userRef, {
+                email: user.email,
+                joinedDate: new Date().toISOString(),
+                purchasedPrompts: [
+                    { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
+                    { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
+                ]
+            });
+            UIService.showNotification("Vault Profile Created!", "success");
+        }
+    } catch (e) {
+        console.error("Provisioning Error:", e);
+    } finally {
+        isProvisioning = false;
     }
 }
 
@@ -49,10 +59,13 @@ onAuthStateChanged(auth, async (user) => {
     const authOverlay = document.getElementById('auth-overlay');
 
     if (user) {
-        await ensureUserProfile(user); // Ensure they have a profile on every login
+        await ensureUserProfile(user); 
         if (loginBtn) {
             loginBtn.innerText = "Logout";
-            loginBtn.onclick = () => signOut(auth);
+            loginBtn.onclick = () => {
+                localStorage.removeItem('pv_cart'); // Privacy Fix: Clear cart on logout
+                signOut(auth);
+            };
         }
         if (kitBtn) {
             kitBtn.innerText = "Access My Library";
@@ -69,14 +82,18 @@ onAuthStateChanged(auth, async (user) => {
             kitBtn.innerText = "Get Instant Access Now";
             kitBtn.onclick = () => authOverlay.style.display = 'flex';
         }
+        UIService.refreshCartUI(); // Ensure UI resets for guests
     }
 });
 
-// Auth Handlers attached to window for HTML access
+// Auth Handlers
 window.handleGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    try { await signInWithPopup(auth, provider); } 
-    catch(e) { UIService.showNotification(e.message, 'error'); }
+    try { 
+        await signInWithPopup(auth, provider); 
+    } catch(e) { 
+        UIService.showNotification("Login failed. Try again.", 'error'); 
+    }
 };
 
 window.handleEmailAuth = async (mode) => {
@@ -86,47 +103,68 @@ window.handleEmailAuth = async (mode) => {
     try {
         if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, pass);
         else await signInWithEmailAndPassword(auth, email, pass);
-    } catch(e) { UIService.showNotification(e.message, 'error'); }
+    } catch(e) { 
+        UIService.showNotification("Auth Error: Check your credentials.", 'error'); 
+    }
 };
 
 // --- 4. Secure Commerce Logic ---
 window.addToCart = (productStr) => {
-    if (!auth.currentUser) return UIService.showNotification("🔒 Please Sign In first.", "info");
+    if (!auth.currentUser) {
+        document.getElementById('auth-overlay').style.display = 'flex';
+        return UIService.showNotification("Please Sign In to shop.", "info");
+    }
     const product = JSON.parse(decodeURIComponent(productStr));
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    if (cart.some(item => item.id === product.id)) return UIService.showNotification("Item already in cart", "info");
+    
+    if (cart.some(item => item.id === product.id)) {
+        return UIService.showNotification("Already in cart", "info");
+    }
+    
     cart.push(product);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
     UIService.refreshCartUI();
-    UIService.showNotification(`Added ${product.name} to cart!`, "success");
+    UIService.showNotification(`Added ${product.name}!`, "success");
 };
 
 window.processPaypalCheckout = async () => {
     const cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    if (cart.length === 0) return UIService.showNotification("Your cart is empty!", "info");
+    if (cart.length === 0) return UIService.showNotification("Cart is empty!", "info");
+    
     try {
         UIService.showNotification("Securing transaction...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout(cart);
+        
         const itemNames = cart.map(i => i.name).join(', ');
-        localStorage.removeItem('pv_cart'); 
+        // We don't remove cart yet in case payment fails/cancels
         SecurityService.initiatePayPal(txID, total, itemNames);
-    } catch (e) { UIService.showNotification(e.message, "error"); }
+    } catch (e) { 
+        UIService.showNotification("Checkout Failed. Try again.", "error"); 
+    }
 };
 
 window.processDirectPurchase = async (productStr) => {
-    if (!auth.currentUser) return UIService.showNotification("🔒 Please Sign In first.", "info");
+    if (!auth.currentUser) {
+        document.getElementById('auth-overlay').style.display = 'flex';
+        return;
+    }
     const product = JSON.parse(decodeURIComponent(productStr));
     try {
-        UIService.showNotification("Initializing secure link...", "info");
+        UIService.showNotification("Connecting to PayPal...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout([product]);
         SecurityService.initiatePayPal(txID, total, product.name);
-    } catch (e) { UIService.showNotification(e.message, "error"); }
+    } catch (e) { 
+        UIService.showNotification("Purchase Failed.", "error"); 
+    }
 };
 
 // --- 5. Initialize ---
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('page') === 'library') UIService.changePage('library');
-    else if(urlParams.get('action') === 'browse') UIService.changePage('browse');
+    
+    // Improved Deep Linking
+    if (urlParams.get('page') === 'library') UIService.changePage('library');
+    else if (urlParams.get('action') === 'browse') UIService.changePage('browse');
+    else if (urlParams.get('action') === 'checkout') window.openCheckout();
 });
