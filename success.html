@@ -7,108 +7,100 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--success);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
 <div class="spotlight"></div>
 
 <div class="container" style="text-align:center; padding-top:100px;">
     <div class="glass-card" style="max-width:500px; margin:0 auto; padding: 40px;">
-        <div id="status-icon" style="font-size: 3rem; margin-bottom: 20px;">✅</div>
-        <h2 id="status-title" style="color:var(--success); margin-bottom: 10px;">Payment Successful!</h2>
-        <p id="status-msg" style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem;">Your AI Intelligence assets are being secured in your permanent library.</p>
+        <div id="status-icon" style="font-size: 3rem; margin-bottom: 20px;">⏳</div>
+        <h2 id="status-title" style="color:var(--success); margin-bottom: 10px;">Verifying Payment...</h2>
+        <p id="status-msg" style="margin-bottom:30px; color:#94a3b8; font-size: 0.9rem;">Securing your AI Intelligence assets in your permanent vault.</p>
         
         <div id="product-delivery-zone">
-            <div style="padding: 20px; border: 1px dashed var(--border); border-radius: 15px;">
-                <p style="color: var(--text-gray);">Initializing secure multi-asset handshake...</p>
-            </div>
+            <div id="loading-spinner" class="loader"></div>
+            <p id="verification-text" style="color: var(--text-gray); font-size: 0.8rem;">Executing secure database handshake...</p>
         </div>
 
-        <button onclick="window.location.href='index.html'" class="btn-main" style="margin-top: 30px; background: var(--glass); width: 100%; border: 1px solid var(--border);">Go to My Library</button>
+        <button onclick="window.location.href='index.html?page=library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--glass); width: 100%; border: 1px solid var(--border); display: none;">Go to My Library</button>
     </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
-        authDomain: "promptvaultusa.firebaseapp.com",
-        projectId: "promptvaultusa",
-        storageBucket: "promptvaultusa.firebasestorage.app",
-        messagingSenderId: "960105895017",
-        appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    import { auth } from './js/firebase-config.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { FulfillmentService } from './js/fulfillment-service.js';
 
     onAuthStateChanged(auth, async (user) => {
         const displayArea = document.getElementById('product-delivery-zone');
+        const statusTitle = document.getElementById('status-title');
         const statusMsg = document.getElementById('status-msg');
+        const statusIcon = document.getElementById('status-icon');
+        const finishBtn = document.getElementById('finish-btn');
         
-        // 1. COLLECT PENDING ASSETS (Handles single "Buy Now" or "Cart")
-        const pendingData = localStorage.getItem('pending_assets');
-        const singleData = localStorage.getItem('last_clicked_product');
-        
-        let assetsToProcess = [];
-        
-        if (pendingData) {
-            assetsToProcess = JSON.parse(pendingData);
-        } else if (singleData) {
-            assetsToProcess = [JSON.parse(singleData)];
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const txID = urlParams.get('tx');
 
         if (!user) {
             displayArea.innerHTML = `
                 <div style="padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 15px; border: 1px solid var(--error);">
-                    <p style="color: var(--error); font-size: 0.85rem;">🔒 Please Sign In to sync these ${assetsToProcess.length} items to your account.</p>
+                    <p style="color: var(--error); font-size: 0.85rem;">🔒 Please Sign In to verify your purchase.</p>
                 </div>`;
             return;
         }
 
-        if (assetsToProcess.length > 0) {
-            try {
-                const userRef = doc(db, "users", user.uid);
-                
-                // 2. Format all items for Firestore
-                const newItems = assetsToProcess.map(item => ({
-                    productName: item.name || item.productName,
-                    driveLink: item.download || item.driveLink,
-                    timestamp: Date.now()
-                }));
+        if (!txID) {
+            statusTitle.innerText = "Transaction ID Missing";
+            statusIcon.innerText = "❌";
+            displayArea.innerHTML = `<p style="color:#94a3b8;">We couldn't find a valid transaction ID. If you just paid, please check your email or contact support.</p>`;
+            return;
+        }
 
-                // 3. Batch Update Database
-                await updateDoc(userRef, {
-                    purchasedPrompts: arrayUnion(...newItems)
-                });
+        try {
+            // REUSE: existing fulfillment logic from fulfillment-service.js
+            const result = await FulfillmentService.verifyAndDeliver(txID);
 
-                // 4. Update UI
-                statusMsg.innerText = `${assetsToProcess.length} Assets successfully synced to your permanent vault.`;
-                
-                displayArea.innerHTML = assetsToProcess.map(item => `
-                    <div style="background:rgba(16, 185, 129, 0.05); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px; text-align:left; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <strong style="color:white; font-size:0.85rem;">${item.name || item.productName}</strong><br>
-                            <small style="color:var(--success);">Unlocked</small>
-                        </div>
-                        <a href="${item.download || item.driveLink}" target="_blank" style="color:var(--success); font-weight:800; text-decoration:none; font-size:0.75rem;">DOWNLOAD PDF ↗</a>
+            // Update UI on Success
+            statusIcon.innerText = "✅";
+            statusTitle.innerText = "Success!";
+            statusMsg.innerText = "Your assets have been unlocked and synced to your vault.";
+            finishBtn.style.display = "block";
+            
+            displayArea.innerHTML = result.items.map(item => `
+                <div style="background:rgba(16, 185, 129, 0.05); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px; text-align:left; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color:white; font-size:0.85rem;">${item.productName}</strong><br>
+                        <small style="color:var(--success);">Unlocked Permanently</small>
                     </div>
-                `).join('');
+                    <a href="${item.driveLink}" target="_blank" style="color:var(--success); font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
+                </div>
+            `).join('');
 
-                // 5. CLEAR ALL CART DATA
-                localStorage.removeItem('pv_cart');
-                localStorage.removeItem('pending_assets');
-                localStorage.removeItem('last_clicked_product');
+            // Cleanup any temporary browser data
+            localStorage.removeItem('pv_cart');
+            localStorage.removeItem('pending_assets');
 
-            } catch (error) {
-                console.error("Sync Error:", error);
-                displayArea.innerHTML = `<p style="color:red; font-size:0.8rem;">Database Sync Error. Please contact support with your receipt.</p>`;
-            }
-        } else {
-            displayArea.innerHTML = `<p style="color:#94a3b8;">No pending unlocks found. Check your Library dashboard.</p>`;
+        } catch (error) {
+            console.error("Fulfillment Error:", error);
+            statusIcon.innerText = "⚠️";
+            statusTitle.innerText = "Sync in Progress";
+            displayArea.innerHTML = `
+                <div style="padding: 15px; background: rgba(255, 191, 0, 0.1); border-radius: 12px; border: 1px solid #fbbf24;">
+                    <p style="color: #fbbf24; font-size: 0.8rem;">${error.message}</p>
+                    <p style="color: #94a3b8; font-size: 0.7rem; margin-top: 10px;">If you completed payment, your assets will appear in your Library within 5 minutes.</p>
+                </div>`;
         }
     });
 </script>
