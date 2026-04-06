@@ -16,7 +16,7 @@
     "category": "Business",
     "desc": "Prompts for proposals, outreach messages, and negotiation scripts for freelancers.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "https://images.unsplash.com/photo-1521791136064-7986c2923216?q=80&w=400&h=400&auto=format&fit=crop",
+    "img": "",
     "download": "https://drive.google.com/file/d/12lJBO57d3a3XafYQtRgZ2QeMVS-OrkyE/view?usp=drivesdk"
   },
   {
@@ -106,7 +106,7 @@
     "price": 15.00,
     "desc": "Resume writing, cover letters, and interview preparation prompts.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "https://images.unsplash.com/photo-1586281380349-631531a744c2?q=80&w=400&h=400&auto=format&fit=crop",
+    "img": "",
     "download": "https://drive.google.com/file/d/1CoB9iwtPwf2IF36hJTkNWG8xQj1j0dr0/view?usp=drivesdk"
   },
   {
@@ -196,7 +196,7 @@
     "price": 15.00,
     "desc": "Prompts for building conversational AI flows and responses.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=400&h=400&auto=format&fit=crop",
+    "img": "",
     "download": "https://drive.google.com/file/d/1CpJQ5J7_qbXoM4ZUGIKrZQUrw5XW26-a/view?usp=drivesdk"
   },
   {
@@ -216,7 +216,7 @@
     "price": 15.00,
     "desc": "Effective cold email scripts for lead generation.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400&h=400&auto=format&fit=crop",
+    "img": "",
     "download": "https://drive.google.com/file/d/11dXBDbv9qTrRsN7E3dKoxZvZdDzo3TPL/view?usp=drivesdk"
   },
   {
@@ -226,7 +226,7 @@
     "price": 15.00,
     "desc": "Connection messages and personal branding prompts for LinkedIn.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=400&h=400&auto=format&fit=crop",
+    "img": "",
     "download": "https://drive.google.com/file/d/1ELQeKBDWlrPBkN0PZgeub-iVunkx7EV0/view?usp=drivesdk"
   },
   {
@@ -235,7 +235,7 @@
     "price": 0.01,
     "category": "Test",
     "desc": "End-to-End Penny Test.",
-    "img": "https://via.placeholder.com/400?text=TEST+ITEM",
+    "img": "",
     "download": "https://drive.google.com/file/d/1gfYiJ38c_tyuOCxbRmUG5BtZNSJOkq-A/view?usp=drivesdk"
   }
 ]
