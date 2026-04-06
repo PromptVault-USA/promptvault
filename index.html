@@ -171,14 +171,21 @@
         <div style="margin-top: 60px; width: 100%;">
             <h3 style="margin-bottom: 20px; font-size: 1.2rem;">🔥 Featured <span class="highlight-text">Vaults</span></h3>
             <div id="featured-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
-                <div class="glass-card" onclick="window.changePage('browse')" style="padding:12px; cursor:pointer;">
-                    <img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=200" style="width:100%; border-radius:8px;">
-                    <small style="display:block; margin-top:8px; font-weight:800; font-size:0.7rem;">TikTok Affiliate</small>
+                
+                <div class="glass-card" onclick="window.changePage('browse')" style="padding:12px; cursor:pointer; text-align: center;">
+                    <div class="smart-cover" style="height: 120px; margin-bottom: 10px;">
+                        <span style="font-size: 0.7rem;">TikTok Affiliate</span>
+                    </div>
+                    <small style="display:block; font-weight:800; font-size:0.7rem; color: white;">TikTok Affiliate</small>
                 </div>
-                <div class="glass-card" onclick="window.changePage('browse')" style="padding:12px; cursor:pointer;">
-                    <img src="https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=200" style="width:100%; border-radius:8px;">
-                    <small style="display:block; margin-top:8px; font-weight:800; font-size:0.7rem;">Real Estate Leads</small>
+
+                <div class="glass-card" onclick="window.changePage('browse')" style="padding:12px; cursor:pointer; text-align: center;">
+                    <div class="smart-cover" style="height: 120px; margin-bottom: 10px;">
+                        <span style="font-size: 0.7rem;">Real Estate Leads</span>
+                    </div>
+                    <small style="display:block; font-weight:800; font-size:0.7rem; color: white;">Real Estate Leads</small>
                 </div>
+
             </div>
         </div>
 
@@ -282,7 +289,7 @@
         window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(itemNames)}&no_shipping=1&return=${window.location.origin}/success.html`;
     };
 
-    // SENIOR AUDIT FIX: GHOST COVER & FALLBACK ENGINE & DESCRIPTIONS
+    // SYNCED OUTPUT: GHOST COVER & FALLBACK ENGINE & DESCRIPTIONS
     window.renderProducts = (productsToDisplay) => {
         const list = document.getElementById('product-list');
         if (!list) return;
@@ -290,27 +297,26 @@
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
             
-            // GHOST COVER + ERROR HANDLING
             const visualElement = (p.img && p.img.trim() !== "") 
                 ? `<img src="${p.img}" onerror="this.outerHTML='<div class=\'smart-cover\'><span>${p.name}</span></div>'" style="width:100%; border-radius:12px; margin-bottom:15px; height:160px; object-fit:cover;">`
                 : `<div class="smart-cover"><span>${p.name}</span></div>`;
 
             return `
-                <div class="glass-card" style="display:flex; flex-direction:column;">
+                <div class="glass-card" style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
                     ${visualElement}
-                    <div style="font-weight:800; font-size:0.85rem; color:white; line-height:1.2; margin-bottom:5px;">${p.name}</div>
+                    <div style="font-weight:800; font-size:0.95rem; color:white; line-height:1.2; margin-bottom:6px;">${p.name}</div>
                     
-                    <div class="product-desc">${p.desc || "Ready-to-use AI prompt vault."}</div>
+                    <div class="product-desc" style="font-size:0.8rem; color:#94a3b8; margin-bottom:15px; line-height:1.4;">${p.desc || "Ready-to-use AI prompt vault."}</div>
                     
-                    <div style="color:var(--secondary); font-weight:800; font-size:1.1rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                    <div style="color:var(--secondary); font-weight:800; font-size:1.25rem; margin-bottom:18px;">$${p.price.toFixed(2)}</div>
                     
                     <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" 
-                        style="background:var(--success); margin-bottom:10px; width:100%; padding: 14px; font-size: 0.9rem; box-shadow:none;">
+                        style="background:var(--success); margin-bottom:10px; width:100%; padding: 14px; font-size: 0.95rem; border-radius: 50px; box-shadow:none;">
                         Buy Now
                     </button>
                     
                     <button onclick="window.addToCart('${pData}')" 
-                        style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text-gray); font-size:0.7rem; padding:8px; border-radius:10px; cursor:pointer; font-weight:800; width:100%;">
+                        style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text-gray); font-size:0.75rem; padding:10px; border-radius:12px; cursor:pointer; font-weight:800; width:100%;">
                         + Add to Cart
                     </button>
                 </div>`;
