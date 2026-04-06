@@ -247,15 +247,31 @@
         const modal = document.getElementById('checkout-overlay');
         const list = document.getElementById('cart-items-list');
         const totalEl = document.getElementById('cart-total');
-        if (cart.length === 0) return alert("Your cart is empty!");
+        if (cart.length === 0) {
+            alert("Your cart is empty!");
+            modal.style.display = 'none';
+            return;
+        }
         modal.style.display = 'flex';
+        // FIXED: Added an X button for removal
         list.innerHTML = cart.map((item, idx) => `
-            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
                 <span style="font-size:0.85rem;">${item.name}</span>
-                <strong>$${item.price.toFixed(2)}</strong>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <strong>$${item.price.toFixed(2)}</strong>
+                    <button onclick="window.removeFromCart(${idx})" style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; cursor:pointer; font-weight:800; padding:2px 8px; border-radius:5px;">✕</button>
+                </div>
             </div>`).join('');
         const total = cart.reduce((sum, item) => sum + item.price, 0);
         totalEl.innerText = `$${total.toFixed(2)}`;
+    };
+
+    // NEW FUNCTION: Removes item from cart and updates UI
+    window.removeFromCart = (idx) => {
+        cart.splice(idx, 1);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        window.updateCartCount();
+        window.openCheckout(); // Re-render the list
     };
 
     window.processPaypalCheckout = () => {
