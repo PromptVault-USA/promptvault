@@ -122,31 +122,54 @@ header {
     animation: fadeIn 0.4s ease-out;
 }
 
+/* FIXED BOTTOM PILL NAVIGATION */
 .bottom-nav {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
-    padding: 12px 30px;
+    padding: 10px 15px; /* Reduced side padding for better distribution */
     border-radius: 100px;
     display: flex;
-    gap: 30px;
+    justify-content: space-around; /* Distribute items equally */
+    align-items: center;
+    width: 92%; /* Responsive width */
+    max-width: 420px; /* Limits size on desktop */
     z-index: 6000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
 .nav-item {
-    text-align: center;
+    flex: 1; /* Each item takes equal room */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
     color: var(--text-gray);
     cursor: pointer;
-    font-size: 0.7rem;
-    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 0; /* Critical for flex stability */
 }
 
 .nav-item.active {
     color: var(--secondary);
+}
+
+.nav-item span {
+    font-size: 1.2rem;
+    margin-bottom: 2px;
+}
+
+.nav-item small {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap; /* CRITICAL: Prevents overlap and wrapping */
 }
 
 @keyframes fadeIn {
