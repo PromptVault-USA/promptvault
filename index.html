@@ -20,12 +20,16 @@
         /* FAQ / LEGAL STYLE */
         details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; text-align: left; width: 100%; max-width: 700px; margin-inline: auto; }
         summary { font-weight: 800; cursor: pointer; list-style: none; outline: none; color: white; }
-        .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 50px; text-align: center; padding: 20px; border-top: 1px solid var(--border); }
+        .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 50px; text-align: center; padding: 20px; border-top: 1px solid var(--border); width: 100%; }
 
-        /* NAV STABILITY */
+        /* NAV STABILITY (Hardened against Overlap) */
         .bottom-nav { width: 92% !important; max-width: 450px !important; display: flex !important; justify-content: space-around !important; padding: 10px 5px !important; z-index: 10000; }
-        .bottom-nav .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; cursor: pointer; color: var(--text-gray); }
+        .bottom-nav .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; cursor: pointer; color: var(--text-gray); transition: 0.3s; }
+        .bottom-nav .nav-item.active { color: var(--secondary); }
         .bottom-nav .nav-item small { white-space: nowrap; font-size: 0.65rem !important; font-weight: 800; margin-top: 4px; text-transform: uppercase; }
+        
+        .page { display: none; width: 100%; }
+        .page.active { display: flex; flex-direction: column; }
     </style> 
 
     <script type="module">
@@ -92,10 +96,21 @@
         };
 
         window.changePage = (id, el) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            // Hides everything strictly
+            document.querySelectorAll('.page').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('active');
+            });
+            // Shows targeted page
+            const activePage = document.getElementById(id);
+            if(activePage) {
+                activePage.style.display = 'flex';
+                activePage.classList.add('active');
+            }
+            // Nav update
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             if(el) el.classList.add('active');
+            // Logic triggers
             if(id === 'browse' && window.allProducts.length === 0) {
                 fetch('products.json').then(res => res.json()).then(data => {
                     window.allProducts = data;
@@ -146,7 +161,7 @@
 </header> 
 
 <div class="container">
-    <div id="home" class="page active">
+    <div id="home" class="page active" style="display: flex;">
         <div class="hero-glow"></div>
         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border);">
             <span style="color: #fbbf24;">★★★★★</span>
@@ -184,30 +199,27 @@
             </details>
             <details>
                 <summary>Is there a refund policy?</summary>
-                <p style="padding-top:10px; font-size:0.9rem; color:var(--text-gray);">Due to the digital nature of the products, all sales are final. However, we offer lifetime updates for all purchased vaults.</p>
+                <p style="padding-top:10px; font-size:0.9rem; color:var(--text-gray);">Due to digital nature, all sales are final. We offer lifetime updates for all purchased vaults.</p>
             </details>
             <details>
                 <summary>Legal Disclaimer</summary>
-                <p style="padding-top:10px; font-size:0.8rem; color:var(--text-gray);">PromptVault USA is an independent provider of AI tools. Results vary based on individual effort and market conditions.</p>
+                <p style="padding-top:10px; font-size:0.8rem; color:var(--text-gray);">Independent provider of AI tools. Results vary based on individual effort.</p>
             </details>
         </div>
 
-        <div class="legal-text">
-            © 2026 PromptVault USA | promptvaultusa.shop<br>
-            All Rights Reserved.
-        </div>
+        <div class="legal-text">© 2026 PromptVault USA | All Rights Reserved.</div>
     </div> 
 
     <div id="browse" class="page">
-        <div style="padding: 40px 0;">
+        <div style="padding: 40px 0; width: 100%;">
             <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:30px; outline:none;">
             <div class="vault-grid" id="product-list"></div>
         </div>
     </div>
 
     <div id="library" class="page">
-        <div style="padding: 40px 0;">
-            <h2 style="font-size:2.5rem;">My <span class="highlight-text">Library</span></h2>
+        <div style="padding: 40px 0; width: 100%;">
+            <h2 style="font-size:2.5rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
             <div id="user-library-grid" style="margin-top:30px;"></div>
         </div>
     </div>
@@ -248,11 +260,7 @@
 <script>
     const PAYPAL_EMAIL = "emilyperong23@gmail.com";
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    
-    window.updateCartCount = () => { 
-        const pill = document.getElementById('cart-count-pill');
-        if(pill) pill.innerText = cart.length; 
-    };
+    window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
 
     window.openCheckout = () => {
         const modal = document.getElementById('checkout-overlay');
@@ -289,17 +297,9 @@
 
     window.renderProducts = (productsToDisplay) => {
         const list = document.getElementById('product-list');
-        if(!list) return;
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            return `
-                <div class="glass-card" style="display:flex; flex-direction:column;">
-                    <img src="${p.img || 'https://via.placeholder.com/400'}" style="width:100%; border-radius:12px; margin-bottom:15px;">
-                    <div style="font-weight:800; margin-bottom:5px;">${p.name}</div>
-                    <div style="color:var(--secondary); font-weight:800; font-size:1.2rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                    <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); margin-bottom:8px;">Buy Now</button>
-                    <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--glass); font-size:0.8rem;">+ Cart</button>
-                </div>`;
+            return `<div class="glass-card" style="display:flex; flex-direction:column;"><img src="${p.img}" style="width:100%; border-radius:12px; margin-bottom:15px;"><div style="font-weight:800;">${p.name}</div><div style="color:var(--secondary); font-weight:800; font-size:1.2rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div><button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); margin-bottom:8px;">Buy Now</button><button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--glass); font-size:0.8rem;">+ Cart</button></div>`;
         }).join('');
     };
 
@@ -322,9 +322,8 @@
         window.renderProducts(filtered);
     };
 
-    // RESTORED: Social Notification Logic
     setInterval(() => {
-        const cities = ["Chicago", "New York", "Manila", "London", "Sydney", "Cebu", "Davao"];
+        const cities = ["Chicago", "New York", "Manila", "London", "Sydney", "Cebu"];
         const city = cities[Math.floor(Math.random() * cities.length)];
         const textEl = document.getElementById('notif-text');
         if(textEl) {
