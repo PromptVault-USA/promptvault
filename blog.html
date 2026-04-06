@@ -8,22 +8,51 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 40px; }
-        .blog-card { background: var(--glass); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; }
-        .blog-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .blog-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+            margin-top: 40px; 
+        }
+        .blog-card { 
+            background: var(--glass); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            overflow: hidden; 
+            cursor: pointer; 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%;
+        }
+        .blog-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         .blog-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid var(--border); }
-        .blog-info { padding: 20px; flex-grow: 1; }
-        .blog-tag { color: var(--accent); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .blog-info { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+        .blog-tag { color: var(--accent); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
         
-        /* Nav Fix */
-        .bottom-nav .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; }
-        .bottom-nav small { white-space: nowrap; font-size: 0.65rem !important; margin-top: 2px; font-weight: 800; }
+        /* BOTTOM NAV OVERLAP FIX */
+        .bottom-nav .nav-item { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-width: 0; 
+            text-align: center; 
+        }
+        .bottom-nav small { 
+            white-space: nowrap; 
+            font-size: 0.65rem !important; 
+            margin-top: 4px; 
+            font-weight: 800; 
+            display: block; 
+            letter-spacing: -0.2px;
+        }
     </style>
 </head>
 <body>
 <div class="spotlight"></div>
 
-<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px);">
+<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
     <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
     <span id="notif-text" style="font-size: 0.82rem; font-weight: 600; color: white;"></span>
 </div>
@@ -42,33 +71,35 @@
     </div>
 </header>
 
-<div class="container" style="padding-top: 120px; padding-bottom: 100px;">
-    <h2 style="font-size: 3rem; line-height: 1.1;">The AI <span class="highlight-text">Intelligence</span> Feed</h2>
+<div class="container" style="padding-top: 120px; padding-bottom: 120px;">
+    <h2 style="font-size: 3rem; line-height: 1.1; font-weight: 800;">The AI <span class="highlight-text">Intelligence</span> Feed</h2>
     <p style="color: #94a3b8; margin-top: 10px; font-size: 1.1rem;">Strategies, Side Hustles, and Prompt Engineering Secrets.</p>
 
     <div class="blog-grid">
         <div class="blog-card" onclick="window.location.href='blog-side-hustles.html'">
-            <img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=600&auto=format&fit=crop" class="blog-img">
+            <img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=600&auto=format&fit=crop" class="blog-img" alt="AI Side Hustles">
             <div class="blog-info">
                 <span class="blog-tag">Monetization</span>
-                <h3 style="color:white; margin: 10px 0;">5 High-Paying AI Side Hustles You Can Start Today</h3>
-                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5;">Learn how Prompt Architects are quietly earning $2,000+ monthly using simple AI workflows.</p>
+                <h3 style="color:white; margin: 0 0 10px 0; font-size: 1.4rem;">5 High-Paying AI Side Hustles You Can Start Today</h3>
+                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.6;">Learn how Prompt Architects are quietly earning $2,000+ monthly using simple AI workflows.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
             </div>
         </div>
 
-        <div class="blog-card" style="opacity: 0.6; cursor: default;">
-            <div style="aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: 800;">COMING SOON</div>
+        <div class="blog-card" onclick="window.location.href='first-post.blog.html'">
+            <img src="https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=600&auto=format&fit=crop" class="blog-img" alt="PromptVault Launch">
             <div class="blog-info">
-                <span class="blog-tag">Tutorial</span>
-                <h3 style="color:white; margin: 10px 0;">Mastering Hyper-Realistic Real Estate AI</h3>
-                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5;">A deep dive into lighting and camera settings for Midjourney 2026.</p>
+                <span class="blog-tag">Ecosystem</span>
+                <h3 style="color:white; margin: 0 0 10px 0; font-size: 1.4rem;">Welcome to the PromptVault USA Hub</h3>
+                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.6;">A deep dive into the 2026 AI Prompt Gold Rush and how to build your digital asset portfolio.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
             </div>
         </div>
     </div>
 </div>
 
 <nav class="bottom-nav">
-    <div style="width:100%; max-width:600px; display:flex; justify-content:space-around;">
+    <div style="width:100%; max-width:600px; display:flex; justify-content:space-around; align-items: center;">
         <a class="nav-item" href="index.html">🏠<br><small>Home</small></a>
         <a class="nav-item" href="index.html?action=browse">⊞<br><small>Vaults</small></a>
         <a class="nav-item active" href="blog.html">📖<br><small>Blog</small></a>
