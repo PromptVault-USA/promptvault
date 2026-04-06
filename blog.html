@@ -7,9 +7,33 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* CRITICAL UI PATCH: Fixes the cramped bottom nav seen in your screenshot */
+        .bottom-nav .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            text-align: center;
+        }
+        .bottom-nav small {
+            white-space: nowrap; /* Stops labels from overlapping */
+            font-size: 0.65rem !important;
+            margin-top: 2px;
+            display: block;
+            font-weight: 800;
+        }
+    </style>
 </head>
 <body>
 <div class="spotlight"></div>
+
+<div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 9999; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
+    <span id="notif-text" style="font-size: 0.82rem; font-weight: 600; color: white;"></span>
+</div>
 
 <header>
     <div class="header-wrap">
@@ -17,22 +41,29 @@
             <img src="logo.png" class="logo-box" onerror="this.src='https://via.placeholder.com/40?text=PV'">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <button class="signin-pill" onclick="window.location.href='index.html?action=checkout'" style="background:var(--glass); position:relative; padding: 10px 15px; border:1px solid var(--border);">
+                🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
+            </button>
+        </div>
     </div>
 </header>
 
 <div class="container" style="padding-top: 120px; padding-bottom: 40px; max-width: 800px;">
-    <a href="blog.html" style="color:var(--accent); text-decoration:none; font-weight:800;">&larr; BACK TO ALL STORIES</a>
+    <a href="./blog.html" style="color:var(--accent); text-decoration:none; font-weight:800; display: inline-flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.2rem;">&larr;</span> BACK TO ALL STORIES
+    </a>
     
     <h1 style="font-size:3rem; margin-top:20px; line-height:1.1;">5 High-Paying <span class="highlight-text">AI Side Hustles</span> You Can Start Today</h1>
     <p style="color:#94a3b8; font-size:1.1rem; margin-top:20px;">The AI Gold Rush of 2026 isn't about building the tools—it's about knowing how to <strong>command</strong> them. Here is how "Prompt Architects" are quietly earning $2,000+ monthly.</p>
 
     <h2 style="color:white; margin-top:40px;">The 2026 Opportunity Stack</h2>
     <ul style="color:#94a3b8; line-height:2; margin-bottom: 30px;">
-        <li><strong style="color:white;">1. Faceless TikTok Affiliate:</strong> Generate hyper-realistic visual stories that drive recurring commission 24/7.</li>
-        <li><strong style="color:white;">2. Real Estate Narrative Architect:</strong> Transform property listings into scroll-stopping emotional stories for high-end agents.</li>
-        <li><strong style="color:white;">3. AI Brand Voice Tuning:</strong> Help local businesses train their models to sound human and on-brand.</li>
-        <li><strong style="color:white;">4. Specialized Stock Packs:</strong> Sell curated, high-resolution AI image sets for modern content creators.</li>
-        <li><strong style="color:white;">5. Digital Intelligence Packs:</strong> Bundle niche prompts and sell them as passive digital products.</li>
+        <li><strong style="color:white;">1. Faceless TikTok Affiliate:</strong> Generate hyper-realistic visual stories.</li>
+        <li><strong style="color:white;">2. Real Estate Narrative Architect:</strong> Scroll-stopping emotional stories for high-end agents.</li>
+        <li><strong style="color:white;">3. AI Brand Voice Tuning:</strong> Help businesses sound human.</li>
+        <li><strong style="color:white;">4. Specialized Stock Packs:</strong> Sell curated, high-res AI image sets.</li>
+        <li><strong style="color:white;">5. Digital Intelligence Packs:</strong> Bundle niche prompts into passive products.</li>
     </ul>
 
     <div style="background:var(--glass); border:2px solid var(--accent); border-radius:20px; padding:30px; margin:40px 0;">
@@ -42,31 +73,25 @@
         </p>
     </div>
 
-    <p style="color:#94a3b8;">The difference between a struggling freelancer and a Prompt Architect is the tools they use. We’ve done the heavy lifting for you inside the Vault.</p>
-
     <div style="text-align:center; margin-top:60px;">
-        <button onclick="window.location.href='index.html?action=browse'" class="btn-main" style="background:var(--success); color:white; padding: 20px 40px; cursor:pointer; border:none; border-radius:50px; font-weight:800; width: 100%; max-width: 400px;">Start Your Hustle Now &rarr;</button>
+        <button onclick="window.location.href='index.html?action=browse'" class="btn-main" style="background:var(--success); color:white; padding: 20px 40px; cursor:pointer; border:none; border-radius:50px; font-weight:800; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);">Start Your Hustle Now &rarr;</button>
     </div>
 
     <footer style="margin-top: 80px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center;">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;">
-            <a href="index.html" style="color: var(--text-gray); text-decoration: none;">Legal</a>
-            <a href="index.html" style="color: var(--text-gray); text-decoration: none;">Terms</a>
-            <a href="index.html" style="color: var(--text-gray); text-decoration: none;">Refunds</a>
-            <a href="index.html" style="color: var(--text-gray); text-decoration: none;">FAQs</a>
-        </div>
         <p style="color: #64748b; font-size: 0.75rem;">&copy; 2026 PROMPTVAULT USA. All rights reserved.</p>
     </footer>
 </div>
 
 <nav class="bottom-nav">
     <div style="width:100%; max-width:600px; display:flex; justify-content:space-around;">
-        <a class="nav-item" onclick="window.location.href='index.html'">🏠<br><small>Home</small></a>
-        <a class="nav-item" onclick="window.location.href='index.html?action=browse'">⊞<br><small>Vaults</small></a>
-        <a class="nav-item active" onclick="window.location.href='blog.html'">📖<br><small>Blog</small></a>
-        <a class="nav-item" onclick="window.location.href='index.html'">👤<br><small>Library</small></a>
+        <a class="nav-item" href="index.html">🏠<br><small>Home</small></a>
+        <a class="nav-item" href="index.html?action=browse">⊞<br><small>Vaults</small></a>
+        <a class="nav-item active" href="blog.html">📖<br><small>Blog</small></a>
+        <a class="nav-item" href="index.html?page=library">👤<br><small>Library</small></a>
     </div>
 </nav>
+
+<script type="module" src="js/main.js"></script>
 
 </body>
 </html>
