@@ -41,7 +41,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 100px 20px 120px;
+    padding: 120px 20px; /* Increased top padding for header clearance */
 }
 
 header {
@@ -69,6 +69,45 @@ header {
     border-radius: 8px;
 }
 
+/* 🚀 HERO SECTION (Fixes the "Awful" Desktop Look) */
+#home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 70vh; /* Centers content vertically in the viewport */
+    position: relative;
+}
+
+.hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+    filter: blur(60px);
+    z-index: -1;
+}
+
+#home h1 {
+    font-size: clamp(2.2rem, 8vw, 4rem); /* Responsive sizing */
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+#home p {
+    max-width: 650px;
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    color: var(--text-gray);
+    margin-bottom: 35px;
+}
+
 /* 💎 Glass Cards */
 .glass-card {
     background: var(--glass);
@@ -76,23 +115,34 @@ header {
     border: 1px solid var(--border);
     border-radius: 24px;
     padding: 30px;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .glass-card:hover {
     transform: translateY(-5px);
     border-color: var(--secondary);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* 🚀 Buttons */
 .btn-main {
-    padding: 14px 24px;
+    padding: 16px 32px;
     border-radius: 50px;
     border: none;
     font-weight: 800;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+}
+
+.btn-main:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
+    filter: brightness(1.1);
 }
 
 .signin-pill {
@@ -102,7 +152,10 @@ header {
     border-radius: 100px;
     font-weight: 700;
     border: none;
+    transition: 0.2s;
 }
+
+.signin-pill:hover { opacity: 0.9; transform: scale(1.05); }
 
 /* 📂 The Vault Grid */
 .vault-grid {
@@ -125,25 +178,25 @@ header {
 /* FIXED BOTTOM PILL NAVIGATION */
 .bottom-nav {
     position: fixed;
-    bottom: 20px;
+    bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
-    padding: 10px 15px; /* Reduced side padding for better distribution */
+    padding: 10px 15px;
     border-radius: 100px;
     display: flex;
-    justify-content: space-around; /* Distribute items equally */
+    justify-content: space-around;
     align-items: center;
-    width: 92%; /* Responsive width */
-    max-width: 420px; /* Limits size on desktop */
+    width: 92%;
+    max-width: 420px;
     z-index: 6000;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.6);
 }
 
 .nav-item {
-    flex: 1; /* Each item takes equal room */
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -152,7 +205,7 @@ header {
     color: var(--text-gray);
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 0; /* Critical for flex stability */
+    min-width: 0;
 }
 
 .nav-item.active {
@@ -169,7 +222,7 @@ header {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    white-space: nowrap; /* CRITICAL: Prevents overlap and wrapping */
+    white-space: nowrap;
 }
 
 @keyframes fadeIn {
