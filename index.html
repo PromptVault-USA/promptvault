@@ -35,41 +35,6 @@
         details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; text-align: left; width: 100%; max-width: 700px; margin-inline: auto; }
         summary { font-weight: 800; cursor: pointer; list-style: none; outline: none; color: white; }
         .legal-text { font-size: 0.7rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 25px; border-top: 1px solid var(--border); width: 100%; opacity: 0.6; }
-
-        /* MOBILE NAV FIX (Prevent Cutoff) */
-        .bottom-nav { 
-            width: 94% !important; 
-            max-width: 420px !important; 
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            display: flex !important; 
-            justify-content: space-around !important; 
-            padding: 10px 0 !important; 
-            bottom: 20px !important;
-            border-radius: 20px !important;
-        }
-        .bottom-nav .nav-item { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            cursor: pointer; 
-            color: var(--text-gray);
-            min-width: 65px; /* Ensures space for labels */
-        }
-        .bottom-nav .nav-item.active { color: var(--secondary); }
-        .bottom-nav .nav-item span { font-size: 1.2rem; }
-        .bottom-nav .nav-item small { 
-            white-space: nowrap; 
-            font-size: 0.6rem !important; 
-            font-weight: 800; 
-            margin-top: 4px; 
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* VAULT GRID FIX */
-        .vault-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
     </style> 
 
     <script type="module">
@@ -136,23 +101,11 @@
         };
 
         window.changePage = (id, el) => {
-            // HIDE ALL PAGES STICKLY
-            document.querySelectorAll('.page').forEach(p => {
-                p.classList.remove('active');
-                p.style.display = 'none';
-            });
-            // SHOW THE ONE PAGE
+            document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
             const target = document.getElementById(id);
-            if (target) {
-                target.style.display = 'flex';
-                // Small timeout to allow display:flex to register before opacity transition
-                setTimeout(() => { target.classList.add('active'); }, 10);
-            }
-            // NAV UPDATE
+            if (target) { target.style.display = 'flex'; setTimeout(() => { target.classList.add('active'); }, 10); }
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             if(el) el.classList.add('active');
-            
-            // LOGIC TRIGGERS
             if(id === 'browse' && window.allProducts.length === 0) {
                 fetch('products.json').then(res => res.json()).then(data => {
                     window.allProducts = data;
@@ -329,11 +282,35 @@
         window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(itemNames)}&no_shipping=1&return=${window.location.origin}/success.html`;
     };
 
+    // SENIOR AUDIT FIX: GHOST COVER & FALLBACK ENGINE
     window.renderProducts = (productsToDisplay) => {
         const list = document.getElementById('product-list');
+        if (!list) return;
+
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            return `<div class="glass-card" style="display:flex; flex-direction:column;"><img src="${p.img}" style="width:100%; border-radius:12px; margin-bottom:15px;"><div style="font-weight:800; font-size:0.85rem;">${p.name}</div><div style="color:var(--secondary); font-weight:800; font-size:1.1rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div><button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); margin-bottom:8px;">Buy Now</button><button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--glass); font-size:0.75rem;">+ Cart</button></div>`;
+            
+            // GHOST COVER + ERROR HANDLING
+            const visualElement = (p.img && p.img.trim() !== "") 
+                ? `<img src="${p.img}" onerror="this.outerHTML='<div class=\'smart-cover\'><span>${p.name}</span></div>'" style="width:100%; border-radius:12px; margin-bottom:15px; height:160px; object-fit:cover;">`
+                : `<div class="smart-cover"><span>${p.name}</span></div>`;
+
+            return `
+                <div class="glass-card" style="display:flex; flex-direction:column;">
+                    ${visualElement}
+                    <div style="font-weight:800; font-size:0.85rem; min-height:40px; color:white; line-height:1.2; margin-bottom:5px;">${p.name}</div>
+                    <div style="color:var(--secondary); font-weight:800; font-size:1.1rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                    
+                    <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" 
+                        style="background:var(--success); margin-bottom:10px; width:100%; padding: 14px; font-size: 0.9rem; box-shadow:none;">
+                        Buy Now
+                    </button>
+                    
+                    <button onclick="window.addToCart('${pData}')" 
+                        style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text-gray); font-size:0.7rem; padding:8px; border-radius:10px; cursor:pointer; font-weight:800; width:100%;">
+                        + Add to Cart
+                    </button>
+                </div>`;
         }).join('');
     };
 
