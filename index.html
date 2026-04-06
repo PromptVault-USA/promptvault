@@ -35,7 +35,130 @@
         .review-card { background: var(--glass); padding: 20px; border-radius: 20px; border: 1px solid var(--border); font-size: 0.85rem; }
         details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; }
         summary { font-weight: 800; cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; }
-    </style>
+    </style> 
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
+          authDomain: "promptvaultusa.firebaseapp.com",
+          projectId: "promptvaultusa",
+          storageBucket: "promptvaultusa.firebasestorage.app",
+          messagingSenderId: "960105895017",
+          appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
+        }; 
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        
+        // --- 1. EXPLICIT GLOBAL BRIDGING (Fixes "Not Working" Login) ---
+        window.auth = auth; 
+        window.db = db;
+        window.allProducts = [];
+
+        // Attach Handlers to window so HTML onclick can see them
+        window.handleGoogle = async () => { 
+            try { 
+                const res = await signInWithPopup(auth, provider); 
+                await provisionNewUser(res.user); 
+            } catch(e) { alert(e.message); } 
+        };
+
+        window.handleEmailAuth = async (mode) => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            if(!email || !pass) return alert("Fill all fields.");
+            try {
+                if(mode === 'signup') { 
+                    const res = await createUserWithEmailAndPassword(auth, email, pass); 
+                    await provisionNewUser(res.user); 
+                } else { 
+                    await signInWithEmailAndPassword(auth, email, pass); 
+                }
+            } catch(e) { alert(e.message); }
+        };
+
+        // --- 2. EXISTING LOGIC (REUSED & OPTIMIZED) ---
+        async function provisionNewUser(user) {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                    email: user.email,
+                    joinedDate: new Date().toISOString(),
+                    purchasedPrompts: [
+                        { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
+                        { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
+                    ]
+                });
+            }
+        }
+
+        window.loadUserLibrary = async () => {
+            const user = auth.currentUser;
+            const grid = document.getElementById('user-library-grid');
+            if (!grid || !user) return;
+            try {
+                const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                if (userDocSnap.exists()) {
+                    const prompts = userDocSnap.data().purchasedPrompts || [];
+                    prompts.sort((a, b) => b.timestamp - a.timestamp);
+                    grid.innerHTML = prompts.map(item => `
+                        <div class="library-card">
+                            <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Permanent Access</small></div>
+                            <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
+                        </div>`).join('');
+                }
+            } catch (e) { console.error(e); }
+        };
+
+        window.changePage = (id, el) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if(el) el.classList.add('active');
+            if(id === 'browse' && window.allProducts.length === 0) {
+                fetch('products.json').then(res => res.json()).then(data => {
+                    window.allProducts = data;
+                    window.renderProducts(window.allProducts);
+                });
+            }
+            if (id === 'library') window.loadUserLibrary();
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            const loginBtn = document.getElementById('login-pill');
+            const kitBtn = document.getElementById('claim-kit-btn');
+            const authOverlay = document.getElementById('auth-overlay');
+
+            if (user) {
+                if(loginBtn) {
+                    loginBtn.innerText = "Logout";
+                    loginBtn.onclick = () => signOut(auth);
+                }
+                if(kitBtn) {
+                    kitBtn.innerText = "Access My Library";
+                    kitBtn.style.background = "var(--accent)";
+                    kitBtn.onclick = () => window.changePage('library');
+                }
+                if(authOverlay) authOverlay.style.display = 'none';
+            } else {
+                if(loginBtn) {
+                    loginBtn.innerText = "Sign In";
+                    loginBtn.onclick = () => authOverlay.style.display = 'flex';
+                }
+                if(kitBtn) {
+                    kitBtn.innerText = "Get Instant Access Now";
+                    kitBtn.onclick = () => authOverlay.style.display = 'flex';
+                }
+            }
+        }); 
+    </script>
 </head>
 <body> 
 
@@ -70,9 +193,18 @@
             </div>
             <h2 style="line-height: 1.1;">Command the <span>AI Economy</span></h2>
             <p style="color:var(--secondary); font-weight:800; margin-top: 10px; font-size: 1.1rem;">Make your first $100 using AI</p>
-            <p class="hero-subheadline">PromptVaultUSA is your all-in-one marketplace for high-converting AI prompts. Unlock 500+ ready-to-use assets—no experience needed.</p> 
+            <p class="hero-subheadline" style="max-width: 600px; margin-inline: auto;">PromptVaultUSA is your all-in-one marketplace for powerful, ready-to-use AI prompts designed to help you start, grow, and monetize online faster. Unlock 500+ high-converting prompts—no experience needed.</p> 
             <button id="claim-kit-btn" class="btn-main" style="background:var(--success); margin-top:20px; padding: 18px 40px;">Get Instant Access Now</button>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px; font-weight: 600;">Instant download • Beginner-friendly • No skills needed</p>
         </div> 
+
+        <div style="text-align: center; margin-top: 30px;">
+            <div class="payment-badges">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+            </div>
+        </div>
     </div> 
 
     <div id="browse" class="page">
@@ -95,8 +227,7 @@
         <div style="padding: 100px 0; text-align: center;">
             <h2 style="font-size:3.5rem; margin-bottom: 20px;">The <span class="highlight-text">Hub</span></h2>
             <div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 50px; border: 1px dashed var(--accent);">
-                <span style="background: var(--accent); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px;">ENGINEERING IN PROGRESS</span>
-                <p style="color: #94a3b8; margin: 20px 0;">We are building a real-time Intelligence Dashboard. Access is launching soon.</p>
+                <p style="color: #94a3b8; line-height: 1.6; margin: 20px 0;">We are building a real-time Intelligence Dashboard. Access is launching soon.</p>
                 <div style="font-size: 2rem; color: var(--accent);">⏳</div>
             </div>
         </div>
@@ -111,7 +242,7 @@
             <span>Total:</span>
             <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
-        <button onclick="window.processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-top:20px; width: 100%;">Checkout with PayPal / Card</button>
+        <button onclick="window.processPaypalCheckout()" class="btn-main" style="background:var(--success); margin-top:20px; width: 100%;">Checkout with PayPal</button>
         <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; cursor:pointer;">Continue Browsing</button>
     </div>
 </div>
@@ -135,12 +266,110 @@
         <a class="nav-item active" onclick="window.changePage('home', this)">🏠<br><small>Home</small></a>
         <a class="nav-item" onclick="window.changePage('browse', this)">⊞<br><small>Vaults</small></a>
         <a class="nav-item" onclick="window.changePage('library', this)">👤<br><small>Library</small></a>
-        <a class="nav-item" href="blog.html">📖<br><small>Blog</small></a>
+        <a class="nav-item" onclick="window.location.href='blog.html'">📖<br><small>Blog</small></a>
         <a class="nav-item" onclick="window.changePage('hub', this)">🎯<br><small>Hub</small></a>
     </div>
 </nav> 
 
-<script type="module" src="js/main.js"></script>
+<script>
+    // --- 3. COMMERCE & PRODUCT LOGIC (MODERNIZED) ---
+    const PAYPAL_EMAIL = "emilyperong23@gmail.com";
+    let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
+    
+    window.updateCartCount = () => { 
+        const pill = document.getElementById('cart-count-pill');
+        if(pill) pill.innerText = cart.length; 
+    };
 
+    window.openCheckout = () => {
+        const modal = document.getElementById('checkout-overlay');
+        const list = document.getElementById('cart-items-list');
+        const totalEl = document.getElementById('cart-total');
+        if (cart.length === 0) { alert("Your cart is empty!"); return; }
+        modal.style.display = 'flex';
+        list.innerHTML = cart.map((item, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span style="font-size:0.85rem;">${item.name}</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <strong>$${item.price.toFixed(2)}</strong>
+                    <button onclick="window.removeFromCart(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer;">✕</button>
+                </div>
+            </div>`).join('');
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        totalEl.innerText = `$${total.toFixed(2)}`;
+    };
+
+    window.removeFromCart = (idx) => {
+        cart.splice(idx, 1);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        window.updateCartCount();
+        window.openCheckout();
+    };
+
+    window.processPaypalCheckout = () => {
+        if (cart.length === 0) return;
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        const itemNames = cart.map(i => i.name).join(', ');
+        localStorage.setItem('pending_assets', JSON.stringify(cart));
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(itemNames)}&no_shipping=1&return=${window.location.origin}/success.html`;
+    };
+
+    window.processDirectPurchase = (productStr) => {
+        if (!window.auth?.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
+        const product = JSON.parse(decodeURIComponent(productStr));
+        localStorage.setItem('pending_assets', JSON.stringify([product]));
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${product.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(product.name)}&no_shipping=1&return=${window.location.origin}/success.html`;
+    };
+
+    window.addToCart = (productStr) => {
+        if (!window.auth.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
+        const product = JSON.parse(decodeURIComponent(productStr));
+        cart.push(product);
+        localStorage.setItem('pv_cart', JSON.stringify(cart));
+        window.updateCartCount();
+    };
+
+    window.renderProducts = (productsToDisplay) => {
+        const list = document.getElementById('product-list');
+        if(!list) return;
+        list.innerHTML = productsToDisplay.map(p => {
+            const pData = encodeURIComponent(JSON.stringify(p));
+            return `
+                <div style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column;">
+                    <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
+                        <img src="${p.img || 'https://via.placeholder.com/400'}" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
+                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border:none; border-radius:12px;">Buy Now</button>
+                        <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px;">+ Cart</button>
+                    </div>
+                </div>`;
+        }).join('');
+    };
+
+    window.filterProducts = (val) => {
+        const filtered = window.allProducts.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
+        window.renderProducts(filtered);
+    };
+
+    // Social Notification Interval
+    setInterval(() => {
+        const city = ["Chicago", "New York", "Manila", "London", "Sydney"][Math.floor(Math.random()*5)];
+        const textEl = document.getElementById('notif-text');
+        if(textEl) {
+            textEl.innerText = `Someone from ${city} just joined the vault!`;
+            document.getElementById('sales-notif').style.display = 'flex';
+            setTimeout(() => { document.getElementById('sales-notif').style.display = 'none'; }, 4000);
+        }
+    }, 15000);
+
+    document.addEventListener('DOMContentLoaded', () => { 
+        window.updateCartCount(); 
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('action') === 'browse') window.changePage('browse', document.querySelectorAll('.nav-item')[1]);
+    });
+</script>
 </body>
 </html>
