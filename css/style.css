@@ -41,7 +41,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 120px 20px 180px; /* Increased bottom padding for nav clearance */
+    padding: 120px 20px 180px; 
 }
 
 header {
@@ -164,6 +164,19 @@ header {
     line-height: 1.3;
 }
 
+/* 📝 PRODUCT DESCRIPTION CLAMPING (NEW) */
+.product-desc {
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Shows max 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    min-height: 34px; /* Fixes grid alignment */
+}
+
 /* 🚀 Buttons */
 .btn-main {
     padding: 18px 36px;
@@ -177,7 +190,7 @@ header {
     background: var(--accent);
     color: white;
     box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
-    margin-bottom: 15px; /* Adjusted spacing */
+    margin-bottom: 15px;
 }
 
 .btn-main:hover {
@@ -264,10 +277,10 @@ header {
     white-space: nowrap;
 }
 
-/* 📱 MOBILE RESPONSIVE OVERRIDES (Surgical Fix for your Screenshot) */
+/* 📱 MOBILE RESPONSIVE OVERRIDES */
 @media (max-width: 768px) {
     .vault-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns for better tap targets */
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
     .glass-card {
@@ -275,11 +288,15 @@ header {
         border-radius: 20px;
     }
     .smart-cover {
-        height: 140px; /* Scaled down for mobile */
+        height: 140px;
     }
     .btn-main {
         padding: 14px 20px;
         font-size: 0.9rem;
+    }
+    .product-desc {
+        font-size: 0.7rem;
+        min-height: 30px;
     }
 }
 
