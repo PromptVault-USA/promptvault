@@ -1,20 +1,21 @@
-/* PROJECT MEMORY: Master Stylesheet (v3.2 - Final Audit)
-    Status: Mobile-Hardened / Production-Ready
-    Responsibility: Fixing Nav-Collapse, Button Logic, & Mobile UX
+/* PROJECT MEMORY: Master Stylesheet (v3.5 - FULL MERGE)
+   Status: Production-Ready / Mobile-Hardened / Nav-Collapse Fixed
+   Responsibility: Global Theme, SPA Logic, Commerce, & Mobile UX
 */
 
 :root {
-    --primary: #0f172a;
-    --secondary: #3b82f6;
-    --accent: #8b5cf6;
-    --success: #10b981;
-    --error: #ef4444;
+    --primary: #0f172a;    /* Deep Midnight */
+    --secondary: #3b82f6;  /* Electric Blue */
+    --accent: #8b5cf6;     /* Royal Purple */
+    --success: #10b981;    /* Cyber Green */
+    --error: #ef4444;      /* Alert Red */
     --text: #f8fafc;
     --text-gray: #94a3b8;
     --glass: rgba(255, 255, 255, 0.03);
     --border: rgba(255, 255, 255, 0.1);
 }
 
+/* --- 🧱 BASE & RESET --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -35,7 +36,7 @@ body {
     line-height: 1.6;
 }
 
-/* --- 🔦 VISUAL EFFECTS --- */
+/* --- 🔦 LIGHTING & FX --- */
 .spotlight {
     position: fixed;
     top: -100px;
@@ -45,7 +46,7 @@ body {
     max-width: 1000px;
     height: 600px;
     background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-    pointer-events: none; /* CRITICAL: Prevents blocking clicks */
+    pointer-events: none;
     z-index: -1;
 }
 
@@ -55,12 +56,12 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
-/* --- 🏗️ HEADER --- */
+/* --- 🏗️ HEADER & PILLS --- */
 header {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 10000;
@@ -103,29 +104,7 @@ header {
     border: 2px solid var(--primary);
 }
 
-/* --- 🚀 BUTTONS (RESTORED & AUDITED) --- */
-.btn-main {
-    padding: 16px 25px;
-    border-radius: 15px;
-    font-weight: 800;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    width: 100%;
-    background: var(--accent);
-    color: white;
-    font-size: 0.9rem;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.btn-main:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-    box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3);
-}
-
-/* --- 💳 MODALS --- */
+/* --- 💳 OVERLAYS & MODALS --- */
 #checkout-overlay, #auth-overlay {
     display: none;
     position: fixed;
@@ -149,17 +128,42 @@ header {
     outline: none;
 }
 
-/* --- 📂 GRID & CARDS --- */
+/* --- 🚀 BUTTONS --- */
+.btn-main {
+    padding: 16px 25px;
+    border-radius: 15px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+    margin-bottom: 10px;
+}
+
+.btn-main:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+}
+
+.btn-main:active { transform: scale(0.95); }
+
+/* --- 📂 VAULT GRID & CARDS --- */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 120px 20px 150px;
+    padding: 120px 20px 180px; 
 }
 
 .vault-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 30px;
 }
 
 .glass-card {
@@ -168,17 +172,19 @@ header {
     border: 1px solid var(--border);
     border-radius: 28px;
     padding: 24px;
+    transition: 0.3s ease;
     display: flex;
     flex-direction: column;
-    transition: 0.3s ease;
+    height: 100%;
 }
 
 .smart-cover {
     width: 100%;
     height: 180px;
     border-radius: 20px;
-    margin-bottom: 18px;
-    background: linear-gradient(145deg, #1e293b, #0f172a);
+    margin-bottom: 20px;
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -188,25 +194,46 @@ header {
 
 .smart-cover img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --- 📱 BOTTOM NAV (FIXED COLLAPSE) --- */
+/* 👻 GHOST COVER PLACEHOLDER */
+.smart-cover::before {
+    content: "PV";
+    position: absolute;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(139, 92, 246, 0.03);
+    z-index: 0;
+}
+
+/* --- 📝 PRODUCT DETAILS --- */
+.product-desc {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 38px;
+}
+
+/* --- 📱 THE CENTERED PILL NAV (RECOVERY) --- */
 .bottom-nav {
     position: fixed;
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(15, 23, 42, 0.98);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(25px);
     border: 1px solid var(--border);
-    padding: 15px 10px;
-    /* FIX: Added explicit safe area handling and flex-basis */
-    padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+    padding: 12px 10px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     border-radius: 100px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 90%; 
+    width: 92%;
     max-width: 440px;
-    min-width: 320px; /* Prevents squashing on tiny screens */
+    min-width: 300px; /* Prevents shrinking bug */
     z-index: 15000;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8);
 }
@@ -223,28 +250,16 @@ header {
 
 .nav-item.active { color: var(--secondary); }
 
+.nav-item span { font-size: 1.3rem; margin-bottom: 2px; }
+
 .nav-item small {
     font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
-    margin-top: 4px;
+    letter-spacing: 0.6px;
 }
 
-/* --- 🔔 NOTIFICATIONS --- */
-#sales-notif {
-    position: fixed;
-    bottom: 115px; 
-    left: 50%;
-    transform: translateX(-50%); /* Centered for mobile better than 'left: 20px' */
-    background: rgba(15, 23, 42, 0.95);
-    padding: 12px 25px;
-    border-radius: 50px;
-    border: 1px solid var(--border);
-    z-index: 14000;
-    white-space: nowrap;
-}
-
-/* --- 📁 LIBRARY --- */
+/* --- 📁 LIBRARY & NOTIFS --- */
 .library-card {
     background: var(--glass);
     border: 1px solid var(--border);
@@ -253,20 +268,31 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    width: 100%;
+    margin-bottom: 12px;
+}
+
+#sales-notif {
+    position: fixed;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.95);
+    padding: 12px 25px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    z-index: 14000;
+    white-space: nowrap;
 }
 
 /* --- 📱 MOBILE RESPONSIVE --- */
 @media (max-width: 768px) {
     .vault-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: 15px;
     }
-    .container { padding-top: 100px; }
-    .smart-cover { height: 130px; }
-    .btn-main { padding: 12px 10px; font-size: 0.8rem; border-radius: 12px; }
-    .glass-card { padding: 15px; border-radius: 22px; }
+    .container { padding-top: 100px; padding-bottom: 140px; }
+    .smart-cover { height: 140px; }
+    .btn-main { padding: 12px; font-size: 0.85rem; border-radius: 12px; }
 }
 
 .page { display: none; }
