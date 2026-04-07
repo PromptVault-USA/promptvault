@@ -8,10 +8,13 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --card-gap: 25px;
+        }
         .blog-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 25px; 
+            gap: var(--card-gap); 
             margin-top: 40px; 
         }
         .blog-card { 
@@ -20,17 +23,49 @@
             border-radius: 24px; 
             overflow: hidden; 
             cursor: pointer; 
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             display: flex; 
             flex-direction: column; 
             height: 100%;
+            text-decoration: none; /* For SEO crawlers */
         }
-        .blog-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .blog-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid var(--border); }
-        .blog-info { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
-        .blog-tag { color: var(--accent); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+        .blog-card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--accent); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+        }
+        .blog-img { 
+            width: 100%; 
+            aspect-ratio: 16/9; 
+            object-fit: cover; 
+            border-bottom: 1px solid var(--border); 
+            background: #1a1a1a; /* Placeholder color while loading */
+        }
+        .blog-info { 
+            padding: 24px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .blog-tag { 
+            color: var(--accent); 
+            font-size: 0.7rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin-bottom: 12px; 
+        }
+        .blog-card p {
+            color: #94a3b8; 
+            font-size: 0.95rem; 
+            line-height: 1.6;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
         
-        /* BOTTOM NAV OVERLAP FIX */
         .bottom-nav .nav-item { 
             flex: 1; 
             display: flex; 
@@ -54,43 +89,127 @@
 <header>
     <div class="header-wrap">
         <div onclick="window.location.href='index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-            <img src="logo.png" class="logo-box">
+            <img src="logo.png" class="logo-box" alt="Logo">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
         <div style="display: flex; gap: 15px; align-items: center;">
-            <button class="signin-pill" onclick="window.location.href='index.html?action=checkout'" style="background:var(--glass); position:relative; padding: 10px 15px; border:1px solid var(--border);">
+            <button class="signin-pill" aria-label="Cart" onclick="window.location.href='index.html?action=checkout'" style="background:var(--glass); position:relative; padding: 10px 15px; border:1px solid var(--border);">
                 🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
             </button>
         </div>
     </div>
 </header>
 
-<div class="container" style="padding-top: 120px; padding-bottom: 120px;">
-    <h2 style="font-size: 3rem; line-height: 1.1; font-weight: 800;">The AI <span class="highlight-text">Intelligence</span> Feed</h2>
-    <p style="color: #94a3b8; margin-top: 10px; font-size: 1.1rem;">Strategies, Side Hustles, and Prompt Engineering Secrets.</p>
+<main class="container" style="padding-top: 140px; padding-bottom: 140px;">
+    <h2 style="font-size: clamp(2rem, 8vw, 3.5rem); line-height: 1.1; font-weight: 800; margin-bottom: 10px;">
+        The AI <span class="highlight-text">Intelligence</span> Feed
+    </h2>
+    <p style="color: #94a3b8; font-size: 1.2rem; max-width: 600px;">Expert Strategies, Monetization Blueprints, and Prompt Engineering Secrets from the Vault.</p>
 
     <div class="blog-grid">
-        <div class="blog-card" onclick="window.location.href='blog-side-hustles.html'">
-            <img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?q=80&w=600&auto=format&fit=crop" class="blog-img">
+        
+        <div class="blog-card" role="link" aria-label="Read Prompt Architect Manifesto" onclick="window.location.href='prompt-architect-manifesto.html'">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4628c9bb5?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="AI Strategy">
             <div class="blog-info">
-                <span class="blog-tag">Monetization</span>
-                <h3 style="color:white; margin: 0 0 10px 0; font-size: 1.4rem;">5 High-Paying AI Side Hustles You Can Start Today</h3>
-                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.6;">Learn how Prompt Architects are quietly earning $2,000+ monthly using simple AI workflows.</p>
+                <span class="blog-tag">Mission</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Prompt Architect’s Manifesto</h3>
+                <p>Why your business needs a controlled Vault of assets, not just a search bar. Move beyond the conversation.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ MANIFESTO &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read Efficiency Gap" onclick="window.location.href='efficiency-gap.html'">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Productivity">
+            <div class="blog-info">
+                <span class="blog-tag">Strategy</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Bridging the Efficiency Gap</h3>
+                <p>How to stop wasting hours on "Regenerate Response" and start scaling with precision-engineered prompts.</p>
                 <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
             </div>
         </div>
 
-        <div class="blog-card" onclick="window.location.href='first-post.html'">
-            <img src="https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=600&auto=format&fit=crop" class="blog-img">
+        <div class="blog-card" role="link" aria-label="Read Death of Generic Prompt" onclick="window.location.href='death-of-generic-prompts.html'">
+            <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="AI Insights">
             <div class="blog-info">
-                <span class="blog-tag">Ecosystem</span>
-                <h3 style="color:white; margin: 0 0 10px 0; font-size: 1.4rem;">Welcome to the PromptVault USA Hub</h3>
-                <p style="color:#94a3b8; font-size:0.9rem; line-height:1.6;">A deep dive into the 2026 AI Prompt Gold Rush and how to build your digital asset portfolio.</p>
+                <span class="blog-tag">Industry Insights</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Death of the Generic Prompt</h3>
+                <p>Why generic AI writing is invisible in 2026 and how to reclaim your brand's unique voice in a sea of noise.</p>
                 <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
             </div>
         </div>
+
+        <div class="blog-card" role="link" aria-label="Read Ghostwriters Secret" onclick="window.location.href='ghostwriters-secret.html'">
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Writing">
+            <div class="blog-info">
+                <span class="blog-tag">Advanced Prompting</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Ghostwriter’s Secret</h3>
+                <p>The technical framework for cloning any brand voice perfectly using multi-layered AI personas.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read Faceless TikTok" onclick="window.location.href='faceless-tiktok-blueprint.html'">
+            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="TikTok">
+            <div class="blog-info">
+                <span class="blog-tag">Monetization</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Faceless TikTok Blueprint</h3>
+                <p>Build viral storytelling channels and high-income affiliate stores without ever showing your face on camera.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read Chaining vs Engineering" onclick="window.location.href='prompt-engineering-vs-chaining.html'">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Tech">
+            <div class="blog-info">
+                <span class="blog-tag">Technical Deep Dive</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Prompt Chaining vs. Engineering</h3>
+                <p>Stop relying on one-off sessions. Build scalable, multi-step AI factories for your business operations.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read AI Ethics" onclick="window.location.href='ai-ethics-for-professionals.html'">
+            <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Ethics">
+            <div class="blog-info">
+                <span class="blog-tag">Policy & Safety</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">AI Ethics for Professionals</h3>
+                <p>How to maintain human trust and absolute originality in an era of mass AI-generated noise.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read Negative Constraints" onclick="window.location.href='mastering-negative-constraints.html'">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Cyber">
+            <div class="blog-info">
+                <span class="blog-tag">Prompt Engineering</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Mastering Negative Constraints</h3>
+                <p>The "Sculptor’s strategy" for removing AI fluff, repetitive patterns, and boring clichés from your work.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read 24 Hour Launch" onclick="window.location.href='idea-to-product-24-hours.html'">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Product">
+            <div class="blog-info">
+                <span class="blog-tag">Case Study</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Idea to Product in 24 Hours</h3>
+                <p>The exact workflow we used to deploy PromptVault USA in record time using AI-accelerated frameworks.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
+        <div class="blog-card" role="link" aria-label="Read Future of Search" onclick="window.location.href='future-of-search.html'">
+            <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Future">
+            <div class="blog-info">
+                <span class="blog-tag">SEO Strategy</span>
+                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Future of Search</h3>
+                <p>Why Google's 2026 algorithms reward "Human-Centered" AI writing and how to future-proof your traffic.</p>
+                <div style="margin-top: auto; padding-top: 20px; color: var(--accent); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+            </div>
+        </div>
+
     </div>
-</div>
+</main>
 
 <nav class="bottom-nav">
     <div style="width:100%; max-width:600px; display:flex; justify-content:space-around;">
