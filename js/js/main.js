@@ -1,13 +1,14 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v2.7)
+ * PROJECT MEMORY: Main Entry Point (v2.8)
  * Status: Production-Ready / AdSense Audited
  * Responsibility: Orchestrating Services, Secure Auth, & Commerce.
+ * UPGRADES: Added explicit Library loading & Schema sync for driveLink.
  */
 
 import { auth, db } from './firebase-config.js';
 import { UIService } from './ui-service.js';
 import { SecurityService } from './security-service.js';
-import { FulfillmentService } from './fulfillment-service.js'; // Added for Success Page
+import { FulfillmentService } from './fulfillment-service.js'; 
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { 
     onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider, 
@@ -15,9 +16,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // --- 1. Global Bridge (Mapping Services to HTML) ---
-window.changePage = UIService.changePage;
+window.changePage = (id, el) => {
+    UIService.changePage(id, el);
+    // Explicitly trigger library load if navigating to library
+    if (id === 'library') window.loadUserLibrary();
+};
 window.filterProducts = UIService.filterProducts;
 window.updateCartCount = UIService.refreshCartUI;
+
 window.openCheckout = () => {
     const modal = document.getElementById('checkout-overlay');
     if (modal) {
@@ -60,6 +66,9 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user) {
         await ensureUserProfile(user); 
+        // Trigger library load immediately on login
+        window.loadUserLibrary();
+
         if (loginBtn) {
             loginBtn.innerText = "Logout";
             loginBtn.onclick = () => signOut(auth);
@@ -67,11 +76,11 @@ onAuthStateChanged(auth, async (user) => {
         if (kitBtn) {
             kitBtn.innerText = "Access My Library";
             kitBtn.style.background = "var(--accent)";
-            kitBtn.onclick = () => UIService.changePage('library');
+            kitBtn.onclick = () => window.changePage('library');
         }
         if (authOverlay) authOverlay.style.display = 'none';
         
-        // If on success page, trigger fulfillment
+        // Success Page Detection
         if (window.location.pathname.includes('success.html')) {
             const txID = new URLSearchParams(window.location.search).get('tx');
             if (txID) FulfillmentService.verifyAndDeliver(txID);
@@ -109,7 +118,8 @@ window.handleEmailAuth = async (mode) => {
 // --- 4. Secure Commerce Logic (Globalized) ---
 window.addToCart = (productStr) => {
     if (!auth.currentUser) {
-        document.getElementById('auth-overlay').style.display = 'flex';
+        const overlay = document.getElementById('auth-overlay');
+        if(overlay) overlay.style.display = 'flex';
         return;
     }
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -130,6 +140,7 @@ window.processPaypalCheckout = async () => {
     if (cart.length === 0) return UIService.showNotification("Cart is empty!", "info");
     
     try {
+        UIService.showNotification("Preparing Secure Checkout...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout(cart);
         SecurityService.initiatePayPal(txID, total, cart.map(i => i.name).join(', '));
     } catch (e) { UIService.showNotification("Checkout Failed.", "error"); }
@@ -142,17 +153,49 @@ window.processDirectPurchase = async (productStr) => {
     }
     const product = JSON.parse(decodeURIComponent(productStr));
     try {
+        UIService.showNotification("Connecting to PayPal...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout([product]);
         SecurityService.initiatePayPal(txID, total, product.name);
     } catch (e) { UIService.showNotification("Purchase Failed.", "error"); }
 };
 
-// --- 5. Routing & SPA Consistency ---
+// --- 5. Library Logic (Unified Schema) ---
+window.loadUserLibrary = async () => {
+    const user = auth.currentUser;
+    const grid = document.getElementById('user-library-grid');
+    if (!grid || !user) return;
+
+    try {
+        const userDocSnap = await getDoc(doc(db, "users", user.uid));
+        if (userDocSnap.exists()) {
+            const prompts = userDocSnap.data().purchasedPrompts || [];
+            prompts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            
+            if (prompts.length === 0) {
+                grid.innerHTML = `<p style="color:#94a3b8; text-align:center; padding:20px;">Your vault is empty. Start your collection in the shop!</p>`;
+                return;
+            }
+
+            grid.innerHTML = prompts.map(item => `
+                <div class="library-card">
+                    <div>
+                        <h4 style="margin:0; color:white;">${item.productName}</h4>
+                        <small style="color:var(--secondary);">Permanent Access</small>
+                    </div>
+                    <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
+                </div>`).join('');
+        }
+    } catch (e) {
+        console.error("Library Error:", e);
+    }
+};
+
+// --- 6. Routing & SPA Consistency ---
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
     const urlParams = new URLSearchParams(window.location.search);
     
-    if (urlParams.get('page') === 'library') UIService.changePage('library');
-    if (urlParams.get('action') === 'browse') UIService.changePage('browse');
-    if (urlParams.get('action') === 'checkout') window.openCheckout();
+    if (urlParams.get('page') === 'library') window.changePage('library');
+    else if (urlParams.get('action') === 'browse') window.changePage('browse');
+    else if (urlParams.get('action') === 'checkout') window.openCheckout();
 });
