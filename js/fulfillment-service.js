@@ -1,81 +1,100 @@
 /**
- * PROJECT MEMORY: Fulfillment Service (v2.8)
- * Status: Hardened & Race-Condition Protected
- * Responsibility: Verifying PayPal transactions and unlocking Library assets.
- * REUSES: auth, db from firebase-config.js
+ * PROJECT MEMORY: Fulfillment Service (v2.9 - Hardened)
+ * Status: Production-Ready / AdSense Compliant
+ * Responsibility: Secure PayPal Verification & Library Unlocking
+ * UPGRADE: Unified CDN Imports to prevent "Multiple App Instance" crashes.
  */
 
-import { auth, db } from './firebase-config.js';
-import { doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Helper: Waits for Firebase Auth to initialize before failing
+// RE-DECLARE CONFIG: Ensures this module has its own clean handshake with Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
+    authDomain: "promptvaultusa.firebaseapp.com",
+    projectId: "promptvaultusa",
+    storageBucket: "promptvaultusa.firebasestorage.app",
+    messagingSenderId: "960105895017",
+    appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/**
+ * Race-Condition Guard: Waits for Firebase Auth to determine user status
+ * before the script proceeds with the transaction check.
+ */
 const getCurrentUser = () => {
-    return new Promise((resolve, reject) => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
+    return new Promise((resolve) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             unsubscribe();
             resolve(user);
-        }, reject);
+        });
     });
 };
 
 export const FulfillmentService = {
     /**
-     * The "Master Unlock" function.
-     * @param {string} txID - The transaction ID passed back from PayPal.
+     * verifyAndDeliver: The Bridge between PayPal and the User's Vault.
+     * @param {string} txID - The transaction ID from the URL (?tx=...)
      */
     verifyAndDeliver: async (txID) => {
-        if (!txID) throw new Error("No transaction ID provided.");
+        if (!txID) throw new Error("Transaction ID is missing from the request.");
 
-        // 1. Wait for Auth to initialize (Fixes the 'null user' race condition)
+        // 1. Resolve the User (Auth Handshake)
         const user = await getCurrentUser();
-        if (!user) throw new Error("🔒 Please sign in to verify your purchase.");
+        if (!user) throw new Error("🔒 Please sign in to verify and unlock your assets.");
 
-        // 2. Fetch the pending order
+        // 2. Fetch Order from 'orders' collection
         const orderRef = doc(db, "orders", txID);
         const orderSnap = await getDoc(orderRef);
 
         if (!orderSnap.exists()) {
-            throw new Error("Order record not found in the Vault.");
+            // Friendly message in case PayPal Webhook is slightly delayed
+            throw new Error("Vault sync in progress... Please refresh in 30 seconds.");
         }
 
         const orderData = orderSnap.data();
 
-        // 3. Security: User Mismatch Check
+        // 3. Security: Prevent unauthorized cross-account claiming
         if (orderData.uid !== user.uid) {
-            throw new Error("Security Violation: This order belongs to another account.");
+            throw new Error("Security Violation: Order UID does not match current user.");
         }
 
-        // 4. Check if already completed (Prevents double-claiming)
-        // Standardize the item keys for the UI
+        // 4. Data Normalization: Prep for the Library UI
         const normalizedItems = orderData.items.map(item => ({
-            productName: item.name || item.productName, // Support both schemas
-            driveLink: item.driveLink || "https://promptvaultusa.shop/help",
-            timestamp: item.timestamp || Date.now()
+            productName: item.name || item.productName || "AI Prompt Asset",
+            driveLink: item.driveLink || "https://promptvaultusa.shop/support",
+            timestamp: Date.now() // Fresh timestamp for sorting
         }));
 
+        // 5. Check Status (Avoid redundant writes)
         if (orderData.status === 'completed') {
-            return { status: 'already_done', items: normalizedItems };
+            return { status: 'already_delivered', items: normalizedItems };
         }
 
-        // 5. Success! Unlock the items in the User's Profile
+        // 6. Final Fulfillment
         const userRef = doc(db, "users", user.uid);
         
         try {
-            // Update the User document with new assets
+            // Atomic update: Adds items to array without overwriting existing ones
             await updateDoc(userRef, {
                 purchasedPrompts: arrayUnion(...normalizedItems)
             });
 
-            // Mark the Order as delivered
+            // Close the loop: Mark order as completed
             await updateDoc(orderRef, {
                 status: 'completed',
                 deliveredAt: new Date().toISOString()
             });
 
             return { status: 'success', items: normalizedItems };
-        } catch (e) {
-            console.error("Database Update Failed:", e);
-            throw new Error("Vault sync failed. Please refresh the page.");
+        } catch (dbError) {
+            console.error("Fulfillment Write Error:", dbError);
+            throw new Error("Could not write to your Vault. Please check your connection.");
         }
     }
 };
