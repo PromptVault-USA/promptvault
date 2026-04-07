@@ -1,12 +1,13 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v2.6)
- * Status: Blog Optimized & Audited
- * Responsibility: Orchestrating Services & Secure Auth-UI Bridging.
+ * PROJECT MEMORY: Main Entry Point (v2.7)
+ * Status: Production-Ready / AdSense Audited
+ * Responsibility: Orchestrating Services, Secure Auth, & Commerce.
  */
 
 import { auth, db } from './firebase-config.js';
 import { UIService } from './ui-service.js';
 import { SecurityService } from './security-service.js';
+import { FulfillmentService } from './fulfillment-service.js'; // Added for Success Page
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { 
     onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider, 
@@ -61,10 +62,7 @@ onAuthStateChanged(auth, async (user) => {
         await ensureUserProfile(user); 
         if (loginBtn) {
             loginBtn.innerText = "Logout";
-            loginBtn.onclick = () => {
-                localStorage.removeItem('pv_cart'); 
-                signOut(auth);
-            };
+            loginBtn.onclick = () => signOut(auth);
         }
         if (kitBtn) {
             kitBtn.innerText = "Access My Library";
@@ -72,27 +70,30 @@ onAuthStateChanged(auth, async (user) => {
             kitBtn.onclick = () => UIService.changePage('library');
         }
         if (authOverlay) authOverlay.style.display = 'none';
+        
+        // If on success page, trigger fulfillment
+        if (window.location.pathname.includes('success.html')) {
+            const txID = new URLSearchParams(window.location.search).get('tx');
+            if (txID) FulfillmentService.verifyAndDeliver(txID);
+        }
     } else {
         if (loginBtn) {
             loginBtn.innerText = "Sign In";
             loginBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
         }
         if (kitBtn) {
-            kitBtn.innerText = "Get Instant Access Now";
+            kitBtn.innerText = "Unlock The Vault";
             kitBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
         }
         UIService.refreshCartUI(); 
     }
 });
 
-// Auth Handlers
+// Auth Handlers (Globalized)
 window.handleGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    try { 
-        await signInWithPopup(auth, provider); 
-    } catch(e) { 
-        UIService.showNotification("Login failed. Try again.", 'error'); 
-    }
+    try { await signInWithPopup(auth, provider); } 
+    catch(e) { UIService.showNotification("Login failed.", 'error'); }
 };
 
 window.handleEmailAuth = async (mode) => {
@@ -102,17 +103,14 @@ window.handleEmailAuth = async (mode) => {
     try {
         if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, pass);
         else await signInWithEmailAndPassword(auth, email, pass);
-    } catch(e) { 
-        UIService.showNotification("Auth Error: Check credentials.", 'error'); 
-    }
+    } catch(e) { UIService.showNotification("Auth Error.", 'error'); }
 };
 
-// --- 4. Secure Commerce Logic ---
+// --- 4. Secure Commerce Logic (Globalized) ---
 window.addToCart = (productStr) => {
     if (!auth.currentUser) {
-        const overlay = document.getElementById('auth-overlay');
-        if(overlay) overlay.style.display = 'flex';
-        return UIService.showNotification("Please Sign In to shop.", "info");
+        document.getElementById('auth-overlay').style.display = 'flex';
+        return;
     }
     const product = JSON.parse(decodeURIComponent(productStr));
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
@@ -132,42 +130,29 @@ window.processPaypalCheckout = async () => {
     if (cart.length === 0) return UIService.showNotification("Cart is empty!", "info");
     
     try {
-        UIService.showNotification("Securing transaction...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout(cart);
-        const itemNames = cart.map(i => i.name).join(', ');
-        SecurityService.initiatePayPal(txID, total, itemNames);
-    } catch (e) { 
-        UIService.showNotification("Checkout Failed.", "error"); 
-    }
+        SecurityService.initiatePayPal(txID, total, cart.map(i => i.name).join(', '));
+    } catch (e) { UIService.showNotification("Checkout Failed.", "error"); }
 };
 
 window.processDirectPurchase = async (productStr) => {
     if (!auth.currentUser) {
-        const overlay = document.getElementById('auth-overlay');
-        if(overlay) overlay.style.display = 'flex';
+        document.getElementById('auth-overlay').style.display = 'flex';
         return;
     }
     const product = JSON.parse(decodeURIComponent(productStr));
     try {
-        UIService.showNotification("Connecting to PayPal...", "info");
         const { txID, total } = await SecurityService.prepareSecureCheckout([product]);
         SecurityService.initiatePayPal(txID, total, product.name);
-    } catch (e) { 
-        UIService.showNotification("Purchase Failed.", "error"); 
-    }
+    } catch (e) { UIService.showNotification("Purchase Failed.", "error"); }
 };
 
-// --- 5. Initialize & Routing ---
+// --- 5. Routing & SPA Consistency ---
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
     const urlParams = new URLSearchParams(window.location.search);
     
-    // NEW: Logic for "Back to Stories" and SPA consistency
     if (urlParams.get('page') === 'library') UIService.changePage('library');
-    else if (urlParams.get('action') === 'browse') UIService.changePage('browse');
-    else if (urlParams.get('action') === 'checkout') window.openCheckout();
-    else if (urlParams.get('action') === 'blog') {
-        // If blog is a section in index.html, trigger it here:
-        // UIService.changePage('blog-section-id'); 
-    }
+    if (urlParams.get('action') === 'browse') UIService.changePage('browse');
+    if (urlParams.get('action') === 'checkout') window.openCheckout();
 });
