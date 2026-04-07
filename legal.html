@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trust Center | PromptVault USA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #d4af37;
@@ -13,16 +15,16 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--dark-bg);
             color: white;
-            line-height: 1.6;
+            line-height: 1.8;
             margin: 0;
             padding: 40px 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
         }
 
@@ -30,20 +32,22 @@
             color: var(--gold);
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: 800;
         }
 
         .section {
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 40px;
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 30px;
             border: 1px solid #333;
+            scroll-margin-top: 100px; /* Offset for sticky headers */
         }
 
         /* FAQ Accordion Styling */
         .faq-item {
             border-bottom: 1px solid #333;
-            padding: 15px 0;
+            padding: 20px 0;
         }
 
         .faq-question {
@@ -53,89 +57,105 @@
             border: none;
             color: white;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0;
         }
 
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out;
+            transition: all 0.3s ease-out;
             color: var(--text-gray);
-            margin-top: 10px;
+            font-size: 0.95rem;
         }
 
         .faq-item.active .faq-answer {
-            max-height: 200px;
-        }
-
-        .faq-item.active .faq-question::after {
-            content: '-';
+            max-height: 500px;
+            margin-top: 15px;
         }
 
         .faq-question::after {
             content: '+';
             color: var(--gold);
             font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            content: '-';
+            transform: rotate(180deg);
         }
 
         .footer-link {
             display: block;
-            margin-top: 40px;
+            margin-top: 60px;
             text-align: center;
             color: var(--gold);
             text-decoration: none;
+            font-weight: 800;
+            letter-spacing: 1px;
         }
+        
+        strong { color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>PromptVault USA</h1>
-        <p style="color: var(--text-gray);">Trust & Information Center</p>
+    <header style="margin-bottom: 50px;">
+        <h1 style="margin-bottom: 5px;">PromptVault USA</h1>
+        <p style="color: var(--text-gray); font-weight: 600;">Global Trust & Legal Compliance Center</p>
     </header>
 
-    <div class="section">
+    <div class="section" id="faq">
         <h2>Frequently Asked Questions</h2>
         
         <div class="faq-item">
             <button class="faq-question">How do I receive my prompts?</button>
             <div class="faq-answer">
-                Immediately after checkout, a download link will be sent to your registered email. You can also access your "Vault" anytime by logging into your account.
+                Immediately after a successful checkout, your digital assets are automatically added to your <strong>Library</strong>. You will also receive a confirmation email containing direct access links.
             </div>
         </div>
 
         <div class="faq-item">
-            <button class="faq-question">Which AI tools do these work with?</button>
+            <button class="faq-question">Which AI tools are supported?</button>
             <div class="faq-answer">
-                Each pack is specifically labeled. Most are optimized for Midjourney v6/v7, DALL-E 3, or specific video AI like HeyGen.
+                Our vaults are engineered for 2026 industry standards. We offer specific packs for Midjourney v6/v7, DALL-E 3, Claude 3.5, and video AI platforms like HeyGen and Sora.
             </div>
         </div>
 
         <div class="faq-item">
-            <button class="faq-question">Can I use the images for business?</button>
+            <button class="faq-question">Can I use these for commercial client work?</button>
             <div class="faq-answer">
-                Yes. Our prompts are designed for professional, commercial-ready AI content creation.
+                Absolutely. PromptVault USA assets are designed for professional architects, agencies, and creators who need commercial-ready results for their clients or brands.
             </div>
         </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="privacy">
+        <h2>Privacy Policy</h2>
+        <p>At <strong>PromptVault USA</strong>, we value your privacy. This policy outlines how we handle your data to provide a secure experience.</p>
+        <p><strong>Data Collection:</strong> We collect your email address via Firebase for account security and library access. Payment data is processed securely through PayPal; we never store your credit card information.</p>
+        <p><strong>Cookies & AdSense:</strong> We use Google AdSense to serve advertisements. Google uses cookies to serve ads based on your prior visits to this and other websites. You may opt out of personalized advertising by visiting Google's Ad Settings.</p>
+    </div>
+
+    <div class="section" id="refunds">
         <h2>Refund & Return Policy</h2>
-        <p>Because our products are <strong>digital assets</strong> delivered via instant download, all sales are final. Once a prompt pack has been accessed or downloaded, we cannot offer a refund.</p>
-        <p>Exceptions are made only for duplicate purchases or technical corruption of the file itself.</p>
+        <p>Because our products are <strong>intangible digital assets</strong> delivered via instant access, all sales are final. Once a prompt pack has been accessed, downloaded, or viewed in your library, we cannot offer a refund.</p>
+        <p><strong>Technical Support:</strong> If you experience a corrupted file or a broken link, contact us at <strong>emilyperong23@gmail.com</strong>. We guarantee a resolution or manual file delivery within 24 hours.</p>
     </div>
 
-    <div class="section">
+    <div class="section" id="terms">
         <h2>Terms & Conditions</h2>
-        <p>By using PromptVault USA, you agree that you are purchasing a license to <em>use</em> these prompts. You are <strong>prohibited</strong> from reselling or redistributing the raw prompt strings as your own product.</p>
+        <p>By using <strong>promptvaultusa.shop</strong>, you agree to these terms. You are purchasing a non-exclusive license to use these prompts for personal or commercial creative projects.</p>
+        <p><strong>Prohibitions:</strong> You are strictly prohibited from reselling, redistributing, or "leaking" the raw prompt strings as your own digital products. Violation of these terms will result in immediate account termination without refund.</p>
     </div>
 
-    <a href="index.html" class="footer-link">← Return to Vault</a>
+    <a href="index.html" class="footer-link">← RETURN TO THE ASSET VAULT</a>
 </div>
 
 <script>
@@ -143,6 +163,12 @@
     document.querySelectorAll('.faq-question').forEach(button => {
         button.addEventListener('click', () => {
             const faqItem = button.parentElement;
+            
+            // Close other items if one is opened
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if(item !== faqItem) item.classList.remove('active');
+            });
+
             faqItem.classList.toggle('active');
         });
     });
