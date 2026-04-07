@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AI Intelligence Blog | PromptVault USA</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -27,7 +27,6 @@
             display: flex; 
             flex-direction: column; 
             height: 100%;
-            text-decoration: none; /* For SEO crawlers */
         }
         .blog-card:hover { 
             transform: translateY(-8px); 
@@ -39,7 +38,7 @@
             aspect-ratio: 16/9; 
             object-fit: cover; 
             border-bottom: 1px solid var(--border); 
-            background: #1a1a1a; /* Placeholder color while loading */
+            background: #1a1a1a;
         }
         .blog-info { 
             padding: 24px; 
@@ -66,21 +65,45 @@
             overflow: hidden;
         }
         
+        /* FIX: MOBILE BOTTOM NAV OVERLAP & CLARITY */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding-bottom: env(safe-area-inset-bottom, 20px); /* iPhone Notch Fix */
+            height: 85px;
+            z-index: 10000;
+        }
+
         .bottom-nav .nav-item { 
             flex: 1; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            min-width: 0; 
-            text-align: center; 
+            justify-content: center;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: 0.3s;
         }
+
+        .bottom-nav .nav-item.active { color: var(--accent); }
+
         .bottom-nav small { 
-            white-space: nowrap; 
             font-size: 0.65rem !important; 
-            margin-top: 4px; 
+            margin-top: 5px; 
             font-weight: 800; 
-            display: block; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
+        /* FIX: FLOATING CART PILL */
+        .signin-pill { position: relative; }
     </style>
 </head>
 <body>
@@ -104,12 +127,12 @@
     <h2 style="font-size: clamp(2rem, 8vw, 3.5rem); line-height: 1.1; font-weight: 800; margin-bottom: 10px;">
         The AI <span class="highlight-text">Intelligence</span> Feed
     </h2>
-    <p style="color: #94a3b8; font-size: 1.2rem; max-width: 600px;">Expert Strategies, Monetization Blueprints, and Prompt Engineering Secrets from the Vault.</p>
+    <p style="color: #94a3b8; font-size: 1.2rem; max-width: 600px;">Expert Strategies, Monetization Blueprints, and Prompt Engineering Secrets.</p>
 
     <div class="blog-grid">
         
         <div class="blog-card" role="link" aria-label="Read Prompt Architect Manifesto" onclick="window.location.href='prompt-architect-manifesto.html'">
-            <img src="https://images.unsplash.com/photo-1620712943543-bcc4628c9bb5?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="AI Strategy">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4628c9bb5?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="The Prompt Architect Manifesto">
             <div class="blog-info">
                 <span class="blog-tag">Mission</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Prompt Architect’s Manifesto</h3>
@@ -119,7 +142,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Efficiency Gap" onclick="window.location.href='efficiency-gap.html'">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Productivity">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Efficiency Strategy">
             <div class="blog-info">
                 <span class="blog-tag">Strategy</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Bridging the Efficiency Gap</h3>
@@ -129,7 +152,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Death of Generic Prompt" onclick="window.location.href='death-of-generic-prompts.html'">
-            <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="AI Insights">
+            <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Industry Change">
             <div class="blog-info">
                 <span class="blog-tag">Industry Insights</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Death of the Generic Prompt</h3>
@@ -139,7 +162,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Ghostwriters Secret" onclick="window.location.href='ghostwriters-secret.html'">
-            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Writing">
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Persona Engineering">
             <div class="blog-info">
                 <span class="blog-tag">Advanced Prompting</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Ghostwriter’s Secret</h3>
@@ -149,7 +172,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Faceless TikTok" onclick="window.location.href='faceless-tiktok-blueprint.html'">
-            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="TikTok">
+            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="TikTok Marketing">
             <div class="blog-info">
                 <span class="blog-tag">Monetization</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Faceless TikTok Blueprint</h3>
@@ -159,7 +182,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Chaining vs Engineering" onclick="window.location.href='prompt-engineering-vs-chaining.html'">
-            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Tech">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Architecture">
             <div class="blog-info">
                 <span class="blog-tag">Technical Deep Dive</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Prompt Chaining vs. Engineering</h3>
@@ -169,7 +192,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read AI Ethics" onclick="window.location.href='ai-ethics-for-professionals.html'">
-            <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Ethics">
+            <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="AI Safety">
             <div class="blog-info">
                 <span class="blog-tag">Policy & Safety</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">AI Ethics for Professionals</h3>
@@ -179,7 +202,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Negative Constraints" onclick="window.location.href='mastering-negative-constraints.html'">
-            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Cyber">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Engineering Techniques">
             <div class="blog-info">
                 <span class="blog-tag">Prompt Engineering</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Mastering Negative Constraints</h3>
@@ -189,7 +212,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read 24 Hour Launch" onclick="window.location.href='idea-to-product-24-hours.html'">
-            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Product">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Speed to Market">
             <div class="blog-info">
                 <span class="blog-tag">Case Study</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Idea to Product in 24 Hours</h3>
@@ -199,7 +222,7 @@
         </div>
 
         <div class="blog-card" role="link" aria-label="Read Future of Search" onclick="window.location.href='future-of-search.html'">
-            <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="Future">
+            <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80" class="blog-img" alt="SEO Future">
             <div class="blog-info">
                 <span class="blog-tag">SEO Strategy</span>
                 <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Future of Search</h3>
