@@ -5,26 +5,28 @@
     <loc>https://promptvaultusa.shop/index.html</loc>
     <priority>1.0</priority>
   </url>
+
   <url>
-    <loc>https://promptvaultusa.shop/blog.html</loc>
-    <priority>0.8</priority>
+    <loc>https://promptvaultusa.shop/index.html?action=browse</loc>
+    <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://promptvaultusa.shop/first-post.html</loc>
-    <priority>0.7</priority>
+    <loc>https://promptvaultusa.shop/blog.html</loc>
+    <priority>0.9</priority>
   </url>
-  <url>
-    <loc>https://promptvaultusa.shop/blog-side-hustles.html</loc>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://promptvaultusa.shop/prompt-architect-manifesto.html</loc>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://promptvaultusa.shop/efficiency-gap.html</loc>
-    <priority>0.7</priority>
-  </url>
+
+  <url><loc>https://promptvaultusa.shop/first-post.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/blog-side-hustles.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/prompt-architect-manifesto.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/efficiency-gap.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/death-of-generic-prompts.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/ghostwriters-secret.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/faceless-tiktok-blueprint.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/prompt-engineering-vs-chaining.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-ethics-for-professionals.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/mastering-negative-constraints.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/idea-to-product-24-hours.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/future-of-search.html</loc><priority>0.7</priority></url>
 
 </urlset>
