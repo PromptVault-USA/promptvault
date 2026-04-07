@@ -1,8 +1,8 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v2.8)
- * Status: Production-Ready / AdSense Audited
+ * PROJECT MEMORY: Main Entry Point (v2.9)
+ * Status: Production-Ready / Mobile-Hardened
  * Responsibility: Orchestrating Services, Secure Auth, & Commerce.
- * UPGRADES: Added explicit Library loading & Schema sync for driveLink.
+ * UPGRADES: Hardened Library Rendering with "Virtual Free Assets" merge.
  */
 
 import { auth, db } from './firebase-config.js';
@@ -15,10 +15,9 @@ import {
     signInWithEmailAndPassword, createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// --- 1. Global Bridge (Mapping Services to HTML) ---
+// --- 1. Global Bridge ---
 window.changePage = (id, el) => {
     UIService.changePage(id, el);
-    // Explicitly trigger library load if navigating to library
     if (id === 'library') window.loadUserLibrary();
 };
 window.filterProducts = UIService.filterProducts;
@@ -44,10 +43,7 @@ async function ensureUserProfile(user) {
             await setDoc(userRef, {
                 email: user.email,
                 joinedDate: new Date().toISOString(),
-                purchasedPrompts: [
-                    { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
-                    { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
-                ]
+                purchasedPrompts: [] // We now handle free items in the UI layer
             });
             UIService.showNotification("Vault Profile Created!", "success");
         }
@@ -66,7 +62,6 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user) {
         await ensureUserProfile(user); 
-        // Trigger library load immediately on login
         window.loadUserLibrary();
 
         if (loginBtn) {
@@ -80,7 +75,6 @@ onAuthStateChanged(auth, async (user) => {
         }
         if (authOverlay) authOverlay.style.display = 'none';
         
-        // Success Page Detection
         if (window.location.pathname.includes('success.html')) {
             const txID = new URLSearchParams(window.location.search).get('tx');
             if (txID) FulfillmentService.verifyAndDeliver(txID);
@@ -98,7 +92,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Auth Handlers (Globalized)
+// Auth Handlers
 window.handleGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try { await signInWithPopup(auth, provider); } 
@@ -115,11 +109,10 @@ window.handleEmailAuth = async (mode) => {
     } catch(e) { UIService.showNotification("Auth Error.", 'error'); }
 };
 
-// --- 4. Secure Commerce Logic (Globalized) ---
+// --- 4. Secure Commerce Logic ---
 window.addToCart = (productStr) => {
     if (!auth.currentUser) {
-        const overlay = document.getElementById('auth-overlay');
-        if(overlay) overlay.style.display = 'flex';
+        document.getElementById('auth-overlay').style.display = 'flex';
         return;
     }
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -146,45 +139,50 @@ window.processPaypalCheckout = async () => {
     } catch (e) { UIService.showNotification("Checkout Failed.", "error"); }
 };
 
-window.processDirectPurchase = async (productStr) => {
-    if (!auth.currentUser) {
-        document.getElementById('auth-overlay').style.display = 'flex';
-        return;
-    }
-    const product = JSON.parse(decodeURIComponent(productStr));
-    try {
-        UIService.showNotification("Connecting to PayPal...", "info");
-        const { txID, total } = await SecurityService.prepareSecureCheckout([product]);
-        SecurityService.initiatePayPal(txID, total, product.name);
-    } catch (e) { UIService.showNotification("Purchase Failed.", "error"); }
-};
-
-// --- 5. Library Logic (Unified Schema) ---
+// --- 5. Library Logic (Merged Free Assets) ---
 window.loadUserLibrary = async () => {
     const user = auth.currentUser;
     const grid = document.getElementById('user-library-grid');
     if (!grid || !user) return;
 
+    // VIRTUAL FREE ASSETS: Always available to every logged-in user
+    const freeAssets = [
+        { 
+            productName: "✉️ Welcome Letter & Hub Guide", 
+            driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk",
+            type: "Permanent"
+        },
+        { 
+            productName: "🎁 2026 AI Starter Kit", 
+            driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk",
+            type: "Permanent"
+        }
+    ];
+
     try {
         const userDocSnap = await getDoc(doc(db, "users", user.uid));
+        let purchased = [];
+        
         if (userDocSnap.exists()) {
-            const prompts = userDocSnap.data().purchasedPrompts || [];
-            prompts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            
-            if (prompts.length === 0) {
-                grid.innerHTML = `<p style="color:#94a3b8; text-align:center; padding:20px;">Your vault is empty. Start your collection in the shop!</p>`;
-                return;
-            }
-
-            grid.innerHTML = prompts.map(item => `
-                <div class="library-card">
-                    <div>
-                        <h4 style="margin:0; color:white;">${item.productName}</h4>
-                        <small style="color:var(--secondary);">Permanent Access</small>
-                    </div>
-                    <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
-                </div>`).join('');
+            purchased = userDocSnap.data().purchasedPrompts || [];
         }
+
+        // Merge Free Assets with Purchases
+        const allPrompts = [...freeAssets, ...purchased];
+        
+        // Render
+        grid.innerHTML = allPrompts.map(item => `
+            <div class="library-card" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); padding:18px; border-radius:18px; margin-bottom:12px;">
+                <div>
+                    <h4 style="margin:0; color:white; font-size:1rem;">${item.productName}</h4>
+                    <small style="color:var(--secondary); font-weight:800; text-transform:uppercase; font-size:0.65rem;">${item.type || 'Purchased Access'}</small>
+                </div>
+                <a href="${item.driveLink}" target="_blank" class="btn-main" 
+                   style="padding:10px 18px; font-size:0.8rem; background:#10b981; border-radius:10px; text-decoration:none; width:auto; margin:0;">
+                   Open Access
+                </a>
+            </div>`).join('');
+            
     } catch (e) {
         console.error("Library Error:", e);
     }
