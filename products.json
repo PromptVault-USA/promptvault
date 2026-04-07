@@ -6,8 +6,8 @@
     "category": "Real Estate",
     "desc": "AI prompts for listing descriptions, cold outreach, and follow-ups to attract buyers and sellers.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1LIoHBGQdbNB6bUhp1nofXFEfsoAdYvFQ/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1LIoHBGQdbNB6bUhp1nofXFEfsoAdYvFQ/view?usp=drivesdk"
   },
   {
     "id": "niche_002",
@@ -16,8 +16,8 @@
     "category": "Business",
     "desc": "Prompts for proposals, outreach messages, and negotiation scripts for freelancers.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/12lJBO57d3a3XafYQtRgZ2QeMVS-OrkyE/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/12lJBO57d3a3XafYQtRgZ2QeMVS-OrkyE/view?usp=drivesdk"
   },
   {
     "id": "niche_003",
@@ -26,8 +26,8 @@
     "category": "Marketing",
     "desc": "Viral hooks, captions, and scripts for promoting affiliate products on TikTok.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1t4FBs5qn35XjI9hXA8CLjEnXl73Wid2T/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1t4FBs5qn35XjI9hXA8CLjEnXl73Wid2T/view?usp=drivesdk"
   },
   {
     "id": "niche_004",
@@ -36,8 +36,8 @@
     "category": "Video",
     "desc": "Scripts, video ideas, and content planning prompts for faceless YouTube channels.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1zz5ui9aOwGK8z7_9TnDt3DgKcs0s2Hew/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1zz5ui9aOwGK8z7_9TnDt3DgKcs0s2Hew/view?usp=drivesdk"
   },
   {
     "id": "niche_005",
@@ -46,196 +46,187 @@
     "category": "E-commerce",
     "desc": "High-converting product descriptions for Shopify, Amazon, and dropshipping stores.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1pz6Ve0f_b2LqrQR1SxkLVZNEV2jkFhpz/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1pz6Ve0f_b2LqrQR1SxkLVZNEV2jkFhpz/view?usp=drivesdk"
   },
   {
     "id": "niche_006",
     "name": "Copywriting Sales Pages",
     "price": 15.00,
     "category": "Copywriting",
-    "desc": "Prompts to create persuasive landing pages and sales funnels.",
+    "desc": "Prompts to create persuasive landing pages and sales funnels that convert visitors to customers.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1b5kI7ZlYI7dgRX_9NBkUka758u_uG497/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1b5kI7ZlYI7dgRX_9NBkUka758u_uG497/view?usp=drivesdk"
   },
   {
     "id": "niche_007",
     "name": "Email Marketing Campaigns",
     "price": 15.00,
     "category": "Marketing",
-    "desc": "Email sequences for promotions, newsletters, and customer retention.",
+    "desc": "Email sequences for promotions, newsletters, and high-level customer retention.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1PrvZwxCuUaUzQ4SwngHRLjhl95frR-JZ/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1PrvZwxCuUaUzQ4SwngHRLjhl95frR-JZ/view?usp=drivesdk"
   },
   {
     "id": "niche_008",
     "name": "Instagram Growth",
     "price": 15.00,
     "category": "Marketing",
-    "desc": "Captions, reels ideas, and engagement strategies for Instagram.",
+    "desc": "Captions, reels ideas, and engagement strategies for scaling Instagram presence.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1Ip8ZYjl2KU8h1D1VKDwpFO54Yopt9Pf5/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1611262588024-d12430b98920?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1Ip8ZYjl2KU8h1D1VKDwpFO54Yopt9Pf5/view?usp=drivesdk"
   },
   {
     "id": "niche_009",
     "name": "Facebook Ads Copy",
     "price": 15.00,
     "category": "Ads",
-    "desc": "High-converting ad copy for Facebook and Meta campaigns.",
+    "desc": "High-converting ad copy frameworks for Facebook and Meta campaigns.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1ZtQbyHC5e8tsxCZbKYSKaZvPgHhaIOkb/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1ZtQbyHC5e8tsxCZbKYSKaZvPgHhaIOkb/view?usp=drivesdk"
   },
   {
     "id": "niche_010",
     "name": "Personal Branding",
     "category": "Business",
     "price": 15.00,
-    "desc": "Content ideas and storytelling prompts to build authority online.",
+    "desc": "Content ideas and storytelling prompts to build authority online in 2026.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1H4_OXyAAX6iB3UMT4FpOC89LqLv1ahQH/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1H4_OXyAAX6iB3UMT4FpOC89LqLv1ahQH/view?usp=drivesdk"
   },
   {
     "id": "niche_011",
     "name": "Resume & Job Applications",
     "category": "Career",
     "price": 15.00,
-    "desc": "Resume writing, cover letters, and interview preparation prompts.",
+    "desc": "Resume writing, cover letters, and interview preparation prompts for top-tier roles.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1CoB9iwtPwf2IF36hJTkNWG8xQj1j0dr0/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1586281380349-631531a744c2?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1CoB9iwtPwf2IF36hJTkNWG8xQj1j0dr0/view?usp=drivesdk"
   },
   {
     "id": "niche_012",
     "name": "Startup Pitch Decks",
     "category": "Business",
     "price": 15.00,
-    "desc": "Prompts to create investor-ready presentations and business pitches.",
+    "desc": "Prompts to create investor-ready presentations and business pitches for startups.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/164T_3CBvKNqvWI-IvACUjPENyQjmuafv/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/164T_3CBvKNqvWI-IvACUjPENyQjmuafv/view?usp=drivesdk"
   },
   {
     "id": "niche_013",
     "name": "Blog Content Creation",
     "category": "Writing",
     "price": 15.00,
-    "desc": "SEO blog outlines, articles, and keyword strategies.",
+    "desc": "SEO blog outlines, articles, and long-form keyword strategies for content creators.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1uCE7bUNovVR7QjSyp7933nwRreAFKgdd/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1uCE7bUNovVR7QjSyp7933nwRreAFKgdd/view?usp=drivesdk"
   },
   {
     "id": "niche_014",
     "name": "SEO Optimization",
     "category": "SEO",
     "price": 15.00,
-    "desc": "Prompts for keyword research, meta descriptions, and ranking strategies.",
+    "desc": "Prompts for keyword research, meta descriptions, and ranking strategies for Google.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1XyWZSekZB6ZUF6qLHWShoWbHnCd7DiZB/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1571721795195-a2ca2d3370a9?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1XyWZSekZB6ZUF6qLHWShoWbHnCd7DiZB/view?usp=drivesdk"
   },
   {
     "id": "niche_015",
     "name": "Podcast Scripts",
     "category": "Audio",
     "price": 15.00,
-    "desc": "Episode outlines, intros, and storytelling frameworks for podcasts.",
+    "desc": "Episode outlines, intros, and storytelling frameworks for professional podcasts.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1g8BNq6ZoyZ2aQInjlGKyvq5KdivrBVMd/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1g8BNq6ZoyZ2aQInjlGKyvq5KdivrBVMd/view?usp=drivesdk"
   },
   {
     "id": "niche_016",
     "name": "Online Course Creation",
     "category": "Education",
     "price": 15.00,
-    "desc": "Prompts for structuring and launching digital courses.",
+    "desc": "Prompts for structuring, curriculum mapping, and launching digital courses.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1GBFnWSd2wFMIVoxTqI91TS2FID9EE3rU/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1GBFnWSd2wFMIVoxTqI91TS2FID9EE3rU/view?usp=drivesdk"
   },
   {
     "id": "niche_017",
     "name": "Digital Product Sales",
     "category": "E-commerce",
     "price": 15.00,
-    "desc": "Ideas and marketing prompts for ebooks, templates, and guides.",
+    "desc": "Ideas and marketing prompts for ebooks, templates, and digital guides.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1xgLFGh4LA82HsN5UOW-bvSgqfAxkKKum/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1xgLFGh4LA82HsN5UOW-bvSgqfAxkKKum/view?usp=drivesdk"
   },
   {
     "id": "niche_018",
     "name": "AI Art Generation",
     "category": "Creative",
     "price": 15.00,
-    "desc": "Creative prompts for generating unique AI artwork.",
+    "desc": "Creative prompts for generating unique AI artwork across multiple models.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1TvXLDBLLVzAEcI34UoxqYibFVMt9RDwT/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1675271591211-126ad94e495d?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1TvXLDBLLVzAEcI34UoxqYibFVMt9RDwT/view?usp=drivesdk"
   },
   {
     "id": "niche_019",
     "name": "Midjourney Prompt Pack",
     "category": "Creative",
     "price": 15.00,
-    "desc": "Highly detailed prompts for creating stunning AI images.",
+    "desc": "Highly detailed prompts for creating stunning AI images using Midjourney v7.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1W0SkaggB1g_M6fujx-3t3vYgi33TYPS_/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1620712943543-bcc4628c9bb5?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1W0SkaggB1g_M6fujx-3t3vYgi33TYPS_/view?usp=drivesdk"
   },
   {
     "id": "niche_020",
     "name": "Chatbot Scripts",
     "category": "Tech",
     "price": 15.00,
-    "desc": "Prompts for building conversational AI flows and responses.",
+    "desc": "Prompts for building conversational AI flows and complex customer responses.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1CpJQ5J7_qbXoM4ZUGIKrZQUrw5XW26-a/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1531746790731-6c2079ee396f?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1CpJQ5J7_qbXoM4ZUGIKrZQUrw5XW26-a/view?usp=drivesdk"
   },
   {
     "id": "niche_021",
     "name": "Customer Support Replies",
     "category": "Business",
     "price": 15.00,
-    "desc": "Templates for professional and fast customer service responses.",
+    "desc": "Templates for professional and lightning-fast customer service responses.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1wX_pxdUGij1cuwR_X_gBVrlgGKgkFuz3/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1521791136364-798a7bc0d262?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1wX_pxdUGij1cuwR_X_gBVrlgGKgkFuz3/view?usp=drivesdk"
   },
   {
     "id": "niche_022",
     "name": "Cold Email Outreach",
     "category": "Sales",
     "price": 15.00,
-    "desc": "Effective cold email scripts for lead generation.",
+    "desc": "Effective and psychological cold email scripts for massive lead generation.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/11dXBDbv9qTrRsN7E3dKoxZvZdDzo3TPL/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1553484771-047a44eee27b?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/11dXBDbv9qTrRsN7E3dKoxZvZdDzo3TPL/view?usp=drivesdk"
   },
   {
     "id": "niche_023",
     "name": "LinkedIn Networking",
     "category": "Career",
     "price": 15.00,
-    "desc": "Connection messages and personal branding prompts for LinkedIn.",
+    "desc": "Connection messages and authority-building personal branding prompts for LinkedIn.",
     "paylink": "https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1ELQeKBDWlrPBkN0PZgeub-iVunkx7EV0/view?usp=drivesdk"
-  },
-  {
-    "id": "test-999",
-    "name": "🛠️ System Test Asset",
-    "price": 0.01,
-    "category": "Test",
-    "desc": "End-to-End Penny Test.",
-    "img": "",
-    "download": "https://drive.google.com/file/d/1gfYiJ38c_tyuOCxbRmUG5BtZNSJOkq-A/view?usp=drivesdk"
+    "img": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&w=600&q=80",
+    "driveLink": "https://drive.google.com/file/d/1ELQeKBDWlrPBkN0PZgeub-iVunkx7EV0/view?usp=drivesdk"
   }
 ]
