@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,9 +24,25 @@
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
         .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; }
         
-        /* Smooth transition for SEO covers */
-        .smart-cover { transition: transform 0.3s ease, filter 0.3s ease; border: 1px solid var(--border); }
-        .glass-card:hover .smart-cover { transform: scale(1.02); filter: brightness(1.1); }
+        /* NO-IMAGE DIGITAL VAULT STYLING */
+        .smart-cover { 
+            transition: transform 0.3s ease, border-color 0.3s ease; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;
+            padding: 15px;
+        }
+        .smart-cover span {
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
     </style> 
 
     <script type="module">
@@ -254,20 +271,34 @@
     window.renderProducts = (productsToDisplay) => {
         const list = document.getElementById('product-list');
         if (!list) return;
+
+        // HELPER FOR GRADIENT COLORS
+        const getVaultColor = (name) => {
+            const colors = [
+                'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', // Slate
+                'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', // Indigo
+                'linear-gradient(135deg, #064e3b 0%, #065f46 100%)', // Emerald
+                'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)', // Rose
+                'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'  // Deep
+            ];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+        };
+
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            
-            // PERMANENT LOGIC: Automatically creates the filename from the product name
             const seoLink = p.name.toLowerCase()
                              .trim()
-                             .replace(/[^\w\s-]/g, '') // remove special chars
-                             .replace(/[\s_-]+/g, '-') // replace spaces/underscores with dashes
-                             .replace(/^-+|-+$/g, '')  // trim dashes
-                             + ".html";
+                             .replace(/[^\w\s-]/g, '')
+                             .replace(/[\s_-]+/g, '-')
+                             .replace(/^-+|-+$/g, '') + ".html";
 
             return `<div class="glass-card" style="text-align: left; padding: 20px;">
                 <a href="${seoLink}" style="text-decoration:none;">
-                    <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: url('${p.img}') center/cover; cursor:pointer; border: 1px solid var(--border);"></div>
+                    <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: ${getVaultColor(p.name)}; cursor:pointer;">
+                        <span>${p.name}</span>
+                    </div>
                 </a>
                 <a href="${seoLink}" style="text-decoration:none;">
                     <div style="font-weight:800; color:white; margin-bottom:5px; font-size:1.1rem; min-height: 2.4em; display: flex; align-items: center;">${p.name}</div>
