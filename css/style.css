@@ -293,6 +293,16 @@ header {
     .container { padding-top: 100px; padding-bottom: 140px; }
     .smart-cover { height: 140px; }
     .btn-main { padding: 12px; font-size: 0.85rem; border-radius: 12px; }
+
+    /* Fix for PROMPTVAULTUSA branding cutoff */
+    .header-wrap span {
+        font-size: 0.9rem !important;
+        letter-spacing: -1.2px !important;
+        white-space: nowrap;
+    }
+    .header-wrap {
+        padding: 15px 10px;
+    }
 }
 
 .page { display: none; }
