@@ -308,7 +308,8 @@
 
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            const seoLink = p.name.toLowerCase()
+            // CRITICAL UPDATE: Routing all product links through the /vault/ directory
+            const seoLink = "vault/" + p.name.toLowerCase()
                              .trim()
                              .replace(/[^\w\s-]/g, '')
                              .replace(/[\s_-]+/g, '-')
