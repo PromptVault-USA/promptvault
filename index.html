@@ -180,6 +180,15 @@
         <section class="content-rich-section">
             <h3>Master the AI Landscape with <span class="highlight-text">PromptVault USA</span></h3>
             <p>At PromptVault USA, we provide the industrial-strength logic required to succeed in 2026. Whether you are scaling a faceless TikTok brand or generating high-conversion real estate leads, our assets bridge the "Efficiency Gap." Explore our <a href="blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a> for the latest strategies.</p>
+            
+            <div style="margin-top: 30px; text-align: left; border-top: 1px solid var(--border); padding-top: 30px;">
+                <h4 style="color: white; font-weight: 800; text-transform: uppercase;">About Us</h4>
+                <p style="font-size: 0.9rem; color: var(--text-gray);">PromptVault USA is a sovereign digital marketplace dedicated to the architecture of industrial-grade AI logic. We provide professional-tier prompt chains and cinematic frameworks for digital architects and entrepreneurs aiming to bridge the gap between AI capability and high-yield execution.</p>
+                
+                <h4 style="color: white; font-weight: 800; text-transform: uppercase; margin-top: 20px;">Contact Us</h4>
+                <p style="font-size: 0.9rem; color: var(--text-gray);">For technical support, business inquiries, or manual file delivery requests, please reach out to our team at:<br>
+                <strong>Email:</strong> emilyperong23@gmail.com</p>
+            </div>
         </section>
 
         <footer class="legal-text">
@@ -299,7 +308,7 @@
 
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            // UPDATED FOR OPTION B: Routing links through the /vault/ folder
+            // CRITICAL UPDATE: Routing all product links through the /vault/ directory
             const seoLink = "vault/" + p.name.toLowerCase()
                              .trim()
                              .replace(/[^\w\s-]/g, '')
