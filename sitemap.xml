@@ -3,46 +3,70 @@
   
   <url>
     <loc>https://promptvaultusa.shop/index.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://promptvaultusa.shop/blog.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptvaultusa.shop/legal.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <priority>0.5</priority>
+  </url>
 
-  <url><loc>https://promptvaultusa.shop/copywriting-sales-pages.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/email-marketing-campaigns.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/instagram-growth.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/facebook-ads-copy.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/personal-branding.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/linkedin-networking.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/pinterest-marketing.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/productivity-time-management.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/chatbot-scripts.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/customer-support-replies.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/cold-email-outreach.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/digital-product-sales.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-money.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-tiktok.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-youtube.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-seo.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-dropshipping.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-affiliate.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-resume.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/real-estate-automation.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/freelancer-acquisition.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/youtube-automation.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
-  <url><loc>https://promptvaultusa.shop/tiktok-affiliate-marketing.html</loc><lastmod>2026-04-08</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/copywriting-sales-pages.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/email-marketing-campaigns.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/instagram-growth.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/facebook-ads-copy.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/personal-branding.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/linkedin-networking.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/pinterest-marketing.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/productivity-time-management.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/chatbot-scripts.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/customer-support-replies.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/cold-email-outreach.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/digital-product-sales.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-money.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-tiktok.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-youtube.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-seo.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-dropshipping.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-affiliate.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-resume.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/real-estate-automation.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/freelancer-acquisition.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/youtube-automation.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
+  <url><loc>https://promptvaultusa.shop/tiktok-affiliate-marketing.html</loc><lastmod>2026-04-10</lastmod><priority>0.9</priority></url>
 
-  <url><loc>https://promptvaultusa.shop/blog.html</loc><priority>0.8</priority></url>
-  <url><loc>https://promptvaultusa.shop/first-post.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/blog-side-hustles.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/prompt-architect-manifesto.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/efficiency-gap.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/death-of-generic-prompts.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/ghostwriters-secret.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/faceless-tiktok-blueprint.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/prompt-engineering-vs-chaining.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/ai-ethics-for-professionals.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/mastering-negative-constraints.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/idea-to-product-24-hours.html</loc><priority>0.7</priority></url>
-  <url><loc>https://promptvaultusa.shop/future-of-search.html</loc><priority>0.7</priority></url>
+  <url><loc>https://promptvaultusa.shop/first-post.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/affiliate-architect-usa-strategy.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/make-money-selling-prompts-2026.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/why-prompt-shops-fail.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/quality-prompt-architecture.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/executive-chatgpt-library.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/foundations-of-ai-infrastructure.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/viral-content-logic-2026.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/seo-for-ai-prompt-websites.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/pinterest-traffic-engine-2026.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/high-yield-niches-2026.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/1000-milestone-prompt-packs.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/prompts-to-profits-company-of-one.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/digital-gold-mine-2026.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/monetize-ai-prompts-ecommerce.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/faceless-tiktok-blueprint-2026.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/future-of-search.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/idea-to-product-24-hours.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/mastering-negative-constraints.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/ai-ethics-for-professionals.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/prompt-engineering-vs-chaining.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/faceless-tiktok-blueprint.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/ghostwriters-secret.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/death-of-generic-prompts.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/efficiency-gap.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/prompt-architect-manifesto.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://promptvaultusa.shop/blog-side-hustles.html</loc><lastmod>2026-04-10</lastmod><priority>0.8</priority></url>
 
 </urlset>
