@@ -12,21 +12,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- GOOGLE ADS PLACEMENT ARCHITECTURE (NON-DESTRUCTIVE) --- */
+        /* --- REMOVED THE BLANK AD SLOT HEIGHT TO DELETE THE SPACE --- */
         .pv-ad-slot {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             background: rgba(255, 255, 255, 0.01);
-            border: 1px dashed rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            margin: 10px 0;
+            margin: 0; 
             overflow: hidden;
-            min-height: 250px; /* Prevents layout shift for AdSense approval */
+            /* min-height removed to collapse space when empty */
         }
 
-        /* --- BLOG SPECIFIC OVERRIDES --- */
         .blog-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
@@ -73,7 +71,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- MOBILE NAV HARDENING --- */
         .bottom-nav {
             position: fixed !important;
             bottom: 25px !important;
@@ -144,16 +141,6 @@
                 <p>Turn your prompt engineering skills into a high-income digital business.</p>
                 <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ POST &rarr;</div>
             </div>
-        </div>
-
-        <div class="pv-ad-slot">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-format="fluid"
-                 data-ad-layout-key="-fb+5w+4e-db+86"
-                 data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
-                 data-ad-slot="YOUR_AD_SLOT_ID"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         </div>
 
         <div class="blog-card" onclick="window.location.href='prompt-architect-manifesto.html'">
