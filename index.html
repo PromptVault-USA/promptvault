@@ -12,12 +12,18 @@
     <style>
         .page { display: none; width: 100%; opacity: 0; transition: opacity 0.4s ease; flex-direction: column; align-items: center; }
         .page.active { display: flex; opacity: 1; }
-        #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; }
+        
+        /* FIX STEP 1: CENTERED HOME LAYOUT */
+        #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
         .hero-glow { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
         h1 { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; line-height: 1.1; margin-top: 20px; color: white; }
         .sub-accent { color: var(--secondary); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: block; }
-        .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1.1rem; line-height: 1.6; }
-        .content-rich-section { margin-top: 60px; text-align: left; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; }
+        .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1.1rem; line-height: 1.6; text-align: center; }
+        
+        /* FIX STEP 1: CENTERED CONTENT SECTION */
+        .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
+        
         details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; text-align: left; width: 100%; max-width: 700px; margin-inline: auto; }
         summary { font-weight: 800; cursor: pointer; color: white; }
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
@@ -165,7 +171,11 @@
         <h1>Command the <span class="highlight-text">AI Economy</span></h1>
         <span class="sub-accent">Free Sign Up • Join 20,000+ Creators</span>
         <p class="hero-subheadline">The marketplace for high-resolution AI prompts. Join the elite architects building the future of automated business.</p> 
-        <button id="claim-kit-btn" class="btn-main" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
+        
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            <button id="claim-kit-btn" class="btn-main" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
+            <span style="color: var(--secondary); font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;">🎁 2026 AI Starter Kit (Free)</span>
+        </div>
 
         <section class="content-rich-section">
             <h3>Master the AI Landscape with <span class="highlight-text">PromptVault USA</span></h3>
