@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AI Ethics for Professionals | PromptVault USA Intelligence</title>
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_CLIENT_ID" crossorigin="anonymous"></script>
@@ -11,47 +11,64 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- GOOGLE ADS PLACEMENT ARCHITECTURE --- */
-        .pv-ad-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px dashed rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            margin: 30px 0;
-            overflow: hidden;
-            min-height: 250px; 
-        }
-
-        .blog-content { max-width: 900px; margin: 0 auto; padding: 80px 20px; text-align: left; }
-        .blog-content h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 25px; line-height: 1.1; font-weight: 900; color: white; }
+        .blog-content { max-width: 800px; margin: 0 auto; padding: 120px 20px 60px; text-align: left; }
+        .blog-content h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 25px; line-height: 1.1; font-weight: 800; color: white; }
         .blog-content p { color: #94a3b8; font-size: 1.15rem; line-height: 1.9; margin-bottom: 30px; }
-        .blog-content h2 { color: white; margin: 50px 0 25px; font-size: 2.1rem; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .blog-content h3 { color: var(--secondary); margin: 35px 0 15px; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1.5px; }
-        
-        .ethics-card { 
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-            border: 1px solid var(--secondary); 
-            padding: 35px; 
-            border-radius: 24px; 
-            margin: 45px 0; 
-        }
+        .blog-content h2 { color: white; margin: 50px 0 25px; font-size: 2.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
 
-        .legal-notice-box {
+        .ethics-card {
             background: rgba(239, 68, 68, 0.05);
             border: 1px solid rgba(239, 68, 68, 0.2);
-            padding: 25px;
-            border-radius: 15px;
+            padding: 30px;
+            border-radius: 24px;
             margin: 40px 0;
         }
-        .legal-notice-box h4 { color: #ef4444; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; }
-        .legal-notice-box p { font-size: 0.9rem; margin-bottom: 0; color: #cbd5e1; }
+        .ethics-card h3 { color: #ef4444; margin-top: 0; font-size: 1.2rem; text-transform: uppercase; }
+
+        /* --- MANDATORY FOOTER FOR ADSENSE APPROVAL --- */
+        .article-footer {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px 180px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        .article-footer a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .article-footer a:hover { color: #8b5cf6; }
+
+        .bottom-nav {
+            position: fixed !important;
+            bottom: 35px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            display: flex !important;
+            justify-content: space-around !important;
+            align-items: center !important;
+            background: #0f172a !important; 
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            padding: 12px 10px !important;
+            border-radius: 100px !important;
+            width: 92% !important; 
+            max-width: 440px !important;
+            z-index: 15000 !important;
+        }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; }
+        .nav-item.active { color: #3b82f6; }
+        .nav-item small { font-size: 0.65rem; margin-top: 5px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="spotlight"></div>
+    
     <header>
         <div class="header-wrap">
             <div onclick="window.location.href='index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
@@ -61,81 +78,42 @@
         </div>
     </header>
 
-    <article class="container blog-content">
-        <span class="sub-accent">Intelligence Feed: Post #009</span>
-        <h1>AI Ethics for Professionals: Maintaining <span class="highlight-text">Human Trust</span></h1>
+    <article class="blog-content">
+        <span class="sub-accent">Policy & Safety: Post #009</span>
+        <h1>AI Ethics for Professionals: Maintaining Human <span class="highlight-text">Trust</span></h1>
         
-        <div class="pv-ad-wrapper">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
-                 data-ad-slot="YOUR_AD_SLOT_1_ID"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-
-        <p>In 2026, the question is no longer whether AI is effective, but whether it is trustworthy. As the internet becomes flooded with synthetic noise, professionals must navigate the complex ethical landscape of AI implementation. True digital sovereignty is not just about power; it is about responsibility. At PromptVault USA, we believe that the most successful architects are those who use AI to enhance—not replace—human integrity.</p>
-
-        <div class="legal-notice-box">
-            <h4>Compliance & License Notice</h4>
-            <p>Protected under <strong>PromptVault USA Standard License</strong>. redistribution is prohibited. By accessing this feed, you agree to our <a href="legal.html" style="color:var(--secondary); text-decoration:none; font-weight:bold;">Terms of Service</a>.</p>
-        </div>
-
-        <h2>01. The Transparency Imperative</h2>
-        <p>Trust is the hardest currency to earn in the AI economy. Professionals must be transparent about their use of automated systems. The goal is to use AI as an **Intelligence Augmentor**—a tool that allows you to provide higher quality work at a faster pace. Ethically, this means ensuring that the "Final Mile" of every output is human-verified and that you never pass off hallucinations as fact. Reliability is the ultimate ethical standard in a world of robotic misinformation.</p>
-
-        <div class="pv-ad-wrapper">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
-                 data-ad-slot="YOUR_AD_SLOT_2_ID"
-                 data-ad-format="rectangle"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
+        <p>In 2026, the greatest threat to a digital brand isn't a lack of content—it's a lack of trust. As AI-generated noise reaches a fever pitch, professionals must differentiate themselves not by how much they produce, but by how ethically they use the tools. Integrity is the only "moat" that AI cannot cross.</p>
 
         <div class="ethics-card">
-            <h3>The Ethical Architect’s Creed</h3>
-            <ul>
-                <li><strong>Verification First:</strong> Never publish data without cross-referencing for accuracy.</li>
-                <li><strong>Privacy Shield:</strong> Ensuring that no sensitive client data is ever fed into unsecured public models.</li>
-                <li><strong>Utility Over Noise:</strong> Avoiding the generation of "fluff" content that provides zero information gain to the reader.</li>
-                <li><strong>Sovereign Ownership:</strong> Respecting Intellectual Property and using original architectures to solve problems.</li>
-            </ul>
+            <h3>The Truth Threshold</h3>
+            <p style="margin-bottom:0; color: #cbd5e1;">Never present AI-generated data as original research. Always verify technical claims before publishing. In an industrial context, one single AI "hallucination" can destroy years of brand authority. Professional ethics start with <strong>Fact Grounding</strong>.</p>
         </div>
 
-        <h2>02. Originality in the Era of Automation</h2>
-        <p>Ethics also involves the preservation of the "Human Spark." While our vaults provide the industrial logic, your unique perspective is what creates value. An ethical professional uses prompt architecture to handle the repetitive, structural aspects of creation, freeing up their own cognitive energy to inject soul, opinion, and nuance into their work. This is the only way to remain relevant and trusted as the grid continues to expand.</p>
+        <h2>01. Transparency vs. Efficiency</h2>
+        <p>Efficiency is no excuse for deception. Whether you are using AI to draft technical docs or generate affiliate visuals, the core value must remain human. Use AI to augment your intelligence, not to replace your judgment. Your audience doesn't care that you used AI; they care that you stand behind the result.</p>
 
-        <div class="pv-ad-wrapper">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
-                 data-ad-slot="YOUR_AD_SLOT_3_ID"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        <h2>02. Respecting the Grid</h2>
+        <p>Ethical prompting means respecting intellectual property and original voices. We architect logic that focuses on <strong>Inspiration</strong> rather than <strong>Cloning</strong>. By building your own sovereign vault of instructions, you ensure that your output is a unique reflection of your business logic, not a stolen copy of someone else's labor.</p>
+
+        <p>The future belongs to the ethical architect. By prioritizing trust over volume, you secure your sovereignty in the 2026 economy. Use the power of the vault wisely.</p>
+
+        <div style="text-align:center; margin-top:40px;">
+            <button class="btn-main" onclick="window.location.href='index.html#browse'" style="max-width:300px; margin:0 auto;">Browse Safe Vaults</button>
         </div>
-
-        <div style="text-align:center; margin-top:60px; padding: 40px; background: var(--glass); border-radius: 28px; border: 1px solid var(--border);">
-            <h3 style="color:white; margin-top:0;">Build a Trusted Brand</h3>
-            <p>Discover ethical, industrial-grade AI strategies in our vaults.</p>
-            <button class="btn-main" onclick="window.location.href='index.html#browse'" style="max-width:300px; margin:0 auto;">Explore the Vaults</button>
-        </div>
-
-        <h2>Conclusion: Integrity as a Moat</h2>
-        <p>In a future dominated by AI, integrity will be your greatest competitive advantage. By following the ethical frameworks of PromptVault USA, you are doing more than building a business—you are building a legacy of trust. Don't let the machine dictate your ethics; let your ethics dictate how you use the machine. The empire you build on truth will always outlast the one built on noise.</p>
     </article>
 
-    <script src="inject-footer.js"></script>
+    <footer class="article-footer">
+        <a href="index.html#faqs">FAQs</a>
+        <a href="legal.html">Terms & Policies</a>
+        <a href="mailto:emilyperong23@gmail.com">Contact Us</a>
+        <a href="legal.html#privacy">Privacy Policy</a>
+    </footer>
 
     <nav class="bottom-nav">
-        <a class="nav-item" onclick="window.location.href='index.html'"><span>🏠</span><small>Home</small></a>
-        <a class="nav-item" onclick="window.location.href='index.html#browse'"><span>⊞</span><small>Vaults</small></a>
-        <a class="nav-item" onclick="window.location.href='index.html#library'"><span>👤</span><small>Library</small></a>
-        <a class="nav-item active"><span>📖</span><small>Blog</small></a>
-        <a class="nav-item" onclick="window.location.href='legal.html'"><span>⚖️</span><small>Legal</small></a>
+        <a class="nav-item" href="index.html">🏠<br><small>Home</small></a>
+        <a class="nav-item" href="index.html?action=browse">⊞<br><small>Vaults</small></a>
+        <a class="nav-item active" href="blog.html">📖<br><small>Blog</small></a>
+        <a class="nav-item" href="index.html?page=library">👤<br><small>Library</small></a>
     </nav>
 </body>
 </html>
