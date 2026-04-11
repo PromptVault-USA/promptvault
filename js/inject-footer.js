@@ -28,10 +28,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </div>`;
     } else if (path.includes('blog.html') && path !== '/' && !path.endsWith('index.html')) {
-        // This covers individual blog post pages if they contain 'blog' in the name
         backButtonHTML = `
             <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
-                <a href="https://promptvaultusa.shop/blog.html" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <a href="https://promptvaultusa.shop/blog.html?action=blog" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                     <span>←</span> Back to Blog
                 </a>
             </div>`;
@@ -91,4 +90,30 @@ document.addEventListener("DOMContentLoaded", function() {
     </footer>`;
     
     document.body.insertAdjacentHTML('beforeend', masterFooterHTML);
+
+    // 6. AUTO-BROWSE & JUMP LOGIC (The "Smooth Navigation" Fix)
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Auto-Jump to Vaults section on Home Page
+    if (urlParams.get('action') === 'browse') {
+        setTimeout(() => {
+            const vaultBtn = document.querySelector('a[href*="action=browse"]');
+            if (vaultBtn) {
+                vaultBtn.click();
+                const vaultGrid = document.querySelector('.vault-grid');
+                if (vaultGrid) vaultGrid.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 150); 
+    }
+
+    // Auto-Jump to Blog section
+    if (urlParams.get('action') === 'blog' || path.includes('blog.html')) {
+        setTimeout(() => {
+            const blogBtn = document.querySelector('a[href*="blog.html"]');
+            if (blogBtn) {
+                blogBtn.click();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }, 150);
+    }
 });
