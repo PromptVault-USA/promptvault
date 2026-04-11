@@ -87,20 +87,37 @@ document.addEventListener("DOMContentLoaded", function() {
     </footer>`;
     document.body.insertAdjacentHTML('beforeend', masterFooterHTML);
 
-    // 6. AUTO-BROWSE & PERSISTENT JUMP LOGIC
+    // 6. AUTO-BROWSE & FORCED JUMP LOGIC (The "Nuclear" Fix)
     if (urlParams.get('action') === 'browse') {
+        const forceShowVaults = () => {
+            const vaultBtn = document.querySelector('a[href*="action=browse"]');
+            const vaultGrid = document.querySelector('.vault-grid');
+            const allPages = document.querySelectorAll('.page'); // Catching SPA page elements
+
+            if (vaultBtn) {
+                // 1. Force the SPA state change
+                vaultBtn.click();
+                
+                // 2. Manually override display hidden if SPA logic is lagging
+                if (allPages.length > 0) {
+                    allPages.forEach(p => p.style.display = 'none');
+                    const vPage = document.querySelector('#vault-page') || Array.from(allPages).find(p => p.innerHTML.includes('vault-grid'));
+                    if (vPage) vPage.style.display = 'block';
+                }
+
+                // 3. Scroll to results
+                if (vaultGrid) {
+                    vaultGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return true;
+                }
+            }
+            return false;
+        };
+
         let browseAttempts = 0;
         const browseInterval = setInterval(() => {
             browseAttempts++;
-            const vaultBtn = document.querySelector('a[href*="action=browse"]');
-            const vaultGrid = document.querySelector('.vault-grid');
-            
-            if (vaultBtn && vaultGrid) {
-                vaultBtn.click();
-                vaultGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                clearInterval(browseInterval);
-            }
-            if (browseAttempts > 15) clearInterval(browseInterval);
+            if (forceShowVaults() || browseAttempts > 15) clearInterval(browseInterval);
         }, 100);
     }
 
