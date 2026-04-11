@@ -17,17 +17,18 @@
             margin: 0 auto 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            inset: 0 0 30px rgba(100, 116, 139, 0.1);
+            position: relative; overflow: hidden;
         }
-        .smart-cover-large span { color: #94a3b8; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; font-size: 1.5rem; }
+        .smart-cover-large::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, rgba(100, 116, 139, 0.1) 0%, transparent 70%); }
+        .smart-cover-large span { color: #94a3b8; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; font-size: 1.5rem; position: relative; z-index: 1; }
         
         .inventory-list { text-align: left; background: rgba(255,255,255,0.02); padding: 30px; border-radius: 20px; border: 1px solid var(--border); margin: 40px 0; }
-        .inventory-list li { margin-bottom: 15px; color: #94a3b8; line-height: 1.6; }
-        .inventory-list strong { color: white; }
+        .inventory-list li { margin-bottom: 15px; color: #94a3b8; line-height: 1.6; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 10px; }
+        .inventory-list li:last-child { border: none; }
+        .inventory-list strong { color: white; display: block; margin-bottom: 4px; }
 
-        .price-tag { font-size: 3rem; font-weight: 800; color: var(--success); margin: 20px 0; }
+        .price-tag { font-size: 3.5rem; font-weight: 800; color: var(--success); margin: 20px 0; letter-spacing: -2px; }
         
-        /* Bottom Nav Hardening */
         .bottom-nav {
             position: fixed !important; bottom: 35px !important; left: 50% !important;
             transform: translateX(-50%) !important; display: flex !important;
@@ -36,6 +37,8 @@
             border-radius: 100px !important; width: 92% !important; max-width: 440px !important; z-index: 15000 !important;
             box-shadow: 0 20px 50px rgba(0,0,0,0.9) !important;
         }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; }
+        .nav-item small { font-size: 0.65rem; margin-top: 5px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -55,36 +58,38 @@
             <span>BLOG CONTENT</span>
         </div>
 
-        <h1 style="color:white; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 20px;">Blog Content <span class="highlight-text">Creation</span> Vault</h1>
+        <h1 style="color:white; font-size: clamp(2.2rem, 5vw, 3.2rem); margin-bottom: 20px; font-weight: 800;">Blog Content <span class="highlight-text">Creation</span></h1>
         
-        <p style="color: #94a3b8; font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px;">
-            In 2026, generic AI filler is filtered out instantly. This vault provides high-authority pillar content frameworks that satisfy both the Google algorithm and your human readers. 10x your output without sacrificing brand voice.
+        <p style="color: #94a3b8; font-size: 1.15rem; line-height: 1.9; margin-bottom: 30px; max-width: 750px; margin-inline: auto;">
+            In 2026, generic AI filler is filtered out instantly. This vault provides high-authority pillar content frameworks that satisfy both the Google algorithm and human intent. Move from filler to **Industrial Authority**.
         </p>
 
         <div class="inventory-list">
-            <h3 style="color:white; margin-bottom: 20px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;">Detailed Prompt Inventory:</h3>
+            <h3 style="color:white; margin-bottom: 25px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 2px; opacity: 0.6;">Industrial Inventory:</h3>
             <ul style="list-style: none; padding: 0;">
-                <li><strong>The Pillar Post Architect:</strong> Structure 2,000+ word authority guides.</li>
-                <li><strong>High-CTR Headline Lab:</strong> Titles that stand out on Search and Social.</li>
-                <li><strong>Semantic SEO Outlining:</strong> Inclusion logic for LSI and semantic subtopics.</li>
-                <li><strong>The Human-Voice Rewriter:</strong> Conversational polishing for professional copy.</li>
-                <li><strong>Listicle Master Frameworks:</strong> Retention-optimized "Top X" post structures.</li>
-                <li><strong>CTA Integration:</strong> Natural conversion-weaving logic for digital products.</li>
+                <li><strong>The Pillar Post Architect:</strong> Structural logic for 2,000+ word authority guides.</li>
+                <li><strong>High-CTR Headline Lab:</strong> Behavioral prompts for Google/Social visibility.</li>
+                <li><strong>Semantic SEO Outlining:</strong> LSI and semantic subtopic integration logic.</li>
+                <li><strong>The Human-Voice Rewriter:</strong> Conversational polishing for high-fidelity copy.</li>
+                <li><strong>Listicle Master Frameworks:</strong> Retention-optimized list structures for viral engagement.</li>
+                <li><strong>CTA Integration:</strong> Strategic conversion-weaving logic for your vault assets.</li>
             </ul>
         </div>
 
         <div class="price-tag">$15.00</div>
-        <a href="https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA" class="btn-main" style="background:var(--secondary); color:black; text-decoration:none; display:inline-block; width:100%; max-width:400px; padding:20px; border-radius:15px; font-weight:800; font-size:1.1rem;">Unlock Content Vault</a>
-        <p style="color: #64748b; font-size: 0.8rem; margin-top: 15px;">✓ Lifetime Access ✓ Instant Digital Delivery</p>
+        
+        <a href="https://www.paypal.com/ncp/payment/N9VN2WGBWTBTA" class="btn-main" style="background:var(--secondary); color:black; text-decoration:none; display:inline-block; width:100%; max-width:400px; padding:22px; border-radius:18px; font-weight:800; font-size:1.15rem; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);">Unlock Content Vault</a>
+        
+        <p style="color: #64748b; font-size: 0.85rem; margin-top: 20px; font-weight: 600;">✓ Lifetime Access ✓ Instant Digital Delivery</p>
     </main>
 
     <script src="../js/inject-footer.js"></script>
 
     <nav class="bottom-nav">
-        <a class="nav-item" href="https://promptvaultusa.shop/index.html"><span>🏠</span><br><small>Home</small></a>
-        <a class="nav-item" href="https://promptvaultusa.shop/index.html?hash=browse"><span>⊞</span><br><small>Vaults</small></a>
-        <a class="nav-item" href="https://promptvaultusa.shop/blog.html"><span>📖</span><br><small>Blog</small></a>
-        <a class="nav-item" href="https://promptvaultusa.shop/index.html?page=library"><span>👤</span><br><small>Library</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html"><span>🏠</span><small>Home</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html?hash=browse"><span>⊞</span><small>Vaults</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/blog.html"><span>📖</span><small>Blog</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html?page=library"><span>👤</span><small>Library</small></a>
     </nav>
 </body>
 </html>
