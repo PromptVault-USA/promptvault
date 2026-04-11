@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | Global AI Intelligence & Digital Assets</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://promptvaultusa.shop/">
+    <meta property="og:title" content="PromptVault USA | The Architect's Secret to AI Monetization">
+    <meta property="og:description" content="Access high-yield AI prompt vaults and professional monetization blueprints. Build your AI empire today.">
+    <meta property="og:image" content="https://promptvaultusa.shop/logo.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PromptVault USA | AI Monetization Blueprints">
+    <meta name="twitter:description" content="Professional AI prompt engineering and asset vaults for creators and entrepreneurs.">
+    <meta name="twitter:image" content="https://promptvaultusa.shop/logo.png">
     
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -308,7 +319,6 @@
 
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            // FIXED: Ensuring slug matches the physical file structure in the vault folder
             const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
             const seoLink = `vault/${slug}.html`;
 
