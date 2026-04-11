@@ -133,7 +133,7 @@
                 if(loginBtn) { loginBtn.innerText = "Logout"; loginBtn.onclick = () => signOut(auth); }
                 if(kitBtn) { kitBtn.innerText = "Access My Library"; kitBtn.style.background = "var(--accent)"; kitBtn.onclick = () => window.changePage('library'); }
                 if(authOverlay) authOverlay.style.display = 'none';
-                window.loadUserLibrary(); // Audit: Load library immediately on auth detection
+                window.loadUserLibrary(); 
             } else {
                 if(loginBtn) { loginBtn.innerText = "Sign In"; loginBtn.onclick = () => authOverlay.style.display = 'flex'; }
                 if(kitBtn) { kitBtn.innerText = "Unlock The Vault"; kitBtn.onclick = () => authOverlay.style.display = 'flex'; }
@@ -177,7 +177,7 @@
 
         <section class="content-rich-section">
             <h3>Master the AI Landscape with <span class="highlight-text">PromptVault USA</span></h3>
-            <p>At PromptVault USA, we provide the industrial-strength logic required to succeed in 2026. Whether you are scaling a faceless TikTok brand or generating high-conversion real estate leads, our assets bridge the "Efficiency Gap." Explore our <a href="blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a> for the latest strategies.</p>
+            <p>At PromptVault USA, we provide the industrial-strength logic required to succeed in 2026. Whether you are scaling a faceless TikTok brand or generating high-conversion real estate leads, our assets bridge the "Efficiency Gap." Explore our <a href="https://promptvaultusa.shop/blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a> for the latest strategies.</p>
             
             <div style="margin-top: 30px; text-align: left; border-top: 1px solid var(--border); padding-top: 30px;">
                 <h4 style="color: white; font-weight: 800; text-transform: uppercase;">About Us</h4>
@@ -191,11 +191,11 @@
 
         <footer class="legal-text">
             <div class="legal-links">
-                <a href="blog.html">Blog</a>
-                <a href="legal.html">Legal & License</a>
-                <a href="legal.html#privacy">Privacy</a>
-                <a href="legal.html#terms">Terms</a>
-                <a href="legal.html#refunds">Refunds</a>
+                <a href="https://promptvaultusa.shop/blog.html">Blog</a>
+                <a href="https://promptvaultusa.shop/legal.html">Legal & License</a>
+                <a href="https://promptvaultusa.shop/legal.html#privacy">Privacy</a>
+                <a href="https://promptvaultusa.shop/legal.html#terms">Terms</a>
+                <a href="https://promptvaultusa.shop/legal.html#refunds">Refunds</a>
             </div>
             © 2026 PromptVault USA | All Rights Reserved.
         </footer>
@@ -220,8 +220,8 @@
     <a class="nav-item active" onclick="window.changePage('home', this)"><span>🏠</span><small>Home</small></a>
     <a class="nav-item" onclick="window.changePage('browse', this)"><span>⊞</span><small>Vaults</small></a>
     <a class="nav-item" onclick="window.changePage('library', this)"><span>👤</span><small>Library</small></a>
-    <a class="nav-item" onclick="window.location.href='blog.html'"><span>📖</span><small>Blog</small></a>
-    <a class="nav-item" onclick="window.location.href='legal.html'"><span>⚖️</span><small>Legal</small></a>
+    <a class="nav-item" onclick="window.location.href='https://promptvaultusa.shop/blog.html'"><span>📖</span><small>Blog</small></a>
+    <a class="nav-item" onclick="window.location.href='https://promptvaultusa.shop/legal.html'"><span>⚖️</span><small>Legal</small></a>
 </nav> 
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 20000; align-items: center; justify-content: center;">
@@ -308,9 +308,9 @@
 
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            // Standardized Regex for clean SEO slugs
             const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
-            const seoLink = `vault/${slug}.html`;
+            // HARDENING: Corrected path for Vault subfolder
+            const seoLink = `https://promptvaultusa.shop/vault/${slug}.html`;
 
             return `<div class="glass-card" style="text-align: left; padding: 20px;">
                 <a href="${seoLink}" style="text-decoration:none;">
