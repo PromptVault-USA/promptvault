@@ -1,8 +1,29 @@
 document.addEventListener("DOMContentLoaded", function() {
     const glassCard = document.querySelector('.glass-card');
     
+    // 1. GLOBAL UI REPAIR (Glass & Path Fix for Subdirectories)
+    if (window.location.pathname.includes('/vault/')) {
+        const links = document.getElementsByTagName('link');
+        for (let link of links) {
+            if (link.getAttribute('href') === 'css/style.css') {
+                link.setAttribute('href', '../css/style.css');
+            }
+        }
+        const logos = document.querySelectorAll('.logo-box');
+        logos.forEach(img => {
+            if (img.getAttribute('src') === 'logo.png') {
+                img.setAttribute('src', '../logo.png');
+            }
+        });
+    }
+
+    // 2. THE MOBILE CLICK FIX (Safety Buffer)
+    // This pushes the page up so the Nav doesn't block buttons/scrolling
+    document.body.style.paddingBottom = "120px";
+
+    // 3. INJECT FAQ & LEGAL (Your Existing Code)
     if (glassCard) {
-        const footerHTML = `
+        const glassContentHTML = `
             <div style="margin-top: 50px; border-top: 1px solid var(--border); padding-top: 40px;">
                 <h3 style="color:white; margin-bottom: 25px; text-align: center;">Frequently Asked Questions</h3>
                 
@@ -22,10 +43,29 @@ document.addEventListener("DOMContentLoaded", function() {
                         <strong>License:</strong> Single-user license. Redistribution or resale of raw prompts is strictly prohibited. <br>
                         <strong>Refunds:</strong> All sales are final due to the digital nature of the products.
                     </p>
-                    <a href="legal.html" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Read Full Legal & Terms →</a>
+                    <a href="https://promptvaultusa.shop/legal.html" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Read Full Legal & Terms →</a>
                 </div>
             </div>`;
         
-        glassCard.insertAdjacentHTML('beforeend', footerHTML);
+        glassCard.insertAdjacentHTML('beforeend', glassContentHTML);
     }
+
+    // 4. INJECT THE MASTER BOTTOM NAV (Mobile Fixed)
+    const navHTML = `
+    <nav class="bottom-nav" style="position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-around; align-items: center; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 10px; border-radius: 100px; width: 92%; max-width: 440px; z-index: 20000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+        <a href="https://promptvaultusa.shop/index.html" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">🏠<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Home</small></a>
+        <a href="https://promptvaultusa.shop/index.html?action=browse" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">⊞<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Vaults</small></a>
+        <a href="https://promptvaultusa.shop/blog.html" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">📖<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Blog</small></a>
+        <a href="https://promptvaultusa.shop/index.html?page=library" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">👤<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Library</small></a>
+    </nav>`;
+
+    document.body.insertAdjacentHTML('beforeend', navHTML);
+
+    // 5. MASTER FOOTER (Compliance)
+    const masterFooterHTML = `
+    <footer style="margin-top: 80px; padding-bottom: 100px; text-align: center; opacity: 0.6;">
+        <p style="color: #475569; font-size: 0.75rem;">© 2026 PromptVault USA | Engineered for the AI Economy.</p>
+    </footer>`;
+    
+    document.body.insertAdjacentHTML('beforeend', masterFooterHTML);
 });
