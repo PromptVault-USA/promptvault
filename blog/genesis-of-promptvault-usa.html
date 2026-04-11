@@ -7,8 +7,9 @@
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_CLIENT_ID" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/png" href="../logo.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         .blog-content { max-width: 800px; margin: 0 auto; padding: 120px 20px 60px; text-align: left; }
@@ -25,7 +26,6 @@
         }
         .genesis-card h3 { color: #a78bfa; margin-top: 0; font-size: 1.2rem; text-transform: uppercase; }
 
-        /* --- MANDATORY FOOTER FOR ADSENSE --- */
         .article-footer {
             max-width: 800px; margin: 0 auto; padding: 40px 20px 180px;
             border-top: 1px solid rgba(255,255,255,0.05);
@@ -37,9 +37,13 @@
         .bottom-nav {
             position: fixed !important; bottom: 35px !important; left: 50% !important;
             transform: translateX(-50%) !important; display: flex !important;
-            justify-content: space-around; align-items: center; background: #0f172a; 
-            border: 1px solid rgba(255,255,255,0.15); padding: 12px 10px;
-            border-radius: 100px; width: 92%; max-width: 440px; z-index: 15000;
+            justify-content: space-around; align-items: center; background: #0f172a !important; 
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            padding: 12px 10px !important;
+            border-radius: 100px !important;
+            width: 92% !important; 
+            max-width: 440px !important;
+            z-index: 15000 !important;
         }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; }
         .nav-item.active { color: #3b82f6; }
@@ -51,8 +55,8 @@
     
     <header>
         <div class="header-wrap">
-            <div onclick="window.location.href='index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-                <img src="logo.png" class="logo-box" alt="Logo">
+            <div onclick="window.location.href='https://promptvaultusa.shop/index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+                <img src="../logo.png" class="logo-box" alt="Logo">
                 <span style="font-weight:800; letter-spacing:-1.2px; color:white;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
             </div>
         </div>
@@ -70,30 +74,23 @@
         </div>
 
         <h2>01. Sovereignty in a Digital World</h2>
-        <p>The name "Vault" was chosen with intention. It represents security, quality, and exclusivity. Every asset we release has been architected with strict behavioral parameters and negative constraints to ensure it meets the highest standards of the American market. We don't just provide instructions; we provide blueprints for digital sovereignty.</p>
+        <p>The name "Vault" was chosen with intention. It represents security, quality, and exclusivity. Every asset we release has been architected with strict behavioral parameters and negative constraints to ensure it meets the highest standards of the American market.</p>
 
         <h2>02. What to Expect from the Intelligence Feed</h2>
-        <p>This blog will serve as your technical compass. You can expect deep-dives into high-yield niches, tutorials on viral content engineering, and masterclasses on prompt architecture. We are here to ensure that our community stays ahead of the algorithm, owning the traffic and the revenue that follows.</p>
-
-        <p>The grid is live, the vaults are open, and the future of industrial AI is being written here. Thank you for joining the architecture.</p>
+        <p>This blog will serve as your technical compass. You can expect deep-dives into high-yield niches, tutorials on viral content engineering, and masterclasses on prompt architecture. We are here to ensure that our community stays ahead of the algorithm.</p>
 
         <div style="text-align:center; margin-top:40px;">
-            <button class="btn-main" onclick="window.location.href='index.html#browse'" style="max-width:300px; margin:0 auto;">Explore the Vaults</button>
+            <button class="btn-main" onclick="window.location.href='https://promptvaultusa.shop/index.html?action=browse'" style="max-width:300px; margin:0 auto; background:var(--accent); color:white; padding:20px; border-radius:15px; border:none; font-weight:800; cursor:pointer;">Explore the Vaults</button>
         </div>
     </article>
 
-    <footer class="article-footer">
-        <a href="index.html#faqs">FAQs</a>
-        <a href="legal.html">Terms & Policies</a>
-        <a href="mailto:emilyperong23@gmail.com">Contact Us</a>
-        <a href="legal.html#privacy">Privacy Policy</a>
-    </footer>
+    <script src="../js/inject-footer.js"></script>
 
     <nav class="bottom-nav">
-        <a class="nav-item" href="index.html">🏠<br><small>Home</small></a>
-        <a class="nav-item" href="index.html?action=browse">⊞<br><small>Vaults</small></a>
-        <a class="nav-item active" href="blog.html">📖<br><small>Blog</small></a>
-        <a class="nav-item" href="index.html?page=library">👤<br><small>Library</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html"><span>🏠</span><small>Home</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html?action=browse"><span>⊞</span><small>Vaults</small></a>
+        <a class="nav-item active" href="https://promptvaultusa.shop/blog.html"><span>📖</span><small>Blog</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html?page=library"><span>👤</span><small>Library</small></a>
     </nav>
 </body>
 </html>
