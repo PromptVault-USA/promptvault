@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
     const glassCard = document.querySelector('.glass-card');
+    const path = window.location.pathname;
     
     // 1. GLOBAL UI REPAIR (Glass & Path Fix for Subdirectories)
-    if (window.location.pathname.includes('/vault/')) {
+    if (path.includes('/vault/')) {
         const links = document.getElementsByTagName('link');
         for (let link of links) {
             if (link.getAttribute('href') === 'css/style.css') {
@@ -17,8 +18,30 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // 1.5 AUTO-INJECT BACK BUTTON (The "Save Your Energy" Fix)
+    let backButtonHTML = '';
+    if (path.includes('/vault/')) {
+        backButtonHTML = `
+            <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
+                <a href="https://promptvaultusa.shop/index.html?action=browse" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <span>←</span> Back to Vaults
+                </a>
+            </div>`;
+    } else if (path.includes('blog.html') && path !== '/' && !path.endsWith('index.html')) {
+        // This covers individual blog post pages if they contain 'blog' in the name
+        backButtonHTML = `
+            <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
+                <a href="https://promptvaultusa.shop/blog.html" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <span>←</span> Back to Blog
+                </a>
+            </div>`;
+    }
+
+    if (backButtonHTML) {
+        document.body.insertAdjacentHTML('afterbegin', backButtonHTML);
+    }
+
     // 2. THE MOBILE CLICK FIX (Safety Buffer)
-    // This pushes the page up so the Nav doesn't block buttons/scrolling
     document.body.style.paddingBottom = "120px";
 
     // 3. INJECT FAQ & LEGAL (Your Existing Code)
