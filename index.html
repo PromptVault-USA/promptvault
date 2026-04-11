@@ -308,9 +308,9 @@
 
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
+            // FIXED: Ensuring slug matches the physical file structure in the vault folder
             const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
-            // HARDENING: Corrected path for Vault subfolder
-            const seoLink = `https://promptvaultusa.shop/vault/${slug}.html`;
+            const seoLink = `vault/${slug}.html`;
 
             return `<div class="glass-card" style="text-align: left; padding: 20px;">
                 <a href="${seoLink}" style="text-decoration:none;">
