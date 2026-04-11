@@ -13,7 +13,6 @@
         .page { display: none; width: 100%; opacity: 0; transition: opacity 0.4s ease; flex-direction: column; align-items: center; }
         .page.active { display: flex; opacity: 1; }
         
-        /* FIX STEP 1: CENTERED HOME LAYOUT */
         #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .hero-glow { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
@@ -21,7 +20,6 @@
         .sub-accent { color: var(--secondary); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: block; }
         .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1.1rem; line-height: 1.6; text-align: center; }
         
-        /* FIX STEP 1: CENTERED CONTENT SECTION */
         .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
         
         details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; text-align: left; width: 100%; max-width: 700px; margin-inline: auto; }
@@ -29,7 +27,6 @@
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
         .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; }
         
-        /* NO-IMAGE DIGITAL VAULT STYLING */
         .smart-cover { 
             transition: transform 0.3s ease, border-color 0.3s ease; 
             border: 1px solid var(--border); 
@@ -136,6 +133,7 @@
                 if(loginBtn) { loginBtn.innerText = "Logout"; loginBtn.onclick = () => signOut(auth); }
                 if(kitBtn) { kitBtn.innerText = "Access My Library"; kitBtn.style.background = "var(--accent)"; kitBtn.onclick = () => window.changePage('library'); }
                 if(authOverlay) authOverlay.style.display = 'none';
+                window.loadUserLibrary(); // Audit: Load library immediately on auth detection
             } else {
                 if(loginBtn) { loginBtn.innerText = "Sign In"; loginBtn.onclick = () => authOverlay.style.display = 'flex'; }
                 if(kitBtn) { kitBtn.innerText = "Unlock The Vault"; kitBtn.onclick = () => authOverlay.style.display = 'flex'; }
@@ -255,7 +253,10 @@
 <script>
     const PAYPAL_EMAIL = "emilyperong23@gmail.com";
     let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    window.updateCartCount = () => { document.getElementById('cart-count-pill').innerText = cart.length; };
+    window.updateCartCount = () => { 
+        const el = document.getElementById('cart-count-pill');
+        if(el) el.innerText = cart.length; 
+    };
 
     window.openCheckout = () => {
         const modal = document.getElementById('checkout-overlay');
@@ -292,14 +293,13 @@
         const list = document.getElementById('product-list');
         if (!list) return;
 
-        // HELPER FOR GRADIENT COLORS
         const getVaultColor = (name) => {
             const colors = [
-                'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', // Slate
-                'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', // Indigo
-                'linear-gradient(135deg, #064e3b 0%, #065f46 100%)', // Emerald
-                'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)', // Rose
-                'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'  // Deep
+                'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', 
+                'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', 
+                'linear-gradient(135deg, #064e3b 0%, #065f46 100%)', 
+                'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)', 
+                'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'  
             ];
             let hash = 0;
             for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -308,12 +308,9 @@
 
         list.innerHTML = productsToDisplay.map(p => {
             const pData = encodeURIComponent(JSON.stringify(p));
-            // CRITICAL UPDATE: Routing all product links through the /vault/ directory
-            const seoLink = "vault/" + p.name.toLowerCase()
-                             .trim()
-                             .replace(/[^\w\s-]/g, '')
-                             .replace(/[\s_-]+/g, '-')
-                             .replace(/^-+|-+$/g, '') + ".html";
+            // Standardized Regex for clean SEO slugs
+            const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+            const seoLink = `vault/${slug}.html`;
 
             return `<div class="glass-card" style="text-align: left; padding: 20px;">
                 <a href="${seoLink}" style="text-decoration:none;">
@@ -368,7 +365,10 @@
         }
     }, 25000);
 
-    document.addEventListener('DOMContentLoaded', () => { window.updateCartCount(); });
+    document.addEventListener('DOMContentLoaded', () => { 
+        window.updateCartCount(); 
+        if(window.location.hash === '#browse') window.changePage('browse');
+    });
 </script>
 </body>
 </html>
