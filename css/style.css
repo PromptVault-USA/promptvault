@@ -1,5 +1,5 @@
-/* PROJECT MEMORY: Master Stylesheet (v3.5 - FULL MERGE)
-   Status: Production-Ready / Mobile-Hardened / Nav-Collapse Fixed
+/* PROJECT MEMORY: Master Stylesheet (v3.6 - MOBILE OPTIMIZED)
+   Status: Production-Ready / Mobile-Hardened
    Responsibility: Global Theme, SPA Logic, Commerce, & Mobile UX
 */
 
@@ -34,6 +34,7 @@ body {
     color: var(--text);
     overflow-x: hidden;
     line-height: 1.6;
+    width: 100%;
 }
 
 /* --- 🔦 LIGHTING & FX --- */
@@ -158,11 +159,12 @@ header {
     max-width: 1200px;
     margin: 0 auto;
     padding: 120px 20px 180px; 
+    width: 100%;
 }
 
 .vault-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
 }
 
@@ -176,6 +178,7 @@ header {
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
 }
 
 .smart-cover {
@@ -192,9 +195,16 @@ header {
     overflow: hidden;
 }
 
+.smart-cover span {
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px;
+    z-index: 1;
+}
+
 .smart-cover img { width: 100%; height: 100%; object-fit: cover; }
 
-/* 👻 GHOST COVER PLACEHOLDER */
 .smart-cover::before {
     content: "PV";
     position: absolute;
@@ -216,7 +226,7 @@ header {
     min-height: 38px;
 }
 
-/* --- 📱 THE CENTERED PILL NAV (RECOVERY) --- */
+/* --- 📱 THE CENTERED PILL NAV --- */
 .bottom-nav {
     position: fixed;
     bottom: 25px;
@@ -233,7 +243,7 @@ header {
     align-items: center;
     width: 92%;
     max-width: 440px;
-    min-width: 300px; /* Prevents shrinking bug */
+    min-width: 300px;
     z-index: 15000;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8);
 }
@@ -284,26 +294,56 @@ header {
     white-space: nowrap;
 }
 
-/* --- 📱 MOBILE RESPONSIVE --- */
+/* --- 📱 MOBILE RESPONSIVE (UPDATED) --- */
 @media (max-width: 768px) {
+    .container { 
+        padding-top: 80px; 
+        padding-bottom: 140px; 
+        padding-left: 10px; 
+        padding-right: 10px; 
+    }
+    
     .vault-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
+        gap: 10px; /* Reduced gap for mobile */
     }
-    .container { padding-top: 100px; padding-bottom: 140px; }
-    .smart-cover { height: 140px; }
-    .btn-main { padding: 12px; font-size: 0.85rem; border-radius: 12px; }
+
+    .glass-card {
+        padding: 15px; /* Tighter internal padding */
+        border-radius: 20px;
+    }
+
+    .smart-cover { 
+        height: 120px; 
+        margin-bottom: 12px;
+    }
+
+    .smart-cover span {
+        font-size: 0.75rem !important; /* Smaller text on covers */
+    }
+
+    .glass-card h4, .glass-card div[style*="font-weight:800"] {
+        font-size: 0.9rem !important; /* Smaller titles */
+        min-height: auto !important;
+    }
+
+    .btn-main { 
+        padding: 10px 5px; 
+        font-size: 0.75rem; 
+        border-radius: 10px; 
+    }
 
     /* Fix for PROMPTVAULTUSA branding cutoff */
     .header-wrap span {
-        font-size: 0.9rem !important;
-        letter-spacing: -1.2px !important;
+        font-size: 0.85rem !important;
+        letter-spacing: -0.5px !important;
         white-space: nowrap;
     }
     .header-wrap {
-        padding: 15px 10px;
+        padding: 10px 15px;
     }
 }
 
+/* --- 📟 SPA PAGE LOGIC --- */
 .page { display: none; }
 .page.active { display: flex; flex-direction: column; width: 100%; }
