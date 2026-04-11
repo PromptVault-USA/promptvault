@@ -19,10 +19,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 1.5 AUTO-INJECT BACK BUTTON (The "Universal Detection" Fix)
+    // 1.5 AUTO-INJECT BACK BUTTON (Reliability Enhanced)
     let backButtonHTML = '';
-    
-    // Check if in Vault subfolder
     if (path.includes('/vault/')) {
         backButtonHTML = `
             <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
@@ -31,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </div>`;
     } 
-    // Check if in a Blog Post (Any page not Home, main Blog list, main Vault list, or Legal)
     else if (path !== '/' && !path.includes('index.html') && !path.includes('blog.html') && !path.includes('legal.html') && path.length > 1) {
         backButtonHTML = `
             <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
@@ -90,15 +87,21 @@ document.addEventListener("DOMContentLoaded", function() {
     </footer>`;
     document.body.insertAdjacentHTML('beforeend', masterFooterHTML);
 
-    // 6. AUTO-BROWSE & JUMP LOGIC (Enhanced)
+    // 6. AUTO-BROWSE & PERSISTENT JUMP LOGIC
     if (urlParams.get('action') === 'browse') {
-        setTimeout(() => {
+        let browseAttempts = 0;
+        const browseInterval = setInterval(() => {
+            browseAttempts++;
             const vaultBtn = document.querySelector('a[href*="action=browse"]');
-            if (vaultBtn) vaultBtn.click();
-            // Scroll specifically to the container or grid
-            const target = document.querySelector('.vault-grid') || document.querySelector('.container');
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300); 
+            const vaultGrid = document.querySelector('.vault-grid');
+            
+            if (vaultBtn && vaultGrid) {
+                vaultBtn.click();
+                vaultGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                clearInterval(browseInterval);
+            }
+            if (browseAttempts > 15) clearInterval(browseInterval);
+        }, 100);
     }
 
     if (urlParams.get('action') === 'blog') {
