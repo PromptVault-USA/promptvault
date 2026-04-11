@@ -4,11 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Startup Pitch Deck AI Prompts | PromptVault USA</title>
-    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="spotlight"></div>
-    <header><div class="header-wrap"><div onclick="window.location.href='index.html'" style="cursor:pointer;"><img src="logo.png" class="logo-box"></div></div></header>
+    
+    <header>
+        <div class="header-wrap">
+            <div onclick="window.location.href='https://promptvaultusa.shop/index.html'" style="cursor:pointer;">
+                <img src="../logo.png" class="logo-box" alt="Logo">
+            </div>
+        </div>
+    </header>
+
     <div class="container">
         <div class="glass-card" style="margin-top:60px; text-align:left; padding: 40px;">
             <div style="text-align: center;">
@@ -42,15 +53,27 @@
         </div>
     </div>
 
+    <style>
+        .bottom-nav {
+            position: fixed !important; bottom: 35px !important; left: 50% !important;
+            transform: translateX(-50%) !important; display: flex !important;
+            justify-content: space-around; align-items: center; background: #0f172a !important; 
+            border: 1px solid rgba(255,255,255,0.15) !important; padding: 12px 10px !important;
+            border-radius: 100px !important; width: 92% !important; max-width: 440px !important; z-index: 15000 !important;
+        }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; font-size: 1.2rem; }
+        .nav-item small { font-size: 0.65rem; margin-top: 5px; font-weight: 800; text-transform: uppercase; }
+    </style>
+
     <footer style="margin-top: 80px; padding: 60px 20px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(10, 10, 10, 0.5); text-align: center;">
         <div style="max-width: 800px; margin: 0 auto;">
             <h4 style="color: white; font-weight: 800; margin-bottom: 20px; letter-spacing: 1px; font-family: 'Plus Jakarta Sans', sans-serif;">PROMPTVAULT <span style="color: #d4af37;">USA</span></h4>
             
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
-                <a href="index.html#faqs" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">FAQs</a>
-                <a href="legal.html#privacy" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Privacy Policy</a>
-                <a href="legal.html#terms" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Terms of Service</a>
-                <a href="legal.html#refunds" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Refund Policy</a>
+                <a href="https://promptvaultusa.shop/index.html#faqs" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">FAQs</a>
+                <a href="https://promptvaultusa.shop/legal.html#privacy" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Privacy Policy</a>
+                <a href="https://promptvaultusa.shop/legal.html#terms" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Terms of Service</a>
+                <a href="https://promptvaultusa.shop/legal.html#refunds" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Refund Policy</a>
                 <a href="mailto:emilyperong23@gmail.com" style="color: #b0b0b0; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Support</a>
             </div>
 
@@ -62,6 +85,13 @@
         </div>
     </footer>
 
-    <script src="inject-footer.js"></script>
+    <nav class="bottom-nav">
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html">🏠<br><small>Home</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html?action=browse">⊞<br><small>Vaults</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/blog.html">📖<br><small>Blog</small></a>
+        <a class="nav-item" href="https://promptvaultusa.shop/index.html?page=library">👤<br><small>Library</small></a>
+    </nav>
+
+    <script src="../js/inject-footer.js"></script>
 </body>
 </html>
