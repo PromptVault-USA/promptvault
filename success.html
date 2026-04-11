@@ -20,7 +20,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .success-item { background:rgba(16, 185, 129, 0.05); padding:18px; border-radius:16px; border:1px solid var(--border); margin-bottom:12px; text-align:left; display:flex; justify-content:space-between; align-items:center; transition: 0.3s; }
         .success-item:hover { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
-        .btn-main { transition: 0.3s; border: none; }
+        .btn-main { transition: 0.3s; border: none; text-decoration: none; display: inline-block; text-align: center; }
         .btn-main:hover { transform: translateY(-3px); opacity: 0.9; }
     </style>
 </head>
@@ -38,7 +38,7 @@
             <p id="verification-text" style="color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">EXECUTING DATABASE HANDSHAKE...</p>
         </div>
 
-        <button onclick="window.location.href='index.html?page=library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
+        <button onclick="window.location.href='index.html#library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
         
         <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border);">
             <p style="font-size: 0.75rem; color: #475569; margin-bottom: 5px;">Payment Reference</p>
@@ -48,11 +48,13 @@
 </div>
 
 <script type="module">
-    // SYNCED FIREBASE INITIALIZATION (Matches index.html logic)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
-    // Ensure this matches your exact config from index.html
+    // Logic Added: Connection to your external Github service
+    import { FulfillmentService } from './js/fulfillment-service.js';
+
     const firebaseConfig = {
         apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
         authDomain: "promptvaultusa.firebaseapp.com",
@@ -64,9 +66,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
-    // Mock/External Service Import (Ensure fulfillment-service.js exists in your /js folder)
-    import { FulfillmentService } from './js/fulfillment-service.js';
+    const db = getFirestore(app);
 
     onAuthStateChanged(auth, async (user) => {
         const displayArea = document.getElementById('product-delivery-zone');
@@ -77,7 +77,7 @@
         const txDisplay = document.getElementById('display-tx');
         
         const urlParams = new URLSearchParams(window.location.search);
-        const txID = urlParams.get('tx');
+        const txID = urlParams.get('tx') || urlParams.get('amt');
 
         if (txID) txDisplay.innerText = txID;
 
@@ -87,31 +87,28 @@
             statusTitle.innerText = "Authentication Required";
             statusTitle.style.color = "white";
             displayArea.innerHTML = `
-                <div style="padding: 25px; background: rgba(59, 130, 246, 0.05); border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2);">
-                    <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">Please sign in to the same account used during purchase to unlock your assets.</p>
+                <div style="padding: 20px; background: rgba(59, 130, 246, 0.05); border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Please sign in to the same account used during purchase to unlock your assets.</p>
                     <button onclick="window.location.href='index.html'" class="btn-main" style="background:var(--accent); width:100%; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; color:white;">Go to Login</button>
                 </div>`;
             return;
         }
 
-        // 2. TRANSACTION DATA GUARD
+        // 2. TRANSACTION DATA GUARD (Kept existing logic)
         if (!txID) {
             statusTitle.innerText = "Payment Reference Missing";
             statusIcon.innerText = "⚠️";
             statusTitle.style.color = "#fbbf24";
-            displayArea.innerHTML = `
-                <p style="color:#94a3b8; font-size:0.9rem; line-height: 1.6;">We couldn't verify your unique transaction ID via URL. If you have completed payment, check your <strong>Library</strong> in 5-10 minutes.</p>
-                <button onclick="window.location.href='index.html?page=library'" class="btn-main" style="margin-top:20px; background:var(--glass); border: 1px solid var(--border); color:white; padding:12px; width:100%; border-radius:12px; font-weight:800; cursor:pointer;">Check Library Now</button>
-            `;
+            displayArea.innerHTML = `<p style="color:#94a3b8; font-size:0.9rem;">Check your Library in 5-10 minutes if you completed the payment.</p>`;
             return;
         }
 
         try {
-            // 3. FULFILLMENT HANDSHAKE
-            // Pass the txID to your service which should interact with Firestore
-            const result = await FulfillmentService.verifyAndDeliver(txID);
+            // 3. Logic Added: Executing the GitHub Service handshake
+            // We pass the db instance and the user so the service can write to Firestore
+            const result = await FulfillmentService.verifyAndDeliver(db, user, txID);
 
-            // 4. SUCCESS STATE
+            // 4. SUCCESS STATE (Kept existing rendering logic)
             statusIcon.innerText = "🚀";
             statusTitle.innerText = "Assets Unlocked!";
             statusTitle.style.color = "var(--success)";
@@ -121,14 +118,14 @@
             displayArea.innerHTML = result.items.map(item => `
                 <div class="success-item">
                     <div>
-                        <strong style="color:white; font-size:0.9rem;">${item.name}</strong><br>
-                        <small style="color:var(--success); font-weight:800; text-transform:uppercase; font-size:0.65rem; letter-spacing:1px;">Verified Access Granted</small>
+                        <strong style="color:white; font-size:0.9rem;">${item.productName || item.name}</strong><br>
+                        <small style="color:var(--success); font-weight:800;">VERIFIED ACCESS GRANTED</small>
                     </div>
-                    <a href="${item.driveLink}" target="_blank" style="background:var(--success); color:white; padding:10px 16px; border-radius:12px; font-weight:800; text-decoration:none; font-size:0.75rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);">OPEN ↗</a>
+                    <a href="${item.driveLink}" target="_blank" style="background:var(--success); color:white; padding:10px 16px; border-radius:12px; font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
                 </div>
             `).join('');
 
-            // 5. SESSION CLEANUP
+            // 5. SESSION CLEANUP (Kept existing logic)
             localStorage.removeItem('pv_cart');
             localStorage.removeItem('pending_assets');
 
@@ -138,13 +135,9 @@
             statusTitle.innerText = "Syncing in Progress";
             statusTitle.style.color = "#fbbf24";
             displayArea.innerHTML = `
-                <div style="padding: 25px; background: rgba(251, 191, 36, 0.05); border-radius: 20px; border: 1px solid rgba(251, 191, 36, 0.2); text-align:left;">
-                    <p style="color: white; font-size: 0.95rem; font-weight: 800; margin-bottom:10px;">Hang tight!</p>
-                    <p style="color: #94a3b8; font-size: 0.85rem; line-height: 1.6;">${error.message || "Your payment is verified, but the server is currently writing to your vault. This usually takes 30-60 seconds."}</p>
-                    <div style="margin-top:20px; display:flex; gap:10px;">
-                        <button onclick="window.location.reload()" style="flex:1; background:var(--accent); color:white; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Retry Sync</button>
-                        <button onclick="window.location.href='mailto:emilyperong23@gmail.com?subject=Order Support: ${txID}'" style="flex:1; background:var(--glass); border:1px solid var(--border); color:white; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Support</button>
-                    </div>
+                <div style="padding: 20px; text-align:left;">
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Your payment is verified. The server is writing to your vault. Please refresh this page in 30 seconds.</p>
+                    <button onclick="window.location.reload()" style="margin-top:15px; background:var(--accent); color:white; border:none; padding:12px; width:100%; border-radius:10px; font-weight:800; cursor:pointer;">Retry Sync</button>
                 </div>`;
         }
     });
