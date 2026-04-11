@@ -11,6 +11,7 @@
     <link rel="icon" type="image/png" href="../logo.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         .blog-content { max-width: 800px; margin: 0 auto; padding: 120px 20px 60px; text-align: left; }
         .blog-content h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 25px; line-height: 1.1; font-weight: 800; color: white; }
@@ -26,23 +27,18 @@
         }
         .strategy-card h3 { color: #60a5fa; margin-top: 0; font-size: 1.2rem; text-transform: uppercase; }
 
-        .article-footer {
-            max-width: 800px; margin: 0 auto; padding: 40px 20px 180px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;
-        }
-        .article-footer a { color: #64748b; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: color 0.3s; }
-        .article-footer a:hover { color: #8b5cf6; }
-
+        /* Ensuring the bottom nav stays consistent with index.html */
         .bottom-nav {
-            position: fixed !important; bottom: 35px !important; left: 50% !important;
-            transform: translateX(-50%) !important; display: flex !important;
-            justify-content: space-around; align-items: center; background: #0f172a; 
-            border: 1px solid rgba(255,255,255,0.15); padding: 12px 10px;
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%); display: flex;
+            justify-content: space-around; align-items: center; background: rgba(15, 23, 42, 0.9); 
+            border: 1px solid rgba(255,255,255,0.1); padding: 12px 10px;
             border-radius: 100px; width: 92%; max-width: 440px; z-index: 15000;
+            backdrop-filter: blur(10px);
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; cursor: pointer; }
         .nav-item.active { color: #3b82f6; }
+        .nav-item span { font-size: 1.2rem; }
         .nav-item small { font-size: 0.65rem; margin-top: 5px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
@@ -62,38 +58,39 @@
         <span class="sub-accent">Revenue Logic: Post #017</span>
         <h1>Affiliate Architect USA Strategy: Cracking the <span class="highlight-text">Industrial Grid</span></h1>
         
-        <p>In 2026, the USA affiliate market is no longer a place for amateurs. To succeed, you must move beyond the "Budol" mentality and into **Structural Authority**. American consumers are highly resistant to generic marketing; they require high-fidelity cinematic value and technical proof before they commit to a purchase. This is the strategy of the Affiliate Architect.</p>
+        <p>In 2026, the USA affiliate market is no longer a place for amateurs. To succeed, you must move beyond the "Budol" mentality and into **Structural Authority**. American consumers are highly resistant to generic marketing; they require high-fidelity cinematic value and technical proof before they commit to a purchase.</p>
+
+        <ins class="adsbygoogle"
+             style="display:block; text-align:center;"
+             data-ad-layout="in-article"
+             data-ad-format="fluid"
+             data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
+             data-ad-slot="YOUR_AD_SLOT_ID"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
         <div class="strategy-card">
             <h3>The 80/20 Content Bridge</h3>
-            <p style="margin-bottom:0; color: #cbd5e1;">A sovereign affiliate strategy relies on the <strong>80/20 Bridge</strong>. We architect logic vaults that produce content providing 80% genuine information/value and 20% seamless product integration. By solving a technical problem for the user first, the affiliate link becomes a natural solution rather than a forced advertisement.</p>
+            <p style="margin-bottom:0; color: #cbd5e1;">A sovereign affiliate strategy relies on the <strong>80/20 Bridge</strong>. We architect logic vaults that produce content providing 80% genuine information/value and 20% seamless product integration.</p>
         </div>
 
         <h2>01. Aesthetic Synchronization</h2>
-        <p>Trust is a visual language. In the USA grid, high-ticket buyers respond to "Luxury Minimalist" and "Clean Tech" aesthetics. By using a singular sovereign vault to generate all your Pinterest and TikTok visual assets, you ensure your brand maintains a professional, high-fidelity identity that separates you from low-quality spam accounts.</p>
+        <p>Trust is a visual language. In the USA grid, high-ticket buyers respond to "Luxury Minimalist" and "Clean Tech" aesthetics. By using a singular sovereign vault to generate all your Pinterest and TikTok visual assets, you ensure your brand maintains a professional, high-fidelity identity.</p>
 
         <h2>02. Dominating Niche Sovereignty</h2>
-        <p>The goal is to own the niche before it becomes saturated. We use AI logic to identify emerging tech trends and "Setup Budol" opportunities. By being the first to provide architected, cinematic reviews of new digital tools or hardware, you establish a territory of authority that the algorithm will reward with consistent organic traffic.</p>
-
-        <p>The strategy is simple: Own the logic, master the aesthetic, and scale the trust. Your path to affiliate dominance in the USA is powered by the PromptVault.</p>
+        <p>The goal is to own the niche before it becomes saturated. We use AI logic to identify emerging tech trends and "Setup Budol" opportunities. By being the first to provide architected, cinematic reviews, you establish a territory of authority.</p>
 
         <div style="text-align:center; margin-top:40px;">
-            <button class="btn-main" onclick="window.location.href='../index.html#browse'" style="max-width:300px; margin:0 auto;">Browse Strategy Vaults</button>
+            <button class="btn-main" onclick="window.location.href='../index.html?action=browse'" style="max-width:300px; margin:0 auto; background:var(--accent); color:white; padding:20px; border-radius:15px; border:none; font-weight:800; cursor:pointer;">Browse Strategy Vaults</button>
         </div>
     </article>
 
-    <footer class="article-footer">
-        <a href="../index.html#faqs">FAQs</a>
-        <a href="../legal.html">Terms & Policies</a>
-        <a href="mailto:emilyperong23@gmail.com">Contact Us</a>
-        <a href="../legal.html#privacy">Privacy Policy</a>
-    </footer>
+    <script src="../js/inject-footer.js"></script>
 
     <nav class="bottom-nav">
-        <a class="nav-item" href="../index.html">🏠<br><small>Home</small></a>
-        <a class="nav-item" href="../index.html?action=browse">⊞<br><small>Vaults</small></a>
-        <a class="nav-item active" href="../blog.html">📖<br><small>Blog</small></a>
-        <a class="nav-item" href="../index.html?page=library">👤<br><small>Library</small></a>
+        <a class="nav-item" href="../index.html"><span>🏠</span><small>Home</small></a>
+        <a class="nav-item" href="../index.html?action=browse"><span>⊞</span><small>Vaults</small></a>
+        <a class="nav-item active" href="../blog.html"><span>📖</span><small>Blog</small></a>
+        <a class="nav-item" href="../index.html?page=library"><span>👤</span><small>Library</small></a>
     </nav>
 </body>
 </html>
