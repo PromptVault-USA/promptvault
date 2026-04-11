@@ -1,15 +1,14 @@
 /**
- * PROJECT MEMORY: Fulfillment Service (v2.9 - Hardened)
- * Status: Production-Ready / AdSense Compliant
+ * PROJECT MEMORY: Fulfillment Service (v3.1 - Hardened Singleton)
+ * Status: Production-Ready
  * Responsibility: Secure PayPal Verification & Library Unlocking
- * UPGRADE: Unified CDN Imports to prevent "Multiple App Instance" crashes.
+ * Features: Duplicate Claim Protection & Race-Condition Guard.
  */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// RE-DECLARE CONFIG: Ensures this module has its own clean handshake with Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
     authDomain: "promptvaultusa.firebaseapp.com",
@@ -19,14 +18,11 @@ const firebaseConfig = {
     appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
 };
 
-const app = initializeApp(firebaseConfig);
+// --- Singleton Initialization ---
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
-const db = getFirestore(app);
+const internalDb = getFirestore(app);
 
-/**
- * Race-Condition Guard: Waits for Firebase Auth to determine user status
- * before the script proceeds with the transaction check.
- */
 const getCurrentUser = () => {
     return new Promise((resolve) => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -38,63 +34,83 @@ const getCurrentUser = () => {
 
 export const FulfillmentService = {
     /**
-     * verifyAndDeliver: The Bridge between PayPal and the User's Vault.
-     * @param {string} txID - The transaction ID from the URL (?tx=...)
+     * verifyAndDeliver
+     * @param {object|string} arg1 - Can be Firestore DB instance OR txID string
+     * @param {object|string} arg2 - Can be User instance OR txID string
+     * @param {string} arg3 - The Transaction ID (txID)
      */
-    verifyAndDeliver: async (txID) => {
-        if (!txID) throw new Error("Transaction ID is missing from the request.");
+    verifyAndDeliver: async (arg1, arg2, arg3) => {
+        // Flexible argument mapping to support both Success.html and Main.js calls
+        let db = internalDb;
+        let user = null;
+        let txID = null;
 
-        // 1. Resolve the User (Auth Handshake)
-        const user = await getCurrentUser();
-        if (!user) throw new Error("🔒 Please sign in to verify and unlock your assets.");
+        if (typeof arg1 === 'string') txID = arg1;
+        else if (typeof arg2 === 'string') { db = arg1; txID = arg2; }
+        else if (typeof arg3 === 'string') { db = arg1; user = arg2; txID = arg3; }
 
-        // 2. Fetch Order from 'orders' collection
+        if (!txID) throw new Error("Missing Transaction ID.");
+
+        // 1. Resolve User if not provided
+        if (!user) user = await getCurrentUser();
+        if (!user) throw new Error("🔒 Authentication required to unlock assets.");
+
+        // 2. Fetch Order from Firestore
         const orderRef = doc(db, "orders", txID);
         const orderSnap = await getDoc(orderRef);
 
         if (!orderSnap.exists()) {
-            // Friendly message in case PayPal Webhook is slightly delayed
-            throw new Error("Vault sync in progress... Please refresh in 30 seconds.");
+            throw new Error("Order not found. Syncing in progress... please refresh in 30s.");
         }
 
         const orderData = orderSnap.data();
 
-        // 3. Security: Prevent unauthorized cross-account claiming
+        // 3. Security: UID Validation
         if (orderData.uid !== user.uid) {
-            throw new Error("Security Violation: Order UID does not match current user.");
+            throw new Error("Security Check Failed: Account mismatch.");
         }
 
-        // 4. Data Normalization: Prep for the Library UI
+        // 4. Data Normalization
         const normalizedItems = orderData.items.map(item => ({
-            productName: item.name || item.productName || "AI Prompt Asset",
+            productName: item.name || item.productName || "AI Prompt Vault",
             driveLink: item.driveLink || "https://promptvaultusa.shop/support",
-            timestamp: Date.now() // Fresh timestamp for sorting
+            timestamp: Date.now()
         }));
 
-        // 5. Check Status (Avoid redundant writes)
+        // 5. Redundancy Check
         if (orderData.status === 'completed') {
             return { status: 'already_delivered', items: normalizedItems };
         }
 
-        // 6. Final Fulfillment
+        // 6. Fulfillment Transaction
         const userRef = doc(db, "users", user.uid);
         
         try {
-            // Atomic update: Adds items to array without overwriting existing ones
-            await updateDoc(userRef, {
-                purchasedPrompts: arrayUnion(...normalizedItems)
-            });
+            // Check for existing items to prevent duplicate library entries
+            const userSnap = await getDoc(userRef);
+            const currentLibrary = userSnap.data()?.purchasedPrompts || [];
+            
+            const uniqueItems = normalizedItems.filter(newItem => 
+                !currentLibrary.some(existing => existing.driveLink === newItem.driveLink)
+            );
 
-            // Close the loop: Mark order as completed
+            // Execute Library Update
+            if (uniqueItems.length > 0) {
+                await updateDoc(userRef, {
+                    purchasedPrompts: arrayUnion(...uniqueItems)
+                });
+            }
+
+            // Close Order Cycle
             await updateDoc(orderRef, {
                 status: 'completed',
                 deliveredAt: new Date().toISOString()
             });
 
             return { status: 'success', items: normalizedItems };
-        } catch (dbError) {
-            console.error("Fulfillment Write Error:", dbError);
-            throw new Error("Could not write to your Vault. Please check your connection.");
+        } catch (err) {
+            console.error("Database Write Error:", err);
+            throw new Error("Vault update failed. Contact support if balance was deducted.");
         }
     }
 };
