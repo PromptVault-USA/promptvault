@@ -129,8 +129,6 @@
                     list.innerHTML = data.map(p => {
                         const pData = encodeURIComponent(JSON.stringify(p));
                         const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
-                        
-                        // FIX: Added flex column and footer to preserve description visibility and layout
                         return `
                             <div class="glass-card" style="text-align: left; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
                                 <div>
@@ -302,9 +300,13 @@
             <p>At PromptVault USA, we provide industrial-strength logic. Explore our <a href="https://promptvaultusa.shop/blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a>.</p>
             <div style="margin-top: 30px; text-align: left; border-top: 1px solid var(--border); padding-top: 30px;">
                 <h4 style="color: white; font-weight: 800;">About Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray);">PromptVault USA is a sovereign digital marketplace for AI logic.</p>
+                <p style="font-size: 0.9rem; color: var(--text-gray); line-height: 1.6;">
+                    PromptVault USA is a sovereign digital marketplace and asset hub designed for the creator economy, specifically focusing on high-resolution AI prompts and industrial-strength logic. 
+                    The platform is built on a high-performance technical stack including Firebase for secure authentication, GitHub for hosting, and PayPal for transaction processing. 
+                    It is designed to serve as a central "Intelligence Feed" for entrepreneurs looking to build automated businesses.
+                </p>
                 <h4 style="color: white; font-weight: 800; margin-top: 20px;">Contact Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> emilyperong23@gmail.com</p>
+                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> admin@promptvaultusa.shop</p>
             </div>
         </section>
 
