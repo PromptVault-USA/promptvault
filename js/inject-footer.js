@@ -96,13 +96,17 @@ document.addEventListener("DOMContentLoaded", function() {
             const allPages = document.querySelectorAll('.page'); 
 
             if (vaultBtn) {
+                // 1. Force the SPA state change
                 vaultBtn.click();
+                
+                // 2. Manually override display hidden if SPA logic is lagging
                 if (allPages.length > 0) {
                     allPages.forEach(p => p.style.display = 'none');
                     const vPage = document.querySelector('#vault-page') || Array.from(allPages).find(p => p.innerHTML.includes('vault-grid'));
                     if (vPage) vPage.style.display = 'block';
                 }
 
+                // 3. Scroll to results
                 if (vaultGrid) {
                     vaultGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     return true;
