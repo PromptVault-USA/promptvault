@@ -19,12 +19,12 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 1.5 AUTO-INJECT BACK BUTTON (Reliability Enhanced)
+    // 1.5 AUTO-INJECT BACK BUTTON (Updated with requested anchor link)
     let backButtonHTML = '';
     if (path.includes('/vault/')) {
         backButtonHTML = `
             <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
-                <a href="https://promptvaultusa.shop/index.html?action=browse" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 10px 18px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
+                <a href="https://promptvaultusa.shop/index.html?action=browse#browse" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 10px 18px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
                     <span style="font-size:1.1rem;">←</span> Back to Vaults
                 </a>
             </div>`;
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 2. THE MOBILE CLICK FIX (Safety Buffer)
     document.body.style.paddingBottom = "120px";
 
-    // 3. INJECT FAQ & LEGAL
+    // 3. INJECT FAQ & LEGAL (Updated with admin@promptvaultusa.shop)
     if (glassCard) {
         const glassContentHTML = `
             <div style="margin-top: 50px; border-top: 1px solid var(--border); padding-top: 40px;">
@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <h4 style="color: white; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Legal Terms & License</h4>
                     <p style="color: #64748b; font-size: 0.75rem; line-height: 1.6; margin-bottom: 15px;">
                         <strong>License:</strong> Single-user license. Redistribution or resale of raw prompts is strictly prohibited. <br>
+                        <strong>Support:</strong> admin@promptvaultusa.shop <br>
                         <strong>Refunds:</strong> All sales are final due to the digital nature of the products.
                     </p>
                     <a href="https://promptvaultusa.shop/legal.html" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Read Full Legal & Terms →</a>
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const navHTML = `
     <nav class="bottom-nav" style="position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-around; align-items: center; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 10px; border-radius: 100px; width: 92%; max-width: 440px; z-index: 20000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
         <a href="https://promptvaultusa.shop/index.html" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">🏠<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Home</small></a>
-        <a href="https://promptvaultusa.shop/index.html?action=browse" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">⊞<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Vaults</small></a>
+        <a href="https://promptvaultusa.shop/index.html?action=browse#browse" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">⊞<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Vaults</small></a>
         <a href="https://promptvaultusa.shop/blog.html" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">📖<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Blog</small></a>
         <a href="https://promptvaultusa.shop/index.html?page=library" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">👤<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Library</small></a>
     </nav>`;
@@ -92,20 +93,16 @@ document.addEventListener("DOMContentLoaded", function() {
         const forceShowVaults = () => {
             const vaultBtn = document.querySelector('a[href*="action=browse"]');
             const vaultGrid = document.querySelector('.vault-grid');
-            const allPages = document.querySelectorAll('.page'); // Catching SPA page elements
+            const allPages = document.querySelectorAll('.page'); 
 
             if (vaultBtn) {
-                // 1. Force the SPA state change
                 vaultBtn.click();
-                
-                // 2. Manually override display hidden if SPA logic is lagging
                 if (allPages.length > 0) {
                     allPages.forEach(p => p.style.display = 'none');
                     const vPage = document.querySelector('#vault-page') || Array.from(allPages).find(p => p.innerHTML.includes('vault-grid'));
                     if (vPage) vPage.style.display = 'block';
                 }
 
-                // 3. Scroll to results
                 if (vaultGrid) {
                     vaultGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     return true;
