@@ -39,7 +39,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
         const firebaseConfig = {
           apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
@@ -308,7 +308,7 @@
                     It is designed to serve as a central "Intelligence Feed" for entrepreneurs looking to build automated businesses.
                 </p>
                 <h4 style="color: white; font-weight: 800; margin-top: 20px;">Contact Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> admin@promptvaultusa.shop</p>
+                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> <a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></p>
             </div>
         </section>
 
@@ -347,7 +347,7 @@
                 <p>Due to the nature of digital assets and immediate "Intelligence Feed" access, all sales are final. We ensure 24/7 access to your library via Firebase secure authentication.</p>
                 
                 <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 20px;">3. Privacy Policy</h4>
-                <p>We value your sovereign data. Your information is used exclusively for authentication and product delivery. We do not sell user intelligence to third parties.</p>
+                <p>We value your sovereign data. Your information is used exclusively for authentication and product delivery. For support or data inquiries, contact <strong><a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></strong>.</p>
                 
                 <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 30px; width: 100%; background: var(--glass); border: 1px solid var(--border);">Return Home</button>
             </div>
