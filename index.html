@@ -23,38 +23,16 @@
     <style>
         .page { display: none; width: 100%; opacity: 0; transition: opacity 0.4s ease; flex-direction: column; align-items: center; }
         .page.active { display: flex; opacity: 1; }
-        
         #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
         .hero-glow { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
         h1 { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; line-height: 1.1; margin-top: 20px; color: white; }
         .sub-accent { color: var(--secondary); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: block; }
         .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1.1rem; line-height: 1.6; text-align: center; }
-        
         .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
-        
-        details { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; text-align: left; width: 100%; max-width: 700px; margin-inline: auto; }
-        summary { font-weight: 800; cursor: pointer; color: white; }
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
         .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; }
-        
-        .smart-cover { 
-            transition: transform 0.3s ease, border-color 0.3s ease; 
-            border: 1px solid var(--border); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center;
-            padding: 15px;
-        }
-        .smart-cover span {
-            color: white;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.75rem;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
+        .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; }
+        .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
     </style> 
 
@@ -76,80 +54,208 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
-        
-        window.auth = auth; window.db = db; window.allProducts = [];
 
-        window.handleGoogle = async () => { try { const res = await signInWithPopup(auth, provider); await provisionNewUser(res.user); } catch(e) { alert(e.message); } };
-        window.handleEmailAuth = async (mode) => {
-            const email = document.getElementById('auth-email').value;
-            const pass = document.getElementById('auth-pass').value;
-            if(!email || !pass) return alert("Fill all fields.");
-            try {
-                if(mode === 'signup') { const res = await createUserWithEmailAndPassword(auth, email, pass); await provisionNewUser(res.user); } 
-                else { await signInWithEmailAndPassword(auth, email, pass); }
-            } catch(e) { alert(e.message); }
-        };
+        const PV = {
+            consts: {
+                PAYPAL_EMAIL: "emilyperong23@gmail.com"
+            },
+            state: {
+                user: null,
+                cart: JSON.parse(localStorage.getItem('pv_cart')) || [],
+                products: []
+            },
 
-        async function provisionNewUser(user) {
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-            if (!userSnap.exists()) {
-                await setDoc(userRef, {
-                    email: user.email, joinedDate: new Date().toISOString(),
-                    purchasedPrompts: [
-                        { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
-                        { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
-                    ]
+            init() {
+                this.observeAuth();
+                this.ui.updateCartCount();
+                this.ui.initNotifications();
+                if(window.location.hash === '#browse') this.router.go('browse');
+                console.log("💎 Engine: Online");
+            },
+
+            auth: {
+                async handleGoogle() {
+                    try { const res = await signInWithPopup(auth, provider); await this.provision(res.user); } 
+                    catch(e) { alert(e.message); }
+                },
+                async handleEmail(mode) {
+                    const email = document.getElementById('auth-email').value;
+                    const pass = document.getElementById('auth-pass').value;
+                    if(!email || !pass) return alert("Fill all fields.");
+                    try {
+                        if(mode === 'signup') { 
+                            const res = await createUserWithEmailAndPassword(auth, email, pass); 
+                            await this.provision(res.user); 
+                        } else { await signInWithEmailAndPassword(auth, email, pass); }
+                    } catch(e) { alert(e.message); }
+                },
+                async provision(user) {
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (!userSnap.exists()) {
+                        await setDoc(userRef, {
+                            email: user.email, joinedDate: new Date().toISOString(),
+                            purchasedPrompts: [
+                                { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
+                                { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
+                            ]
+                        });
+                    }
+                }
+            },
+
+            router: {
+                go(id, el) {
+                    document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+                    const target = document.getElementById(id);
+                    if (target) { target.style.display = 'flex'; setTimeout(() => target.classList.add('active'), 10); }
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    if(el) el.classList.add('active');
+                    if(id === 'browse' && PV.state.products.length === 0) PV.vault.load();
+                    if(id === 'library') PV.library.load();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            },
+
+            vault: {
+                async load() {
+                    const res = await fetch('products.json');
+                    PV.state.products = await res.json();
+                    this.render(PV.state.products);
+                },
+                render(data) {
+                    const list = document.getElementById('product-list');
+                    if (!list) return;
+                    list.innerHTML = data.map(p => {
+                        const pData = encodeURIComponent(JSON.stringify(p));
+                        const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
+                        return `
+                            <div class="glass-card" style="text-align: left; padding: 20px;">
+                                <a href="vault/${slug}.html" style="text-decoration:none;">
+                                    <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: ${this.getColor(p.name)}; cursor:pointer;">
+                                        <span>${p.name}</span>
+                                    </div>
+                                </a>
+                                <div style="font-weight:800; color:white; margin-bottom:5px; font-size:1.1rem; min-height: 2.4em; display: flex; align-items: center;">${p.name}</div>
+                                <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:15px; height: 2.4em; overflow: hidden;">${p.desc || "Professional AI asset vault."}</p>
+                                <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                    <button onclick="PV.checkout.direct('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem;">Buy Now</button>
+                                    <button onclick="PV.checkout.add('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem;">+ Cart</button>
+                                </div>
+                            </div>`;
+                    }).join('');
+                },
+                getColor(name) {
+                    const colors = ['linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)', 'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)'];
+                    let hash = 0; for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+                    return colors[Math.abs(hash) % colors.length];
+                },
+                filter(val) {
+                    const filtered = PV.state.products.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
+                    this.render(filtered);
+                }
+            },
+
+            library: {
+                async load() {
+                    const user = auth.currentUser;
+                    const grid = document.getElementById('user-library-grid');
+                    if (!grid || !user) return;
+                    const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                    if (userDocSnap.exists()) {
+                        const prompts = userDocSnap.data().purchasedPrompts || [];
+                        prompts.sort((a, b) => b.timestamp - a.timestamp);
+                        grid.innerHTML = prompts.map(item => `
+                            <div class="library-card">
+                                <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Permanent Access</small></div>
+                                <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
+                            </div>`).join('') || '<p style="color:#94a3b8">Your library is empty.</p>';
+                    }
+                }
+            },
+
+            checkout: {
+                add(productStr) {
+                    if (!auth.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
+                    PV.state.cart.push(JSON.parse(decodeURIComponent(productStr)));
+                    localStorage.setItem('pv_cart', JSON.stringify(PV.state.cart));
+                    PV.ui.updateCartCount();
+                    alert("Added to cart!");
+                },
+                remove(idx) {
+                    PV.state.cart.splice(idx, 1);
+                    localStorage.setItem('pv_cart', JSON.stringify(PV.state.cart));
+                    PV.ui.updateCartCount();
+                    if(PV.state.cart.length === 0) document.getElementById('checkout-overlay').style.display = 'none';
+                    else this.openModal();
+                },
+                openModal() {
+                    if (PV.state.cart.length === 0) return alert("Your cart is empty!");
+                    const modal = document.getElementById('checkout-overlay');
+                    const list = document.getElementById('cart-items-list');
+                    modal.style.display = 'flex';
+                    list.innerHTML = PV.state.cart.map((item, idx) => `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
+                            <span style="font-size:0.8rem;">${item.name}</span>
+                            <strong>$${item.price.toFixed(2)}</strong>
+                            <button onclick="PV.checkout.remove(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
+                        </div>`).join('');
+                    document.getElementById('cart-total').innerText = `$${PV.state.cart.reduce((s, i) => s + i.price, 0).toFixed(2)}`;
+                },
+                process() {
+                    const total = PV.state.cart.reduce((s, i) => s + i.price, 0);
+                    const names = PV.state.cart.map(i => i.name).join(', ');
+                    localStorage.setItem('pending_assets', JSON.stringify(PV.state.cart));
+                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(names)}&no_shipping=1&return=${window.location.origin}/success.html`;
+                },
+                direct(productStr) {
+                    if (!auth.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
+                    const p = JSON.parse(decodeURIComponent(productStr));
+                    localStorage.setItem('pending_assets', JSON.stringify([p]));
+                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&no_shipping=1&return=${window.location.origin}/success.html`;
+                }
+            },
+
+            ui: {
+                updateCartCount() {
+                    const el = document.getElementById('cart-count-pill');
+                    if(el) el.innerText = PV.state.cart.length;
+                },
+                initNotifications() {
+                    setInterval(() => {
+                        const cities = ["Manila", "New York", "London", "Cebu", "Sydney"];
+                        const city = cities[Math.floor(Math.random() * cities.length)];
+                        const el = document.getElementById('sales-notif');
+                        if(el) {
+                            document.getElementById('notif-text').innerText = `Someone from ${city} joined the vault!`;
+                            el.style.display = 'flex';
+                            setTimeout(() => { el.style.display = 'none'; }, 4000);
+                        }
+                    }, 25000);
+                }
+            },
+
+            observeAuth() {
+                onAuthStateChanged(auth, (user) => {
+                    PV.state.user = user;
+                    const loginBtn = document.getElementById('login-pill');
+                    const kitBtn = document.getElementById('claim-kit-btn');
+                    if (user) {
+                        if(loginBtn) { loginBtn.innerText = "Logout"; loginBtn.onclick = () => signOut(auth); }
+                        if(kitBtn) { kitBtn.innerText = "Access My Library"; kitBtn.style.background = "var(--accent)"; kitBtn.onclick = () => PV.router.go('library'); }
+                        document.getElementById('auth-overlay').style.display = 'none';
+                        this.library.load();
+                    } else {
+                        if(loginBtn) { loginBtn.innerText = "Sign In"; loginBtn.onclick = () => document.getElementById('auth-overlay').style.display = 'flex'; }
+                        if(kitBtn) { kitBtn.innerText = "Unlock The Vault"; kitBtn.onclick = () => document.getElementById('auth-overlay').style.display = 'flex'; }
+                    }
                 });
             }
-        }
-
-        window.loadUserLibrary = async () => {
-            const user = auth.currentUser;
-            const grid = document.getElementById('user-library-grid');
-            if (!grid || !user) return;
-            const userDocSnap = await getDoc(doc(db, "users", user.uid));
-            if (userDocSnap.exists()) {
-                const prompts = userDocSnap.data().purchasedPrompts || [];
-                prompts.sort((a, b) => b.timestamp - a.timestamp);
-                grid.innerHTML = prompts.length ? prompts.map(item => `
-                    <div class="library-card">
-                        <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Permanent Access</small></div>
-                        <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
-                    </div>`).join('') : '<p style="color:#94a3b8">Your library is empty.</p>';
-            }
         };
 
-        window.changePage = (id, el) => {
-            document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-            const target = document.getElementById(id);
-            if (target) { target.style.display = 'flex'; setTimeout(() => { target.classList.add('active'); }, 10); }
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            if(el) el.classList.add('active');
-            if(id === 'browse' && window.allProducts.length === 0) {
-                fetch('products.json').then(res => res.json()).then(data => {
-                    window.allProducts = data;
-                    window.renderProducts(window.allProducts);
-                });
-            }
-            if (id === 'library') window.loadUserLibrary();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            const loginBtn = document.getElementById('login-pill');
-            const kitBtn = document.getElementById('claim-kit-btn');
-            const authOverlay = document.getElementById('auth-overlay');
-            if (user) {
-                if(loginBtn) { loginBtn.innerText = "Logout"; loginBtn.onclick = () => signOut(auth); }
-                if(kitBtn) { kitBtn.innerText = "Access My Library"; kitBtn.style.background = "var(--accent)"; kitBtn.onclick = () => window.changePage('library'); }
-                if(authOverlay) authOverlay.style.display = 'none';
-                window.loadUserLibrary(); 
-            } else {
-                if(loginBtn) { loginBtn.innerText = "Sign In"; loginBtn.onclick = () => authOverlay.style.display = 'flex'; }
-                if(kitBtn) { kitBtn.innerText = "Unlock The Vault"; kitBtn.onclick = () => authOverlay.style.display = 'flex'; }
-            }
-        }); 
+        window.PV = PV;
+        document.addEventListener('DOMContentLoaded', () => PV.init());
     </script>
 </head>
 <body> 
@@ -161,12 +267,12 @@
 
 <header>
     <div class="header-wrap">
-        <div onclick="window.changePage('home')" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+        <div onclick="PV.router.go('home')" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
             <img src="logo.png" class="logo-box" alt="Logo">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-            <button class="signin-pill" onclick="window.openCheckout()" style="background:var(--glass); position:relative; padding: 10px 12px; border:1px solid var(--border);">
+            <button class="signin-pill" onclick="PV.checkout.openModal()" style="background:var(--glass); position:relative; padding: 10px 12px; border:1px solid var(--border);">
                 🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
             </button>
             <button class="signin-pill" id="login-pill">Sign In</button>
@@ -180,7 +286,6 @@
         <h1>Command the <span class="highlight-text">AI Economy</span></h1>
         <span class="sub-accent">Free Sign Up • Join 20,000+ Creators</span>
         <p class="hero-subheadline">The marketplace for high-resolution AI prompts. Join the elite architects building the future of automated business.</p> 
-        
         <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
             <button id="claim-kit-btn" class="btn-main" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
             <span style="color: var(--secondary); font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;">🎁 2026 AI Starter Kit (Free)</span>
@@ -188,25 +293,20 @@
 
         <section class="content-rich-section">
             <h3>Master the AI Landscape with <span class="highlight-text">PromptVault USA</span></h3>
-            <p>At PromptVault USA, we provide the industrial-strength logic required to succeed in 2026. Whether you are scaling a faceless TikTok brand or generating high-conversion real estate leads, our assets bridge the "Efficiency Gap." Explore our <a href="https://promptvaultusa.shop/blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a> for the latest strategies.</p>
-            
+            <p>At PromptVault USA, we provide industrial-strength logic. Explore our <a href="https://promptvaultusa.shop/blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a>.</p>
             <div style="margin-top: 30px; text-align: left; border-top: 1px solid var(--border); padding-top: 30px;">
-                <h4 style="color: white; font-weight: 800; text-transform: uppercase;">About Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray);">PromptVault USA is a sovereign digital marketplace dedicated to the architecture of industrial-grade AI logic. We provide professional-tier prompt chains and cinematic frameworks for digital architects and entrepreneurs aiming to bridge the gap between AI capability and high-yield execution.</p>
-                
-                <h4 style="color: white; font-weight: 800; text-transform: uppercase; margin-top: 20px;">Contact Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray);">For technical support, business inquiries, or manual file delivery requests, please reach out to our team at:<br>
-                <strong>Email:</strong> emilyperong23@gmail.com</p>
+                <h4 style="color: white; font-weight: 800;">About Us</h4>
+                <p style="font-size: 0.9rem; color: var(--text-gray);">PromptVault USA is a sovereign digital marketplace for AI logic.</p>
+                <h4 style="color: white; font-weight: 800; margin-top: 20px;">Contact Us</h4>
+                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> emilyperong23@gmail.com</p>
             </div>
         </section>
 
         <footer class="legal-text">
             <div class="legal-links">
                 <a href="https://promptvaultusa.shop/blog.html">Blog</a>
-                <a href="https://promptvaultusa.shop/legal.html">Legal & License</a>
+                <a href="https://promptvaultusa.shop/legal.html">Legal</a>
                 <a href="https://promptvaultusa.shop/legal.html#privacy">Privacy</a>
-                <a href="https://promptvaultusa.shop/legal.html#terms">Terms</a>
-                <a href="https://promptvaultusa.shop/legal.html#refunds">Refunds</a>
             </div>
             © 2026 PromptVault USA | All Rights Reserved.
         </footer>
@@ -214,7 +314,7 @@
 
     <div id="browse" class="page">
         <div style="padding: 30px 0; width: 100%;">
-            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:20px; outline:none;">
+            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="PV.vault.filter(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:20px; outline:none;">
             <div class="vault-grid" id="product-list"></div>
         </div>
     </div>
@@ -228,11 +328,10 @@
 </main> 
 
 <nav class="bottom-nav">
-    <a class="nav-item active" onclick="window.changePage('home', this)"><span>🏠</span><small>Home</small></a>
-    <a class="nav-item" onclick="window.changePage('browse', this)"><span>⊞</span><small>Vaults</small></a>
-    <a class="nav-item" onclick="window.changePage('library', this)"><span>👤</span><small>Library</small></a>
+    <a class="nav-item active" onclick="PV.router.go('home', this)"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item" onclick="PV.router.go('browse', this)"><span>⊞</span><small>Vaults</small></a>
+    <a class="nav-item" onclick="PV.router.go('library', this)"><span>👤</span><small>Library</small></a>
     <a class="nav-item" onclick="window.location.href='https://promptvaultusa.shop/blog.html'"><span>📖</span><small>Blog</small></a>
-    <a class="nav-item" onclick="window.location.href='https://promptvaultusa.shop/legal.html'"><span>⚖️</span><small>Legal</small></a>
 </nav> 
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 20000; align-items: center; justify-content: center;">
@@ -242,7 +341,7 @@
         <div style="display:flex; justify-content:space-between; font-weight:800; padding-top:15px; margin-top:15px; border-top:1px solid var(--border);">
             <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
-        <button onclick="window.processPaypalCheckout()" class="btn-main" style="background:var(--success); width: 100%; margin-top:20px;">Checkout with PayPal</button>
+        <button onclick="PV.checkout.process()" class="btn-main" style="background:var(--success); width: 100%; margin-top:20px;">Checkout with PayPal</button>
         <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; cursor:pointer;">Continue Browsing</button>
     </div>
 </div>
@@ -253,132 +352,12 @@
         <input type="email" id="auth-email" placeholder="Email" class="auth-input">
         <input type="password" id="auth-pass" placeholder="Password" class="auth-input">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 15px 0;">
-            <button onclick="window.handleEmailAuth('login')" class="btn-main" style="background:var(--accent);">Login</button>
-            <button onclick="window.handleEmailAuth('signup')" class="btn-main" style="background:var(--glass);">Join</button>
+            <button onclick="PV.auth.handleEmail('login')" class="btn-main" style="background:var(--accent);">Login</button>
+            <button onclick="PV.auth.handleEmail('signup')" class="btn-main" style="background:var(--glass);">Join</button>
         </div>
-        <button onclick="window.handleGoogle()" class="btn-main" style="background: white; color: black; width: 100%;">Continue with Google</button>
+        <button onclick="PV.auth.handleGoogle()" class="btn-main" style="background: white; color: black; width: 100%;">Continue with Google</button>
         <button onclick="document.getElementById('auth-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; cursor:pointer;">Close</button>
     </div>
 </div>
-
-<script>
-    const PAYPAL_EMAIL = "emilyperong23@gmail.com";
-    let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    window.updateCartCount = () => { 
-        const el = document.getElementById('cart-count-pill');
-        if(el) el.innerText = cart.length; 
-    };
-
-    window.openCheckout = () => {
-        const modal = document.getElementById('checkout-overlay');
-        const list = document.getElementById('cart-items-list');
-        const totalEl = document.getElementById('cart-total');
-        if (cart.length === 0) return alert("Your cart is empty!");
-        modal.style.display = 'flex';
-        list.innerHTML = cart.map((item, idx) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
-                <span style="font-size:0.8rem;">${item.name}</span>
-                <strong>$${item.price.toFixed(2)}</strong>
-                <button onclick="window.removeFromCart(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
-            </div>`).join('');
-        totalEl.innerText = `$${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}`;
-    };
-
-    window.removeFromCart = (idx) => {
-        cart.splice(idx, 1);
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        window.updateCartCount();
-        if(cart.length === 0) document.getElementById('checkout-overlay').style.display = 'none';
-        else window.openCheckout();
-    };
-
-    window.processPaypalCheckout = () => {
-        if (cart.length === 0) return;
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        const itemNames = cart.map(i => i.name).join(', ');
-        localStorage.setItem('pending_assets', JSON.stringify(cart));
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(itemNames)}&no_shipping=1&return=${window.location.origin}/success.html`;
-    };
-
-    window.renderProducts = (productsToDisplay) => {
-        const list = document.getElementById('product-list');
-        if (!list) return;
-
-        const getVaultColor = (name) => {
-            const colors = [
-                'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', 
-                'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', 
-                'linear-gradient(135deg, #064e3b 0%, #065f46 100%)', 
-                'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)', 
-                'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'  
-            ];
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            return colors[Math.abs(hash) % colors.length];
-        };
-
-        list.innerHTML = productsToDisplay.map(p => {
-            const pData = encodeURIComponent(JSON.stringify(p));
-            const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
-            const seoLink = `vault/${slug}.html`;
-
-            return `<div class="glass-card" style="text-align: left; padding: 20px;">
-                <a href="${seoLink}" style="text-decoration:none;">
-                    <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: ${getVaultColor(p.name)}; cursor:pointer;">
-                        <span>${p.name}</span>
-                    </div>
-                </a>
-                <a href="${seoLink}" style="text-decoration:none;">
-                    <div style="font-weight:800; color:white; margin-bottom:5px; font-size:1.1rem; min-height: 2.4em; display: flex; align-items: center;">${p.name}</div>
-                </a>
-                <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.4em;">${p.desc || "Professional AI asset vault."}</p>
-                <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem;">Buy Now</button>
-                    <button onclick="window.addToCart('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem;">+ Cart</button>
-                </div>
-                
-                <a href="${seoLink}" style="display:block; text-align:center; margin-top:15px; font-size:0.75rem; color:var(--accent); text-decoration:none; font-weight:600;">Full Description →</a>
-            </div>`;
-        }).join('');
-    };
-
-    window.processDirectPurchase = (productStr) => {
-        if (!window.auth?.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
-        const p = JSON.parse(decodeURIComponent(productStr));
-        localStorage.setItem('pending_assets', JSON.stringify([p]));
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&no_shipping=1&return=${window.location.origin}/success.html`;
-    };
-
-    window.addToCart = (productStr) => {
-        if (!window.auth?.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
-        cart.push(JSON.parse(decodeURIComponent(productStr)));
-        localStorage.setItem('pv_cart', JSON.stringify(cart));
-        window.updateCartCount();
-        alert("Added to cart!");
-    };
-
-    window.filterProducts = (val) => {
-        const filtered = window.allProducts.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
-        window.renderProducts(filtered);
-    };
-
-    setInterval(() => {
-        const cities = ["Manila", "New York", "London", "Cebu", "Sydney"];
-        const city = cities[Math.floor(Math.random() * cities.length)];
-        const el = document.getElementById('sales-notif');
-        if(el) {
-            document.getElementById('notif-text').innerText = `Someone from ${city} joined the vault!`;
-            el.style.display = 'flex';
-            setTimeout(() => { el.style.display = 'none'; }, 4000);
-        }
-    }, 25000);
-
-    document.addEventListener('DOMContentLoaded', () => { 
-        window.updateCartCount(); 
-        if(window.location.hash === '#browse') window.changePage('browse');
-    });
-</script>
 </body>
 </html>
