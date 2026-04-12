@@ -30,7 +30,7 @@
         .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1.1rem; line-height: 1.6; text-align: center; }
         .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
-        .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; }
+        .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; cursor: pointer; }
         .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; }
         .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
@@ -70,6 +70,7 @@
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
                 if(window.location.hash === '#browse') this.router.go('browse');
+                if(window.location.hash === '#legal') this.router.go('legal');
                 console.log("💎 Engine: Online");
             },
 
@@ -110,9 +111,10 @@
                     const target = document.getElementById(id);
                     if (target) { target.style.display = 'flex'; setTimeout(() => target.classList.add('active'), 10); }
                     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                    if(el) el.classList.add('active');
+                    if(el && el.classList.contains('nav-item')) el.classList.add('active');
                     if(id === 'browse' && PV.state.products.length === 0) PV.vault.load();
                     if(id === 'library') PV.library.load();
+                    window.location.hash = id;
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             },
@@ -313,8 +315,8 @@
         <footer class="legal-text">
             <div class="legal-links">
                 <a href="https://promptvaultusa.shop/blog.html">Blog</a>
-                <a href="https://promptvaultusa.shop/legal.html">Legal</a>
-                <a href="https://promptvaultusa.shop/legal.html#privacy">Privacy</a>
+                <a onclick="PV.router.go('legal')">Legal</a>
+                <a onclick="PV.router.go('legal')">Privacy</a>
             </div>
             © 2026 PromptVault USA | All Rights Reserved.
         </footer>
@@ -331,6 +333,24 @@
         <div style="padding: 30px 0; width: 100%;">
             <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
             <div id="user-library-grid" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <div id="legal" class="page">
+        <div class="content-rich-section" style="text-align: left; margin-top: 40px;">
+            <h2 style="text-align: center;">Legal & <span class="highlight-text">Privacy</span></h2>
+            <div style="margin-top: 20px; color: var(--text-gray); font-size: 0.9rem; line-height: 1.6;">
+                <h3>1. Terms of Service</h3>
+                <p>By accessing PromptVault USA, you agree to our industrial-strength usage terms. Digital assets are for licensed use only and may not be redistributed without authorization.</p>
+                
+                <h3>2. Digital Goods Policy</h3>
+                <p>Due to the nature of digital assets and immediate access, all sales are final. We ensure 24/7 access to your library via Firebase secure authentication.</p>
+                
+                <h3>3. Privacy Policy</h3>
+                <p>We value your privacy. Your data is used exclusively for authentication and product delivery. We do not sell user intelligence to third parties.</p>
+                
+                <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 20px; width: 100%;">Return Home</button>
+            </div>
         </div>
     </div>
 </main> 
