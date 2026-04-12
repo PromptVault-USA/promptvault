@@ -129,19 +129,25 @@
                     list.innerHTML = data.map(p => {
                         const pData = encodeURIComponent(JSON.stringify(p));
                         const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
+                        
+                        // FIX: Added flex column and footer to preserve description visibility and layout
                         return `
-                            <div class="glass-card" style="text-align: left; padding: 20px;">
-                                <a href="vault/${slug}.html" style="text-decoration:none;">
-                                    <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: ${this.getColor(p.name)}; cursor:pointer;">
-                                        <span>${p.name}</span>
+                            <div class="glass-card" style="text-align: left; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <a href="vault/${slug}.html" style="text-decoration:none;">
+                                        <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: ${this.getColor(p.name)}; cursor:pointer;">
+                                            <span>${p.name}</span>
+                                        </div>
+                                    </a>
+                                    <div style="font-weight:800; color:white; margin-bottom:8px; font-size:1.1rem; line-height:1.2;">${p.name}</div>
+                                    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:15px; line-height:1.5;">${p.desc || "Professional AI asset vault."}</p>
+                                </div>
+                                <div class="product-footer">
+                                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                        <button onclick="PV.checkout.direct('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem; font-weight:700;">Buy Now</button>
+                                        <button onclick="PV.checkout.add('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem; font-weight:600;">+ Cart</button>
                                     </div>
-                                </a>
-                                <div style="font-weight:800; color:white; margin-bottom:5px; font-size:1.1rem; min-height: 2.4em; display: flex; align-items: center;">${p.name}</div>
-                                <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:15px; height: 2.4em; overflow: hidden;">${p.desc || "Professional AI asset vault."}</p>
-                                <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                    <button onclick="PV.checkout.direct('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem;">Buy Now</button>
-                                    <button onclick="PV.checkout.add('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem;">+ Cart</button>
                                 </div>
                             </div>`;
                     }).join('');
