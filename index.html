@@ -232,17 +232,50 @@
                         </div>`).join('');
                     document.getElementById('cart-total').innerText = `$${PV.state.cart.reduce((s, i) => s + i.price, 0).toFixed(2)}`;
                 },
-                process() {
+                async process() {
+                    if (!auth.currentUser) return;
                     const total = PV.state.cart.reduce((s, i) => s + i.price, 0);
-                    const names = PV.state.cart.map(i => i.name).join(', ');
-                    localStorage.setItem('pending_assets', JSON.stringify(PV.state.cart));
-                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(names)}&no_shipping=1&return=${window.location.origin}/success.html`;
+                    const txID = "PV-" + Date.now();
+                    
+                    try {
+                        // LIVE ORDER CHECK: Pre-register order in Firestore
+                        await setDoc(doc(db, "orders", txID), {
+                            uid: auth.currentUser.uid,
+                            email: auth.currentUser.email,
+                            items: PV.state.cart,
+                            amount: total,
+                            status: 'pending',
+                            createdAt: new Date().toISOString()
+                        });
+
+                        const names = PV.state.cart.map(i => i.name).join(', ');
+                        localStorage.setItem('pending_assets', JSON.stringify(PV.state.cart));
+                        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(names)}&custom=${txID}&no_shipping=1&return=${window.location.origin}/success.html?tx=${txID}`;
+                    } catch (e) {
+                        alert("Checkout Error: Could not initialize secure handshake.");
+                    }
                 },
-                direct(productStr) {
+                async direct(productStr) {
                     if (!auth.currentUser) { document.getElementById('auth-overlay').style.display = 'flex'; return; }
                     const p = JSON.parse(decodeURIComponent(productStr));
-                    localStorage.setItem('pending_assets', JSON.stringify([p]));
-                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&no_shipping=1&return=${window.location.origin}/success.html`;
+                    const txID = "PV-DIR-" + Date.now();
+                    
+                    try {
+                        // LIVE ORDER CHECK: Pre-register direct order
+                        await setDoc(doc(db, "orders", txID), {
+                            uid: auth.currentUser.uid,
+                            email: auth.currentUser.email,
+                            items: [p],
+                            amount: p.price,
+                            status: 'pending',
+                            createdAt: new Date().toISOString()
+                        });
+
+                        localStorage.setItem('pending_assets', JSON.stringify([p]));
+                        window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&custom=${txID}&no_shipping=1&return=${window.location.origin}/success.html?tx=${txID}`;
+                    } catch (e) {
+                        alert("Checkout Error: Handshake failed.");
+                    }
                 }
             },
 
