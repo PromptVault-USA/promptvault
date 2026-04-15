@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>PromptVault USA</title>
+    <link>https://promptvaultusa.shop</link>
+    <description>Premium AI Prompt Packs for Professionals</description>
+    
+    <item>
+      <g:id>NICHE_001</g:id>
+      <g:title>Real Estate Hyper-Realistic Image Prompt Pack</g:title>
+      <g:description>A collection of high-end AI prompts for real estate marketing, optimized for Midjourney and DALL-E.</g:description>
+      <g:link>https://promptvaultusa.shop/product/real-estate-pack</g:link>
+      <g:image_link>https://promptvaultusa.shop/images/niche-001-cover.jpg</g:image_link>
+      <g:condition>new</g:condition>
+      <g:availability>in_stock</g:availability>
+      <g:price>29.99 USD</g:price>
+      <g:brand>PromptVault USA</g:brand>
+      <g:google_product_category>Software > Digital Goods &amp; Currency</g:google_product_category>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping>
+        <g:country>US</g:country>
+        <g:service>Digital Delivery</g:service>
+        <g:price>0.00 USD</g:price>
+      </g:shipping>
+    </item>
+
+  </channel>
+</rss>
