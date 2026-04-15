@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     
     // 1. GLOBAL UI REPAIR (Glass & Path Fix for Subdirectories)
-    if (path.includes('/vault/')) {
+    // Updated to include /blog/ folder pathing
+    if (path.includes('/vault/') || path.includes('/blog/')) {
         const links = document.getElementsByTagName('link');
         for (let link of links) {
             if (link.getAttribute('href') === 'css/style.css') {
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 1.5 AUTO-INJECT BACK BUTTON (Updated with requested anchor link)
+    // 1.5 AUTO-INJECT BACK BUTTON
     let backButtonHTML = '';
     if (path.includes('/vault/')) {
         backButtonHTML = `
@@ -29,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </div>`;
     } 
-    else if (path !== '/' && !path.includes('index.html') && !path.includes('blog.html') && !path.includes('legal.html') && path.length > 1) {
+    else if (path !== '/' && !path.includes('index.html') && !path.includes('blog.html') && !path.includes('trust-center.html') && path.length > 1) {
         backButtonHTML = `
             <div style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
                 <a href="https://promptvaultusa.shop/blog.html?action=blog" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 10px 18px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
@@ -42,10 +43,10 @@ document.addEventListener("DOMContentLoaded", function() {
         document.body.insertAdjacentHTML('afterbegin', backButtonHTML);
     }
 
-    // 2. THE MOBILE CLICK FIX (Safety Buffer)
+    // 2. THE MOBILE CLICK FIX
     document.body.style.paddingBottom = "120px";
 
-    // 3. INJECT FAQ & LEGAL (Updated with admin@promptvaultusa.shop)
+    // 3. INJECT FAQ & LEGAL (Updated for Trust-Center & admin email)
     if (glassCard) {
         const glassContentHTML = `
             <div style="margin-top: 50px; border-top: 1px solid var(--border); padding-top: 40px;">
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <strong>Support:</strong> admin@promptvaultusa.shop <br>
                         <strong>Refunds:</strong> All sales are final due to the digital nature of the products.
                     </p>
-                    <a href="https://promptvaultusa.shop/legal.html" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Read Full Legal & Terms →</a>
+                    <a href="https://promptvaultusa.shop/trust-center.html" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Read Full Legal & Terms →</a>
                 </div>
             </div>`;
         glassCard.insertAdjacentHTML('beforeend', glassContentHTML);
@@ -81,14 +82,14 @@ document.addEventListener("DOMContentLoaded", function() {
     </nav>`;
     document.body.insertAdjacentHTML('beforeend', navHTML);
 
-    // 5. MASTER FOOTER
+    // 5. MASTER FOOTER (Updated with Cebu PH location)
     const masterFooterHTML = `
     <footer style="margin-top: 80px; padding-bottom: 100px; text-align: center; opacity: 0.6;">
-        <p style="color: #475569; font-size: 0.75rem;">© 2026 PromptVault USA | Engineered for the AI Economy.</p>
+        <p style="color: #475569; font-size: 0.75rem;">© 2026 PromptVault USA | Cebu City, PH | Engineered for the AI Economy.</p>
     </footer>`;
     document.body.insertAdjacentHTML('beforeend', masterFooterHTML);
 
-    // 6. AUTO-BROWSE & FORCED JUMP LOGIC (The "Nuclear" Fix)
+    // 6. AUTO-BROWSE & FORCED JUMP LOGIC
     if (urlParams.get('action') === 'browse') {
         const forceShowVaults = () => {
             const vaultBtn = document.querySelector('a[href*="action=browse"]');
@@ -96,17 +97,12 @@ document.addEventListener("DOMContentLoaded", function() {
             const allPages = document.querySelectorAll('.page'); 
 
             if (vaultBtn) {
-                // 1. Force the SPA state change
                 vaultBtn.click();
-                
-                // 2. Manually override display hidden if SPA logic is lagging
                 if (allPages.length > 0) {
                     allPages.forEach(p => p.style.display = 'none');
                     const vPage = document.querySelector('#vault-page') || Array.from(allPages).find(p => p.innerHTML.includes('vault-grid'));
                     if (vPage) vPage.style.display = 'block';
                 }
-
-                // 3. Scroll to results
                 if (vaultGrid) {
                     vaultGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     return true;
