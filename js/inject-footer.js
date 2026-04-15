@@ -3,19 +3,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const path = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
     
-    // 1. GLOBAL UI REPAIR (Glass & Path Fix for Subdirectories)
-    // Updated to include /blog/ folder pathing
+    // 1. GLOBAL UI REPAIR (Absolute Path Fix for Assets)
     if (path.includes('/vault/') || path.includes('/blog/')) {
         const links = document.getElementsByTagName('link');
         for (let link of links) {
             if (link.getAttribute('href') === 'css/style.css') {
-                link.setAttribute('href', '../css/style.css');
+                link.setAttribute('href', 'https://promptvaultusa.shop/css/style.css');
             }
         }
         const logos = document.querySelectorAll('.logo-box');
         logos.forEach(img => {
             if (img.getAttribute('src') === 'logo.png') {
-                img.setAttribute('src', '../logo.png');
+                img.setAttribute('src', 'https://promptvaultusa.shop/logo.png');
             }
         });
     }
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 2. THE MOBILE CLICK FIX
     document.body.style.paddingBottom = "120px";
 
-    // 3. INJECT FAQ & LEGAL (Updated for Trust-Center & admin email)
+    // 3. INJECT FAQ & LEGAL (Fixed 404s with Absolute Links)
     if (glassCard) {
         const glassContentHTML = `
             <div style="margin-top: 50px; border-top: 1px solid var(--border); padding-top: 40px;">
@@ -55,24 +54,23 @@ document.addEventListener("DOMContentLoaded", function() {
                     <summary style="color: white; font-weight: 800; outline: none;">What exactly do I receive after payment?</summary>
                     <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px; line-height: 1.6;">You will get instant access to a permanent digital vault (PDF & Google Doc) containing the engineered AI prompts, usage instructions, and high-conversion frameworks specific to this niche.</p>
                 </details>
-                <details style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; padding: 15px; cursor: pointer;">
-                    <summary style="color: white; font-weight: 800; outline: none;">Do these prompts work with free AI versions?</summary>
-                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px; line-height: 1.6;">Yes. While they are optimized for 2026 models like GPT-4o and Claude 3.5, they are structured to provide high-quality results even on free versions like GPT-4 mini.</p>
-                </details>
                 <div style="margin-top: 50px; background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 20px; border: 1px dashed #334155;">
-                    <h4 style="color: white; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Legal Terms & License</h4>
+                    <h4 style="color: white; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Legal & Trust Center</h4>
                     <p style="color: #64748b; font-size: 0.75rem; line-height: 1.6; margin-bottom: 15px;">
-                        <strong>License:</strong> Single-user license. Redistribution or resale of raw prompts is strictly prohibited. <br>
                         <strong>Support:</strong> admin@promptvaultusa.shop <br>
-                        <strong>Refunds:</strong> All sales are final due to the digital nature of the products.
+                        <strong>Location:</strong> Cebu City, PH
                     </p>
-                    <a href="https://promptvaultusa.shop/trust-center.html" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Read Full Legal & Terms →</a>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <a href="https://promptvaultusa.shop/trust-center.html#privacy" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Privacy Policy</a>
+                        <a href="https://promptvaultusa.shop/trust-center.html#terms" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Terms</a>
+                        <a href="https://promptvaultusa.shop/trust-center.html#refunds" style="color: var(--secondary); font-size: 0.75rem; text-decoration: none; font-weight: 800; border-bottom: 1px solid var(--secondary);">Refunds</a>
+                    </div>
                 </div>
             </div>`;
         glassCard.insertAdjacentHTML('beforeend', glassContentHTML);
     }
 
-    // 4. INJECT THE MASTER BOTTOM NAV
+    // 4. INJECT THE MASTER BOTTOM NAV (Absolute Links)
     const navHTML = `
     <nav class="bottom-nav" style="position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-around; align-items: center; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 10px; border-radius: 100px; width: 92%; max-width: 440px; z-index: 20000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
         <a href="https://promptvaultusa.shop/index.html" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">🏠<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Home</small></a>
@@ -82,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </nav>`;
     document.body.insertAdjacentHTML('beforeend', navHTML);
 
-    // 5. MASTER FOOTER (Updated with Cebu PH location)
+    // 5. MASTER FOOTER
     const masterFooterHTML = `
     <footer style="margin-top: 80px; padding-bottom: 100px; text-align: center; opacity: 0.6;">
         <p style="color: #475569; font-size: 0.75rem;">© 2026 PromptVault USA | Cebu City, PH | Engineered for the AI Economy.</p>
