@@ -48,7 +48,6 @@
     <meta property="og:url" content="https://promptvaultusa.shop/">
     <meta property="og:title" content="PromptVault USA | The Architect's Secret to AI Monetization">
     <meta property="og:description" content="Access high-yield AI prompt vaults and professional monetization blueprints. Build your AI empire today.">
-    <meta property="og:description" content="Access high-yield AI prompt vaults and professional monetization blueprints. Build your AI empire today.">
     <meta property="og:image" content="https://promptvaultusa.shop/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -110,7 +109,6 @@
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
                 if(window.location.hash === '#browse') this.router.go('browse');
-                // FIXED: Updated check to look for #trust
                 if(window.location.hash === '#trust') this.router.go('trust');
                 console.log("💎 Engine: Online");
             },
@@ -256,7 +254,6 @@
                     const txID = "PV-" + Date.now();
                     
                     try {
-                        // LIVE ORDER CHECK: Pre-register order in Firestore
                         await setDoc(doc(db, "orders", txID), {
                             uid: auth.currentUser.uid,
                             email: auth.currentUser.email,
@@ -279,7 +276,6 @@
                     const txID = "PV-DIR-" + Date.now();
                     
                     try {
-                        // LIVE ORDER CHECK: Pre-register direct order
                         await setDoc(doc(db, "orders", txID), {
                             uid: auth.currentUser.uid,
                             email: auth.currentUser.email,
@@ -390,7 +386,7 @@
         <footer class="legal-text">
             <div class="legal-links">
                 <a href="https://promptvaultusa.shop/blog.html">Blog</a>
-                <a onclick="PV.router.go('trust')">Legal</a>
+                <a href="https://youtube.com/@promptvaultusa?si=rPe_l3GpyVr2aiyS" target="_blank">Watch & Learn</a>
                 <a href="https://promptvaultusa.shop/trust-center.html#privacy">Privacy Policy</a>
                 <a href="https://promptvaultusa.shop/trust-center.html#terms">Terms of Service</a>
                 <a href="https://promptvaultusa.shop/trust-center.html#refunds">Refund Policy</a>
@@ -414,17 +410,7 @@
     </div>
 
     <div id="trust" class="page">
-        <div class="content-rich-section" style="text-align: left; margin-top: 40px; max-width: 800px;">
-            <h2 style="text-align: center;">Trust & <span class="highlight-text">Compliance</span></h2>
-            <div style="margin-top: 30px; color: var(--text-gray); font-size: 0.95rem; line-height: 1.8;">
-                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Transparency Center</h4>
-                <p>PromptVault USA operates with industrial-grade transparency. For our full policies on privacy, digital asset licensing, and service terms, please visit our consolidated hub.</p>
-                
-                <a href="https://promptvaultusa.shop/trust-center.html" class="btn-main" style="margin-top: 20px; display: block; text-align: center; background: var(--glass); border: 1px solid var(--border); text-decoration: none; color: white;">Open Trust Center</a>
-                
-                <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 15px; width: 100%; background: none; border: 1px solid transparent; color: var(--text-gray);">Return Home</button>
-            </div>
-        </div>
+        <div id="trust-center-content"></div>
     </div>
 
     <div id="legal" class="page">
