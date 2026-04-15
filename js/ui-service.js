@@ -1,6 +1,6 @@
 /**
- * PROJECT MEMORY: UI & UX Service (v2.1)
- * Upgrades: Absolute Image Path Resolution for Google Merchant Center.
+ * PROJECT MEMORY: UI & UX Service (v2.2)
+ * Upgrades: Absolute Image Path Resolution & Trust Center Integration.
  * Responsibility: Notifications, Cart UI, Navigation, and SEO-compliant Rendering.
  */
 
@@ -33,12 +33,19 @@ export const UIService = {
     },
 
     // REUSED: Standardized page switching logic
+    // MODIFIED: Added Trust Center trigger
     changePage: (id, el) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const target = document.getElementById(id);
         if (target) target.classList.add('active');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         if (el) el.classList.add('active');
+        
+        // --- NEW: Trust Center Logic ---
+        if (id === 'trust' && window.TrustService) {
+            window.TrustService.renderTrustCenter();
+        }
+
         if (id === 'library' && window.loadUserLibrary) window.loadUserLibrary();
         if (id === 'browse' && (!window.allProducts || window.allProducts.length === 0)) {
             fetch('products.json')
