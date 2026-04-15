@@ -16,7 +16,7 @@ async function syncToGMC() {
             ['https://www.googleapis.com/auth/content']
         );
 
-        const merchantId = 'YOUR_MERCHANT_ID'; // Replace this with your GMC ID
+        const merchantId = '5766495931'; // Replace this with your GMC ID
         const productsData = JSON.parse(fs.readFileSync('./products.json', 'utf8'));
 
         console.log(`🚀 Starting sync for ${productsData.length} products...`);
