@@ -109,7 +109,7 @@
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
                 if(window.location.hash === '#browse') this.router.go('browse');
-                if(window.location.hash === '#legal') this.router.go('legal');
+                if(window.location.hash === '#legal') this.router.go('trust');
                 console.log("💎 Engine: Online");
             },
 
@@ -389,7 +389,7 @@
                 <a href="trust-center.html#privacy">Privacy</a>
                 <a href="trust-center.html#refunds">Refunds</a>
             </div>
-            © 2026 PromptVault USA | All Rights Reserved.
+            © 2026 PromptVault USA | Cebu City, PH | All Rights Reserved.
         </footer>
     </div> 
 
@@ -413,18 +413,14 @@
 
     <div id="legal" class="page">
         <div class="content-rich-section" style="text-align: left; margin-top: 40px; max-width: 800px;">
-            <h2 style="text-align: center;">Legal & <span class="highlight-text">Privacy</span></h2>
+            <h2 style="text-align: center;">Trust & <span class="highlight-text">Compliance</span></h2>
             <div style="margin-top: 30px; color: var(--text-gray); font-size: 0.95rem; line-height: 1.8;">
-                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px;">1. Terms of Service</h4>
-                <p>By accessing PromptVault USA, you agree to our industrial-strength usage terms. All AI prompts and digital assets are for licensed use and may not be redistributed without authorization.</p>
+                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Transparency Center</h4>
+                <p>PromptVault USA operates with industrial-grade transparency. For our full policies on privacy, digital asset licensing, and service terms, please visit our consolidated hub.</p>
                 
-                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 20px;">2. Digital Goods Policy</h4>
-                <p>Due to the nature of digital assets and immediate "Intelligence Feed" access, all sales are final. We ensure 24/7 access to your library via Firebase secure authentication.</p>
+                <a href="trust-center.html" class="btn-main" style="margin-top: 20px; display: block; text-align: center; background: var(--glass); border: 1px solid var(--border); text-decoration: none; color: white;">Open Trust Center</a>
                 
-                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 20px;">3. Privacy Policy</h4>
-                <p>We value your sovereign data. Your information is used exclusively for authentication and product delivery. For support or data inquiries, contact <strong><a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></strong>.</p>
-                
-                <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 30px; width: 100%; background: var(--glass); border: 1px solid var(--border);">Return Home</button>
+                <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 15px; width: 100%; background: none; border: 1px solid transparent; color: var(--text-gray);">Return Home</button>
             </div>
         </div>
     </div>
