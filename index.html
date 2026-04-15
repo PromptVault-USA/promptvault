@@ -13,7 +13,7 @@
     n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
-    https://connect.facebook.net/en_US/fbevents.js);
+    'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '896155660118701');
     fbq('track', 'PageView');
     </script>
@@ -34,7 +34,8 @@
         "https://www.instagram.com/promptvaultusa",
         "https://www.facebook.com/share/1KxFHkNryk/",
         "https://www.threads.net/@promptvaultusa",
-        "https://www.tiktok.com/@promptvaultusa"
+        "https://www.tiktok.com/@promptvaultusa",
+        "https://youtube.com/@promptvaultusa"
       ],
       "contactPoint": {
         "@type": "ContactPoint",
@@ -253,7 +254,6 @@
                     const txID = "PV-" + Date.now();
                     
                     try {
-                        // LIVE ORDER CHECK: Pre-register order in Firestore
                         await setDoc(doc(db, "orders", txID), {
                             uid: auth.currentUser.uid,
                             email: auth.currentUser.email,
@@ -276,7 +276,6 @@
                     const txID = "PV-DIR-" + Date.now();
                     
                     try {
-                        // LIVE ORDER CHECK: Pre-register direct order
                         await setDoc(doc(db, "orders", txID), {
                             uid: auth.currentUser.uid,
                             email: auth.currentUser.email,
@@ -375,19 +374,20 @@
                 <h4 style="color: white; font-weight: 800;">About Us</h4>
                 <p style="font-size: 0.9rem; color: var(--text-gray); line-height: 1.6;">
                     PromptVault USA is a sovereign digital marketplace and asset hub designed for the creator economy, specifically focusing on high-resolution AI prompts and industrial-strength logic. 
-                    The platform is built on a high-performance technical stack including Firebase for secure authentication, GitHub for hosting, and PayPal for transaction processing. 
-                    It is designed to serve as a central "Intelligence Feed" for entrepreneurs looking to build automated businesses.
                 </p>
                 <h4 style="color: white; font-weight: 800; margin-top: 20px;">Contact Us</h4>
                 <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> <a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></p>
+                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Location:</strong> Cebu City, Philippines</p>
             </div>
         </section>
 
         <footer class="legal-text">
             <div class="legal-links">
                 <a href="https://promptvaultusa.shop/blog.html">Blog</a>
-                <a onclick="PV.router.go('trust')">Legal</a>
-                <a onclick="PV.router.go('trust')">Privacy</a>
+                <a href="https://youtube.com/@promptvaultusa?si=rPe_l3GpyVr2aiyS" target="_blank">Watch & Learn</a>
+                <a href="trust-center.html#terms">Terms</a>
+                <a href="trust-center.html#privacy">Privacy</a>
+                <a href="trust-center.html#refunds">Refunds</a>
             </div>
             © 2026 PromptVault USA | All Rights Reserved.
         </footer>
