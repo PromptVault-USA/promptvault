@@ -1,0 +1,8 @@
+{
+  "name": "promptvault-sync",
+  "version": "1.0.0",
+  "main": "scripts/upload.js",
+  "dependencies": {
+    "googleapis": "^126.0.0"
+  }
+}
