@@ -1,15 +1,17 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v2.1 (Cloud Database & Library)
+ * PROMPTVAULT USA - CORE ENGINE v2.2 (Cloud Database & Library)
  * Handles: Auth, Search, Cart, PayPal, and Firestore Persistence.
  */
 
 // --- NEW MODULE IMPORTS (Phase 7) ---
 import { getFirestore, doc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// --- NEW MODULE IMPORTS (Phase 8: Legal) ---
+import { TrustService } from './trust-service.js';
 
 // Initialize Firestore
-// Note: 'app' is assumed to be initialized in your index.html script tag
 const db = getFirestore();
 window.db = db; 
+window.TrustService = TrustService; // Global bridge
 
 const PAYPAL_EMAIL = "emilyperong23@gmail.com";
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
@@ -43,8 +45,13 @@ window.renderProducts = (productsToDisplay) => {
     }
 
     list.innerHTML = productsToDisplay.map(p => {
-        const pData = encodeURIComponent(JSON.stringify(p));
-        const displayImg = p.img || `https://picsum.photos/seed/${p.id}/400/400`;
+        // FIX: Ensure Absolute URL for Google Merchant Center
+        const absoluteImg = p.img?.startsWith('http') 
+            ? p.img 
+            : `${window.location.origin}/${p.img?.replace(/^\//, '') || 'logo.png'}`;
+
+        const pData = encodeURIComponent(JSON.stringify({...p, img: absoluteImg}));
+        const displayImg = absoluteImg;
         
         return `
             <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; transition: 0.3s transform;">
@@ -213,14 +220,37 @@ window.changePage = (id, el) => {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (el) el.classList.add('active');
 
+    // NEW: Trust Center Bridge
+    if (id === 'trust' && window.TrustService) {
+        window.TrustService.renderTrustCenter();
+    }
+
     // Tab-Specific Logic
     if (id === 'browse' && allProducts.length === 0) {
         fetch('products.json').then(res => res.json()).then(data => {
             allProducts = data;
             window.renderProducts(allProducts);
+            // Check for Google Deep Link after products load
+            checkGoogleDeepLink();
         });
     }
     if (id === 'library') window.loadUserLibrary();
+};
+
+// --- NEW: GOOGLE MERCHANT DEEP-LINK HANDLER ---
+const checkGoogleDeepLink = () => {
+    const params = new URLSearchParams(window.location.search);
+    const googleId = params.get('id');
+    const action = params.get('action');
+
+    if (googleId && action === 'checkout') {
+        const product = allProducts.find(p => p.id === googleId);
+        if (product) {
+            const pData = encodeURIComponent(JSON.stringify(product));
+            window.addToCart(pData);
+            window.openCheckout();
+        }
+    }
 };
 
 const showSalesNotif = () => {
@@ -232,12 +262,21 @@ const showSalesNotif = () => {
     if(textEl) {
         textEl.innerText = `Someone from ${city} ${action}`;
         const el = document.getElementById('sales-notif');
-        el.style.display = 'flex';
-        setTimeout(() => { el.style.display = 'none'; }, 5000);
+        if(el) el.style.display = 'flex';
+        setTimeout(() => { 
+            const el = document.getElementById('sales-notif');
+            if(el) el.style.display = 'none'; 
+        }, 5000);
     }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     window.updateCartCount();
     setInterval(showSalesNotif, 15000);
+
+    // Initial check for Google arrival
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'checkout') {
+        window.changePage('browse');
+    }
 });
