@@ -41,7 +41,7 @@
             border-radius: 24px;
             margin-bottom: 30px;
             border: 1px solid #333;
-            scroll-margin-top: 100px; /* Offset for sticky headers */
+            scroll-margin-top: 50px; 
         }
 
         /* FAQ Accordion Styling */
@@ -98,7 +98,10 @@
             text-decoration: none;
             font-weight: 800;
             letter-spacing: 1px;
+            transition: opacity 0.3s;
         }
+
+        .footer-link:hover { opacity: 0.8; }
         
         strong { color: white; }
     </style>
@@ -106,21 +109,22 @@
 <body>
 
 <div class="container">
-    <header style="margin-bottom: 50px;">
+    <header style="margin-bottom: 50px; text-align: center;">
         <h1 style="margin-bottom: 5px;">PromptVault USA</h1>
         <p style="color: var(--text-gray); font-weight: 600;">Global Trust & Legal Compliance Center</p>
     </header>
 
     <div class="section" id="about">
         <h2>About Us</h2>
-        <p><strong>PromptVault USA</strong> (promptvaultusa.shop) is a sovereign digital marketplace dedicated to the architecture of industrial-grade AI logic. In the evolving grid of 2026, we provide professional-tier prompt chains, visual cinematic frameworks, and strategic intelligence for digital architects and entrepreneurs.</p>
+        <p><strong>PromptVault USA</strong> is a premier digital marketplace dedicated to the architecture of industrial-grade AI logic. We provide professional-tier prompt chains, visual cinematic frameworks, and strategic intelligence for digital architects and entrepreneurs worldwide.</p>
         <p>Our mission is to bridge the gap between raw AI capability and professional execution, ensuring our users maintain narrative sovereignty and high-yield performance in their respective niches.</p>
     </div>
 
     <div class="section" id="contact">
         <h2>Contact Us</h2>
-        <p>For technical support, business inquiries, or manual file delivery requests, please reach out to our administration team. We guarantee a response within 24 hours.</p>
+        <p>For technical support, business inquiries, or manual file delivery requests, please reach out to our administration team.</p>
         <p><strong>Email:</strong> admin@promptvaultusa.shop</p>
+        <p><strong>Location:</strong> Cebu City, Philippines</p>
         <p><strong>Operating Hours:</strong> 24/7 Digital Delivery | Support: 9:00 AM - 6:00 PM (PST)</p>
     </div>
 
@@ -137,51 +141,46 @@
         <div class="faq-item">
             <button class="faq-question">Which AI tools are supported?</button>
             <div class="faq-answer">
-                Our vaults are engineered for 2026 industry standards. We offer specific packs for Midjourney v6/v7, DALL-E 3, Claude 3.5, and video AI platforms like HeyGen and Sora.
+                Our vaults are engineered for 2026 industry standards, supporting Midjourney, DALL-E 3, Claude 3.5, and advanced video AI platforms.
             </div>
         </div>
 
         <div class="faq-item">
             <button class="faq-question">Can I use these for commercial client work?</button>
             <div class="faq-answer">
-                Absolutely. PromptVault USA assets are designed for professional architects, agencies, and creators who need commercial-ready results for their clients or brands.
+                Absolutely. PromptVault USA assets are designed for professional architects, agencies, and creators who need commercial-ready results for their brands.
             </div>
         </div>
     </div>
 
     <div class="section" id="privacy">
         <h2>Privacy Policy</h2>
-        <p>At <strong>PromptVault USA</strong>, we value your privacy. This policy outlines how we handle your data to provide a secure experience.</p>
-        <p><strong>Data Collection:</strong> We collect your email address via Firebase for account security and library access. Payment data is processed securely through PayPal; we never store your credit card information.</p>
-        <p><strong>Cookies & AdSense:</strong> We use Google AdSense to serve advertisements. Google uses cookies to serve ads based on your prior visits to this and other websites. You may opt out of personalized advertising by visiting Google's Ad Settings.</p>
+        <p><strong>Data Collection:</strong> We collect your email address via Firebase for account security and library access. Payment data is processed securely through PayPal/Stripe; we never store your credit card information.</p>
+        <p><strong>Cookies & Advertising:</strong> We use Google services to enhance user experience and serve advertisements. Google uses cookies to serve ads based on your visits to this and other sites. You may opt out of personalized advertising via Google's Ad Settings.</p>
     </div>
 
     <div class="section" id="refunds">
         <h2>Refund & Return Policy</h2>
-        <p>Because our products are <strong>intangible digital assets</strong> delivered via instant access, all sales are final. Once a prompt pack has been accessed, downloaded, or viewed in your library, we cannot offer a refund.</p>
-        <p><strong>Technical Support:</strong> If you experience a corrupted file or a broken link, contact us at <strong>emilyperong23@gmail.com</strong>. We guarantee a resolution or manual file delivery within 24 hours.</p>
+        <p>Because our products are <strong>intangible digital assets</strong> delivered via instant access, all sales are final. Once a prompt pack has been accessed or downloaded, we cannot offer a refund.</p>
+        <p><strong>Technical Support:</strong> If you experience a corrupted file or a broken link, contact us at <strong>admin@promptvaultusa.shop</strong>. We guarantee a resolution within 24 hours.</p>
     </div>
 
     <div class="section" id="terms">
         <h2>Terms & Conditions</h2>
-        <p>By using <strong>promptvaultusa.shop</strong>, you agree to these terms. You are purchasing a non-exclusive license to use these prompts for personal or commercial creative projects.</p>
-        <p><strong>Prohibitions:</strong> You are strictly prohibited from reselling, redistributing, or "leaking" the raw prompt strings as your own digital products. Violation of these terms will result in immediate account termination without refund.</p>
+        <p>By using <strong>promptvaultusa.shop</strong>, you agree to these terms. You are purchasing a non-exclusive license for personal or commercial creative projects.</p>
+        <p><strong>Prohibitions:</strong> You are strictly prohibited from reselling, redistributing, or "leaking" the raw prompt strings as your own digital products. Violation results in immediate account termination.</p>
     </div>
 
-    <a href="index.html" class="footer-link">← RETURN TO THE ASSET VAULT</a>
+    <a href="/" class="footer-link">← RETURN TO THE ASSET VAULT</a>
 </div>
 
 <script>
-    // Logic for FAQ Accordion
     document.querySelectorAll('.faq-question').forEach(button => {
         button.addEventListener('click', () => {
             const faqItem = button.parentElement;
-            
-            // Close other items if one is opened
             document.querySelectorAll('.faq-item').forEach(item => {
                 if(item !== faqItem) item.classList.remove('active');
             });
-
             faqItem.classList.toggle('active');
         });
     });
