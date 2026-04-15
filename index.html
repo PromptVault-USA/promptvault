@@ -48,6 +48,7 @@
     <meta property="og:url" content="https://promptvaultusa.shop/">
     <meta property="og:title" content="PromptVault USA | The Architect's Secret to AI Monetization">
     <meta property="og:description" content="Access high-yield AI prompt vaults and professional monetization blueprints. Build your AI empire today.">
+    <meta property="og:description" content="Access high-yield AI prompt vaults and professional monetization blueprints. Build your AI empire today.">
     <meta property="og:image" content="https://promptvaultusa.shop/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -109,7 +110,8 @@
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
                 if(window.location.hash === '#browse') this.router.go('browse');
-                if(window.location.hash === '#legal') this.router.go('trust');
+                // FIXED: Updated check to look for #trust
+                if(window.location.hash === '#trust') this.router.go('trust');
                 console.log("💎 Engine: Online");
             },
 
@@ -254,6 +256,7 @@
                     const txID = "PV-" + Date.now();
                     
                     try {
+                        // LIVE ORDER CHECK: Pre-register order in Firestore
                         await setDoc(doc(db, "orders", txID), {
                             uid: auth.currentUser.uid,
                             email: auth.currentUser.email,
@@ -276,6 +279,7 @@
                     const txID = "PV-DIR-" + Date.now();
                     
                     try {
+                        // LIVE ORDER CHECK: Pre-register direct order
                         await setDoc(doc(db, "orders", txID), {
                             uid: auth.currentUser.uid,
                             email: auth.currentUser.email,
@@ -374,6 +378,8 @@
                 <h4 style="color: white; font-weight: 800;">About Us</h4>
                 <p style="font-size: 0.9rem; color: var(--text-gray); line-height: 1.6;">
                     PromptVault USA is a sovereign digital marketplace and asset hub designed for the creator economy, specifically focusing on high-resolution AI prompts and industrial-strength logic. 
+                    The platform is built on a high-performance technical stack including Firebase for secure authentication, GitHub for hosting, and PayPal for transaction processing. 
+                    It is designed to serve as a central "Intelligence Feed" for entrepreneurs looking to build automated businesses.
                 </p>
                 <h4 style="color: white; font-weight: 800; margin-top: 20px;">Contact Us</h4>
                 <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> <a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></p>
@@ -408,10 +414,6 @@
     </div>
 
     <div id="trust" class="page">
-        <div id="trust-center-content"></div>
-    </div>
-
-    <div id="legal" class="page">
         <div class="content-rich-section" style="text-align: left; margin-top: 40px; max-width: 800px;">
             <h2 style="text-align: center;">Trust & <span class="highlight-text">Compliance</span></h2>
             <div style="margin-top: 30px; color: var(--text-gray); font-size: 0.95rem; line-height: 1.8;">
@@ -421,6 +423,24 @@
                 <a href="trust-center.html" class="btn-main" style="margin-top: 20px; display: block; text-align: center; background: var(--glass); border: 1px solid var(--border); text-decoration: none; color: white;">Open Trust Center</a>
                 
                 <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 15px; width: 100%; background: none; border: 1px solid transparent; color: var(--text-gray);">Return Home</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="legal" class="page">
+        <div class="content-rich-section" style="text-align: left; margin-top: 40px; max-width: 800px;">
+            <h2 style="text-align: center;">Legal & <span class="highlight-text">Privacy</span></h2>
+            <div style="margin-top: 30px; color: var(--text-gray); font-size: 0.95rem; line-height: 1.8;">
+                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px;">1. Terms of Service</h4>
+                <p>By accessing PromptVault USA, you agree to our industrial-strength usage terms. All AI prompts and digital assets are for licensed use and may not be redistributed without authorization.</p>
+                
+                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 20px;">2. Digital Goods Policy</h4>
+                <p>Due to the nature of digital assets and immediate "Intelligence Feed" access, all sales are final. We ensure 24/7 access to your library via Firebase secure authentication.</p>
+                
+                <h4 style="color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 20px;">3. Privacy Policy</h4>
+                <p>We value your sovereign data. Your information is used exclusively for authentication and product delivery. For support or data inquiries, contact <strong><a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></strong>.</p>
+                
+                <button onclick="PV.router.go('home')" class="btn-main" style="margin-top: 30px; width: 100%; background: var(--glass); border: 1px solid var(--border);">Return Home</button>
             </div>
         </div>
     </div>
