@@ -8,12 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #d4af37;
-            --dark-bg: #0a0a0a;
-            --card-bg: #1a1a1a;
-            --text-gray: #b0b0b0;
-            --accent: #8b5cf6;
+            /* Synchronizing with your main site palette */
+            --gold: #FFC107; 
+            --dark-bg: #0A0D14;
+            --card-bg: #10131A;
+            --text-gray: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -30,10 +33,16 @@
         }
 
         h1, h2 {
-            color: var(--gold);
+            color: white;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 800;
+        }
+
+        h2 { 
+            color: var(--gold); 
+            font-size: 1.2rem;
+            margin-bottom: 20px;
         }
 
         .section {
@@ -41,13 +50,13 @@
             padding: 40px;
             border-radius: 24px;
             margin-bottom: 30px;
-            border: 1px solid #333;
-            scroll-margin-top: 100px; /* Better spacing for anchor jumps */
+            border: 1px solid var(--border);
+            scroll-margin-top: 100px;
         }
 
         /* FAQ Accordion Styling */
         .faq-item {
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border);
             padding: 20px 0;
         }
 
@@ -57,13 +66,14 @@
             background: none;
             border: none;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0;
+            font-family: inherit;
         }
 
         .faq-answer {
@@ -82,12 +92,12 @@
         .faq-question::after {
             content: '+';
             color: var(--gold);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             transition: transform 0.3s;
         }
 
         .faq-item.active .faq-question::after {
-            content: '-';
+            content: '−';
             transform: rotate(180deg);
         }
 
@@ -95,24 +105,29 @@
             display: block;
             margin-top: 60px;
             text-align: center;
-            color: var(--gold);
+            color: white;
             text-decoration: none;
             font-weight: 800;
             letter-spacing: 1px;
-            transition: opacity 0.3s;
-            border: 1px solid var(--gold);
-            padding: 15px;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 18px;
             border-radius: 50px;
-            max-width: 300px;
+            max-width: 320px;
             margin-inline: auto;
+            font-size: 0.8rem;
         }
 
         .footer-link:hover { 
             background: var(--gold);
             color: black;
+            border-color: var(--gold);
+            transform: translateY(-2px);
         }
         
         strong { color: white; }
+        .highlight { color: var(--gold); }
     </style>
 </head>
 <body>
@@ -120,10 +135,10 @@
 <div class="container">
     <header style="margin-bottom: 50px; text-align: center;">
         <div style="margin-bottom: 20px;">
-            <img src="https://promptvaultusa.shop/logo.png" alt="Logo" style="height: 60px; width: auto;">
+            <img src="https://promptvaultusa.shop/logo.png" alt="Logo" style="height: 50px; width: auto;">
         </div>
-        <h1 style="margin-bottom: 5px;">PromptVault USA</h1>
-        <p style="color: var(--text-gray); font-weight: 600;">Global Trust & Legal Compliance Center</p>
+        <h1 style="margin-bottom: 5px; font-size: 1.8rem;">PROMPTVAULT <span class="highlight">USA</span></h1>
+        <p style="color: var(--text-gray); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Global Trust & Legal Compliance Center</p>
     </header>
 
     <div class="section" id="about">
@@ -146,14 +161,14 @@
         <div class="faq-item">
             <button class="faq-question">How do I receive my prompts?</button>
             <div class="faq-answer">
-                Immediately after a successful checkout, your digital assets are automatically added to your <strong>Library</strong>. You will also receive a confirmation email containing direct access links.
+                Immediately after a successful checkout, your digital assets are automatically added to your <strong>Library</strong> within your PromptVault account. You will also receive a confirmation email containing direct access links.
             </div>
         </div>
 
         <div class="faq-item">
             <button class="faq-question">Which AI tools are supported?</button>
             <div class="faq-answer">
-                Our vaults are engineered for 2026 industry standards, supporting Midjourney, DALL-E 3, Claude 3.5, and advanced video AI platforms.
+                Our vaults are engineered for 2026 industry standards, supporting Midjourney, DALL-E 3, Claude 3.5, and advanced video AI platforms like Sora and Runway.
             </div>
         </div>
 
@@ -167,7 +182,7 @@
 
     <div class="section" id="privacy">
         <h2>Privacy Policy</h2>
-        <p><strong>Data Collection:</strong> We collect your email address via Firebase for account security and library access. Payment data is processed securely through PayPal; we never store your credit card information.</p>
+        <p><strong>Data Collection:</strong> We collect your email address via Firebase for account security and library access. Payment data is processed securely through PayPal; we never store your credit card information on our servers.</p>
         <p><strong>Cookies & Advertising:</strong> We use Google services to enhance user experience and serve advertisements. Google uses cookies to serve ads based on your visits to this and other sites. You may opt out of personalized advertising via Google's Ad Settings.</p>
     </div>
 
@@ -183,16 +198,19 @@
         <p><strong>Prohibitions:</strong> You are strictly prohibited from reselling, redistributing, or "leaking" the raw prompt strings as your own digital products. Violation results in immediate account termination and potential legal action.</p>
     </div>
 
-    <a href="https://promptvaultusa.shop/index.html?action=browse#browse" class="footer-link">← RETURN TO THE ASSET VAULT</a>
+    <a href="https://promptvaultusa.shop/index.html#browse" class="footer-link">← RETURN TO THE ASSET VAULT</a>
 </div>
 
 <script>
     document.querySelectorAll('.faq-question').forEach(button => {
         button.addEventListener('click', () => {
             const faqItem = button.parentElement;
+            
+            // Close other items if one is opened
             document.querySelectorAll('.faq-item').forEach(item => {
                 if(item !== faqItem) item.classList.remove('active');
             });
+
             faqItem.classList.toggle('active');
         });
     });
