@@ -1,8 +1,6 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v2.9)
- * Status: Production-Ready / Mobile-Hardened
- * Responsibility: Orchestrating Services, Secure Auth, & Commerce.
- * UPGRADES: Hardened Library Rendering with "Virtual Free Assets" merge.
+ * PROJECT MEMORY: Main Entry Point (v3.0 - Post-Audit)
+ * Status: Hardened & Optimized
  */
 
 import { auth, db } from './firebase-config.js';
@@ -15,23 +13,19 @@ import {
     signInWithEmailAndPassword, createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// --- 1. Global Bridge ---
+// --- 1. Global Navigation Bridge ---
 window.changePage = (id, el) => {
+    // Prevent navigating to library if logged out
+    if (id === 'library' && !auth.currentUser) {
+        UIService.showNotification("Please sign in to access Library", "info");
+        document.getElementById('auth-overlay').style.display = 'flex';
+        return;
+    }
     UIService.changePage(id, el);
     if (id === 'library') window.loadUserLibrary();
 };
-window.filterProducts = UIService.filterProducts;
-window.updateCartCount = UIService.refreshCartUI;
 
-window.openCheckout = () => {
-    const modal = document.getElementById('checkout-overlay');
-    if (modal) {
-        modal.style.display = 'flex';
-        UIService.refreshCartUI(); 
-    }
-};
-
-// --- 2. Secure User Provisioning ---
+// --- 2. Secure User Provisioning (The "Gatekeeper") ---
 let isProvisioning = false;
 async function ensureUserProfile(user) {
     if (isProvisioning) return;
@@ -43,7 +37,7 @@ async function ensureUserProfile(user) {
             await setDoc(userRef, {
                 email: user.email,
                 joinedDate: new Date().toISOString(),
-                purchasedPrompts: [] // We now handle free items in the UI layer
+                purchasedPrompts: [] 
             });
             UIService.showNotification("Vault Profile Created!", "success");
         }
@@ -54,16 +48,16 @@ async function ensureUserProfile(user) {
     }
 }
 
-// --- 3. Enhanced Authentication Logic ---
+// --- 3. Unified State Observer ---
 onAuthStateChanged(auth, async (user) => {
     const loginBtn = document.getElementById('login-pill');
     const kitBtn = document.getElementById('claim-kit-btn');
     const authOverlay = document.getElementById('auth-overlay');
 
     if (user) {
+        // Logged In State
         await ensureUserProfile(user); 
-        window.loadUserLibrary();
-
+        
         if (loginBtn) {
             loginBtn.innerText = "Logout";
             loginBtn.onclick = () => signOut(auth);
@@ -75,77 +69,43 @@ onAuthStateChanged(auth, async (user) => {
         }
         if (authOverlay) authOverlay.style.display = 'none';
         
+        // Handle post-payment verification
         if (window.location.pathname.includes('success.html')) {
             const txID = new URLSearchParams(window.location.search).get('tx');
             if (txID) FulfillmentService.verifyAndDeliver(txID);
         }
     } else {
+        // Logged Out State (Cleanup)
         if (loginBtn) {
             loginBtn.innerText = "Sign In";
             loginBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
         }
         if (kitBtn) {
             kitBtn.innerText = "Unlock The Vault";
+            kitBtn.style.background = "var(--success)"; // Reset color
             kitBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
         }
+        
+        // CLEAR LIBRARY UI (Security Step)
+        const grid = document.getElementById('user-library-grid');
+        if (grid) grid.innerHTML = ''; 
+        
         UIService.refreshCartUI(); 
     }
 });
 
-// Auth Handlers
-window.handleGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    try { await signInWithPopup(auth, provider); } 
-    catch(e) { UIService.showNotification("Login failed.", 'error'); }
-};
-
-window.handleEmailAuth = async (mode) => {
-    const email = document.getElementById('auth-email').value;
-    const pass = document.getElementById('auth-pass').value;
-    if(!email || !pass) return UIService.showNotification("Fill all fields.", 'info');
-    try {
-        if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, pass);
-        else await signInWithEmailAndPassword(auth, email, pass);
-    } catch(e) { UIService.showNotification("Auth Error.", 'error'); }
-};
-
-// --- 4. Secure Commerce Logic ---
-window.addToCart = (productStr) => {
-    if (!auth.currentUser) {
-        document.getElementById('auth-overlay').style.display = 'flex';
-        return;
-    }
-    const product = JSON.parse(decodeURIComponent(productStr));
-    let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    
-    if (cart.some(item => item.id === product.id)) {
-        return UIService.showNotification("Already in cart", "info");
-    }
-    
-    cart.push(product);
-    localStorage.setItem('pv_cart', JSON.stringify(cart));
-    UIService.refreshCartUI();
-    UIService.showNotification(`Added ${product.name}!`, "success");
-};
-
-window.processPaypalCheckout = async () => {
-    const cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-    if (cart.length === 0) return UIService.showNotification("Cart is empty!", "info");
-    
-    try {
-        UIService.showNotification("Preparing Secure Checkout...", "info");
-        const { txID, total } = await SecurityService.prepareSecureCheckout(cart);
-        SecurityService.initiatePayPal(txID, total, cart.map(i => i.name).join(', '));
-    } catch (e) { UIService.showNotification("Checkout Failed.", "error"); }
-};
-
-// --- 5. Library Logic (Merged Free Assets) ---
+// --- 4. Library Logic (Merged Free Assets) ---
 window.loadUserLibrary = async () => {
     const user = auth.currentUser;
     const grid = document.getElementById('user-library-grid');
-    if (!grid || !user) return;
+    if (!grid) return;
+    
+    if (!user) {
+        grid.innerHTML = '<p style="color:var(--text-gray); text-align:center;">Please sign in to view your assets.</p>';
+        return;
+    }
 
-    // VIRTUAL FREE ASSETS: Always available to every logged-in user
+    // "Virtual Assets" - No DB read required
     const freeAssets = [
         { 
             productName: "✉️ Welcome Letter & Hub Guide", 
@@ -160,40 +120,37 @@ window.loadUserLibrary = async () => {
     ];
 
     try {
+        grid.innerHTML = '<div class="loader">Accessing Vault...</div>'; // UX Improvement
         const userDocSnap = await getDoc(doc(db, "users", user.uid));
-        let purchased = [];
-        
-        if (userDocSnap.exists()) {
-            purchased = userDocSnap.data().purchasedPrompts || [];
-        }
-
-        // Merge Free Assets with Purchases
+        const purchased = userDocSnap.exists() ? (userDocSnap.data().purchasedPrompts || []) : [];
         const allPrompts = [...freeAssets, ...purchased];
         
-        // Render
         grid.innerHTML = allPrompts.map(item => `
-            <div class="library-card" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); padding:18px; border-radius:18px; margin-bottom:12px;">
+            <div class="library-card">
                 <div>
-                    <h4 style="margin:0; color:white; font-size:1rem;">${item.productName}</h4>
-                    <small style="color:var(--secondary); font-weight:800; text-transform:uppercase; font-size:0.65rem;">${item.type || 'Purchased Access'}</small>
+                    <h4>${item.productName}</h4>
+                    <small>${item.type || 'Purchased Access'}</small>
                 </div>
-                <a href="${item.driveLink}" target="_blank" class="btn-main" 
-                   style="padding:10px 18px; font-size:0.8rem; background:#10b981; border-radius:10px; text-decoration:none; width:auto; margin:0;">
-                   Open Access
-                </a>
+                <a href="${item.driveLink}" target="_blank" class="btn-main">Open Access</a>
             </div>`).join('');
             
     } catch (e) {
-        console.error("Library Error:", e);
+        grid.innerHTML = '<p style="color:red;">Error loading library. Check connection.</p>';
     }
 };
 
-// --- 6. Routing & SPA Consistency ---
+// --- 5. Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
-    const urlParams = new URLSearchParams(window.location.search);
     
-    if (urlParams.get('page') === 'library') window.changePage('library');
-    else if (urlParams.get('action') === 'browse') window.changePage('browse');
-    else if (urlParams.get('action') === 'checkout') window.openCheckout();
+    // Smooth SPA Routing from URL Params
+    const urlParams = new URLSearchParams(window.location.search);
+    const actions = {
+        'library': () => window.changePage('library'),
+        'browse': () => window.changePage('browse'),
+        'checkout': () => window.openCheckout()
+    };
+    
+    const trigger = urlParams.get('page') || urlParams.get('action');
+    if (actions[trigger]) actions[trigger]();
 });
