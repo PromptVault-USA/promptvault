@@ -1,7 +1,7 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v3.5 - Global Patching)
- * Status: Production-Ready / Subfolder-Hardened
- * Responsibility: Orchestrating Services, Secure Auth, & Global Link Integrity.
+ * PROJECT MEMORY: Main Entry Point (v3.6 - Dynamic UI Injection)
+ * Status: Production-Ready / Mobile-Hardened
+ * Responsibility: Secure Auth, Global Patching, & Dynamic UI Injection.
  */
 
 import { auth, db } from './firebase-config.js';
@@ -14,7 +14,38 @@ import {
     signInWithEmailAndPassword, createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// --- 1. Global Navigation & Link Integrity ---
+// --- 1. Global Navigation & Dynamic UI ---
+
+/**
+ * injectDynamicNavigation
+ * Detects if user is in a subfolder and injects a "Back" button.
+ */
+const injectDynamicNavigation = () => {
+    const path = window.location.pathname;
+    const domain = "https://promptvaultusa.shop";
+    
+    // Check context
+    const isVault = path.includes('/vault/');
+    const isBlog = path.includes('/blog/') && !path.includes('trust-center.html');
+    
+    if (!isVault && !isBlog) return; // Exit if on main pages
+
+    const backTarget = isVault 
+        ? `${domain}/index.html?action=browse#browse` 
+        : `${domain}/blog.html`;
+        
+    const label = isVault ? "Back to Vaults" : "Back to Blog";
+
+    const navHTML = `
+        <div id="dynamic-back-nav" style="position: fixed; top: 20px; left: 20px; z-index: 10001;">
+            <a href="${backTarget}" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 10px 18px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 8px 20px rgba(0,0,0,0.4); transition: 0.3s transform;">
+                <span style="font-size:1.1rem;">←</span> ${label}
+            </a>
+        </div>`;
+
+    document.body.insertAdjacentHTML('afterbegin', navHTML);
+};
+
 window.changePage = (id, el) => {
     if (id === 'library' && !auth.currentUser) {
         UIService.showNotification("Please sign in to access Library", "info");
@@ -25,15 +56,8 @@ window.changePage = (id, el) => {
     if (id === 'library') window.loadUserLibrary();
 };
 
-/**
- * patchGlobalLinks
- * Automatically updates relative links in subfolders (vault/blog) 
- * to point to the new absolute Trust Center URLs.
- */
 const patchGlobalLinks = () => {
     const domain = "https://promptvaultusa.shop";
-    
-    // 1. Patch Trust Center Anchor Links
     const legalLinks = document.querySelectorAll('a[href*="trust-center.html"]');
     legalLinks.forEach(link => {
         const currentHref = link.getAttribute('href');
@@ -41,16 +65,6 @@ const patchGlobalLinks = () => {
         else if (currentHref.includes('#terms')) link.href = `${domain}/trust-center.html#terms`;
         else if (currentHref.includes('#refunds')) link.href = `${domain}/trust-center.html#refunds`;
         else link.href = `${domain}/trust-center.html`;
-    });
-
-    // 2. Patch Home/Vault Navigation
-    const homeLinks = document.querySelectorAll('a[href*="index.html"]');
-    homeLinks.forEach(link => {
-        if (link.getAttribute('href').includes('action=browse')) {
-            link.href = `${domain}/index.html?action=browse#browse`;
-        } else {
-            link.href = `${domain}/index.html`;
-        }
     });
 };
 
@@ -70,11 +84,7 @@ async function ensureUserProfile(user) {
             });
             UIService.showNotification("Vault Profile Created!", "success");
         }
-    } catch (e) {
-        console.error("Provisioning Error:", e);
-    } finally {
-        isProvisioning = false;
-    }
+    } catch (e) { console.error("Provisioning Error:", e); } finally { isProvisioning = false; }
 }
 
 // --- 3. Unified State Observer ---
@@ -85,7 +95,6 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user) {
         await ensureUserProfile(user); 
-        
         if (loginBtn) {
             loginBtn.innerText = "Logout";
             loginBtn.onclick = () => signOut(auth);
@@ -102,15 +111,8 @@ onAuthStateChanged(auth, async (user) => {
             if (txID) FulfillmentService.verifyAndDeliver(txID);
         }
     } else {
-        if (loginBtn) {
-            loginBtn.innerText = "Sign In";
-            loginBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
-        }
-        if (kitBtn) {
-            kitBtn.innerText = "Unlock The Vault";
-            kitBtn.style.background = "var(--success)";
-            kitBtn.onclick = () => { if(authOverlay) authOverlay.style.display = 'flex'; };
-        }
+        if (loginBtn) loginBtn.innerText = "Sign In";
+        if (kitBtn) kitBtn.innerText = "Unlock The Vault";
         const grid = document.getElementById('user-library-grid');
         if (grid) grid.innerHTML = ''; 
         UIService.refreshCartUI(); 
@@ -122,32 +124,28 @@ window.loadUserLibrary = async () => {
     const user = auth.currentUser;
     const grid = document.getElementById('user-library-grid');
     if (!grid || !user) return;
-
     const freeAssets = [
         { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", type: "Permanent" },
         { productName: "🎁 2026 AI Starter Kit", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", type: "Permanent" }
     ];
-
     try {
         grid.innerHTML = '<div class="loader">Accessing Vault...</div>';
         const userDocSnap = await getDoc(doc(db, "users", user.uid));
         const purchased = userDocSnap.exists() ? (userDocSnap.data().purchasedPrompts || []) : [];
         const allPrompts = [...freeAssets, ...purchased];
-        
         grid.innerHTML = allPrompts.map(item => `
             <div class="library-card">
                 <div><h4>${item.productName}</h4><small>${item.type || 'Purchased Access'}</small></div>
                 <a href="${item.driveLink}" target="_blank" class="btn-main">Open Access</a>
             </div>`).join('');
-    } catch (e) {
-        grid.innerHTML = '<p style="color:red;">Error loading library.</p>';
-    }
+    } catch (e) { grid.innerHTML = '<p style="color:red;">Error loading library.</p>'; }
 };
 
 // --- 5. Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     UIService.refreshCartUI();
-    patchGlobalLinks(); // <--- PATCH APPLIED HERE
+    patchGlobalLinks();
+    injectDynamicNavigation(); // <--- DYNAMIC BUTTON INJECTION
     
     const urlParams = new URLSearchParams(window.location.search);
     const actions = {
@@ -155,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'browse': () => window.changePage('browse'),
         'checkout': () => window.openCheckout()
     };
-    
     const trigger = urlParams.get('page') || urlParams.get('action');
     if (actions[trigger]) actions[trigger]();
 });
