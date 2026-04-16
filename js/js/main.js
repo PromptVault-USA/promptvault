@@ -1,8 +1,8 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v3.7 - Hardened Patching)
+ * PROJECT MEMORY: Main Entry Point (v3.8 - Root-Absolute Hardening)
  * Status: Production-Ready / Subfolder-Hardened
  * Responsibility: Secure Auth, Global Patching, & Dynamic UI Injection.
- * UPDATE: Hardened link patching to resolve 404s in nested directories.
+ * UPDATE: Switched to Root-Absolute pathing (/) to resolve persistent 404s.
  */
 
 import { auth, db } from './firebase-config.js';
@@ -19,16 +19,16 @@ import {
 
 const injectDynamicNavigation = () => {
     const path = window.location.pathname;
-    const domain = "https://promptvaultusa.shop";
     
+    // Using root-relative paths for the back button as well
     const isVault = path.includes('/vault/');
     const isBlog = path.includes('/blog/') && !path.includes('trust-center.html');
     
     if (!isVault && !isBlog) return;
 
     const backTarget = isVault 
-        ? `${domain}/index.html?action=browse#browse` 
-        : `${domain}/blog.html`;
+        ? "/index.html?action=browse#browse" 
+        : "/blog.html";
         
     const label = isVault ? "Back to Vaults" : "Back to Blog";
 
@@ -53,39 +53,37 @@ window.changePage = (id, el) => {
 };
 
 /**
- * patchGlobalLinks (Hardened v3.7)
- * Scans for all legal/trust links and forces them to root domain paths.
+ * patchGlobalLinks (Hardened v3.8)
+ * Forces all legal/trust center links to the root directory.
+ * The leading "/" is the "Reset" for the URL path.
  */
 const patchGlobalLinks = () => {
-    const domain = "https://promptvaultusa.shop";
-    
-    // Select all potential legal/trust center links
-    const selector = 'a[href*="trust-center"], a[href*="legal.html"], a[href*="privacy"], a[href*="terms"], a[href*="refund"]';
+    // Select any links that mention trust, legal, privacy, terms, or refund
+    const selector = 'a[href*="trust-center"], a[href*="legal"], a[href*="privacy"], a[href*="terms"], a[href*="refund"]';
     const legalLinks = document.querySelectorAll(selector);
 
     legalLinks.forEach(link => {
         const href = link.getAttribute('href').toLowerCase();
         let anchor = "";
 
-        // Determine specific anchor target
         if (href.includes('privacy')) anchor = "#privacy";
         else if (href.includes('terms')) anchor = "#terms";
         else if (href.includes('refund')) anchor = "#refunds";
 
-        // Force to absolute path at the root
-        link.href = `${domain}/trust-center.html${anchor}`;
+        // ROOT ABSOLUTE FIX:
+        // By using "/trust-center.html", we force promptvaultusa.shop/trust-center.html
+        // instead of vault/trust-center.html
+        link.href = `/trust-center.html${anchor}`;
     });
 
-    // Patch Home/Vault navigation to prevent relative path breakage
-    const navLinks = document.querySelectorAll('a[href*="index.html"], a[href*="blog.html"]');
+    // Patch Main Nav links to also be root-absolute
+    const navLinks = document.querySelectorAll('a[href*="index.html"]');
     navLinks.forEach(link => {
         const href = link.getAttribute('href');
-        if (href.includes('index.html')) {
-            link.href = href.includes('action=browse') 
-                ? `${domain}/index.html?action=browse#browse` 
-                : `${domain}/index.html`;
-        } else if (href.includes('blog.html')) {
-            link.href = `${domain}/blog.html`;
+        if (href.includes('action=browse')) {
+            link.href = "/index.html?action=browse#browse";
+        } else {
+            link.href = "/index.html";
         }
     });
 };
@@ -165,7 +163,7 @@ window.loadUserLibrary = async () => {
 
 // --- 5. Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    patchGlobalLinks(); // Patch first to ensure links work before interaction
+    patchGlobalLinks(); // Patch links immediately
     UIService.refreshCartUI();
     injectDynamicNavigation(); 
     
