@@ -1,7 +1,8 @@
 /**
- * PROJECT MEMORY: Main Entry Point (v3.6 - Dynamic UI Injection)
- * Status: Production-Ready / Mobile-Hardened
+ * PROJECT MEMORY: Main Entry Point (v3.7 - Hardened Patching)
+ * Status: Production-Ready / Subfolder-Hardened
  * Responsibility: Secure Auth, Global Patching, & Dynamic UI Injection.
+ * UPDATE: Hardened link patching to resolve 404s in nested directories.
  */
 
 import { auth, db } from './firebase-config.js';
@@ -16,19 +17,14 @@ import {
 
 // --- 1. Global Navigation & Dynamic UI ---
 
-/**
- * injectDynamicNavigation
- * Detects if user is in a subfolder and injects a "Back" button.
- */
 const injectDynamicNavigation = () => {
     const path = window.location.pathname;
     const domain = "https://promptvaultusa.shop";
     
-    // Check context
     const isVault = path.includes('/vault/');
     const isBlog = path.includes('/blog/') && !path.includes('trust-center.html');
     
-    if (!isVault && !isBlog) return; // Exit if on main pages
+    if (!isVault && !isBlog) return;
 
     const backTarget = isVault 
         ? `${domain}/index.html?action=browse#browse` 
@@ -56,15 +52,41 @@ window.changePage = (id, el) => {
     if (id === 'library') window.loadUserLibrary();
 };
 
+/**
+ * patchGlobalLinks (Hardened v3.7)
+ * Scans for all legal/trust links and forces them to root domain paths.
+ */
 const patchGlobalLinks = () => {
     const domain = "https://promptvaultusa.shop";
-    const legalLinks = document.querySelectorAll('a[href*="trust-center.html"]');
+    
+    // Select all potential legal/trust center links
+    const selector = 'a[href*="trust-center"], a[href*="legal.html"], a[href*="privacy"], a[href*="terms"], a[href*="refund"]';
+    const legalLinks = document.querySelectorAll(selector);
+
     legalLinks.forEach(link => {
-        const currentHref = link.getAttribute('href');
-        if (currentHref.includes('#privacy')) link.href = `${domain}/trust-center.html#privacy`;
-        else if (currentHref.includes('#terms')) link.href = `${domain}/trust-center.html#terms`;
-        else if (currentHref.includes('#refunds')) link.href = `${domain}/trust-center.html#refunds`;
-        else link.href = `${domain}/trust-center.html`;
+        const href = link.getAttribute('href').toLowerCase();
+        let anchor = "";
+
+        // Determine specific anchor target
+        if (href.includes('privacy')) anchor = "#privacy";
+        else if (href.includes('terms')) anchor = "#terms";
+        else if (href.includes('refund')) anchor = "#refunds";
+
+        // Force to absolute path at the root
+        link.href = `${domain}/trust-center.html${anchor}`;
+    });
+
+    // Patch Home/Vault navigation to prevent relative path breakage
+    const navLinks = document.querySelectorAll('a[href*="index.html"], a[href*="blog.html"]');
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href.includes('index.html')) {
+            link.href = href.includes('action=browse') 
+                ? `${domain}/index.html?action=browse#browse` 
+                : `${domain}/index.html`;
+        } else if (href.includes('blog.html')) {
+            link.href = `${domain}/blog.html`;
+        }
     });
 };
 
@@ -143,9 +165,9 @@ window.loadUserLibrary = async () => {
 
 // --- 5. Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
+    patchGlobalLinks(); // Patch first to ensure links work before interaction
     UIService.refreshCartUI();
-    patchGlobalLinks();
-    injectDynamicNavigation(); // <--- DYNAMIC BUTTON INJECTION
+    injectDynamicNavigation(); 
     
     const urlParams = new URLSearchParams(window.location.search);
     const actions = {
