@@ -3,63 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trust Center | PromptVault USA</title>
+    <title>Legal Center | PromptVault USA</title>
+    
     <link rel="stylesheet" href="https://promptvaultusa.shop/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            /* Synchronizing with your main site palette */
-            --gold: #FFC107; 
-            --dark-bg: #0A0D14;
-            --card-bg: #10131A;
-            --text-gray: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        html { scroll-behavior: smooth; }
-
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--dark-bg);
-            color: white;
-            line-height: 1.8;
-            margin: 0;
-            padding: 40px 20px;
-        }
-
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-        }
-
-        h1, h2 {
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 800;
-        }
-
-        h2 { 
-            color: var(--gold); 
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            background-color: var(--primary);
+            padding-bottom: 180px; 
         }
 
         .section {
-            background: var(--card-bg);
+            background: var(--glass);
             padding: 40px;
             border-radius: 24px;
             margin-bottom: 30px;
             border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
             scroll-margin-top: 100px;
         }
 
-        /* FAQ Accordion Styling */
-        .faq-item {
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0;
+        h2 { 
+            color: var(--secondary); 
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 800;
         }
 
+        /* FAQ Accordion */
+        .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
         .faq-question {
             width: 100%;
             text-align: left;
@@ -72,10 +46,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0;
-            font-family: inherit;
         }
-
         .faq-answer {
             max-height: 0;
             overflow: hidden;
@@ -83,134 +54,76 @@
             color: var(--text-gray);
             font-size: 0.95rem;
         }
+        .faq-item.active .faq-answer { max-height: 500px; margin-top: 15px; }
+        .faq-question::after { content: '+'; color: var(--secondary); transition: transform 0.3s; }
+        .faq-item.active .faq-question::after { content: '−'; transform: rotate(180deg); }
 
-        .faq-item.active .faq-answer {
-            max-height: 500px;
-            margin-top: 15px;
-        }
-
-        .faq-question::after {
-            content: '+';
-            color: var(--gold);
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-        }
-
-        .faq-item.active .faq-question::after {
-            content: '−';
-            transform: rotate(180deg);
-        }
-
-        .footer-link {
-            display: block;
-            margin-top: 60px;
-            text-align: center;
-            color: white;
-            text-decoration: none;
-            font-weight: 800;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-            background: var(--card-bg);
-            padding: 18px;
-            border-radius: 50px;
-            max-width: 320px;
-            margin-inline: auto;
-            font-size: 0.8rem;
-        }
-
-        .footer-link:hover { 
-            background: var(--gold);
-            color: black;
-            border-color: var(--gold);
-            transform: translateY(-2px);
-        }
-        
         strong { color: white; }
-        .highlight { color: var(--gold); }
+
+        @media (max-width: 768px) {
+            .section { padding: 25px; }
+            .footer-logo-text { font-size: 1.2rem !important; }
+        }
     </style>
 </head>
 <body>
+
+<div class="spotlight"></div>
 
 <div class="container">
     <header style="margin-bottom: 50px; text-align: center;">
         <div style="margin-bottom: 20px;">
             <img src="https://promptvaultusa.shop/logo.png" alt="Logo" style="height: 50px; width: auto;">
         </div>
-        <h1 style="margin-bottom: 5px; font-size: 1.8rem;">PROMPTVAULT <span class="highlight">USA</span></h1>
-        <p style="color: var(--text-gray); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Global Trust & Legal Compliance Center</p>
+        <h1 class="footer-logo-text" style="margin-bottom: 5px;">PROMPTVAULT <span style="color:var(--secondary)">USA</span></h1>
+        <p style="color: var(--text-gray); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Global Legal & Compliance Center</p>
     </header>
 
     <div class="section" id="about">
         <h2>About Us</h2>
-        <p><strong>PromptVault USA</strong> is a premier digital marketplace dedicated to the architecture of industrial-grade AI logic. We provide professional-tier prompt chains, visual cinematic frameworks, and strategic intelligence for digital architects and entrepreneurs worldwide.</p>
-        <p>Operating out of <strong>Cebu City, Philippines</strong>, our mission is to bridge the gap between raw AI capability and professional execution, ensuring our users maintain narrative sovereignty and high-yield performance.</p>
-    </div>
-
-    <div class="section" id="contact">
-        <h2>Contact Us</h2>
-        <p>For technical support, business inquiries, or manual file delivery requests, please reach out to our administration team.</p>
-        <p><strong>Email:</strong> admin@promptvaultusa.shop</p>
-        <p><strong>Location:</strong> Cebu City, Philippines</p>
-        <p><strong>Support Hours:</strong> 24/7 Digital Delivery | Human Support: 9:00 AM - 6:00 PM (PST)</p>
+        <p><strong>PromptVault USA</strong> is a sovereign digital marketplace dedicated to the architecture of industrial-grade AI logic. Based in <strong>Cebu City, Philippines</strong>, we provide strategic intelligence for the global creator economy.</p>
     </div>
 
     <div class="section" id="faq">
-        <h2>Frequently Asked Questions</h2>
-        
+        <h2>FAQ</h2>
         <div class="faq-item">
-            <button class="faq-question">How do I receive my prompts?</button>
-            <div class="faq-answer">
-                Immediately after a successful checkout, your digital assets are automatically added to your <strong>Library</strong> within your PromptVault account. You will also receive a confirmation email containing direct access links.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">Which AI tools are supported?</button>
-            <div class="faq-answer">
-                Our vaults are engineered for 2026 industry standards, supporting Midjourney, DALL-E 3, Claude 3.5, and advanced video AI platforms like Sora and Runway.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">Can I use these for commercial client work?</button>
-            <div class="faq-answer">
-                Absolutely. PromptVault USA assets are designed for professional architects, agencies, and creators who need commercial-ready results for their brands.
-            </div>
+            <button class="faq-question">How are prompts delivered?</button>
+            <div class="faq-answer">Assets are instantly accessible in your secure <strong>Library</strong> and sent via email upon payment verification.</div>
         </div>
     </div>
 
     <div class="section" id="privacy">
         <h2>Privacy Policy</h2>
-        <p><strong>Data Collection:</strong> We collect your email address via Firebase for account security and library access. Payment data is processed securely through PayPal; we never store your credit card information on our servers.</p>
-        <p><strong>Cookies & Advertising:</strong> We use Google services to enhance user experience and serve advertisements. Google uses cookies to serve ads based on your visits to this and other sites. You may opt out of personalized advertising via Google's Ad Settings.</p>
+        <p>We utilize Firebase and Google services for secure authentication and high-performance delivery. All transaction data is handled exclusively by PayPal.</p>
     </div>
 
     <div class="section" id="refunds">
-        <h2>Refund & Return Policy</h2>
-        <p>Because our products are <strong>intangible digital assets</strong> delivered via instant access, all sales are final. Once a prompt pack has been accessed or downloaded, we cannot offer a refund.</p>
-        <p><strong>Technical Support:</strong> If you experience a corrupted file or a broken link, contact us at <strong>admin@promptvaultusa.shop</strong>. We guarantee a resolution within 24 hours.</p>
+        <h2>Refund Policy</h2>
+        <p>Due to the irreversible nature of digital asset delivery, all sales at PromptVault USA are final. Technical support is available 24/7 for access issues.</p>
     </div>
 
     <div class="section" id="terms">
-        <h2>Terms & Conditions</h2>
-        <p>By using <strong>promptvaultusa.shop</strong>, you agree to these terms. You are purchasing a non-exclusive license for personal or creative projects.</p>
-        <p><strong>Prohibitions:</strong> You are strictly prohibited from reselling, redistributing, or "leaking" the raw prompt strings as your own digital products. Violation results in immediate account termination and potential legal action.</p>
+        <h2>Terms of Service</h2>
+        <p>Usage of our vaults grants a non-exclusive license. Unauthorized redistribution of raw prompt chains is strictly prohibited.</p>
     </div>
 
-    <a href="https://promptvaultusa.shop/index.html#browse" class="footer-link">← RETURN TO THE ASSET VAULT</a>
+    <a href="https://promptvaultusa.shop/index.html#browse" class="btn-main" style="text-decoration:none; display:block; max-width:400px; margin: 40px auto 0;">← RETURN TO ASSET VAULT</a>
 </div>
+
+<nav class="bottom-nav">
+    <a class="nav-item" href="https://promptvaultusa.shop/index.html"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/index.html#browse"><span>⊞</span><small>Vaults</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/blog.html"><span>📖</span><small>Blog</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/index.html#library"><span>👤</span><small>Library</small></a>
+</nav>
 
 <script>
     document.querySelectorAll('.faq-question').forEach(button => {
         button.addEventListener('click', () => {
             const faqItem = button.parentElement;
-            
-            // Close other items if one is opened
             document.querySelectorAll('.faq-item').forEach(item => {
                 if(item !== faqItem) item.classList.remove('active');
             });
-
             faqItem.classList.toggle('active');
         });
     });
