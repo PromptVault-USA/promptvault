@@ -70,8 +70,8 @@
         .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
         .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; cursor: pointer; }
-        .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; }
-        .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+        .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); padding: 15px; }
         .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
     </style> 
 
@@ -109,7 +109,7 @@
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
                 if(window.location.hash === '#browse') this.router.go('browse');
-                if(window.location.hash === '#trust') this.router.go('trust');
+                if(window.location.hash === '#legal') this.router.go('legal');
                 console.log("💎 Engine: Online");
             },
 
@@ -170,12 +170,18 @@
                     list.innerHTML = data.map(p => {
                         const pData = encodeURIComponent(JSON.stringify(p));
                         const slug = p.name.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
+                        // MODULAR IMAGE PATH
+                        const imagePath = `assets/images/niches/${p.id}.jpg`;
+                        
                         return `
                             <div class="glass-card" style="text-align: left; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
                                 <div>
                                     <a href="vault/${slug}.html" style="text-decoration:none;">
                                         <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: ${this.getColor(p.name)}; cursor:pointer;">
-                                            <span>${p.name}</span>
+                                            <img src="${imagePath}" 
+                                                 alt="${p.name}" 
+                                                 style="width:100%; height:100%; object-fit:cover;" 
+                                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${p.name}</span>';">
                                         </div>
                                     </a>
                                     <div style="font-weight:800; color:white; margin-bottom:8px; font-size:1.1rem; line-height:1.2;">${p.name}</div>
@@ -398,10 +404,6 @@
         </div>
     </div>
 
-    <div id="trust" class="page">
-        <div id="trust-center-content"></div>
-    </div>
-
     <div id="legal" class="page">
         <div class="content-rich-section" style="text-align: left; margin-top: 40px; max-width: 800px;">
             <h2 style="text-align: center;">Legal & <span class="highlight-text">Privacy</span></h2>
@@ -424,9 +426,9 @@
         <div class="legal-links">
             <a onclick="PV.router.go('home')">Home</a>
             <a href="/blog.html">Blog</a>
-            <a href="trust-center.html#privacy">Privacy</a>
-            <a href="trust-center.html#terms">Terms</a>
-            <a href="trust-center.html#refunds">Refunds</a>
+            <a onclick="PV.router.go('legal')">Privacy</a>
+            <a onclick="PV.router.go('legal')">Terms</a>
+            <a onclick="PV.router.go('legal')">Refunds</a>
         </div>
         <p>© 2026 PromptVault USA | Cebu City, PH</p>
     </footer>
