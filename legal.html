@@ -2,112 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Center | PromptVault USA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Global Legal & Compliance | PromptVault USA</title>
     
     <link rel="stylesheet" href="https://promptvaultusa.shop/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            background-color: var(--primary);
-            padding-bottom: 180px; 
-        }
-
+        body { background-color: var(--primary); padding-bottom: 180px; }
         .section {
-            background: var(--glass);
-            padding: 40px;
-            border-radius: 24px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-            scroll-margin-top: 100px;
+            background: var(--glass); padding: 40px; border-radius: 24px;
+            margin-bottom: 30px; border: 1px solid var(--border);
+            backdrop-filter: blur(10px); scroll-margin-top: 100px;
         }
-
-        h2 { 
-            color: var(--secondary); 
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-
-        /* FAQ Accordion */
+        h2 { color: var(--secondary); font-size: 1.2rem; margin-bottom: 20px; text-transform: uppercase; font-weight: 800; }
+        .legal-highlight { color: #f87171; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
         .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
         .faq-question {
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.05rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%; text-align: left; background: none; border: none; color: white;
+            font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center;
         }
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease-out;
-            color: var(--text-gray);
-            font-size: 0.95rem;
-        }
+        .faq-answer { max-height: 0; overflow: hidden; transition: all 0.3s ease-out; color: var(--text-gray); font-size: 0.95rem; }
         .faq-item.active .faq-answer { max-height: 500px; margin-top: 15px; }
-        .faq-question::after { content: '+'; color: var(--secondary); transition: transform 0.3s; }
-        .faq-item.active .faq-question::after { content: '−'; transform: rotate(180deg); }
-
         strong { color: white; }
-
-        @media (max-width: 768px) {
-            .section { padding: 25px; }
-            .footer-logo-text { font-size: 1.2rem !important; }
-        }
+        .legal-footer-info { font-size: 0.8rem; color: #64748b; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="spotlight"></div>
 
-<div class="container">
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 60px 20px;">
     <header style="margin-bottom: 50px; text-align: center;">
         <div style="margin-bottom: 20px;">
             <img src="https://promptvaultusa.shop/logo.png" alt="Logo" style="height: 50px; width: auto;">
         </div>
-        <h1 class="footer-logo-text" style="margin-bottom: 5px;">PROMPTVAULT <span style="color:var(--secondary)">USA</span></h1>
-        <p style="color: var(--text-gray); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Global Legal & Compliance Center</p>
+        <h1 class="footer-logo-text" style="margin-bottom: 5px; font-weight: 800; color: white;">PROMPTVAULT <span style="color:var(--secondary)">USA</span></h1>
+        <p style="color: var(--secondary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;">Global Compliance Framework</p>
     </header>
 
     <div class="section" id="about">
         <h2>About Us</h2>
-        <p><strong>PromptVault USA</strong> is a sovereign digital marketplace dedicated to the architecture of industrial-grade AI logic. Based in <strong>Cebu City, Philippines</strong>, we provide strategic intelligence for the global creator economy.</p>
+        <p><strong>PromptVault USA</strong> is a sovereign digital marketplace specializing in high-fidelity AI prompt engineering. Headquartered in <strong>Cebu City, Philippines</strong>, we architect industrial-grade logic for a global network of creators across 20+ countries.</p>
     </div>
 
     <div class="section" id="faq">
         <h2>FAQ</h2>
         <div class="faq-item">
             <button class="faq-question">How are prompts delivered?</button>
-            <div class="faq-answer">Assets are instantly accessible in your secure <strong>Library</strong> and sent via email upon payment verification.</div>
+            <div class="faq-answer">Assets are delivered instantly via secure download links and archived in your permanent <strong>Library</strong> upon payment verification.</div>
         </div>
+        <div class="faq-item">
+            <button class="faq-question">Are the prompts reusable?</button>
+            <div class="faq-answer">Yes. All purchases grant a lifetime non-exclusive license for personal or commercial project use.</div>
+        </div>
+    </div>
+
+    <div class="section" id="refunds">
+        <span class="legal-highlight">International Compliance</span>
+        <h2 style="margin-top: 10px;">Digital Product Refund Policy</h2>
+        
+        <p>All products sold on <strong>PromptVaultUSA.shop</strong> are digital downloads delivered instantly via email and download link.</p>
+
+        <p><strong>All Sales Final:</strong> Due to the nature of digital goods, we do not offer refunds, returns, or exchanges once the download link has been sent or accessed. This policy complies with consumer law in the <strong>United States, United Kingdom, Australia, Canada, New Zealand, Singapore, Ireland, Philippines, Hong Kong, Chile, UAE, Switzerland, Norway, Malaysia, Mexico, Netherlands, Sweden, Denmark, South Africa, and Israel.</strong></p>
+
+        <p><strong>EU Right of Withdrawal:</strong> By purchasing, you consent to immediate delivery of digital content and acknowledge you lose your 14-day right of withdrawal per <strong>EU Directive 2011/83/EU</strong>. This specifically applies to customers in the <strong>Netherlands, Sweden, and Denmark.</strong></p>
+
+        <p><strong>Download Issues:</strong> If your file is corrupted or you did not receive the download link, email <strong>admin@promptvaultusa.shop</strong> within 7 days. We will resend the files or issue store credit at our discretion.</p>
+        
+        <div class="legal-footer-info">Last updated: April 18, 2026</div>
     </div>
 
     <div class="section" id="privacy">
         <h2>Privacy Policy</h2>
-        <p>We utilize Firebase and Google services for secure authentication and high-performance delivery. All transaction data is handled exclusively by PayPal.</p>
-    </div>
-
-    <div class="section" id="refunds">
-        <h2>Refund Policy</h2>
-        <p>Due to the irreversible nature of digital asset delivery, all sales at PromptVault USA are final. Technical support is available 24/7 for access issues.</p>
+        <p>We utilize <strong>Firebase</strong> and <strong>Google Cloud</strong> for secure authentication. Financial transactions are handled exclusively by <strong>PayPal</strong>. We do not store credit card information on our servers.</p>
     </div>
 
     <div class="section" id="terms">
         <h2>Terms of Service</h2>
-        <p>Usage of our vaults grants a non-exclusive license. Unauthorized redistribution of raw prompt chains is strictly prohibited.</p>
+        <p>Usage of our vaults grants a non-exclusive license. Unauthorized redistribution, reselling, or sharing of raw prompt chains is strictly prohibited and monitored.</p>
     </div>
 
-    <a href="https://promptvaultusa.shop/index.html#browse" class="btn-main" style="text-decoration:none; display:block; max-width:400px; margin: 40px auto 0;">← RETURN TO ASSET VAULT</a>
+    <a href="https://promptvaultusa.shop/index.html#browse" class="btn-main" style="text-decoration:none; display:block; max-width:400px; margin: 40px auto 0; text-align: center;">← RETURN TO ASSET VAULT</a>
 </div>
 
 <nav class="bottom-nav">
