@@ -10,169 +10,120 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        .blog-content { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 120px 20px 140px;
-            text-align: left; 
-        }
-
-        .blog-content h1 { 
-            font-size: clamp(2.2rem, 5vw, 3.5rem); 
-            margin-bottom: 25px; 
-            line-height: 1.1; 
-            font-weight: 800; 
-            color: white; 
-        }
-
-        .blog-content p { 
-            color: #94a3b8; 
-            font-size: 1.15rem; 
-            line-height: 1.9; 
-            margin-bottom: 30px; 
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: white;
-            font-weight: 800;
-            margin-top: 50px;
-            margin-bottom: 15px;
-        }
-
-        .tech-stack-container { 
-            margin-bottom: 25px; 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 8px; 
-        }
-
+        .blog-content { max-width: 800px; margin: 0 auto; padding: 120px 20px 160px; text-align: left; }
+        .blog-content h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 25px; line-height: 1.1; font-weight: 800; color: white; }
+        .blog-content p { color: #94a3b8; font-size: 1.15rem; line-height: 1.9; margin-bottom: 30px; }
+        
+        .section-title { font-size: 1.5rem; color: white; font-weight: 800; margin-top: 50px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        
+        /* Tech Stack Styling */
+        .tech-stack-container { margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 8px; }
         .tech-tag {
-            background: rgba(59, 130, 246, 0.1); 
-            color: #60a5fa;
-            padding: 6px 14px; 
-            border-radius: 8px; 
-            font-size: 0.75rem; 
-            font-weight: 800; 
-            border: 1px solid rgba(59, 130, 246, 0.2); 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            text-decoration: none;
+            background: rgba(59, 130, 246, 0.1); color: #60a5fa;
+            padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; 
+            font-weight: 800; border: 1px solid rgba(59, 130, 246, 0.2); 
+            text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
             transition: all 0.2s ease;
         }
-
-        .tech-tag:hover {
-            background: rgba(59,130,246,0.2);
-            color: white;
-        }
+        .tech-tag:hover { background: rgba(59,130,246,0.2); color: white; transform: translateY(-2px); }
 
         .did-you-know-card {
             background: linear-gradient(145deg, rgba(59, 130, 246, 0.1) 0%, rgba(15, 23, 42, 0.95) 100%);
             border: 1px solid var(--accent);
-            padding: 35px; 
-            border-radius: 24px; 
-            margin: 40px 0;
+            padding: 35px; border-radius: 24px; margin: 40px 0;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
         }
 
-        .cta-wrapper {
-            text-align:center; 
-            margin-top:60px;
-            position: relative;
-            z-index: 20000;
-        }
-
+        .cta-wrapper { text-align:center; margin-top:60px; position: relative; z-index: 20000; }
+        
         .bottom-nav {
-            position: fixed; 
-            bottom: 20px; 
-            left: 50%;
-            transform: translateX(-50%); 
-            display: flex;
-            justify-content: space-around; 
-            align-items: center; 
-            background: rgba(15, 23, 42, 0.9); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            padding: 12px 10px;
-            border-radius: 100px; 
-            width: 92%; 
-            max-width: 440px; 
-            z-index: 10000;
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%); display: flex;
+            justify-content: space-around; align-items: center; background: rgba(15, 23, 42, 0.9); 
+            border: 1px solid rgba(255,255,255,0.1); padding: 12px 10px;
+            border-radius: 100px; width: 92%; max-width: 440px; z-index: 10000;
             backdrop-filter: blur(10px);
         }
-
-        .nav-item { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            color: #94a3b8; 
-            text-decoration: none; 
-        }
-
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; }
         .nav-item.active { color: #3b82f6; }
+        .nav-item small { font-size: 0.65rem; margin-top: 5px; font-weight: 800; text-transform: uppercase; }
+        
+        strong a { color: var(--secondary); text-decoration: none; }
     </style>
 </head>
-
 <body>
+    <div class="spotlight"></div>
+    
+    <header>
+        <div class="header-wrap">
+            <div onclick="window.location.href='../index.html'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+                <img src="../logo.png" class="logo-box" alt="Logo">
+                <span style="font-weight:800; letter-spacing:-1.2px; color:white;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
+            </div>
+        </div>
+    </header>
 
-<article class="blog-content">
+    <article class="blog-content">
+        <div class="tech-stack-container">
+            <a href="https://chat.openai.com" target="_blank" class="tech-tag">ChatGPT</a>
+            <a href="https://gemini.google.com" target="_blank" class="tech-tag">Gemini</a>
+            <a href="https://www.meta.ai" target="_blank" class="tech-tag">Meta AI</a>
+            <a href="https://www.notion.so" target="_blank" class="tech-tag">Notion</a>
+            <a href="https://www.paypal.com" target="_blank" class="tech-tag">PayPal</a>
+        </div>
 
-    <!-- TECH STACK -->
-    <div class="tech-stack-container">
-        <a href="https://chat.openai.com" target="_blank" class="tech-tag">ChatGPT</a>
-        <a href="https://gemini.google.com" target="_blank" class="tech-tag">Gemini</a>
-        <a href="https://www.meta.ai" target="_blank" class="tech-tag">Meta AI</a>
-        <a href="https://www.notion.so" target="_blank" class="tech-tag">Notion</a>
-        <a href="https://www.paypal.com" target="_blank" class="tech-tag">PayPal</a>
-    </div>
+        <span class="sub-accent">Sovereign Origin: Post #018</span>
 
-    <h1>Bred from Grit, Built with AI</h1>
+        <h1>Bred from Grit, <span class="highlight-text">Built with AI</span>: The 20-Country Surge</h1>
 
-    <p>
-        PromptVault USA was built using modern AI systems and tools, enabling global reach without traditional barriers.
-    </p>
-
-    <!-- 🔥 ACKNOWLEDGMENT -->
-    <h2 class="section-title">Acknowledgment</h2>
-
-    <p>
-        This project stands on the foundation of powerful platforms that made independent creation possible.
-    </p>
-
-    <p>
-        With sincere appreciation to 
-        <a href="https://chat.openai.com" target="_blank"><strong>ChatGPT</strong></a>, 
-        <a href="https://gemini.google.com" target="_blank"><strong>Gemini</strong></a>, 
-        <a href="https://www.meta.ai" target="_blank"><strong>Meta AI</strong></a>, 
-        <a href="https://www.notion.so" target="_blank"><strong>Notion</strong></a>, 
-        and 
-        <a href="https://www.paypal.com" target="_blank"><strong>PayPal</strong></a>.
-    </p>
-
-    <p>
-        These technologies enabled the design, structure, and global operation of PromptVault USA—demonstrating what can be built through execution and modern AI systems.
-    </p>
-
-    <!-- PROOF -->
-    <div class="did-you-know-card">
         <p>
-            Verified in 20+ countries through Google Merchant Center using AI-assisted workflows.
+            PromptVault USA was built through persistence, experimentation, and the use of modern AI systems. 
+            What started as an idea evolved into a globally accessible platform without traditional barriers.
         </p>
-    </div>
 
-    <!-- CTA -->
-    <div class="cta-wrapper">
-        <button class="btn-main" onclick="window.location.href='../blog.html'" 
-        style="background:var(--accent); color:white; padding:20px 40px; border-radius:15px; border:none; font-weight:800; cursor:pointer;">
-        Read Future Posts
-        </button>
-    </div>
+        <h2 class="section-title">Acknowledgment</h2>
 
-</article>
+        <p>
+            This project would not have been possible without the platforms and technologies that enabled its creation and growth.
+        </p>
 
-<nav class="bottom-nav">
-    <a class="nav-item" href="../index.html">🏠<small>Home</small></a>
-    <a class="nav-item active" href="../blog.html">📖<small>Blog</small></a>
-</nav>
+        <p>
+            Special acknowledgment is given to 
+            <a href="https://chat.openai.com" target="_blank"><strong>ChatGPT</strong></a>, 
+            <a href="https://gemini.google.com" target="_blank"><strong>Gemini</strong></a>, 
+            <a href="https://www.meta.ai" target="_blank"><strong>Meta AI</strong></a>, 
+            <a href="https://www.notion.so" target="_blank"><strong>Notion</strong></a>, 
+            and 
+            <a href="https://www.paypal.com" target="_blank"><strong>PayPal</strong></a>.
+        </p>
 
+        <p>
+            These systems made it possible to design, build, organize, and operate PromptVault USA across borders. 
+            Their role in enabling independent creators continues to shape what can be built without traditional resources.
+        </p>
+
+        <div class="did-you-know-card">
+            <h3 style="color:white; margin-top:0;">Global Milestone</h3>
+            <p style="color:#cbd5e1; margin-bottom:0;">
+                PromptVault USA is now <strong>Google Merchant Center verified in 20+ countries</strong>, 
+                built using AI-assisted workflows and global-ready infrastructure.
+            </p>
+        </div>
+
+        <div class="cta-wrapper">
+            <button class="btn-main" onclick="window.location.href='../blog.html'" 
+            style="background:var(--accent); color:white; padding:20px 40px; border-radius:15px; border:none; font-weight:800; cursor:pointer; width: 100%; max-width: 350px;">
+            Read Future Intelligence Posts
+            </button>
+        </div>
+
+    </article>
+
+    <nav class="bottom-nav">
+        <a class="nav-item" href="../index.html"><span>🏠</span><small>Home</small></a>
+        <a class="nav-item" href="../index.html?action=browse"><span>⊞</span><small>Vaults</small></a>
+        <a class="nav-item active" href="../blog.html"><span>📖</span><small>Blog</small></a>
+        <a class="nav-item" href="../index.html?page=library"><span>👤</span><small>Library</small></a>
+    </nav>
 </body>
 </html>
