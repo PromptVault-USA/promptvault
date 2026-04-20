@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate sitemap.xml
         run: |
-          cat > generate-sitemap.js << 'EOF'
+          cat > generate-sitemap.js << 'JSEOF'
           const fs = require('fs');
           const path = require('path');
 
@@ -39,7 +39,6 @@ jobs:
 
           const urls = [];
 
-          // 1. Root pages with custom priorities
           const rootPages = [
             { file: 'index.html', priority: '1.0', changefreq: 'daily' },
             { file: 'blog.html', priority: '0.8', changefreq: 'daily' },
@@ -57,7 +56,6 @@ jobs:
             }
           });
 
-          // 2. All /vault/ product pages - priority 0.9
           if (fs.existsSync('vault')) {
             fs.readdirSync('vault')
              .filter(file => file.endsWith('.html'))
@@ -72,7 +70,6 @@ jobs:
               });
           }
 
-          // 3. All /blog/ posts - priority 0.7 
           if (fs.existsSync('blog')) {
             fs.readdirSync('blog')
              .filter(file => file.endsWith('.html') &&!file.startsWith('template'))
@@ -87,28 +84,19 @@ jobs:
               });
           }
 
-          // 4. Build XML
-          let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+          let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
           urls.forEach(u => {
-            xml += `
-  <url>
-    <loc>${u.loc}</loc>
-    <lastmod>${u.lastmod}</lastmod>
-    <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
-  </url>`;
+            xml += `\n <url>\n <loc>${u.loc}</loc>\n <lastmod>${u.lastmod}</lastmod>\n <changefreq>${u.changefreq}</changefreq>\n <priority>${u.priority}</priority>\n </url>`;
           });
 
-          xml += `
-</urlset>`;
+          xml += '\n</urlset>';
 
           fs.writeFileSync('sitemap.xml', xml);
           console.log(`Generated sitemap.xml with ${urls.length} URLs`);
           console.log(`Vault pages: ${urls.filter(u => u.loc.includes('/vault/')).length}`);
           console.log(`Blog pages: ${urls.filter(u => u.loc.includes('/blog/')).length}`);
-          EOF
+          JSEOF
 
           node generate-sitemap.js
 
