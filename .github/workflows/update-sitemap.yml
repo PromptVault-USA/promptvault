@@ -15,7 +15,7 @@ jobs:
   sitemap:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # <-- ADD THIS LINE
     permissions:
       contents: write
     
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '24' # <-- CHANGE THIS TO 24
 
       - name: Generate sitemap.xml
         run: |
@@ -60,9 +60,9 @@ jobs:
 
           if (fs.existsSync('vault')) {
             fs.readdirSync('vault')
-            .filter(file => file.endsWith('.html'))
-            .sort()
-            .forEach(file => {
+           .filter(file => file.endsWith('.html'))
+           .sort()
+           .forEach(file => {
                 urls.push({
                   loc: `${DOMAIN}/vault/${file}`,
                   lastmod: TODAY,
@@ -74,9 +74,9 @@ jobs:
 
           if (fs.existsSync('blog')) {
             fs.readdirSync('blog')
-            .filter(file => file.endsWith('.html') &&!file.startsWith('template'))
-            .sort()
-            .forEach(file => {
+           .filter(file => file.endsWith('.html') &&!file.startsWith('template'))
+           .sort()
+           .forEach(file => {
                 urls.push({
                   loc: `${DOMAIN}/blog/${file}`,
                   lastmod: TODAY,
