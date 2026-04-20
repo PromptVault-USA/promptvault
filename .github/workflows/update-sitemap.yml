@@ -1,0 +1,99 @@
+name: Auto Update Sitemap
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'blog/**.html'
+      - 'index.html'
+      - 'products/**.html'
+  workflow_dispatch: # lets you run it manually too
+
+jobs:
+  sitemap:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to commit sitemap back
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate sitemap.xml
+        run: |
+          cat > generate-sitemap.js << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+
+          const DOMAIN = 'https://promptvaultusa.shop';
+          const TODAY = new Date().toISOString().split('T')[0];
+
+          // 1. Find all HTML files to include
+          const files = [];
+          
+          // Add root pages
+          ['index.html', 'blog.html', 'products.html'].forEach(f => {
+            if (fs.existsSync(f)) files.push({ loc: f, priority: '1.0' });
+          });
+
+          // Add all blog posts
+          if (fs.existsSync('blog')) {
+            fs.readdirSync('blog').forEach(file => {
+              if (file.endsWith('.html') &&!file.startsWith('template')) {
+                files.push({ loc: `blog/${file}`, priority: '0.8' });
+              }
+            });
+          }
+
+          // Add product pages if you have them
+          if (fs.existsSync('products')) {
+            fs.readdirSync('products').forEach(file => {
+              if (file.endsWith('.html')) {
+                files.push({ loc: `products/${file}`, priority: '0.9' });
+              }
+            });
+          }
+
+          // 2. Build XML
+          let xml = `<?xml version="1.0" encoding="UTF-8"?>
+          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+          files.forEach(f => {
+            const url = f.loc === 'index.html'? DOMAIN : `${DOMAIN}/${f.loc}`;
+            xml += `
+            <url>
+              <loc>${url}</loc>
+              <lastmod>${TODAY}</lastmod>
+              <changefreq>weekly</changefreq>
+              <priority>${f.priority}</priority>
+            </url>`;
+          });
+
+          xml += `
+          </urlset>`;
+
+          // 3. Write sitemap.xml
+          fs.writeFileSync('sitemap.xml', xml.trim());
+          console.log(`Generated sitemap.xml with ${files.length} URLs`);
+          EOF
+
+          node generate-sitemap.js
+
+      - name: Commit sitemap if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          if git diff --staged --quiet; then
+            echo "No sitemap changes"
+          else
+            git commit -m "Auto-update sitemap.xml [skip ci]"
+            git push
+          fi
