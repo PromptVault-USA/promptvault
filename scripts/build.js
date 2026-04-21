@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 
 const csv = fs.readFileSync('products.csv', 'utf8').trim().split('\n');
 const headers = csv[0].split(',');
@@ -10,10 +9,9 @@ const rows = csv.slice(1);
 
 rows.forEach(row => {
   if (!row) return;
-  // Handles quotes and commas properly
   const values = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(v => v.replace(/^"|"$/g, ''));
   const data = {};
-  headers.forEach((h, i) => data[h.trim()] = values[i]);
+  headers.forEach((h, i) => data[h.trim()] = values[i] || '');
 
   let html = template;
   Object.keys(data).forEach(key => {
