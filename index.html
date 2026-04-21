@@ -162,7 +162,6 @@
 
             vault: {
                 async load() {
-                    // STEP 2 & 3: FETCH FROM CSV INSTEAD OF JSON
                     Papa.parse('/products.csv', {
                         download: true,
                         header: true,
@@ -171,7 +170,9 @@
                             PV.state.products = results.data.map(p => ({
                                 id: p.gmc_id || p.id,
                                 name: p.title || p.name,
-                                price: parseFloat(p.price) || 0,
+                                // Fix #1: Map active price to sale_price and keep price as old_price
+                                price: parseFloat(p.sale_price) || parseFloat(p.price) || 0,
+                                old_price: parseFloat(p.price) || 0,
                                 desc: p.og_description || p.desc,
                                 slug: p.slug,
                                 img: p.img
@@ -202,7 +203,10 @@
                                     <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:15px; line-height:1.5;">${p.desc || "Professional AI asset vault."}</p>
                                 </div>
                                 <div class="product-footer">
-                                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
+                                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">
+                                        ${p.old_price && p.old_price > p.price ? `<span style="text-decoration:line-through;color:#8892b0;font-size:1rem;margin-right:8px;">$${p.old_price.toFixed(2)}</span>` : ''}
+                                        $${p.price.toFixed(2)}
+                                    </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                                         <button onclick="PV.checkout.direct('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem; font-weight:700;">Buy Now</button>
                                         <button onclick="PV.checkout.add('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem; font-weight:600;">+ Cart</button>
