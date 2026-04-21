@@ -1,6 +1,7 @@
 [
   {
     "id": "niche_001",
+    "gmc_id": "5080295845",
     "name": "Real Estate Lead Generation",
     "price": 15.00,
     "category": "Real Estate",
@@ -11,6 +12,7 @@
   },
   {
     "id": "niche_002",
+    "gmc_id": "6510434386",
     "name": "Freelancer Client Acquisition",
     "price": 15.00,
     "category": "Business",
@@ -21,6 +23,7 @@
   },
   {
     "id": "niche_003",
+    "gmc_id": "PV003",
     "name": "TikTok Affiliate Marketing",
     "price": 15.00,
     "category": "Marketing",
@@ -31,6 +34,7 @@
   },
   {
     "id": "niche_004",
+    "gmc_id": "PV004",
     "name": "YouTube Automation",
     "price": 15.00,
     "category": "Video",
@@ -41,6 +45,7 @@
   },
   {
     "id": "niche_005",
+    "gmc_id": "PV005",
     "name": "E-commerce Product Descriptions",
     "price": 15.00,
     "category": "E-commerce",
@@ -51,6 +56,7 @@
   },
   {
     "id": "niche_006",
+    "gmc_id": "PV006",
     "name": "Copywriting Sales Pages",
     "price": 15.00,
     "category": "Copywriting",
@@ -61,6 +67,7 @@
   },
   {
     "id": "niche_007",
+    "gmc_id": "PV007",
     "name": "Email Marketing Campaigns",
     "price": 15.00,
     "category": "Marketing",
@@ -71,6 +78,7 @@
   },
   {
     "id": "niche_008",
+    "gmc_id": "PV008",
     "name": "Instagram Growth",
     "price": 15.00,
     "category": "Marketing",
@@ -81,6 +89,7 @@
   },
   {
     "id": "niche_009",
+    "gmc_id": "PV009",
     "name": "Facebook Ads Copy",
     "price": 15.00,
     "category": "Ads",
@@ -91,6 +100,7 @@
   },
   {
     "id": "niche_010",
+    "gmc_id": "PV010",
     "name": "Personal Branding",
     "category": "Business",
     "price": 15.00,
@@ -101,6 +111,7 @@
   },
   {
     "id": "niche_011",
+    "gmc_id": "PV011",
     "name": "Resume & Job Applications",
     "category": "Career",
     "price": 15.00,
@@ -111,6 +122,7 @@
   },
   {
     "id": "niche_012",
+    "gmc_id": "PV012",
     "name": "Startup Pitch Decks",
     "category": "Business",
     "price": 15.00,
@@ -121,6 +133,7 @@
   },
   {
     "id": "niche_013",
+    "gmc_id": "PV013",
     "name": "Blog Content Creation",
     "category": "Writing",
     "price": 15.00,
@@ -131,6 +144,7 @@
   },
   {
     "id": "niche_014",
+    "gmc_id": "PV014",
     "name": "SEO Optimization",
     "category": "SEO",
     "price": 15.00,
@@ -141,6 +155,7 @@
   },
   {
     "id": "niche_015",
+    "gmc_id": "PV015",
     "name": "Podcast Scripts",
     "category": "Audio",
     "price": 15.00,
@@ -151,6 +166,7 @@
   },
   {
     "id": "niche_016",
+    "gmc_id": "PV016",
     "name": "Online Course Creation",
     "category": "Education",
     "price": 15.00,
@@ -161,6 +177,7 @@
   },
   {
     "id": "niche_017",
+    "gmc_id": "PV017",
     "name": "Digital Product Sales",
     "category": "E-commerce",
     "price": 15.00,
@@ -171,6 +188,7 @@
   },
   {
     "id": "niche_018",
+    "gmc_id": "PV018",
     "name": "AI Art Generation",
     "category": "Creative",
     "price": 15.00,
@@ -181,6 +199,7 @@
   },
   {
     "id": "niche_019",
+    "gmc_id": "PV019",
     "name": "Midjourney Prompt Pack",
     "category": "Creative",
     "price": 15.00,
@@ -191,6 +210,7 @@
   },
   {
     "id": "niche_020",
+    "gmc_id": "PV020",
     "name": "Chatbot Scripts",
     "category": "Tech",
     "price": 15.00,
@@ -201,6 +221,7 @@
   },
   {
     "id": "niche_021",
+    "gmc_id": "PV021",
     "name": "Customer Support Replies",
     "category": "Business",
     "price": 15.00,
@@ -211,6 +232,7 @@
   },
   {
     "id": "niche_022",
+    "gmc_id": "PV022",
     "name": "Cold Email Outreach",
     "category": "Sales",
     "price": 15.00,
@@ -221,6 +243,7 @@
   },
   {
     "id": "niche_023",
+    "gmc_id": "PV023",
     "name": "LinkedIn Networking",
     "category": "Career",
     "price": 15.00,
