@@ -13,6 +13,10 @@ rows.forEach(row => {
   const data = {};
   headers.forEach((h, i) => data[h.trim()] = values[i] || '');
 
+  // >>> NEW LINE ADDED HERE <<<
+  // This adds?custom=niche_001 to your PayPal link so Firebase knows what they bought
+  data['PAYLINK'] = `${data['paylink']}?custom=${data['id']}`;
+
   let html = template;
   Object.keys(data).forEach(key => {
     html = html.replaceAll(`{{${key.toUpperCase()}}}`, data[key]);
