@@ -4,37 +4,48 @@
     const gmcId = params.get('product');
     if (!gmcId) return;
 
-    // Fetch your updated product database
     const res = await fetch('/products.json');
     const products = await res.json();
-
-    // Find matching product by GMC ID
     const product = products.find(p => p.gmc_id === gmcId);
+    
     if (!product) {
       console.warn(`GMC ID ${gmcId} not found in products.json`);
       return;
     }
-    
+
     const mappedId = product.id;
 
-    // Force URL to /vault with mapped ID - THIS IS THE FIX
+    // Force URL to /vault with mapped ID
     params.set('product', mappedId);
     const newUrl = `/vault?${params.toString()}`;
-    window.history.replaceState({}, '', newUrl);
+    
+    if (window.location.pathname + window.location.search !== newUrl) {
+      window.history.replaceState({}, '', newUrl);
+    }
 
-    // Ensure the page is ready before scrolling
-    window.addEventListener('DOMContentLoaded', () => {
-      // Trigger the 'vault' view if your app uses a router
-      if (window.PV && PV.router) {
-        PV.router.go('vault'); // Changed from 'browse' to 'vault'
+    // Show the browse page + scroll - THIS IS THE FIX
+    const showAndScroll = () => {
+      // Your app uses changePage, not PV.router
+      if (window.changePage) {
+        window.changePage('browse', null); // 'browse' is your product page ID
       }
-
-      // Smooth scroll to the specific product card
+      
       setTimeout(() => {
         const el = document.querySelector(`[data-id="${mappedId}"]`);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 1000);
-    });
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.style.outline = '2px solid #00ff88';
+          setTimeout(() => el.style.outline = '', 2000);
+        }
+      }, 1200); // Give app time to render products
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', showAndScroll);
+    } else {
+      showAndScroll();
+    }
+
   } catch (e) {
     console.error("Auto Router Error:", e);
   }
