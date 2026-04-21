@@ -17,23 +17,23 @@
     
     const mappedId = product.id;
 
-    // Update URL to site ID without reload (SEO friendly)
+    // Force URL to /vault with mapped ID - THIS IS THE FIX
     params.set('product', mappedId);
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    const newUrl = `/vault?${params.toString()}`;
     window.history.replaceState({}, '', newUrl);
 
     // Ensure the page is ready before scrolling
     window.addEventListener('DOMContentLoaded', () => {
-      // Trigger the 'browse' view if your app uses a router
+      // Trigger the 'vault' view if your app uses a router
       if (window.PV && PV.router) {
-        PV.router.go('browse');
+        PV.router.go('vault'); // Changed from 'browse' to 'vault'
       }
-      
+
       // Smooth scroll to the specific product card
       setTimeout(() => {
         const el = document.querySelector(`[data-id="${mappedId}"]`);
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 1000); // Increased to 1s for better reliability on PH mobile networks
+      }, 1000);
     });
   } catch (e) {
     console.error("Auto Router Error:", e);
