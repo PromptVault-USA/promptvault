@@ -13,9 +13,13 @@ rows.forEach(row => {
   const data = {};
   headers.forEach((h, i) => data[h.trim()] = values[i] || '');
 
-  // >>> NEW LINE ADDED HERE <<<
-  // This adds?custom=niche_001 to your PayPal link so Firebase knows what they bought
+  // Pass product ID to PayPal for Firebase
   data['PAYLINK'] = `${data['paylink']}?custom=${data['id']}`;
+
+  // >>> SALE LOGIC ADDED HERE <<<
+  const hasSale = data['sale_price'] && data['sale_price'].trim()!== '';
+  data['DISPLAYPRICE'] = hasSale? data['sale_price'] : data['price'];
+  data['OLDPRICE'] = hasSale? `$${data['price']}` : '';
 
   let html = template;
   Object.keys(data).forEach(key => {
