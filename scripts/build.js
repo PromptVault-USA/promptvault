@@ -20,6 +20,7 @@ rows.forEach(row => {
   const hasSale = data['sale_price'] && data['sale_price'].trim()!== '';
   data['DISPLAYPRICE'] = hasSale? data['sale_price'] : data['price'];
   data['OLDPRICE'] = hasSale? `$${data['price']}` : '';
+  data['SLUG'] = data['slug']; // <-- ADDED FOR GMC SCHEMA
 
   let html = template;
   Object.keys(data).forEach(key => {
