@@ -106,7 +106,7 @@ window.renderProducts = (productsToDisplay) => {
         const pData = encodeURIComponent(JSON.stringify({...p, img: absoluteImg}));
         
         return `
-            <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; transition: 0.3s transform;">
+            <div class="product-card" data-id="${p.id}" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; transition: 0.3s transform;">
                 <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
                     <img src="${absoluteImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400?text=AI+Vault'">
                 </div>
