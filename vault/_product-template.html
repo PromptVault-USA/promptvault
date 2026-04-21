@@ -9,6 +9,35 @@
   <meta property="og:description" content="{{DESC}}">
   <meta property="og:image" content="https://promptvaultusa.shop/{{IMG}}">
   <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- GMC / Google Shopping Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{NAME}}",
+    "description": "{{DESC}}",
+    "image": "https://promptvaultusa.shop/{{IMG}}",
+    "sku": "{{ID}}",
+    "mpn": "{{GMC_ID}}",
+    "brand": {
+      "@type": "Brand",
+      "name": "PromptVault USA"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://promptvaultusa.shop/vault/{{SLUG}}.html",
+      "priceCurrency": "USD",
+      "price": "{{DISPLAYPRICE}}",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "PromptVault USA"
+      }
+    }
+  }
+  </script>
+  
   <style>
     * {
       margin: 0;
@@ -76,7 +105,6 @@
       align-items: center;
       gap: 1rem;
     }
-    /* SALE: Added for strikethrough pricing */
     .old-price {
       text-decoration: line-through;
       color: #8892b0;
