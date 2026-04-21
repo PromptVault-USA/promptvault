@@ -51,10 +51,10 @@ document.addEventListener("DOMContentLoaded", function() {
         <a href="https://promptvaultusa.shop/index.html#library" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">👤<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Library</small></a>
       </div>
       <div style="display: flex; justify-content: center; gap: 16px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
-        <a href="https://promptvaultusa.shop/terms.html" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Terms</a>
-        <a href="https://promptvaultusa.shop/privacy.html" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Privacy</a>
-        <a href="https://promptvaultusa.shop/refund.html" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Refund</a>
-        <a href="https://promptvaultusa.shop/contact.html" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Contact</a>
+        <a href="https://promptvaultusa.shop/legal.html#terms" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Terms</a>
+        <a href="https://promptvaultusa.shop/legal.html#privacy" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Privacy</a>
+        <a href="https://promptvaultusa.shop/legal.html#refund" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Refund</a>
+        <a href="https://promptvaultusa.shop/legal.html#contact" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Contact</a>
       </div>
     </nav>`;
   
