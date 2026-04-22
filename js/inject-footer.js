@@ -39,44 +39,71 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // 2. THE MOBILE CLICK FIX
-  document.body.style.paddingBottom = "180px";
+  document.body.style.paddingBottom = "200px";
 
-  // 3. ***NEW*** INJECT GMC COMPLIANCE TERMS UNDER BUY NOW BUTTONS
+  // 3. ***UPDATED*** INJECT GMC TERMS UNDER ALL BUY NOW BUTTONS - GRID + PRODUCT PAGES
   function injectBuyButtonTerms() {
-    // Only run on vault/product pages
-    if (!path.includes('/vault/')) return;
-    
-    // Find all Buy Now buttons - covers .btn-main, PayPal links, etc
+    // Target all Buy Now buttons on grid cards AND product pages
     const buyButtons = document.querySelectorAll('.btn-main, button[onclick*="paypal"], a[href*="paypal"]');
     
     buyButtons.forEach(button => {
-      // Skip if already injected or not a buy button
-      if (button.nextElementSibling && button.nextElementSibling.classList.contains('gmc-terms-box')) return;
-      if (!button.textContent.toLowerCase().includes('buy') && !button.textContent.toLowerCase().includes('purchase')) return;
+      const btnText = button.textContent.toLowerCase();
+      // Only target actual buy buttons
+      if (!btnText.includes('buy') && !btnText.includes('purchase')) return;
+      
+      // Check if terms already injected after this button or in parent card
+      const parentCard = button.closest('.vault-card, .product-card, .glass-card');
+      if (parentCard && parentCard.querySelector('.gmc-terms-micro')) return;
       
       const termsBox = document.createElement('div');
-      termsBox.className = 'gmc-terms-box';
-      termsBox.style.cssText = `
-        margin-top: 16px;
-        margin-bottom: 8px;
-        padding: 12px;
-        background: rgba(100,255,218,0.05);
-        border: 1px solid rgba(100,255,218,0.2);
-        border-radius: 12px;
-        font-size: 0.8rem;
-        line-height: 1.6;
-        color: #94a3b8;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-      `;
-      termsBox.innerHTML = `
-        <strong style="color:#64ffda;">Digital Product Terms:</strong><br>
-        ✓ Instant download via email after PayPal payment<br>
-        ✓ No physical shipping • Delivered in 1-5 minutes<br>
-        ✓ All sales final due to digital nature per <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">Refund Policy</a><br>
-        ✓ By purchasing, you agree to <a href="/legal.html#terms" style="color:#64ffda; text-decoration:underline;">Terms of Service</a>
-      `;
+      termsBox.className = 'gmc-terms-micro';
       
-      button.parentNode.insertBefore(termsBox, button.nextSibling);
+      // Smaller version for grid cards, full version for product pages
+      const isGridCard = path.includes('index.html') || path === '/' || document.querySelector('.vault-grid');
+      
+      if (isGridCard) {
+        // COMPACT VERSION FOR GRID CARDS
+        termsBox.style.cssText = `
+          margin-top: 8px;
+          font-size: 0.65rem;
+          line-height: 1.4;
+          color: #64748b;
+          text-align: center;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        `;
+        termsBox.innerHTML = `
+          Digital Download • No Shipping • <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">All Sales Final</a>
+        `;
+      } else {
+        // FULL VERSION FOR PRODUCT PAGES
+        termsBox.style.cssText = `
+          margin-top: 16px;
+          margin-bottom: 8px;
+          padding: 12px;
+          background: rgba(100,255,218,0.05);
+          border: 1px solid rgba(100,255,218,0.2);
+          border-radius: 12px;
+          font-size: 0.8rem;
+          line-height: 1.6;
+          color: #94a3b8;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        `;
+        termsBox.innerHTML = `
+          <strong style="color:#64ffda;">Digital Product Terms:</strong><br>
+          ✓ Instant download via email after PayPal payment<br>
+          ✓ No physical shipping • Delivered in 1-5 minutes<br>
+          ✓ All sales final due to digital nature per <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">Refund Policy</a><br>
+          ✓ By purchasing, you agree to <a href="/legal.html#terms" style="color:#64ffda; text-decoration:underline;">Terms of Service</a>
+        `;
+      }
+      
+      // Insert after button container for grid, after button for product page
+      if (isGridCard) {
+        const btnContainer = button.parentElement;
+        btnContainer.parentNode.insertBefore(termsBox, btnContainer.nextSibling);
+      } else {
+        button.parentNode.insertBefore(termsBox, button.nextSibling);
+      }
     });
   }
 
@@ -97,19 +124,18 @@ document.addEventListener("DOMContentLoaded", function() {
         <a href="https://promptvaultusa.shop/legal.html#contact" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Contact</a>
       </div>
       <div style="text-align:center; font-size:0.6rem; color:#475569; margin-top:4px;">
-        PromptVault USA • Cebu City, PH • Not affiliated with OpenAI
+        PromptVault USA • Cebu City, PH • Not affiliated with OpenAI • GDPR Compliant
       </div>
     </nav>`;
 
-  // Check if nav already exists before injecting
   if (!document.querySelector('.bottom-nav')) {
     document.body.insertAdjacentHTML('beforeend', navHTML);
   }
 
-  // 5. RUN TERMS INJECTION
+  // 5. RUN TERMS INJECTION + RERUN FOR DYNAMIC CONTENT
   injectBuyButtonTerms();
-  // Re-run after 1s for dynamic content
   setTimeout(injectBuyButtonTerms, 1000);
+  setTimeout(injectBuyButtonTerms, 3000); // Extra run for slow loads
 
   // 6. AUTO-BROWSE & FORCED JUMP LOGIC
   if (urlParams.get('action') === 'browse') {
