@@ -13,41 +13,54 @@
 </form>
 
 <div id="error" style="color:red;margin-top:20px;display:none;"></div>
+<div id="debug" style="color:#666;font-size:11px;margin-top:20px;text-align:left;word-break:break-all;"></div>
 
 <script>
 async function setupCheckout(){
   const params = new URLSearchParams(window.location.search);
-  const itemId = params.get('item');
+  const itemId = params.get('item')?.trim();
   const errorDiv = document.getElementById('error');
+  const debugDiv = document.getElementById('debug');
 
   if(!itemId){
     document.getElementById('packName').innerText='Error';
-    errorDiv.innerText='No product selected. Go back and click a Buy button.';
+    errorDiv.innerText='No product selected.';
     errorDiv.style.display='block';
     document.getElementById('ppForm').style.display='none';
     return;
   }
 
   try {
-    // Changed to full URL - this fixes custom domain issues
-    const res = await fetch('https://promptvaultusa.shop/products.csv');
+    const res = await fetch('https://promptvaultusa.shop/products.csv?t=' + Date.now()); // cache bust
     if(!res.ok) throw new Error('CSV not found');
 
     const text = await res.text();
     const rows = text.trim().split('\n').filter(r=>r);
-    const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
+    
+    // Clean function: removes quotes, spaces, BOM
+    const clean = (s) => s.replace(/^\uFEFF/, '').replace(/^["']|["']$/g, '').trim();
+    
+    const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
     const idIdx = headers.indexOf('id');
     const nameIdx = headers.indexOf('name');
+    
+    if(idIdx === -1) throw new Error('No "id" column. Headers: ' + headers.join(', '));
 
-    if(idIdx === -1) throw new Error('CSV has no "id" column');
+    const allIds = rows.slice(1).map((r,i) => {
+      const cols = r.split(',').map(clean);
+      return `"${cols[idIdx]}"`;
+    });
+    
+    debugDiv.innerHTML = `Searching for: "${itemId}"<br>First 5 IDs in CSV: ${allIds.slice(0,5).join(', ')}`;
 
-    const packRow = rows.slice(1).map(r => r.split(',').map(c => c.trim())).find(r => r[idIdx] === itemId);
+    const packRow = rows.slice(1).map(r => r.split(',').map(clean)).find(r => r[idIdx] === itemId);
 
     if(packRow){
       document.getElementById('packName').innerText = packRow[nameIdx] || 'Prompt Pack';
       document.getElementById('returnUrl').value = `${window.location.origin}/thanks.html?item=${itemId}`;
+      debugDiv.innerHTML += '<br><span style="color:green">MATCH FOUND!</span>';
     } else {
-      throw new Error(`ID "${itemId}" not found in CSV`);
+      throw new Error(`ID "${itemId}" not found. Check quotes/spaces in CSV.`);
     }
   } catch(e) {
     document.getElementById('packName').innerText='Error loading product';
