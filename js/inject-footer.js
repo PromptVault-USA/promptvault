@@ -34,35 +34,35 @@ document.addEventListener("DOMContentLoaded", function() {
         </a>
       </div>`;
   }
-  if (backButtonHTML) {
+  if (backButtonHTML && !document.querySelector('[href*="action=browse"]')) {
     document.body.insertAdjacentHTML('afterbegin', backButtonHTML);
   }
 
   // 2. THE MOBILE CLICK FIX
   document.body.style.paddingBottom = "200px";
 
-  // 3. ***UPDATED*** INJECT GMC TERMS UNDER ALL BUY NOW BUTTONS - GRID + PRODUCT PAGES
+  // 3. INJECT GMC TERMS UNDER BUY NOW - DUPLICATE SAFE VERSION
   function injectBuyButtonTerms() {
-    // Target all Buy Now buttons on grid cards AND product pages
     const buyButtons = document.querySelectorAll('.btn-main, button[onclick*="paypal"], a[href*="paypal"]');
     
-    buyButtons.forEach(button => {
+    buyButtons.forEach((button, index) => {
       const btnText = button.textContent.toLowerCase();
-      // Only target actual buy buttons
       if (!btnText.includes('buy') && !btnText.includes('purchase')) return;
       
-      // Check if terms already injected after this button or in parent card
-      const parentCard = button.closest('.vault-card, .product-card, .glass-card');
-      if (parentCard && parentCard.querySelector('.gmc-terms-micro')) return;
+      // ***DUPLICATE CHECK*** - Skip if terms already exist in this card/page
+      const parentCard = button.closest('.vault-card, .product-card, .glass-card, body');
+      if (parentCard.querySelector('.gmc-terms-box, .gmc-terms-micro')) return;
+      
+      // ***ID CHECK*** - Ensure we only inject once per button
+      if (button.dataset.gmcTermsInjected === 'true') return;
+      button.dataset.gmcTermsInjected = 'true';
       
       const termsBox = document.createElement('div');
-      termsBox.className = 'gmc-terms-micro';
-      
-      // Smaller version for grid cards, full version for product pages
-      const isGridCard = path.includes('index.html') || path === '/' || document.querySelector('.vault-grid');
+      const isGridCard = path.includes('index.html') || path === '/' || !!document.querySelector('.vault-grid');
       
       if (isGridCard) {
         // COMPACT VERSION FOR GRID CARDS
+        termsBox.className = 'gmc-terms-micro';
         termsBox.style.cssText = `
           margin-top: 8px;
           font-size: 0.65rem;
@@ -71,11 +71,16 @@ document.addEventListener("DOMContentLoaded", function() {
           text-align: center;
           font-family: 'Plus Jakarta Sans', sans-serif;
         `;
-        termsBox.innerHTML = `
-          Digital Download • No Shipping • <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">All Sales Final</a>
-        `;
+        termsBox.innerHTML = `Digital Download • No Shipping • <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">All Sales Final</a>`;
+        
+        // For grid: inject after the button's parent container
+        const btnContainer = button.closest('div');
+        if (btnContainer) {
+          btnContainer.parentNode.insertBefore(termsBox, btnContainer.nextSibling);
+        }
       } else {
-        // FULL VERSION FOR PRODUCT PAGES
+        // FULL VERSION FOR PRODUCT PAGES - ONLY ONE ALLOWED
+        termsBox.className = 'gmc-terms-box';
         termsBox.style.cssText = `
           margin-top: 16px;
           margin-bottom: 8px;
@@ -95,19 +100,12 @@ document.addEventListener("DOMContentLoaded", function() {
           ✓ All sales final due to digital nature per <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">Refund Policy</a><br>
           ✓ By purchasing, you agree to <a href="/legal.html#terms" style="color:#64ffda; text-decoration:underline;">Terms of Service</a>
         `;
-      }
-      
-      // Insert after button container for grid, after button for product page
-      if (isGridCard) {
-        const btnContainer = button.parentElement;
-        btnContainer.parentNode.insertBefore(termsBox, btnContainer.nextSibling);
-      } else {
         button.parentNode.insertBefore(termsBox, button.nextSibling);
       }
     });
   }
 
-  // 4. INJECT THE MASTER BOTTOM NAV + LEGAL LINKS + BUSINESS INFO
+  // 4. INJECT THE MASTER BOTTOM NAV + LEGAL LINKS
   const navHTML = `
     <nav class="bottom-nav" style="position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 16px; width: 92%; max-width: 440px; z-index: 20000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
       <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -132,10 +130,8 @@ document.addEventListener("DOMContentLoaded", function() {
     document.body.insertAdjacentHTML('beforeend', navHTML);
   }
 
-  // 5. RUN TERMS INJECTION + RERUN FOR DYNAMIC CONTENT
+  // 5. RUN INJECTION ONCE - No more duplicates
   injectBuyButtonTerms();
-  setTimeout(injectBuyButtonTerms, 1000);
-  setTimeout(injectBuyButtonTerms, 3000); // Extra run for slow loads
 
   // 6. AUTO-BROWSE & FORCED JUMP LOGIC
   if (urlParams.get('action') === 'browse') {
