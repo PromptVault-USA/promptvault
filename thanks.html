@@ -29,27 +29,31 @@ async function deliverPack(){
     const text = await res.text();
     const rows = text.trim().split('\n').filter(r=>r);
     
-    // Same cleaning function from checkout.html - strips quotes, spaces, BOM
     const clean = (s) => s.replace(/^\uFEFF/, '').replace(/^["']|["']$/g, '').trim();
-    
     const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
+    
     const idIdx = headers.indexOf('id');
-    const linkIdx = headers.indexOf('drivelink');
+    // Checks for driveLink, link, or download - whichever you used
+    const linkIdx = headers.findIndex(h => ['drivelink','link','download'].includes(h));
     const nameIdx = headers.indexOf('name');
     
-    if(idIdx === -1 || linkIdx === -1) throw new Error('CSV missing id or link column');
+    if(idIdx === -1 || linkIdx === -1) throw new Error('CSV missing id or driveLink column');
 
     const packRow = rows.slice(1).map(r => r.split(',').map(clean)).find(r => r[idIdx] === itemId);
 
     if(packRow && packRow[linkIdx]){
-      const downloadUrl = packRow[linkIdx];
-      const packName = packRow[nameIdx] || 'Your Pack';
+      let downloadUrl = packRow[linkIdx];
       
+      // Auto-convert Google Drive view links to download links
+      const driveMatch = downloadUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if(driveMatch){
+        downloadUrl = `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+      }
+      
+      const packName = packRow[nameIdx] || 'Your Pack';
       statusEl.innerHTML = `Thanks! Your download for <strong>${packName}</strong> should start automatically.`;
       linkEl.href = downloadUrl;
       linkEl.style.display = 'inline-block';
-      
-      // Auto-trigger download
       window.location.href = downloadUrl;
       
     } else {
