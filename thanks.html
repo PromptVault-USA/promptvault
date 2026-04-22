@@ -1,78 +1,66 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Payment Complete</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thank You</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
-<body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;text-align:center;">
-  <h1>Payment successful!</h1>
-  <div id="downloadArea"><p>Loading your download...</p></div>
-  <p><small>We also sent a backup to your PayPal email.</small></p>
+<body style="font-family:sans-serif;text-align:center;padding:40px;max-width:500px;margin:auto;">
+<h1>Payment successful!</h1>
+<p id="status">Preparing your download...</p>
+<a id="manualLink" href="#" style="display:none;margin-top:20px;padding:12px 24px;background:#0070ba;color:white;text-decoration:none;border-radius:4px;">Download Your Pack</a>
+<div id="error" style="color:red;margin-top:20px;display:none;"></div>
 
 <script>
-// CSV parser that respects "quotes" so commas in descriptions don't break
-function parseCSV(text) {
-  const rows = [];
-  let row = [], field = '', inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    if (char === '"' && text[i+1] === '"') { field += '"'; i++; }
-    else if (char === '"') { inQuotes =!inQuotes; }
-    else if (char === ',' &&!inQuotes) { row.push(field); field = ''; }
-    else if ((char === '\n' || char === '\r') &&!inQuotes) {
-      if (field || row.length) { row.push(field); rows.push(row); }
-      row = []; field = '';
-      if (char === '\r' && text[i+1] === '\n') i++;
-    } else { field += char; }
+async function deliverPack(){
+  const params = new URLSearchParams(window.location.search);
+  const itemId = params.get('item')?.trim();
+  const statusEl = document.getElementById('status');
+  const errorEl = document.getElementById('error');
+  const linkEl = document.getElementById('manualLink');
+
+  if(!itemId){
+    statusEl.innerText = 'Error: No product ID found.';
+    errorEl.innerText = 'Check your email for the file, or contact support with your PayPal transaction ID.';
+    errorEl.style.display = 'block';
+    return;
   }
-  if (field || row.length) { row.push(field); rows.push(row); }
-  return rows;
-}
 
-// Convert Google Drive "view" link to direct download link
-function convertDriveLink(viewUrl) {
-  const match = viewUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  return match? `https://drive.google.com/uc?export=download&id=${match[1]}` : viewUrl;
-}
-
-async function showDownload() {
-  const downloadArea = document.getElementById('downloadArea');
   try {
-    const itemId = new URLSearchParams(window.location.search).get('item');
-    if (!itemId) throw new Error('Missing product ID');
+    const res = await fetch('https://promptvaultusa.shop/products.csv?t=' + Date.now());
+    if(!res.ok) throw new Error('Could not load product database');
 
-    const response = await fetch('products.csv');
-    if (!response.ok) throw new Error('products.csv not found');
-    const csvText = await response.text();
-    const rows = parseCSV(csvText);
-
-    const headers = rows[0];
+    const text = await res.text();
+    const rows = text.trim().split('\n').filter(r=>r);
+    
+    // Same cleaning function from checkout.html - strips quotes, spaces, BOM
+    const clean = (s) => s.replace(/^\uFEFF/, '').replace(/^["']|["']$/g, '').trim();
+    
+    const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
     const idIdx = headers.indexOf('id');
+    const linkIdx = headers.indexOf('link');
     const nameIdx = headers.indexOf('name');
-    const linkIdx = headers.indexOf('drive_link');
+    
+    if(idIdx === -1 || linkIdx === -1) throw new Error('CSV missing id or link column');
 
-    const pack = rows.slice(1).find(r => r[idIdx] === itemId);
-    if (!pack) throw new Error('Product not found');
+    const packRow = rows.slice(1).map(r => r.split(',').map(clean)).find(r => r[idIdx] === itemId);
 
-    const name = pack[nameIdx];
-    const downloadLink = convertDriveLink(pack[linkIdx]);
-
-    downloadArea.innerHTML = `
-      <h3>${name}</h3>
-      <a href="${downloadLink}"
-         style="display:inline-block;background:#0070ba;color:#fff;padding:14px 28px;text-decoration:none;border-radius:4px;margin:20px 0;">
-         Download Now
-      </a>
-    `;
-
-  } catch (error) {
-    downloadArea.innerHTML = `
-      <p style="color:#c00;">Couldn't load your download: ${error.message}</p>
-      <p>Check your email for the file, or contact support with your PayPal transaction ID.</p>
-    `;
+    if(packRow && packRow[linkIdx]){
+      const downloadUrl = packRow[linkIdx];
+      const packName = packRow[nameIdx] || 'Your Pack';
+      
+      statusEl.innerHTML = `Thanks! Your download for <strong>${packName}</strong> should start automatically.`;
+      linkEl.href = downloadUrl;
+      linkEl.style.display = 'inline-block';
+      
+      // Auto-trigger download
+      window.location.href = downloadUrl;
+      
+    } else {
+      throw new Error(`Download link not found for ${itemId}`);
+    }
+  } catch(e) {
+    statusEl.innerText = "Couldn't load your download";
+    errorEl.innerHTML = `${e.message}<br><br>Check your email for the file, or contact support with your PayPal transaction ID.`;
+    errorEl.style.display = 'block';
   }
 }
-showDownload();
+deliverPack();
 </script>
-</body>
-</html>
+</body></html>
