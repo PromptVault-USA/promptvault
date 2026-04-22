@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><title>Checkout</title></head>
+<body style="font-family:sans-serif;text-align:center;padding:40px;">
+  <h2 id="packName">Loading...</h2>
+  <p>You’re buying one pack. Click below to pay with PayPal.</p>
+  
+  <!-- Your 1 PayPal button goes here, but we edit the return URL with JS -->
+  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="ppForm">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="YOUR_SINGLE_BUTTON_ID">
+    <input type="hidden" name="return" id="returnUrl" value="">
+    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" name="submit">
+  </form>
+
+<script>
+async function setupCheckout() {
+  const itemId = new URLSearchParams(window.location.search).get('item');
+  if (!itemId) {
+    document.body.innerHTML = '<h2>Error: No product selected</h2>';
+    return;
+  }
+  
+  // Get pack name from CSV so customer knows what they’re buying
+  const res = await fetch('products.csv');
+  const rows = (await res.text()).trim().split('\n');
+  const headers = rows[0].split(',');
+  const pack = rows.slice(1).map(r => r.split(',')).find(r => r[headers.indexOf('id')] === itemId);
+  
+  if (pack) {
+    document.getElementById('packName').innerText = pack[headers.indexOf('name')];
+  }
+  
+  // Set dynamic return URL with the correct item ID
+  document.getElementById('returnUrl').value = 
+    `https://emilized.github.io/promptvault/thanks.html?item=${itemId}`;
+}
+setupCheckout();
+</script>
+</body>
+</html>
