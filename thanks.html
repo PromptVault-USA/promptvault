@@ -8,6 +8,29 @@
 <div id="debug" style="color:red;margin-top:20px;font-size:14px;text-align:left;background:#ffeeee;padding:10px;border-radius:4px;"></div>
 
 <script>
+// CSV parser that handles quoted fields with commas
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], next = text[i+1];
+    if (inQuotes) {
+      if (c === '"' && next === '"') { field += '"'; i++; }
+      else if (c === '"') { inQuotes = false; }
+      else { field += c; }
+    } else {
+      if (c === '"') { inQuotes = true; }
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (field || row.length) { row.push(field); rows.push(row); row = []; field = ''; }
+        if (c === '\r' && next === '\n') i++;
+      } else { field += c; }
+    }
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.length > 1);
+}
+
 async function deliverPack(){
   const params = new URLSearchParams(window.location.search);
   const itemId = params.get('item')?.trim();
@@ -19,7 +42,6 @@ async function deliverPack(){
 
   if(!itemId){
     statusEl.innerText = 'Error: No product ID found in URL.';
-    debugEl.innerHTML += 'URL missing?item=...';
     return;
   }
 
@@ -30,24 +52,23 @@ async function deliverPack(){
     if(!res.ok) throw new Error(`CSV fetch failed: ${res.status}`);
 
     const text = await res.text();
-    const rows = text.trim().split('\n').filter(r=>r);
+    const rows = parseCSV(text);
     debugEl.innerHTML += `CSV rows found: ${rows.length}<br>`;
     
-    const clean = (s) => s.replace(/^\uFEFF/, '').replace(/^["']|["']$/g, '').trim();
-    const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
+    const headers = rows[0].map(h => h.trim().toLowerCase());
     debugEl.innerHTML += `Headers: ${headers.join(' | ')}<br>`;
     
     const idIdx = headers.indexOf('id');
-    const linkIdx = headers.findIndex(h => ['drivelink','link','download'].includes(h));
+    const linkIdx = headers.findIndex(h => ['drivelink','driveLink'].includes(h));
     const nameIdx = headers.indexOf('name');
     
-    if(idIdx === -1) throw new Error('Cannot find "id" column in CSV');
-    if(linkIdx === -1) throw new Error('Cannot find "driveLink" column in CSV');
+    if(idIdx === -1) throw new Error('Cannot find "id" column');
+    if(linkIdx === -1) throw new Error('Cannot find "driveLink" column');
 
-    const packRow = rows.slice(1).map(r => r.split(',').map(clean)).find(r => r[idIdx] === itemId);
+    const packRow = rows.slice(1).find(r => r[idIdx] === itemId);
     
     if(!packRow) throw new Error(`Product ${itemId} not found in CSV`);
-    if(!packRow[linkIdx]) throw new Error(`No download link found for ${itemId}`);
+    if(!packRow[linkIdx]) throw new Error(`No download link for ${itemId}`);
 
     let downloadUrl = packRow[linkIdx];
     debugEl.innerHTML += `Raw link from CSV: ${downloadUrl}<br>`;
@@ -64,7 +85,7 @@ async function deliverPack(){
     linkEl.style.display = 'inline-block';
     debugEl.style.background = '#eeffee';
     debugEl.style.color = 'green';
-    debugEl.innerHTML += 'SUCCESS: Button should be visible above';
+    debugEl.innerHTML += 'SUCCESS: This is the correct Google Drive link';
     
     window.location.href = downloadUrl;
     
