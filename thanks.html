@@ -1,68 +1,76 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thank You</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
-<body style="font-family:sans-serif;text-align:center;padding:40px;max-width:500px;margin:auto;">
+<body style="font-family:sans-serif;text-align:center;padding:20px;max-width:600px;margin:auto;">
 <h1>Payment successful!</h1>
-<p id="status">Preparing your download...</p>
-<a id="manualLink" href="#" style="display:none;margin-top:20px;padding:12px 24px;background:#0070ba;color:white;text-decoration:none;border-radius:4px;">Download Your Pack</a>
-<div id="error" style="color:red;margin-top:20px;display:none;"></div>
+<p id="status">Checking for your download...</p>
+<a id="manualLink" href="#" style="display:none;margin:20px auto;padding:12px 24px;background:#0070ba;color:white;text-decoration:none;border-radius:4px;">Download Your Pack</a>
+<div id="debug" style="color:red;margin-top:20px;font-size:14px;text-align:left;background:#ffeeee;padding:10px;border-radius:4px;"></div>
 
 <script>
 async function deliverPack(){
   const params = new URLSearchParams(window.location.search);
   const itemId = params.get('item')?.trim();
   const statusEl = document.getElementById('status');
-  const errorEl = document.getElementById('error');
+  const debugEl = document.getElementById('debug');
   const linkEl = document.getElementById('manualLink');
 
+  debugEl.innerHTML = `Debug: Looking for item = ${itemId}<br>`;
+
   if(!itemId){
-    statusEl.innerText = 'Error: No product ID found.';
-    errorEl.innerText = 'Check your email for the file, or contact support with your PayPal transaction ID.';
-    errorEl.style.display = 'block';
+    statusEl.innerText = 'Error: No product ID found in URL.';
+    debugEl.innerHTML += 'URL missing?item=...';
     return;
   }
 
   try {
-    const res = await fetch('https://promptvaultusa.shop/products.csv?t=' + Date.now());
-    if(!res.ok) throw new Error('Could not load product database');
+    const csvUrl = 'https://promptvaultusa.shop/products.csv?t=' + Date.now();
+    debugEl.innerHTML += `Fetching: ${csvUrl}<br>`;
+    const res = await fetch(csvUrl);
+    if(!res.ok) throw new Error(`CSV fetch failed: ${res.status}`);
 
     const text = await res.text();
     const rows = text.trim().split('\n').filter(r=>r);
+    debugEl.innerHTML += `CSV rows found: ${rows.length}<br>`;
     
     const clean = (s) => s.replace(/^\uFEFF/, '').replace(/^["']|["']$/g, '').trim();
     const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
+    debugEl.innerHTML += `Headers: ${headers.join(' | ')}<br>`;
     
     const idIdx = headers.indexOf('id');
-    // Checks for driveLink, link, or download - whichever you used
     const linkIdx = headers.findIndex(h => ['drivelink','link','download'].includes(h));
     const nameIdx = headers.indexOf('name');
     
-    if(idIdx === -1 || linkIdx === -1) throw new Error('CSV missing id or driveLink column');
+    if(idIdx === -1) throw new Error('Cannot find "id" column in CSV');
+    if(linkIdx === -1) throw new Error('Cannot find "driveLink" column in CSV');
 
     const packRow = rows.slice(1).map(r => r.split(',').map(clean)).find(r => r[idIdx] === itemId);
+    
+    if(!packRow) throw new Error(`Product ${itemId} not found in CSV`);
+    if(!packRow[linkIdx]) throw new Error(`No download link found for ${itemId}`);
 
-    if(packRow && packRow[linkIdx]){
-      let downloadUrl = packRow[linkIdx];
-      
-      // Auto-convert Google Drive view links to download links
-      const driveMatch = downloadUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-      if(driveMatch){
-        downloadUrl = `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
-      }
-      
-      const packName = packRow[nameIdx] || 'Your Pack';
-      statusEl.innerHTML = `Thanks! Your download for <strong>${packName}</strong> should start automatically.`;
-      linkEl.href = downloadUrl;
-      linkEl.style.display = 'inline-block';
-      window.location.href = downloadUrl;
-      
-    } else {
-      throw new Error(`Download link not found for ${itemId}`);
+    let downloadUrl = packRow[linkIdx];
+    debugEl.innerHTML += `Raw link from CSV: ${downloadUrl}<br>`;
+    
+    const driveMatch = downloadUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if(driveMatch){
+      downloadUrl = `https://drive.google.com/uc?export=download&confirm=t&id=${driveMatch[1]}`;
+      debugEl.innerHTML += `Converted to: ${downloadUrl}<br>`;
     }
+    
+    const packName = packRow[nameIdx] || 'Your Pack';
+    statusEl.innerHTML = `Thanks! Your download for <strong>${packName}</strong> is ready.`;
+    linkEl.href = downloadUrl;
+    linkEl.style.display = 'inline-block';
+    debugEl.style.background = '#eeffee';
+    debugEl.style.color = 'green';
+    debugEl.innerHTML += 'SUCCESS: Button should be visible above';
+    
+    window.location.href = downloadUrl;
+    
   } catch(e) {
     statusEl.innerText = "Couldn't load your download";
-    errorEl.innerHTML = `${e.message}<br><br>Check your email for the file, or contact support with your PayPal transaction ID.`;
-    errorEl.style.display = 'block';
+    debugEl.innerHTML += `<br>ERROR: ${e.message}`;
   }
 }
 deliverPack();
