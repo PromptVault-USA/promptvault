@@ -3,15 +3,13 @@
 </head>
 <body style="font-family:sans-serif;text-align:center;padding:20px;max-width:600px;margin:auto;">
 <h1>Payment successful!</h1>
-<p id="status">Checking for your download...</p>
+<p id="status">Loading your download...</p>
 <a id="manualLink" href="#" style="display:none;margin:20px auto;padding:12px 24px;background:#0070ba;color:white;text-decoration:none;border-radius:4px;">Download Your Pack</a>
 <div id="debug" style="color:red;margin-top:20px;font-size:14px;text-align:left;background:#ffeeee;padding:10px;border-radius:4px;"></div>
 
 <script>
-// CSV parser that handles quoted fields with commas
 function parseCSV(text) {
-  const rows = [];
-  let row = [], field = '', inQuotes = false;
+  const rows = []; let row = [], field = '', inQuotes = false;
   for (let i = 0; i < text.length; i++) {
     const c = text[i], next = text[i+1];
     if (inQuotes) {
@@ -38,60 +36,36 @@ async function deliverPack(){
   const debugEl = document.getElementById('debug');
   const linkEl = document.getElementById('manualLink');
 
-  debugEl.innerHTML = `Debug: Looking for item = ${itemId}<br>`;
-
-  if(!itemId){
-    statusEl.innerText = 'Error: No product ID found in URL.';
-    return;
-  }
+  if(!itemId){ statusEl.innerText = 'Error: No product ID found.'; return; }
 
   try {
-    const csvUrl = 'https://promptvaultusa.shop/products.csv?t=' + Date.now();
-    debugEl.innerHTML += `Fetching: ${csvUrl}<br>`;
-    const res = await fetch(csvUrl);
-    if(!res.ok) throw new Error(`CSV fetch failed: ${res.status}`);
-
+    const res = await fetch('https://promptvaultusa.shop/products.csv?t=' + Date.now());
     const text = await res.text();
     const rows = parseCSV(text);
-    debugEl.innerHTML += `CSV rows found: ${rows.length}<br>`;
-    
     const headers = rows[0].map(h => h.trim().toLowerCase());
-    debugEl.innerHTML += `Headers: ${headers.join(' | ')}<br>`;
-    
     const idIdx = headers.indexOf('id');
-    const linkIdx = headers.findIndex(h => ['drivelink','driveLink'].includes(h));
+    const linkIdx = headers.findIndex(h => ['drivelink','drivelink'].includes(h));
     const nameIdx = headers.indexOf('name');
     
-    if(idIdx === -1) throw new Error('Cannot find "id" column');
-    if(linkIdx === -1) throw new Error('Cannot find "driveLink" column');
-
     const packRow = rows.slice(1).find(r => r[idIdx] === itemId);
-    
-    if(!packRow) throw new Error(`Product ${itemId} not found in CSV`);
-    if(!packRow[linkIdx]) throw new Error(`No download link for ${itemId}`);
+    if(!packRow ||!packRow[linkIdx]) throw new Error('Product or link not found');
 
     let downloadUrl = packRow[linkIdx];
-    debugEl.innerHTML += `Raw link from CSV: ${downloadUrl}<br>`;
-    
     const driveMatch = downloadUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
     if(driveMatch){
       downloadUrl = `https://drive.google.com/uc?export=download&confirm=t&id=${driveMatch[1]}`;
-      debugEl.innerHTML += `Converted to: ${downloadUrl}<br>`;
     }
     
     const packName = packRow[nameIdx] || 'Your Pack';
     statusEl.innerHTML = `Thanks! Your download for <strong>${packName}</strong> is ready.`;
     linkEl.href = downloadUrl;
     linkEl.style.display = 'inline-block';
-    debugEl.style.background = '#eeffee';
-    debugEl.style.color = 'green';
-    debugEl.innerHTML += 'SUCCESS: This is the correct Google Drive link';
-    
+    debugEl.style.display = 'none'; // Hide debug once it works
     window.location.href = downloadUrl;
     
   } catch(e) {
     statusEl.innerText = "Couldn't load your download";
-    debugEl.innerHTML += `<br>ERROR: ${e.message}`;
+    debugEl.innerHTML = `ERROR: ${e.message}`;
   }
 }
 deliverPack();
