@@ -13,42 +13,50 @@
 </form>
 
 <div id="error" style="color:red;margin-top:20px;display:none;"></div>
+<div id="debug" style="color:#999;font-size:12px;margin-top:20px;text-align:left;"></div>
 
 <script>
 async function setupCheckout(){
   const params = new URLSearchParams(window.location.search);
   const itemId = params.get('item');
   const errorDiv = document.getElementById('error');
+  const debugDiv = document.getElementById('debug');
   
   if(!itemId){
     document.getElementById('packName').innerText='Error';
-    errorDiv.innerText='No product selected. Go back and click a Buy button.';
+    errorDiv.innerText='No product selected. URL needs?item=niche_001';
     errorDiv.style.display='block';
     document.getElementById('ppForm').style.display='none';
     return;
   }
   
   try {
-    const res = await fetch('./products.csv'); // Added./ for custom domain safety
-    if(!res.ok) throw new Error('CSV not found');
+    const res = await fetch('./products.csv');
+    if(!res.ok) throw new Error('CSV not found at./products.csv');
     
     const text = await res.text();
-    const rows = text.trim().split('\n');
-    const headers = rows[0].split(',').map(h => h.trim());
+    const rows = text.trim().split('\n').filter(r=>r);
+    const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
     const idIdx = headers.indexOf('id');
     const nameIdx = headers.indexOf('name');
     
-    const packRow = rows.slice(1).map(r => r.split(',')).find(r => r[idIdx] === itemId);
+    if(idIdx === -1) throw new Error('CSV has no "id" column. Headers found: ' + headers.join(', '));
+    
+    const allIds = rows.slice(1).map(r => r.split(',')[idIdx]?.trim());
+    debugDiv.innerHTML = `Looking for: "${itemId}"<br>Found IDs: ${allIds.slice(0,5).join(', ')}...`;
+    
+    const packRow = rows.slice(1).map(r => r.split(',').map(c => c.trim())).find(r => r[idIdx] === itemId);
     
     if(packRow){
-      document.getElementById('packName').innerText = packRow[nameIdx];
+      document.getElementById('packName').innerText = packRow[nameIdx] || 'Prompt Pack';
       document.getElementById('returnUrl').value = `${window.location.origin}/thanks.html?item=${itemId}`;
+      debugDiv.innerHTML += '<br><span style="color:green">MATCH FOUND!</span>';
     } else {
-      throw new Error('Product ID not found in CSV');
+      throw new Error(`ID "${itemId}" not in CSV. First 5 IDs: ${allIds.slice(0,5).join(', ')}`);
     }
   } catch(e) {
     document.getElementById('packName').innerText='Error loading product';
-    errorDiv.innerText=`Could not load product details: ${e.message}`;
+    errorDiv.innerText=`${e.message}`;
     errorDiv.style.display='block';
     document.getElementById('ppForm').style.display='none';
   }
