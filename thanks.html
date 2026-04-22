@@ -10,40 +10,56 @@
   <p><small>We also sent a backup to your PayPal email.</small></p>
 
 <script>
+// CSV parser that respects "quotes" so commas in descriptions don't break
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === '"' && text[i+1] === '"') { field += '"'; i++; }
+    else if (char === '"') { inQuotes =!inQuotes; }
+    else if (char === ',' &&!inQuotes) { row.push(field); field = ''; }
+    else if ((char === '\n' || char === '\r') &&!inQuotes) {
+      if (field || row.length) { row.push(field); rows.push(row); }
+      row = []; field = '';
+      if (char === '\r' && text[i+1] === '\n') i++;
+    } else { field += char; }
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+// Convert Google Drive "view" link to direct download link
+function convertDriveLink(viewUrl) {
+  const match = viewUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return match? `https://drive.google.com/uc?export=download&id=${match[1]}` : viewUrl;
+}
+
 async function showDownload() {
   const downloadArea = document.getElementById('downloadArea');
   try {
-    // 1. Get which pack from URL:?item=logo-pro
     const itemId = new URLSearchParams(window.location.search).get('item');
     if (!itemId) throw new Error('Missing product ID');
 
-    // 2. Load your CSV from GitHub
     const response = await fetch('products.csv');
-    if (!response.ok) throw new Error('CSV not found');
+    if (!response.ok) throw new Error('products.csv not found');
     const csvText = await response.text();
+    const rows = parseCSV(csvText);
 
-    // 3. Find the row matching the itemId
-    const rows = csvText.trim().split('\n');
-    const headers = rows[0].split(',');
-    const idIndex = headers.indexOf('id');
-    const nameIndex = headers.indexOf('name');
-    const linkIndex = headers.indexOf('drive_link');
+    const headers = rows[0];
+    const idIdx = headers.indexOf('id');
+    const nameIdx = headers.indexOf('name');
+    const linkIdx = headers.indexOf('drive_link');
 
-    const packRow = rows.slice(1).find(row => {
-      const cols = row.split(',');
-      return cols[idIndex] === itemId;
-    });
+    const pack = rows.slice(1).find(r => r[idIdx] === itemId);
+    if (!pack) throw new Error('Product not found');
 
-    if (!packRow) throw new Error('Product not found');
+    const name = pack[nameIdx];
+    const downloadLink = convertDriveLink(pack[linkIdx]);
 
-    const cols = packRow.split(',');
-    const name = cols[nameIndex];
-    const link = cols[linkIndex];
-
-    // 4. Show the download button
     downloadArea.innerHTML = `
       <h3>${name}</h3>
-      <a href="${link}"
+      <a href="${downloadLink}"
          style="display:inline-block;background:#0070ba;color:#fff;padding:14px 28px;text-decoration:none;border-radius:4px;margin:20px 0;">
          Download Now
       </a>
