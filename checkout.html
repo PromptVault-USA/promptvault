@@ -1,41 +1,58 @@
-<!DOCTYPE html>
-<html>
-<head><title>Checkout</title></head>
-<body style="font-family:sans-serif;text-align:center;padding:40px;">
-  <h2 id="packName">Loading...</h2>
-  <p>You’re buying one pack. Click below to pay with PayPal.</p>
-  
-  <!-- Your 1 PayPal button goes here, but we edit the return URL with JS -->
-  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="ppForm">
-    <input type="hidden" name="cmd" value="_s-xclick">
-    <input type="hidden" name="hosted_button_id" value="YOUR_SINGLE_BUTTON_ID">
-    <input type="hidden" name="return" id="returnUrl" value="">
-    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" name="submit">
-  </form>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Checkout</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="font-family:sans-serif;text-align:center;padding:40px;max-width:500px;margin:auto;">
+<h2 id="packName">Loading...</h2>
+<p id="packDesc">You're buying one pack. Click below to pay with PayPal.</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="ppForm" style="margin-top:20px;">
+  <input type="hidden" name="cmd" value="_s-xclick">
+  <input type="hidden" name="hosted_button_id" value="YOUR_SINGLE_BUTTON_ID">
+  <input type="hidden" name="return" id="returnUrl" value="">
+  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" name="submit" alt="Buy Now">
+</form>
+
+<div id="error" style="color:red;margin-top:20px;display:none;"></div>
 
 <script>
-async function setupCheckout() {
-  const itemId = new URLSearchParams(window.location.search).get('item');
-  if (!itemId) {
-    document.body.innerHTML = '<h2>Error: No product selected</h2>';
+async function setupCheckout(){
+  const params = new URLSearchParams(window.location.search);
+  const itemId = params.get('item');
+  const errorDiv = document.getElementById('error');
+  
+  if(!itemId){
+    document.getElementById('packName').innerText='Error';
+    errorDiv.innerText='No product selected. Go back and click a Buy button.';
+    errorDiv.style.display='block';
+    document.getElementById('ppForm').style.display='none';
     return;
   }
   
-  // Get pack name from CSV so customer knows what they’re buying
-  const res = await fetch('products.csv');
-  const rows = (await res.text()).trim().split('\n');
-  const headers = rows[0].split(',');
-  const pack = rows.slice(1).map(r => r.split(',')).find(r => r[headers.indexOf('id')] === itemId);
-  
-  if (pack) {
-    document.getElementById('packName').innerText = pack[headers.indexOf('name')];
+  try {
+    const res = await fetch('./products.csv'); // Added./ for custom domain safety
+    if(!res.ok) throw new Error('CSV not found');
+    
+    const text = await res.text();
+    const rows = text.trim().split('\n');
+    const headers = rows[0].split(',').map(h => h.trim());
+    const idIdx = headers.indexOf('id');
+    const nameIdx = headers.indexOf('name');
+    
+    const packRow = rows.slice(1).map(r => r.split(',')).find(r => r[idIdx] === itemId);
+    
+    if(packRow){
+      document.getElementById('packName').innerText = packRow[nameIdx];
+      document.getElementById('returnUrl').value = `${window.location.origin}/thanks.html?item=${itemId}`;
+    } else {
+      throw new Error('Product ID not found in CSV');
+    }
+  } catch(e) {
+    document.getElementById('packName').innerText='Error loading product';
+    errorDiv.innerText=`Could not load product details: ${e.message}`;
+    errorDiv.style.display='block';
+    document.getElementById('ppForm').style.display='none';
   }
-  
-  // Set dynamic return URL with the correct item ID
-  document.getElementById('returnUrl').value = 
-    `https://emilized.github.io/promptvault/thanks.html?item=${itemId}`;
 }
 setupCheckout();
 </script>
-</body>
-</html>
+</body></html>
