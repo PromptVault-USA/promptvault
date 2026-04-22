@@ -6,47 +6,57 @@
 </head>
 <body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;text-align:center;">
   <h1>Payment successful!</h1>
-  <div id="downloadArea">
-    <p>Loading your download...</p>
-  </div>
-  <p><small>We also sent a backup to your email.</small></p>
+  <div id="downloadArea"><p>Loading your download...</p></div>
+  <p><small>We also sent a backup to your PayPal email.</small></p>
 
 <script>
-  // ADD YOUR PACKS HERE - Google Drive links for each product
-  const packs = {
-    'logo': {
-      name: 'Logo Prompts Pack',
-      link: 'https://drive.google.com/uc?export=download&id=YOUR_LOGO_FILE_ID'
-    },
-    'marketing': {
-      name: 'Marketing Prompts Pack', 
-      link: 'https://drive.google.com/uc?export=download&id=YOUR_MARKETING_FILE_ID'
-    },
-    'social': {
-      name: 'Social Media Prompts Pack',
-      link: 'https://drive.google.com/uc?export=download&id=YOUR_SOCIAL_FILE_ID'
-    }
-    // Add more packs here: 'pack_id': {name:'', link:''}
-  };
+async function showDownload() {
+  const downloadArea = document.getElementById('downloadArea');
+  try {
+    // 1. Get which pack from URL:?item=logo-pro
+    const itemId = new URLSearchParams(window.location.search).get('item');
+    if (!itemId) throw new Error('Missing product ID');
 
-  // Get which pack from URL: thanks.html?item=logo
-  const params = new URLSearchParams(window.location.search);
-  const item = params.get('item') || 'logo'; // default to logo if missing
-  const pack = packs[item];
+    // 2. Load your CSV from GitHub
+    const response = await fetch('products.csv');
+    if (!response.ok) throw new Error('CSV not found');
+    const csvText = await response.text();
 
-  if(pack) {
-    document.getElementById('downloadArea').innerHTML = `
-      <h3>${pack.name}</h3>
-      <a href="${pack.link}" 
+    // 3. Find the row matching the itemId
+    const rows = csvText.trim().split('\n');
+    const headers = rows[0].split(',');
+    const idIndex = headers.indexOf('id');
+    const nameIndex = headers.indexOf('name');
+    const linkIndex = headers.indexOf('drive_link');
+
+    const packRow = rows.slice(1).find(row => {
+      const cols = row.split(',');
+      return cols[idIndex] === itemId;
+    });
+
+    if (!packRow) throw new Error('Product not found');
+
+    const cols = packRow.split(',');
+    const name = cols[nameIndex];
+    const link = cols[linkIndex];
+
+    // 4. Show the download button
+    downloadArea.innerHTML = `
+      <h3>${name}</h3>
+      <a href="${link}"
          style="display:inline-block;background:#0070ba;color:#fff;padding:14px 28px;text-decoration:none;border-radius:4px;margin:20px 0;">
          Download Now
       </a>
     `;
-  } else {
-    document.getElementById('downloadArea').innerHTML = `
-      <p>Download link not found. Check your email for the file, or contact support.</p>
+
+  } catch (error) {
+    downloadArea.innerHTML = `
+      <p style="color:#c00;">Couldn't load your download: ${error.message}</p>
+      <p>Check your email for the file, or contact support with your PayPal transaction ID.</p>
     `;
   }
+}
+showDownload();
 </script>
 </body>
 </html>
