@@ -34,7 +34,7 @@ async function deliverPack(){
     
     const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
     const idIdx = headers.indexOf('id');
-    const linkIdx = headers.indexOf('link');
+    const linkIdx = headers.indexOf('drivelink');
     const nameIdx = headers.indexOf('name');
     
     if(idIdx === -1 || linkIdx === -1) throw new Error('CSV missing id or link column');
