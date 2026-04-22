@@ -38,10 +38,49 @@ document.addEventListener("DOMContentLoaded", function() {
     document.body.insertAdjacentHTML('afterbegin', backButtonHTML);
   }
 
-  // 2. THE MOBILE CLICK FIX - Increased for legal row
-  document.body.style.paddingBottom = "150px";
+  // 2. THE MOBILE CLICK FIX
+  document.body.style.paddingBottom = "180px";
 
-  // 4. INJECT THE MASTER BOTTOM NAV + LEGAL LINKS
+  // 3. ***NEW*** INJECT GMC COMPLIANCE TERMS UNDER BUY NOW BUTTONS
+  function injectBuyButtonTerms() {
+    // Only run on vault/product pages
+    if (!path.includes('/vault/')) return;
+    
+    // Find all Buy Now buttons - covers .btn-main, PayPal links, etc
+    const buyButtons = document.querySelectorAll('.btn-main, button[onclick*="paypal"], a[href*="paypal"]');
+    
+    buyButtons.forEach(button => {
+      // Skip if already injected or not a buy button
+      if (button.nextElementSibling && button.nextElementSibling.classList.contains('gmc-terms-box')) return;
+      if (!button.textContent.toLowerCase().includes('buy') && !button.textContent.toLowerCase().includes('purchase')) return;
+      
+      const termsBox = document.createElement('div');
+      termsBox.className = 'gmc-terms-box';
+      termsBox.style.cssText = `
+        margin-top: 16px;
+        margin-bottom: 8px;
+        padding: 12px;
+        background: rgba(100,255,218,0.05);
+        border: 1px solid rgba(100,255,218,0.2);
+        border-radius: 12px;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        color: #94a3b8;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      `;
+      termsBox.innerHTML = `
+        <strong style="color:#64ffda;">Digital Product Terms:</strong><br>
+        ✓ Instant download via email after PayPal payment<br>
+        ✓ No physical shipping • Delivered in 1-5 minutes<br>
+        ✓ All sales final due to digital nature per <a href="/legal.html#refund" style="color:#64ffda; text-decoration:underline;">Refund Policy</a><br>
+        ✓ By purchasing, you agree to <a href="/legal.html#terms" style="color:#64ffda; text-decoration:underline;">Terms of Service</a>
+      `;
+      
+      button.parentNode.insertBefore(termsBox, button.nextSibling);
+    });
+  }
+
+  // 4. INJECT THE MASTER BOTTOM NAV + LEGAL LINKS + BUSINESS INFO
   const navHTML = `
     <nav class="bottom-nav" style="position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 16px; width: 92%; max-width: 440px; z-index: 20000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
       <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -50,18 +89,27 @@ document.addEventListener("DOMContentLoaded", function() {
         <a href="https://promptvaultusa.shop/blog.html" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">📖<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Blog</small></a>
         <a href="https://promptvaultusa.shop/index.html#library" style="text-decoration:none; color:#94a3b8; text-align:center; flex:1;">👤<br><small style="font-size:0.6rem; font-weight:800; text-transform:uppercase;">Library</small></a>
       </div>
-      <div style="display: flex; justify-content: center; gap: 16px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+      <div style="display: flex; justify-content: center; gap: 12px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap;">
+        <a href="https://promptvaultusa.shop/legal.html#about" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">About</a>
         <a href="https://promptvaultusa.shop/legal.html#terms" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Terms</a>
         <a href="https://promptvaultusa.shop/legal.html#privacy" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Privacy</a>
         <a href="https://promptvaultusa.shop/legal.html#refund" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Refund</a>
         <a href="https://promptvaultusa.shop/legal.html#contact" style="text-decoration:none; color:#64748b; font-size:0.65rem; font-weight:600;">Contact</a>
       </div>
+      <div style="text-align:center; font-size:0.6rem; color:#475569; margin-top:4px;">
+        PromptVault USA • Cebu City, PH • Not affiliated with OpenAI
+      </div>
     </nav>`;
-  
+
   // Check if nav already exists before injecting
   if (!document.querySelector('.bottom-nav')) {
     document.body.insertAdjacentHTML('beforeend', navHTML);
   }
+
+  // 5. RUN TERMS INJECTION
+  injectBuyButtonTerms();
+  // Re-run after 1s for dynamic content
+  setTimeout(injectBuyButtonTerms, 1000);
 
   // 6. AUTO-BROWSE & FORCED JUMP LOGIC
   if (urlParams.get('action') === 'browse') {
@@ -89,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (forceShowVaults() || browseAttempts > 15) clearInterval(browseInterval);
     }, 100);
   }
+
   if (urlParams.get('action') === 'blog') {
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
