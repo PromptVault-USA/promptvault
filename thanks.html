@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Complete</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;text-align:center;">
+  <h1>Payment successful!</h1>
+  <div id="downloadArea">
+    <p>Loading your download...</p>
+  </div>
+  <p><small>We also sent a backup to your email.</small></p>
+
+<script>
+  // ADD YOUR PACKS HERE - Google Drive links for each product
+  const packs = {
+    'logo': {
+      name: 'Logo Prompts Pack',
+      link: 'https://drive.google.com/uc?export=download&id=YOUR_LOGO_FILE_ID'
+    },
+    'marketing': {
+      name: 'Marketing Prompts Pack', 
+      link: 'https://drive.google.com/uc?export=download&id=YOUR_MARKETING_FILE_ID'
+    },
+    'social': {
+      name: 'Social Media Prompts Pack',
+      link: 'https://drive.google.com/uc?export=download&id=YOUR_SOCIAL_FILE_ID'
+    }
+    // Add more packs here: 'pack_id': {name:'', link:''}
+  };
+
+  // Get which pack from URL: thanks.html?item=logo
+  const params = new URLSearchParams(window.location.search);
+  const item = params.get('item') || 'logo'; // default to logo if missing
+  const pack = packs[item];
+
+  if(pack) {
+    document.getElementById('downloadArea').innerHTML = `
+      <h3>${pack.name}</h3>
+      <a href="${pack.link}" 
+         style="display:inline-block;background:#0070ba;color:#fff;padding:14px 28px;text-decoration:none;border-radius:4px;margin:20px 0;">
+         Download Now
+      </a>
+    `;
+  } else {
+    document.getElementById('downloadArea').innerHTML = `
+      <p>Download link not found. Check your email for the file, or contact support.</p>
+    `;
+  }
+</script>
+</body>
+</html>
