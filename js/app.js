@@ -1,17 +1,13 @@
 /**
- * PROMPTVAULT USA - AUTO-SYNC ENGINE v4.1
- * NO-HASSLE EDITION: Links directly to CSV-synced products.json
- * Responsibility: Invisible Guest IDs, Automated Delivery, & SEO Absolute Paths.
- * Update: Standardized to lowercase 'drivelink' for CSV consistency.
+ * PROMPTVAULT USA - CORE ENGINE v4.2
+ * RECOVERY UPDATE: Removed broken imports and added multi-page navigation support.
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { TrustService } from './trust-service.js';
 
 // Initialize Firestore
 const db = getFirestore();
 window.db = db; 
-window.TrustService = TrustService; 
 
 const PAYPAL_EMAIL = "emilyperong23@gmail.com";
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
@@ -19,16 +15,10 @@ let allProducts = [];
 
 // --- 1. THE INVISIBLE IDENTITY SYSTEM ---
 
-/**
- * Generates or retrieves a persistent Guest ID or User UID.
- * This ensures "Forever Access" without mandatory signup.
- */
 const getActiveIdentity = () => {
-    // Priority 1: Real Auth (Google/Email)
     if (window.auth?.currentUser && !window.auth.currentUser.isAnonymous) {
         return window.auth.currentUser.uid;
     }
-    // Priority 2: Persistent Guest ID
     let gid = localStorage.getItem('pv_guest_uid');
     if (!gid) {
         gid = 'pv_guest_' + Math.random().toString(36).substr(2, 9);
@@ -44,7 +34,6 @@ window.ensureUserProfile = async (user) => {
         const userSnap = await getDoc(userRef);
         
         if (!userSnap.exists()) {
-            // Fetch welcome links dynamically from lowercase 'drivelink'
             const res = await fetch('products.json');
             const products = await res.json();
             
@@ -63,7 +52,7 @@ window.ensureUserProfile = async (user) => {
     } catch (e) { console.error("Provisioning Error:", e); }
 };
 
-// --- 2. PRODUCT RENDERING & SEARCH ---
+// --- 2. PRODUCT RENDERING ---
 
 window.renderProducts = (productsToDisplay) => {
     const list = document.getElementById('product-list');
@@ -83,7 +72,6 @@ window.renderProducts = (productsToDisplay) => {
                 </div>
                 <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px; color:white;">${p.name}</div>
                 <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${p.price.toFixed(2)}</div>
-                
                 <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto;">
                     <button onclick="processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border-radius:12px; cursor:pointer;">Buy Now</button>
                     <button onclick="addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px; border-radius:12px;">+ Cart</button>
@@ -92,12 +80,7 @@ window.renderProducts = (productsToDisplay) => {
     }).join('');
 };
 
-window.filterProducts = (val) => {
-    const filtered = allProducts.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
-    window.renderProducts(filtered);
-};
-
-// --- 3. AUTO-SYNC LIBRARY (FOREVER GUEST ACCESS) ---
+// --- 3. AUTO-SYNC LIBRARY ---
 
 window.loadUserLibrary = async () => {
     const identity = getActiveIdentity();
@@ -105,23 +88,18 @@ window.loadUserLibrary = async () => {
     if (!grid) return;
 
     try {
-        // Fetch the synced JSON from your CSV
         const res = await fetch('products.json');
         const syncedProducts = await res.json();
 
-        // Query orders matching the current device/account that are PAID
         const q = query(collection(db, "orders"), where("uid", "==", identity));
         const querySnapshot = await getDocs(q);
         
         let libraryHTML = "";
-
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             if (data.status === 'paid' || data.status === 'completed') {
                 data.items.forEach(item => {
-                    // AUTO-FIND using lowercase 'drivelink' from your CSV data
                     const freshData = syncedProducts.find(p => p.id === item.id || p.gmc_id === item.id);
-                    
                     libraryHTML += `
                         <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                             <div>
@@ -133,12 +111,11 @@ window.loadUserLibrary = async () => {
                 });
             }
         });
-
         grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px;">No prompt packs found. Purchases from GMC appear here automatically.</p>`;
     } catch (e) { console.error("Library Error:", e); }
 };
 
-// --- 4. AUTO-CHECKOUT (ZERO SIGNUP REQUIRED) ---
+// --- 4. AUTO-CHECKOUT ---
 
 window.processDirectPurchase = async (productStr) => {
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -160,12 +137,11 @@ window.processDirectPurchase = async (productStr) => {
             amount: product.price,
             item_name: product.name,
             custom: txID,
-            no_shipping: "1",
             return: `${window.location.origin}/success.html?tx=${txID}&guest=${identity}`,
             rm: "2"
         });
         window.location.href = `https://www.paypal.com/cgi-bin/webscr?${params.toString()}`;
-    } catch(e) { alert("Checkout failed. Check internet."); }
+    } catch(e) { alert("Checkout failed."); }
 };
 
 window.addToCart = (productStr) => {
@@ -173,13 +149,6 @@ window.addToCart = (productStr) => {
     cart.push(product);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
     window.updateCartCount();
-    
-    const notif = document.getElementById('sales-notif');
-    if (notif) {
-        document.getElementById('notif-text').innerText = `Added to selection!`;
-        notif.style.display = 'flex';
-        setTimeout(() => { notif.style.display = 'none'; }, 3000);
-    }
 };
 
 window.updateCartCount = () => {
@@ -187,11 +156,21 @@ window.updateCartCount = () => {
     if (pill) pill.innerText = cart.length;
 };
 
-// --- 5. NAVIGATION & BOOTSTRAP ---
+// --- 5. NAVIGATION (MULTI-PAGE SAFE) ---
 
 window.changePage = (id, el) => {
+    const targetPage = document.getElementById(id);
+    
+    // If the section doesn't exist on this page, navigate to the correct file
+    if (!targetPage) {
+        if (id === 'blog') window.location.href = 'blog.html';
+        if (id === 'trust') window.location.href = 'legal.html';
+        if (id === 'browse' || id === 'library') window.location.href = `index.html?action=${id}#${id}`;
+        return;
+    }
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id)?.classList.add('active');
+    targetPage.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     el?.classList.add('active');
 
@@ -206,9 +185,7 @@ window.changePage = (id, el) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.updateCartCount();
-    // Support for GMC deep-linking
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('action') === 'browse') {
-        window.changePage('browse');
-    }
+    const action = urlParams.get('action');
+    if (action) window.changePage(action);
 });
