@@ -98,7 +98,7 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // REUSE SESSION FROM THANKS PAGE
+        // Path 1: Reuse Anonymous Session from Thanks page
         signInAnonymously(auth).catch(console.error);
 
         const PV = {
@@ -115,7 +115,14 @@
                 this.observeAuth();
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
-                if(window.location.hash === '#browse') this.router.go('browse');
+                
+                // Path 1: Auto-open library if user was redirected from thanks.html
+                if(window.location.hash === '#library') {
+                    this.router.go('library');
+                } else if(window.location.hash === '#browse') {
+                    this.router.go('browse');
+                }
+                
                 console.log("💎 Engine: Online");
             },
 
@@ -233,7 +240,6 @@
                     
                     grid.innerHTML = '<p style="color:#94a3b8">Syncing Library...</p>';
 
-                    // QUERY ORDERS COLLECTION FOR THE UID FROM THANKS PAGE
                     const q = query(
                         collection(db, "orders"), 
                         where("uid", "==", user.uid), 
@@ -250,7 +256,6 @@
 
                         grid.innerHTML = snapshot.docs.map(doc => {
                             const order = doc.data();
-                            // If order.items exists, we pull the first one, else use order.item
                             const mainItem = order.items ? order.items[0] : null;
                             const name = order.item || (mainItem ? mainItem.name : "AI Asset Pack");
                             const link = mainItem ? mainItem.driveLink : "#";
@@ -411,6 +416,13 @@
     <div id="library" class="page">
         <div style="padding: 30px 0; width: 100%; align-items: center; display: flex; flex-direction: column;">
             <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
+            
+            <div style="background:rgba(255, 243, 205, 0.05); border:1px solid #ffeaa7; padding:15px; border-radius:12px; margin:20px 0; max-width:600px; font-size: 0.85rem; color: #ffeaa7; text-align: left;">
+              <strong>⚠️ Guest Access Active:</strong> No account is needed to view your purchases on this device. 
+              <br><br>
+              <em>Note: Clearing your browser data will remove access. Bookmark this page or keep your PayPal Transaction ID for support.</em>
+            </div>
+
             <div id="user-library-grid" style="margin-top:20px; width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
         </div>
     </div>
