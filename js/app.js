@@ -1,7 +1,8 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v4.4
- * FIX: Absolute Grid & Cart Synchronization.
- * Feature: Automatic Guest Identity & Multi-Page Deep Linking.
+ * PROMPTVAULT USA - CORE ENGINE v4.6
+ * MODE: HEADLESS (Spreadsheet-Driven)
+ * FEATURE: Auto-detects Sale Prices and MSRP from CSV.
+ * WORKFLOW: Update CSV -> Sync -> Site Auto-Updates.
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -17,7 +18,6 @@ let allProducts = [];
 // --- 1. THE INVISIBLE IDENTITY SYSTEM ---
 
 const getActiveIdentity = () => {
-    // Check for real user or existing guest fingerprint
     if (window.auth?.currentUser && !window.auth.currentUser.isAnonymous) {
         return window.auth.currentUser.uid;
     }
@@ -29,31 +29,39 @@ const getActiveIdentity = () => {
     return gid;
 };
 
-// --- 2. PRODUCT RENDERING (GRID & DATA SYNC) ---
+// --- 2. SPREADSHEET-DRIVEN RENDERING ---
 
 const renderProducts = (productsToDisplay) => {
     const list = document.getElementById('product-list');
     if (!list) return;
 
     list.innerHTML = productsToDisplay.map(p => {
+        // AUTO-DETECT PRICING FROM CSV
+        const msrp = parseFloat(p.price) || 0;
+        const sale = parseFloat(p.sale_price) || 0;
+        const finalPrice = (sale > 0) ? sale : msrp;
+
         const absoluteImg = p.img?.startsWith('http') 
             ? p.img 
             : `${window.location.origin}/${p.img?.replace(/^\//, '') || 'logo.png'}`;
         
-        // Ensure price is treated as a number
-        const currentPrice = parseFloat(p.price) || 9.00;
-        
-        // Package data for the button logic
-        const cleanP = { id: p.id, name: p.name, price: currentPrice };
+        // Package $9 sale price for PayPal trigger
+        const cleanP = { id: p.id, name: p.name, price: finalPrice };
         const pData = encodeURIComponent(JSON.stringify(cleanP));
         
+        // Generate Sale UI (Crossed out MSRP if it exists)
+        const pricingHTML = sale > 0 
+            ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${msrp.toFixed(2)}</span>
+               <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${sale.toFixed(2)}</span>`
+            : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${msrp.toFixed(2)}</span>`;
+
         return `
             <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; height: 100%;">
                 <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
                     <img src="${absoluteImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/logo.png'">
                 </div>
                 <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px; color:white;">${p.name}</div>
-                <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">$${currentPrice.toFixed(2)}</div>
+                <div style="margin-bottom:15px;">${pricingHTML}</div>
                 <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto;">
                     <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border-radius:12px; cursor:pointer;">Buy Now</button>
                     <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px; border-radius:12px; cursor:pointer;">+ Cart</button>
@@ -127,35 +135,6 @@ window.processDirectPurchase = async (productStr) => {
     } catch(e) { alert("Checkout Sync Failed."); }
 };
 
-window.processCartCheckout = async () => {
-    if (cart.length === 0) return alert("Your cart is empty.");
-    const identity = getActiveIdentity();
-    const total = cart.reduce((s, i) => s + i.price, 0);
-    const txID = "PV-CART-" + Date.now();
-
-    try {
-        await setDoc(doc(db, "orders", txID), {
-            uid: identity,
-            items: cart,
-            status: 'pending',
-            createdAt: serverTimestamp()
-        });
-
-        const params = new URLSearchParams({
-            cmd: "_xclick",
-            business: PAYPAL_EMAIL,
-            currency_code: "USD",
-            amount: total.toFixed(2),
-            item_name: "PromptVault USA Multi-Pack Order",
-            custom: txID,
-            no_shipping: "1",
-            return: `${window.location.origin}/success.html?tx=${txID}&guest=${identity}`,
-            rm: "2"
-        });
-        window.location.href = `https://www.paypal.com/cgi-bin/webscr?${params.toString()}`;
-    } catch(e) { alert("Cart Sync Failed."); }
-};
-
 window.addToCart = (productStr) => {
     const product = JSON.parse(decodeURIComponent(productStr));
     cart.push(product);
@@ -186,9 +165,14 @@ window.changePage = (id, el) => {
     el?.classList.add('active');
 
     if (id === 'browse' && allProducts.length === 0) {
-        fetch('products.json').then(res => res.json()).then(data => {
-            allProducts = data;
-            renderProducts(allProducts);
+        // Fetch products from CSV for the headless grid
+        Papa.parse('/products.csv', {
+            download: true,
+            header: true,
+            complete: (results) => {
+                allProducts = results.data;
+                renderProducts(allProducts);
+            }
         });
     }
     if (id === 'library') loadUserLibrary();
@@ -202,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action) window.changePage(action);
 });
 
-// Final Window Exposure
+// Final Exposure
 window.renderProducts = renderProducts;
 window.loadUserLibrary = loadUserLibrary;
 window.getActiveIdentity = getActiveIdentity;
