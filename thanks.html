@@ -1,123 +1,149 @@
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You - PromptVault USA</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="font-family:sans-serif;text-align:center;padding:20px;max-width:600px;margin:auto;background:#0f0f1a;color:#fff;">
+  <h1>Payment Successful!</h1>
+  <div id="status" style="margin:20px 0;font-size:18px;">Loading your download...</div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
-  authDomain: "promptvaultusa.firebaseapp.com",
-  databaseURL: "https://promptvaultusa-default-rtdb.firebaseio.com",
-  projectId: "promptvaultusa",
-  storageBucket: "promptvaultusa.firebasestorage.app",
-  messagingSenderId: "960105895017",
-  appId: "1:960105895017:web:1aa79742d36960d2bfbef8",
-  measurementId: "G-1LJT99PB2S"
-};
+  <div id="bonus" style="display:none;margin-top:30px;padding:20px;background:#1a1a2e;border-radius:8px;border:1px solid #7c3aed;">
+    <h2>🎁 Your Free Welcome Bonus</h2>
+    <p>Thanks for joining PromptVault! Here’s your free Starter Pack:</p>
+    <a id="starterLink" href="#" style="display:inline-block;margin:10px auto;padding:12px 24px;background:#28a745;color:white;text-decoration:none;border-radius:4px;font-weight:bold;"> Download Free 2026 AI Starter Kit </a>
+  </div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  <a id="manualLink" href="#" style="display:none;margin:20px auto;padding:12px 24px;background:#7c3aed;color:white;text-decoration:none;border-radius:4px;"> Click here if download didn't start </a>
 
-function parseCSV(text) {
-  const rows = []; let row = [], field = '', inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i], next = text[i+1];
-    if (inQuotes) {
-      if (c === '"' && next === '"') { field += '"'; i++; } 
-      else if (c === '"') { inQuotes = false; } 
-      else { field += c; }
-    } else {
-      if (c === '"') { inQuotes = true; } 
-      else if (c === ',') { row.push(field); field = ''; } 
-      else if (c === '\n' || c === '\r') {
-        if (field || row.length) { row.push(field); rows.push(row); row = []; field = ''; }
-        if (c === '\r' && next === '\n') i++;
-      } else { field += c; }
-    }
-  }
-  if (field || row.length) { row.push(field); rows.push(row); }
-  return rows.filter(r => r.length > 1);
-}
+  <p style="margin-top:40px;opacity:.7;font-size:14px;">
+    <a href="/" style="color:#a78bfa;">← Back to PromptVault</a>
+  </p>
 
-async function deliverPack(){
-  const params = new URLSearchParams(window.location.search);
-  const itemId = params.get('item')?.trim();
-  const paypalRef = params.get('reference') || params.get('tx') || 'none';
-  const statusEl = document.getElementById('status');
-  const bonusEl = document.getElementById('bonus');
-  const manualLink = document.getElementById('manualLink');
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-  if(!itemId){ 
-    statusEl.innerText = 'Error: No product ID found in URL.'; 
-    return; 
-  }
-
-  try {
-    const res = await fetch('/products.csv?t=' + Date.now());
-    const text = await res.text();
-    const rows = parseCSV(text);
-    const headers = rows[0].map(h => h.trim().toLowerCase());
-    const hIdx = (name) => headers.indexOf(name);
-    const packRow = rows.slice(1).find(r => r[hIdx('id')] === itemId);
-    
-    if(!packRow) throw new Error('Product ID not found in products.csv');
-    
-    const product = {
-      id: packRow[hIdx('id')],
-      name: packRow[hIdx('name')],
-      desc: packRow[hIdx('desc')] || '',
-      category: packRow[hIdx('category')] || '',
-      img: packRow[hIdx('img')] || '',
-      driveLink: packRow[hIdx('drivelink')] || '',
-      paylink: packRow[hIdx('paylink')] || '',
-      price: parseInt(packRow[hIdx('price')]) || 0
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
+      authDomain: "promptvaultusa.firebaseapp.com",
+      databaseURL: "https://promptvaultusa-default-rtdb.firebaseio.com",
+      projectId: "promptvaultusa",
+      storageBucket: "promptvaultusa.firebasestorage.app",
+      messagingSenderId: "960105895017",
+      appId: "1:960105895017:web:1aa79742d36960d2bfbef8",
+      measurementId: "G-1LJT99PB2S"
     };
 
-    let downloadUrl = product.driveLink;
-    const m = downloadUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if(m) downloadUrl = `https://drive.google.com/uc?export=download&confirm=t&id=${m[1]}`;
-    
-    statusEl.innerHTML = `Thanks! Your download for <strong>${product.name}</strong> is ready.`;
-    manualLink.href = downloadUrl;
-    manualLink.style.display = 'inline-block';
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Save order to Firebase whether logged in or not
-    onAuthStateChanged(auth, async (user) => {
-      const orderData = {
-        uid: user? user.uid : 'guest',
-        email: user?.email || 'guest',
-        amount: product.price,
-        status: "paid",
-        createdAt: serverTimestamp(),
-        items: [product],
-        paypalRef: paypalRef,
-        source: 'paypal'
-      };
-      
-      try {
-        await addDoc(collection(db, "orders"), orderData);
-        statusEl.innerHTML += `<br><br>✅ Order saved.`;
-        if (user) {
-          statusEl.innerHTML += ` View in <a href="/" style="color:#a78bfa;">Library</a>.`;
+    function parseCSV(text) {
+      const rows = []; let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i], next = text[i+1];
+        if (inQuotes) {
+          if (c === '"' && next === '"') { field += '"'; i++; }
+          else if (c === '"') { inQuotes = false; }
+          else { field += c; }
         } else {
-          statusEl.innerHTML += `<br><br>⚠️ <a href="/" style="color:#a78bfa;">Log in</a> to save future purchases to your Library.`;
+          if (c === '"') { inQuotes = true; }
+          else if (c === ',') { row.push(field); field = ''; }
+          else if (c === '\n' || c === '\r') {
+            if (field || row.length) { row.push(field); rows.push(row); row = []; field = ''; }
+            if (c === '\r' && next === '\n') i++;
+          } else { field += c; }
         }
-      } catch(e) {
-        console.error("Firebase write failed:", e);
-        statusEl.innerHTML += `<br><br>⚠️ Order not saved. Contact support with ref: ${paypalRef}`;
       }
-    });
+      if (field || row.length) { row.push(field); rows.push(row); }
+      return rows.filter(r => r.length > 1);
+    }
 
-    document.getElementById('starterLink').href = 'https://drive.google.com/uc?export=download&confirm=t&id=1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs';
-    bonusEl.style.display = 'block';
-    
-    setTimeout(() => { window.location.href = downloadUrl; }, 1500);
-    
-  } catch(e) {
-    statusEl.innerText = "Error: " + e.message;
-    console.error(e);
-  }
-}
+    async function deliverPack(){
+      const params = new URLSearchParams(window.location.search);
+      const itemId = params.get('item')?.trim();
+      const paypalRef = params.get('reference') || params.get('tx') || 'none';
+      const statusEl = document.getElementById('status');
+      const bonusEl = document.getElementById('bonus');
+      const manualLink = document.getElementById('manualLink');
 
-deliverPack();
-</script>
+      if(!itemId){
+        statusEl.innerText = 'Error: No product ID found in URL.';
+        return;
+      }
+
+      try {
+        const res = await fetch('/products.csv?t=' + Date.now());
+        if (!res.ok) throw new Error('Could not load products.csv');
+        const text = await res.text();
+        const rows = parseCSV(text);
+        const headers = rows[0].map(h => h.trim().toLowerCase());
+        const hIdx = (name) => headers.indexOf(name);
+        const packRow = rows.slice(1).find(r => r[hIdx('id')] === itemId);
+
+        if(!packRow) throw new Error('Product ID not found in products.csv');
+
+        const product = {
+          id: packRow[hIdx('id')],
+          name: packRow[hIdx('name')],
+          desc: packRow[hIdx('desc')] || '',
+          category: packRow[hIdx('category')] || '',
+          img: packRow[hIdx('img')] || '',
+          driveLink: packRow[hIdx('drivelink')] || '',
+          paylink: packRow[hIdx('paylink')] || '',
+          price: parseInt(packRow[hIdx('price')]) || 0
+        };
+
+        let downloadUrl = product.driveLink;
+        const m = downloadUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if(m) downloadUrl = `https://drive.google.com/uc?export=download&confirm=t&id=${m[1]}`;
+
+        statusEl.innerHTML = `Thanks! Your download for <strong>${product.name}</strong> is ready.`;
+        manualLink.href = downloadUrl;
+        manualLink.style.display = 'inline-block';
+
+        // Save order to Firebase whether logged in or not
+        onAuthStateChanged(auth, async (user) => {
+          const orderData = {
+            uid: user? user.uid : 'guest',
+            email: user?.email || 'guest',
+            amount: product.price,
+            status: "paid",
+            createdAt: serverTimestamp(),
+            items: [product],
+            paypalRef: paypalRef,
+            source: 'paypal'
+          };
+
+          try {
+            await addDoc(collection(db, "orders"), orderData);
+            statusEl.innerHTML += `<br><br>✅ Order saved.`;
+            if (user) {
+              statusEl.innerHTML += ` View in <a href="/" style="color:#a78bfa;">Library</a>.`;
+            } else {
+              statusEl.innerHTML += `<br><br>⚠️ <a href="/" style="color:#a78bfa;">Log in</a> to save future purchases to your Library.`;
+            }
+          } catch(e) {
+            console.error("Firebase write failed:", e);
+            statusEl.innerHTML += `<br><br>⚠️ Order not saved. Contact support with ref: ${paypalRef}`;
+          }
+        });
+
+        document.getElementById('starterLink').href = 'https://drive.google.com/uc?export=download&confirm=t&id=1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs';
+        bonusEl.style.display = 'block';
+
+        setTimeout(() => { window.location.href = downloadUrl; }, 1500);
+
+      } catch(e) {
+        statusEl.innerText = "Error: " + e.message;
+        console.error(e);
+      }
+    }
+
+    deliverPack();
+  </script>
+</body>
+</html>
