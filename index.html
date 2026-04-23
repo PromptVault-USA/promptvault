@@ -76,12 +76,13 @@
         .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); padding: 15px; }
         .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
         .gmc-micro { margin-top: 12px; font-size: 0.65rem; line-height: 1.4; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
+        .library-card { background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border); width: 100%; max-width: 600px; }
     </style> 
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         const firebaseConfig = {
           apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
@@ -96,6 +97,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+
+        // REUSE SESSION FROM THANKS PAGE
+        signInAnonymously(auth).catch(console.error);
 
         const PV = {
             consts: {
@@ -136,11 +140,9 @@
                     const userSnap = await getDoc(userRef);
                     if (!userSnap.exists()) {
                         await setDoc(userRef, {
-                            email: user.email, joinedDate: new Date().toISOString(),
-                            purchasedPrompts: [
-                                { productName: "✉️ Welcome Letter & Hub Guide", driveLink: "https://drive.google.com/file/d/1_iV_c3L32pn9Njksp35IMt7gi7L0ikYG/view?usp=drivesdk", timestamp: Date.now() + 10 },
-                                { productName: "🎁 2026 AI Starter Kit (Free)", driveLink: "https://drive.google.com/file/d/1Hk5zxOZJbiHdxSZYKZOFlHQ5JzreCwgs/view?usp=drivesdk", timestamp: Date.now() }
-                            ]
+                            email: user.email || 'anonymous', 
+                            joinedDate: new Date().toISOString(),
+                            purchasedPrompts: []
                         });
                     }
                 }
@@ -228,22 +230,49 @@
                     const user = auth.currentUser;
                     const grid = document.getElementById('user-library-grid');
                     if (!grid || !user) return;
-                    const userDocSnap = await getDoc(doc(db, "users", user.uid));
-                    if (userDocSnap.exists()) {
-                        const prompts = userDocSnap.data().purchasedPrompts || [];
-                        prompts.sort((a, b) => b.timestamp - a.timestamp);
-                        grid.innerHTML = prompts.map(item => `
-                            <div class="library-card">
-                                <div><h4 style="margin:0; color:white;">${item.productName}</h4><small style="color:var(--secondary);">Permanent Access</small></div>
-                                <a href="${item.driveLink}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Open PDF</a>
-                            </div>`).join('') || '<p style="color:#94a3b8">Your library is empty.</p>';
+                    
+                    grid.innerHTML = '<p style="color:#94a3b8">Syncing Library...</p>';
+
+                    // QUERY ORDERS COLLECTION FOR THE UID FROM THANKS PAGE
+                    const q = query(
+                        collection(db, "orders"), 
+                        where("uid", "==", user.uid), 
+                        where("status", "==", "paid")
+                    );
+
+                    try {
+                        const snapshot = await getDocs(q);
+                        
+                        if (snapshot.empty) {
+                            grid.innerHTML = '<p style="color:#94a3b8">Your library is empty. Purchase a pack to see it here.</p>';
+                            return;
+                        }
+
+                        grid.innerHTML = snapshot.docs.map(doc => {
+                            const order = doc.data();
+                            // If order.items exists, we pull the first one, else use order.item
+                            const mainItem = order.items ? order.items[0] : null;
+                            const name = order.item || (mainItem ? mainItem.name : "AI Asset Pack");
+                            const link = mainItem ? mainItem.driveLink : "#";
+
+                            return `
+                                <div class="library-card">
+                                    <div>
+                                        <h4 style="margin:0; color:white;">${name}</h4>
+                                        <small style="color:var(--secondary);">Paid Asset • Permanent Access</small>
+                                    </div>
+                                    <a href="${link}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Download</a>
+                                </div>`;
+                        }).join('');
+                    } catch (e) {
+                        console.error("Library sync failed:", e);
+                        grid.innerHTML = '<p style="color:#ef4444">Sync failed. Please refresh.</p>';
                     }
                 }
             },
 
             checkout: {
                 add(productStr) {
-                    // Removed modal blocking. Cart is always available.
                     PV.state.cart.push(JSON.parse(decodeURIComponent(productStr)));
                     localStorage.setItem('pv_cart', JSON.stringify(PV.state.cart));
                     PV.ui.updateCartCount();
@@ -271,48 +300,13 @@
                 },
                 async process() {
                     const total = PV.state.cart.reduce((s, i) => s + i.price, 0);
-                    const txID = "PV-" + Date.now();
-                    const itemIds = PV.state.cart.map(i => i.id).join(',');
-                    
-                    // Fire-and-forget Firebase logging if user exists, but payment proceeds regardless
-                    if (auth.currentUser) {
-                        try {
-                            await setDoc(doc(db, "orders", txID), {
-                                uid: auth.currentUser.uid,
-                                email: auth.currentUser.email,
-                                items: PV.state.cart,
-                                amount: total,
-                                status: 'pending',
-                                createdAt: new Date().toISOString()
-                            });
-                        } catch (e) { console.warn("Firestore log skipped."); }
-                    }
-
                     const names = PV.state.cart.map(i => i.name).join(', ');
-                    localStorage.setItem('pending_assets', JSON.stringify(PV.state.cart));
-                    // Updated Return URL to thanks.html for guest compliance
-                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(names)}&custom=${txID}&no_shipping=1&return=${window.location.origin}/thanks.html?item=${itemIds}`;
+                    const itemIds = PV.state.cart.map(i => i.id).join(',');
+                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(names)}&no_shipping=1&return=${window.location.origin}/thanks.html?item=${itemIds}`;
                 },
                 async direct(productStr) {
                     const p = JSON.parse(decodeURIComponent(productStr));
-                    const txID = "PV-DIR-" + Date.now();
-                    
-                    if (auth.currentUser) {
-                        try {
-                            await setDoc(doc(db, "orders", txID), {
-                                uid: auth.currentUser.uid,
-                                email: auth.currentUser.email,
-                                items: [p],
-                                amount: p.price,
-                                status: 'pending',
-                                createdAt: new Date().toISOString()
-                            });
-                        } catch (e) { console.warn("Firestore log skipped."); }
-                    }
-
-                    localStorage.setItem('pending_assets', JSON.stringify([p]));
-                    // Updated Return URL to thanks.html
-                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&custom=${txID}&no_shipping=1&return=${window.location.origin}/thanks.html?item=${p.id}`;
+                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&no_shipping=1&return=${window.location.origin}/thanks.html?item=${p.id}`;
                 }
             },
 
@@ -415,9 +409,9 @@
     </div>
 
     <div id="library" class="page">
-        <div style="padding: 30px 0; width: 100%;">
+        <div style="padding: 30px 0; width: 100%; align-items: center; display: flex; flex-direction: column;">
             <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
-            <div id="user-library-grid" style="margin-top:20px;"></div>
+            <div id="user-library-grid" style="margin-top:20px; width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
         </div>
     </div>
 
