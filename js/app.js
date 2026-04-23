@@ -1,15 +1,13 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v4.6
+ * PROMPTVAULT USA - CORE ENGINE v4.8
  * MODE: HEADLESS (Spreadsheet-Driven)
- * FEATURE: Auto-detects Sale Prices and MSRP from CSV.
- * WORKFLOW: Update CSV -> Sync -> Site Auto-Updates.
+ * FIX: Explicit Global Exposure for Grid Buttons & Auto-Price Sync.
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Initialize Firestore
 const db = getFirestore();
-window.db = db; 
 
 const PAYPAL_EMAIL = "emilyperong23@gmail.com";
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
@@ -36,7 +34,7 @@ const renderProducts = (productsToDisplay) => {
     if (!list) return;
 
     list.innerHTML = productsToDisplay.map(p => {
-        // AUTO-DETECT PRICING FROM CSV
+        // AUTO-DETECT PRICING: MSRP from 'price', Actual from 'sale_price'
         const msrp = parseFloat(p.price) || 0;
         const sale = parseFloat(p.sale_price) || 0;
         const finalPrice = (sale > 0) ? sale : msrp;
@@ -45,26 +43,26 @@ const renderProducts = (productsToDisplay) => {
             ? p.img 
             : `${window.location.origin}/${p.img?.replace(/^\//, '') || 'logo.png'}`;
         
-        // Package $9 sale price for PayPal trigger
-        const cleanP = { id: p.id, name: p.name, price: finalPrice };
+        // Data package for PayPal
+        const cleanP = { id: p.id, name: p.title || p.name, price: finalPrice };
         const pData = encodeURIComponent(JSON.stringify(cleanP));
         
-        // Generate Sale UI (Crossed out MSRP if it exists)
-        const pricingHTML = sale > 0 
+        // Generate Sale UI (Crossed out MSRP if it exists and is higher than sale)
+        const pricingHTML = (sale > 0 && msrp > sale) 
             ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${msrp.toFixed(2)}</span>
                <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${sale.toFixed(2)}</span>`
-            : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${msrp.toFixed(2)}</span>`;
+            : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${finalPrice.toFixed(2)}</span>`;
 
         return `
             <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; height: 100%;">
                 <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
                     <img src="${absoluteImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/logo.png'">
                 </div>
-                <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px; color:white;">${p.name}</div>
+                <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px; color:white; line-height:1.2;">${p.title || p.name}</div>
                 <div style="margin-bottom:15px;">${pricingHTML}</div>
                 <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto;">
-                    <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border-radius:12px; cursor:pointer;">Buy Now</button>
-                    <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:var(--accent); font-size:0.8rem; padding:10px; border-radius:12px; cursor:pointer;">+ Cart</button>
+                    <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border-radius:12px; cursor:pointer; border:none;">Buy Now</button>
+                    <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:rgba(255,255,255,0.05); color:white; border:1px solid var(--border); font-size:0.8rem; padding:10px; border-radius:12px; cursor:pointer;">+ Cart</button>
                 </div>
             </div>`;
     }).join('');
@@ -132,7 +130,10 @@ window.processDirectPurchase = async (productStr) => {
             rm: "2"
         });
         window.location.href = `https://www.paypal.com/cgi-bin/webscr?${params.toString()}`;
-    } catch(e) { alert("Checkout Sync Failed."); }
+    } catch(e) { 
+        console.error("Checkout Sync Failed:", e);
+        alert("Payment system busy. Please try again.");
+    }
 };
 
 window.addToCart = (productStr) => {
@@ -165,7 +166,6 @@ window.changePage = (id, el) => {
     el?.classList.add('active');
 
     if (id === 'browse' && allProducts.length === 0) {
-        // Fetch products from CSV for the headless grid
         Papa.parse('/products.csv', {
             download: true,
             header: true,
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action) window.changePage(action);
 });
 
-// Final Exposure
+// Explicit Global Exposure
 window.renderProducts = renderProducts;
 window.loadUserLibrary = loadUserLibrary;
 window.getActiveIdentity = getActiveIdentity;
