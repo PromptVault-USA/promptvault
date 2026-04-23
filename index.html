@@ -98,9 +98,6 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // Path 1: Reuse Anonymous Session from Thanks page
-        signInAnonymously(auth).catch(console.error);
-
         const PV = {
             consts: {
                 PAYPAL_EMAIL: "emilyperong23@gmail.com"
@@ -116,7 +113,7 @@
                 this.ui.updateCartCount();
                 this.ui.initNotifications();
                 
-                // Path 1: Auto-open library if user was redirected from thanks.html
+                // AUTO-ROUTING LOGIC
                 if(window.location.hash === '#library') {
                     this.router.go('library');
                 } else if(window.location.hash === '#browse') {
@@ -212,16 +209,12 @@
                                 </div>
                                 <div class="product-footer">
                                     <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:12px;">
-                                        ${p.old_price && p.old_price > p.price ? `<span style="text-decoration:line-through;color:#8892b0;font-size:1rem;margin-right:8px;">$${p.old_price.toFixed(2)}</span>` : ''}
                                         $${p.price.toFixed(2)}
                                     </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                                         <button onclick="PV.checkout.direct('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem; font-weight:700;">Buy Now</button>
                                         <button onclick="PV.checkout.add('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem; font-weight:600;">+ Cart</button>
                                     </div>
-                                    <p class="gmc-micro">
-                                        Digital Download • No Shipping • <a href="/legal.html#refund" style="color:var(--secondary); text-decoration:underline;">All Sales Final</a>
-                                    </p>
                                 </div>
                             </div>`;
                     }).join('');
@@ -234,23 +227,27 @@
 
             library: {
                 async load() {
-                    const user = auth.currentUser;
                     const grid = document.getElementById('user-library-grid');
-                    if (!grid || !user) return;
+                    // THE FIX: Get ID from localStorage
+                    const guestUid = localStorage.getItem('pv_guest_uid');
+                    
+                    if (!guestUid) {
+                        grid.innerHTML = '<p style="color:#94a3b8">Your library is empty. Purchase a pack to see it here.</p>';
+                        return;
+                    }
                     
                     grid.innerHTML = '<p style="color:#94a3b8">Syncing Library...</p>';
 
                     const q = query(
                         collection(db, "orders"), 
-                        where("uid", "==", user.uid), 
+                        where("uid", "==", guestUid), 
                         where("status", "==", "paid")
                     );
 
                     try {
                         const snapshot = await getDocs(q);
-                        
                         if (snapshot.empty) {
-                            grid.innerHTML = '<p style="color:#94a3b8">Your library is empty. Purchase a pack to see it here.</p>';
+                            grid.innerHTML = '<p style="color:#94a3b8">No purchases found for this device ID.</p>';
                             return;
                         }
 
@@ -264,14 +261,14 @@
                                 <div class="library-card">
                                     <div>
                                         <h4 style="margin:0; color:white;">${name}</h4>
-                                        <small style="color:var(--secondary);">Paid Asset • Permanent Access</small>
+                                        <small style="color:var(--secondary);">Permanent Access • Guest ID: ${guestUid.substring(0,6)}</small>
                                     </div>
                                     <a href="${link}" target="_blank" class="btn-main" style="padding:10px 15px; font-size:0.75rem; background:var(--success); text-decoration:none;">Download</a>
                                 </div>`;
                         }).join('');
                     } catch (e) {
-                        console.error("Library sync failed:", e);
-                        grid.innerHTML = '<p style="color:#ef4444">Sync failed. Please refresh.</p>';
+                        console.error("Sync error:", e);
+                        grid.innerHTML = '<p style="color:#ef4444">Sync failed. Check your connection.</p>';
                     }
                 }
             },
@@ -338,15 +335,13 @@
                 onAuthStateChanged(auth, (user) => {
                     PV.state.user = user;
                     const loginBtn = document.getElementById('login-pill');
-                    const kitBtn = document.getElementById('claim-kit-btn');
                     if (user) {
                         if(loginBtn) { loginBtn.innerText = "Logout"; loginBtn.onclick = () => signOut(auth); }
-                        if(kitBtn) { kitBtn.innerText = "Access My Library"; kitBtn.style.background = "var(--accent)"; kitBtn.onclick = () => PV.router.go('library'); }
-                        document.getElementById('auth-overlay').style.display = 'none';
                         this.library.load();
                     } else {
                         if(loginBtn) { loginBtn.innerText = "Sign In"; loginBtn.onclick = () => document.getElementById('auth-overlay').style.display = 'flex'; }
-                        if(kitBtn) { kitBtn.innerText = "Unlock The Vault"; kitBtn.onclick = () => PV.router.go('browse'); }
+                        // Trigger anon auth if no guest ID exists yet to prepare the session
+                        if(!localStorage.getItem('pv_guest_uid')) signInAnonymously(auth).catch(console.error);
                     }
                 });
             }
@@ -385,24 +380,13 @@
         <span class="sub-accent">Free Sign Up • Join 20,000+ Creators</span>
         <p class="hero-subheadline">The marketplace for high-resolution AI prompts. Join the elite architects building the future of automated business.</p> 
         <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
-            <button id="claim-kit-btn" class="btn-main" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
+            <button class="btn-main" onclick="PV.router.go('browse')" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
             <span style="color: var(--secondary); font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;">🎁 2026 AI Starter Kit (Free)</span>
         </div>
 
         <section class="content-rich-section">
             <h3>Master the AI Landscape with <span class="highlight-text">PromptVault USA</span></h3>
-            <p>At PromptVault USA, we provide industrial-strength logic. Explore our <a href="https://promptvaultusa.shop/blog.html" style="color:var(--accent); font-weight:bold;">Intelligence Feed</a>.</p>
-            <div style="margin-top: 30px; text-align: left; border-top: 1px solid var(--border); padding-top: 30px;">
-                <h4 style="color: white; font-weight: 800;">About Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray); line-height: 1.6;">
-                    PromptVault USA is a sovereign digital marketplace and asset hub designed for the creator economy, specifically focusing on high-resolution AI prompts and industrial-strength logic. 
-                    The platform is built on a high-performance technical stack including Firebase for secure authentication, GitHub for hosting, and PayPal for transaction processing. 
-                    It is designed to serve as a central "Intelligence Feed" for entrepreneurs looking to build automated businesses.
-                </p>
-                <h4 style="color: white; font-weight: 800; margin-top: 20px;">Contact Us</h4>
-                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Email:</strong> <a href="mailto:admin@promptvaultusa.shop" style="color:var(--text-gray); text-decoration:none;">admin@promptvaultusa.shop</a></p>
-                <p style="font-size: 0.9rem; color: var(--text-gray);"><strong>Location:</strong> Cebu City, Philippines</p>
-            </div>
+            <p>At PromptVault USA, we provide industrial-strength logic.</p>
         </section>
     </div> 
 
@@ -418,9 +402,9 @@
             <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
             
             <div style="background:rgba(255, 243, 205, 0.05); border:1px solid #ffeaa7; padding:15px; border-radius:12px; margin:20px 0; max-width:600px; font-size: 0.85rem; color: #ffeaa7; text-align: left;">
-              <strong>⚠️ Guest Access Active:</strong> No account is needed to view your purchases on this device. 
+              <strong>⚠️ Guest Access Active:</strong> Purchases are locked to this device. Bookmark this page to keep access. 
               <br><br>
-              <em>Note: Clearing your browser data will remove access. Bookmark this page or keep your PayPal Transaction ID for support.</em>
+              <em>Lost it? Email your PayPal ID to admin@promptvaultusa.shop</em>
             </div>
 
             <div id="user-library-grid" style="margin-top:20px; width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
@@ -430,12 +414,9 @@
     <footer class="legal-text">
         <div class="legal-links">
             <a onclick="PV.router.go('home')">Home</a>
-            <a href="/blog.html">Blog</a>
             <a href="/legal.html#privacy">Privacy</a>
             <a href="/legal.html#terms">Terms</a>
             <a href="/legal.html#refund">Refunds</a>
-            <a href="/legal.html#about">About</a>
-            <a href="/legal.html#contact">Contact</a>
         </div>
         <p>© 2026 PromptVault USA | Cebu City, PH</p>
     </footer>
@@ -445,7 +426,6 @@
     <a class="nav-item active" onclick="PV.router.go('home', this)"><span>🏠</span><small>Home</small></a>
     <a class="nav-item" onclick="PV.router.go('browse', this)"><span>⊞</span><small>Vaults</small></a>
     <a class="nav-item" onclick="PV.router.go('library', this)"><span>👤</span><small>Library</small></a>
-    <a class="nav-item" onclick="window.location.href='/legal.html#contact'"><span>📞</span><small>Contact</small></a>
 </nav> 
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 20000; align-items: center; justify-content: center;">
