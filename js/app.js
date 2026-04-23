@@ -1,10 +1,11 @@
 /**
- * PROMPTVAULT USA - AUTO-SYNC ENGINE v4.0
+ * PROMPTVAULT USA - AUTO-SYNC ENGINE v4.1
  * NO-HASSLE EDITION: Links directly to CSV-synced products.json
  * Responsibility: Invisible Guest IDs, Automated Delivery, & SEO Absolute Paths.
+ * Update: Standardized to lowercase 'drivelink' for CSV consistency.
  */
 
-import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { TrustService } from './trust-service.js';
 
 // Initialize Firestore
@@ -23,9 +24,11 @@ let allProducts = [];
  * This ensures "Forever Access" without mandatory signup.
  */
 const getActiveIdentity = () => {
+    // Priority 1: Real Auth (Google/Email)
     if (window.auth?.currentUser && !window.auth.currentUser.isAnonymous) {
         return window.auth.currentUser.uid;
     }
+    // Priority 2: Persistent Guest ID
     let gid = localStorage.getItem('pv_guest_uid');
     if (!gid) {
         gid = 'pv_guest_' + Math.random().toString(36).substr(2, 9);
@@ -41,11 +44,12 @@ window.ensureUserProfile = async (user) => {
         const userSnap = await getDoc(userRef);
         
         if (!userSnap.exists()) {
-            // We fetch the welcome links dynamically from the JSON sync if possible
+            // Fetch welcome links dynamically from lowercase 'drivelink'
             const res = await fetch('products.json');
             const products = await res.json();
-            const welcome = products.find(p => p.id === 'welcome_letter')?.driveLink || "https://promptvaultusa.shop/support";
-            const starter = products.find(p => p.id === 'starter_kit')?.driveLink || "https://promptvaultusa.shop/support";
+            
+            const welcome = products.find(p => p.id === 'welcome_letter')?.drivelink || "https://promptvaultusa.shop/support";
+            const starter = products.find(p => p.id === 'starter_kit')?.drivelink || "https://promptvaultusa.shop/support";
 
             await setDoc(userRef, {
                 email: user.email,
@@ -93,7 +97,7 @@ window.filterProducts = (val) => {
     window.renderProducts(filtered);
 };
 
-// --- 3. AUTO-SYNC LIBRARY (NO MANUAL LINKS) ---
+// --- 3. AUTO-SYNC LIBRARY (FOREVER GUEST ACCESS) ---
 
 window.loadUserLibrary = async () => {
     const identity = getActiveIdentity();
@@ -105,33 +109,36 @@ window.loadUserLibrary = async () => {
         const res = await fetch('products.json');
         const syncedProducts = await res.json();
 
-        const querySnapshot = await getDocs(collection(db, "orders"));
+        // Query orders matching the current device/account that are PAID
+        const q = query(collection(db, "orders"), where("uid", "==", identity));
+        const querySnapshot = await getDocs(q);
+        
         let libraryHTML = "";
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            // Show only if this device owns it and it's paid
-            if (data.uid === identity && (data.status === 'paid' || data.status === 'completed')) {
+            if (data.status === 'paid' || data.status === 'completed') {
                 data.items.forEach(item => {
-                    // AUTO-FIND link from CSV-synced JSON
+                    // AUTO-FIND using lowercase 'drivelink' from your CSV data
                     const freshData = syncedProducts.find(p => p.id === item.id || p.gmc_id === item.id);
+                    
                     libraryHTML += `
                         <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                             <div>
                                 <h4 style="margin:0; color:white; font-size:1rem;">${item.name}</h4>
-                                <small style="color:var(--secondary); font-weight:800; text-transform:uppercase; font-size:0.6rem;">Vault Access Unlocked</small>
+                                <small style="color:var(--secondary); font-weight:800; text-transform:uppercase; font-size:0.6rem;">Permanent Vault Access</small>
                             </div>
-                            <a href="${freshData?.driveLink || '#'}" target="_blank" class="btn-main" style="padding:10px 18px; background:var(--success); border-radius:10px; text-decoration:none;">Open Access ↗</a>
+                            <a href="${freshData?.drivelink || '#'}" target="_blank" class="btn-main" style="padding:10px 18px; background:var(--success); border-radius:10px; text-decoration:none;">Open Access ↗</a>
                         </div>`;
                 });
             }
         });
 
-        grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px;">No prompt packs found. Purchases appear here automatically.</p>`;
+        grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px;">No prompt packs found. Purchases from GMC appear here automatically.</p>`;
     } catch (e) { console.error("Library Error:", e); }
 };
 
-// --- 4. AUTO-CHECKOUT (GUEST FRIENDLY) ---
+// --- 4. AUTO-CHECKOUT (ZERO SIGNUP REQUIRED) ---
 
 window.processDirectPurchase = async (productStr) => {
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -180,7 +187,7 @@ window.updateCartCount = () => {
     if (pill) pill.innerText = cart.length;
 };
 
-// --- 5. NAVIGATION ---
+// --- 5. NAVIGATION & BOOTSTRAP ---
 
 window.changePage = (id, el) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -199,7 +206,9 @@ window.changePage = (id, el) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.updateCartCount();
-    if (new URLSearchParams(window.location.search).get('action') === 'browse') {
+    // Support for GMC deep-linking
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'browse') {
         window.changePage('browse');
     }
 });
