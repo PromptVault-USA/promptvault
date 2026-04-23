@@ -1,11 +1,11 @@
 /**
- * PROJECT MEMORY: Security & Transaction Service (v2.5)
- * Responsibility: Secure order creation and PayPal handoff.
+ * PROJECT MEMORY: Security & Transaction Service (v3.0 - Hardened)
+ * Responsibility: Secure order creation without data leaks.
  * REUSES: auth and db from firebase-config.js
  */
 
 import { auth, db } from './firebase-config.js';
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 export const SecurityService = {
     // Generate a unique ID for every attempted purchase
@@ -13,6 +13,7 @@ export const SecurityService = {
 
     /**
      * Locks the order in Firestore before redirecting to PayPal.
+     * REMOVED: driveLink from pre-payment order storage.
      */
     prepareSecureCheckout: async (items) => {
         // 1. Hard Auth Check
@@ -24,32 +25,32 @@ export const SecurityService = {
         const txID = SecurityService.generateTxID();
         const total = items.reduce((sum, i) => sum + i.price, 0);
 
-        // 2. Data Normalization (Prevents 'undefined' breaking Firestore)
+        // 2. Data Normalization (HARDENED)
+        // We only store the ID and Metadata. Links are injected LATER by the FulfillmentService.
         const orderData = {
             uid: user.uid,
             userEmail: user.email,
             items: items.map(i => ({
+                id: i.id, // CRITICAL: Only store the ID here
                 name: i.name || "Unknown Product",
-                price: i.price || 0,
-                driveLink: i.driveLink || i.download || "https://promptvaultusa.shop/support"
+                price: i.price || 0
             })),
-            status: 'pending',
+            status: 'pending', // Starts as pending
             amount: Number(total.toFixed(2)),
             currency: 'USD',
-            createdAt: new Date().toISOString()
+            createdAt: serverTimestamp() // Uses server time for security
         };
 
         try {
-            // 3. EXECUTION LOCK: We await the save specifically to 'orders' collection
-            // This is the most important step for the checkout to actually work.
+            // 3. EXECUTION LOCK
             const orderRef = doc(db, "orders", txID);
             await setDoc(orderRef, orderData);
             
-            console.log("✅ Order Locked:", txID);
+            console.log("✅ Secure Order Locked:", txID);
             return { txID, total };
         } catch (error) {
             console.error("❌ Security Service Error:", error);
-            throw new Error("Database connection failed. Please check your internet.");
+            throw new Error("Database connection failed. Please check your connection.");
         }
     },
 
@@ -59,7 +60,7 @@ export const SecurityService = {
     initiatePayPal: (txID, total, itemNames) => {
         const PAYPAL_EMAIL = "emilyperong23@gmail.com";
         
-        // Success URL includes the Transaction ID for fulfillment-service.js to pick up
+        // We use the txID as the reference so you can find it in Firebase later
         const returnURL = `${window.location.origin}/success.html?tx=${txID}`;
         
         const params = new URLSearchParams({
@@ -67,12 +68,12 @@ export const SecurityService = {
             business: PAYPAL_EMAIL,
             currency_code: "USD",
             amount: total.toFixed(2),
-            item_name: itemNames.substring(0, 120), // PayPal limit is 127 chars
-            custom: txID, 
+            item_name: itemNames.substring(0, 120),
+            custom: txID, // Matches the Firestore Doc ID
             no_shipping: "1",
             return: returnURL,
             cancel_return: `${window.location.origin}/index.html?action=browse`,
-            rm: "2" // Directs PayPal to use a POST redirect back to your site
+            rm: "2" 
         });
 
         // 4. FINAL HANDOFF
