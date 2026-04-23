@@ -38,7 +38,7 @@
             <p id="verification-text" style="color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">EXECUTING ATOMIC HANDSHAKE...</p>
         </div>
 
-        <button onclick="window.location.href='index.html#library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
+        <button onclick="window.location.href='index.html?action=library#library'" id="finish-btn" class="btn-main" style="margin-top: 30px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
         
         <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border);">
             <p style="font-size: 0.75rem; color: #475569; margin-bottom: 5px;">Payment Reference</p>
@@ -49,11 +49,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    
-    // Updated Path to match Fulfillment Service v3.2
-    import { FulfillmentService } from './FulfillmentService.js';
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
@@ -68,75 +65,77 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (user) => {
+    async function verifyAndUnlock(txID) {
         const displayArea = document.getElementById('product-delivery-zone');
         const statusTitle = document.getElementById('status-title');
         const statusMsg = document.getElementById('status-msg');
         const statusIcon = document.getElementById('status-icon');
         const finishBtn = document.getElementById('finish-btn');
-        const txDisplay = document.getElementById('display-tx');
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const txID = urlParams.get('tx') || urlParams.get('custom'); // PayPal uses 'custom' for txID
-
-        if (txID) txDisplay.innerText = txID;
-
-        // 1. AUTH GUARD
-        if (!user) {
-            statusIcon.innerText = "🔒";
-            statusTitle.innerText = "Authentication Required";
-            statusTitle.style.color = "white";
-            displayArea.innerHTML = `
-                <div style="padding: 20px; background: rgba(59, 130, 246, 0.05); border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.2);">
-                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Please sign in to access your assets.</p>
-                    <button onclick="window.location.href='index.html'" class="btn-main" style="background:var(--accent); width:100%; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; color:white;">Go to Login</button>
-                </div>`;
-            return;
-        }
-
-        // 2. DATA GUARD
-        if (!txID) {
-            statusTitle.innerText = "Waiting for Data...";
-            statusIcon.innerText = "⏳";
-            statusTitle.style.color = "#fbbf24";
-            return;
-        }
 
         try {
-            // 3. EXECUTE ATOMIC FULFILLMENT
-            const result = await FulfillmentService.verifyAndDeliver(db, user, txID);
+            // 1. Fetch Order
+            const orderRef = doc(db, "orders", txID);
+            const orderSnap = await getDoc(orderRef);
 
-            // 4. SUCCESS UI RENDER
+            if (!orderSnap.exists()) {
+                throw new Error("Syncing database...");
+            }
+
+            // 2. Mark as Paid (This unlocks it for the Library)
+            await updateDoc(orderRef, {
+                status: 'paid',
+                completedAt: serverTimestamp()
+            });
+
+            // 3. Fetch Master Catalog for Download Links
+            const res = await fetch('products.json');
+            const products = await res.json();
+            const orderData = orderSnap.data();
+
+            // 4. Update UI
             statusIcon.innerText = "🚀";
             statusTitle.innerText = "Assets Unlocked!";
             statusTitle.style.color = "var(--success)";
             statusMsg.innerText = "The intelligence has been moved to your permanent library.";
             finishBtn.style.display = "block";
             
-            displayArea.innerHTML = result.items.map(item => `
-                <div class="success-item">
-                    <div>
-                        <strong style="color:white; font-size:0.9rem;">${item.productName}</strong><br>
-                        <small style="color:var(--success); font-weight:800;">VERIFIED PERMANENT ACCESS</small>
-                    </div>
-                    <a href="${item.driveLink}" target="_blank" style="background:var(--success); color:white; padding:10px 16px; border-radius:12px; font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
-                </div>
-            `).join('');
+            displayArea.innerHTML = orderData.items.map(item => {
+                const catalogItem = products.find(p => p.id === item.id || p.gmc_id === item.id);
+                return `
+                    <div class="success-item">
+                        <div>
+                            <strong style="color:white; font-size:0.9rem;">${item.name}</strong><br>
+                            <small style="color:var(--success); font-weight:800;">VERIFIED PERMANENT ACCESS</small>
+                        </div>
+                        <a href="${catalogItem?.drivelink || '#'}" target="_blank" style="background:var(--success); color:white; padding:10px 16px; border-radius:12px; font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
+                    </div>`;
+            }).join('');
 
-            // 5. HOUSEKEEPING
+            // Clear local states
             localStorage.removeItem('pv_cart');
-            localStorage.removeItem('pending_assets');
 
         } catch (error) {
-            console.error("Atomic Error:", error);
-            statusIcon.innerText = "🛠️";
-            statusTitle.innerText = "Syncing...";
-            statusTitle.style.color = "#fbbf24";
-            displayArea.innerHTML = `
-                <div style="padding: 20px;">
-                    <p style="color: #94a3b8; font-size: 0.85rem;">PayPal confirmed, but Firestore is busy. Your assets are safe. Wait 15s and refresh.</p>
-                    <button onclick="window.location.reload()" class="btn-main" style="margin-top:15px; background:var(--glass); color:white; border:1px solid var(--border); padding:12px; width:100%; border-radius:10px; font-weight:800; cursor:pointer;">Retry Handshake</button>
-                </div>`;
+            console.log("Handshake retry...", error.message);
+            // Auto-retry after 4 seconds if the DB hasn't updated yet
+            setTimeout(() => verifyAndUnlock(txID), 4000);
+        }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const txID = urlParams.get('tx') || urlParams.get('custom');
+        
+        if (txID) {
+            document.getElementById('display-tx').innerText = txID;
+            
+            // Support Guest checkout by signing in anonymously if no user is found
+            if (!user) {
+                signInAnonymously(auth).then(() => verifyAndUnlock(txID));
+            } else {
+                verifyAndUnlock(txID);
+            }
+        } else {
+            document.getElementById('status-title').innerText = "Awaiting Reference...";
         }
     });
 </script>
