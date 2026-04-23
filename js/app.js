@@ -1,6 +1,6 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v4.2
- * RECOVERY UPDATE: Removed broken imports and added multi-page navigation support.
+ * PROMPTVAULT USA - CORE ENGINE v4.3
+ * FIX: Synchronized Grid "Buy Now" and Cart Checkout with Identity System.
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -27,6 +27,9 @@ const getActiveIdentity = () => {
     return gid;
 };
 
+// Global Exposure for UI buttons
+window.getActiveIdentity = getActiveIdentity;
+
 window.ensureUserProfile = async (user) => {
     if (!user || user.isAnonymous) return;
     try {
@@ -52,7 +55,7 @@ window.ensureUserProfile = async (user) => {
     } catch (e) { console.error("Provisioning Error:", e); }
 };
 
-// --- 2. PRODUCT RENDERING ---
+// --- 2. PRODUCT RENDERING (GRID FIX) ---
 
 window.renderProducts = (productsToDisplay) => {
     const list = document.getElementById('product-list');
@@ -63,7 +66,9 @@ window.renderProducts = (productsToDisplay) => {
             ? p.img 
             : `${window.location.origin}/${p.img?.replace(/^\//, '') || 'logo.png'}`;
         
-        const pData = encodeURIComponent(JSON.stringify({...p, img: absoluteImg}));
+        // Clean data for the button
+        const cleanP = { id: p.id, name: p.name, price: p.price };
+        const pData = encodeURIComponent(JSON.stringify(cleanP));
         
         return `
             <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; height: 100%;">
@@ -111,11 +116,11 @@ window.loadUserLibrary = async () => {
                 });
             }
         });
-        grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px;">No prompt packs found. Purchases from GMC appear here automatically.</p>`;
+        grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px;">No prompt packs found. Purchases appear here automatically.</p>`;
     } catch (e) { console.error("Library Error:", e); }
 };
 
-// --- 4. AUTO-CHECKOUT ---
+// --- 4. AUTO-CHECKOUT & CART (SYNCED) ---
 
 window.processDirectPurchase = async (productStr) => {
     const product = JSON.parse(decodeURIComponent(productStr));
@@ -134,9 +139,10 @@ window.processDirectPurchase = async (productStr) => {
             cmd: "_xclick",
             business: PAYPAL_EMAIL,
             currency_code: "USD",
-            amount: product.price,
+            amount: product.price.toFixed(2),
             item_name: product.name,
             custom: txID,
+            no_shipping: "1",
             return: `${window.location.origin}/success.html?tx=${txID}&guest=${identity}`,
             rm: "2"
         });
@@ -144,11 +150,41 @@ window.processDirectPurchase = async (productStr) => {
     } catch(e) { alert("Checkout failed."); }
 };
 
+window.processCartCheckout = async () => {
+    if (cart.length === 0) return alert("Cart is empty.");
+    const identity = getActiveIdentity();
+    const total = cart.reduce((s, i) => s + i.price, 0);
+    const txID = "PV-CART-" + Date.now();
+
+    try {
+        await setDoc(doc(db, "orders", txID), {
+            uid: identity,
+            items: cart,
+            status: 'pending',
+            createdAt: serverTimestamp()
+        });
+
+        const params = new URLSearchParams({
+            cmd: "_xclick",
+            business: PAYPAL_EMAIL,
+            currency_code: "USD",
+            amount: total.toFixed(2),
+            item_name: "PromptVault USA Order",
+            custom: txID,
+            no_shipping: "1",
+            return: `${window.location.origin}/success.html?tx=${txID}&guest=${identity}`,
+            rm: "2"
+        });
+        window.location.href = `https://www.paypal.com/cgi-bin/webscr?${params.toString()}`;
+    } catch(e) { alert("Cart checkout failed."); }
+};
+
 window.addToCart = (productStr) => {
     const product = JSON.parse(decodeURIComponent(productStr));
     cart.push(product);
     localStorage.setItem('pv_cart', JSON.stringify(cart));
     window.updateCartCount();
+    alert(`Added ${product.name} to selection!`);
 };
 
 window.updateCartCount = () => {
@@ -156,12 +192,11 @@ window.updateCartCount = () => {
     if (pill) pill.innerText = cart.length;
 };
 
-// --- 5. NAVIGATION (MULTI-PAGE SAFE) ---
+// --- 5. NAVIGATION ---
 
 window.changePage = (id, el) => {
     const targetPage = document.getElementById(id);
     
-    // If the section doesn't exist on this page, navigate to the correct file
     if (!targetPage) {
         if (id === 'blog') window.location.href = 'blog.html';
         if (id === 'trust') window.location.href = 'legal.html';
@@ -182,6 +217,11 @@ window.changePage = (id, el) => {
     }
     if (id === 'library') window.loadUserLibrary();
 };
+
+// Expose functions to window for onclick events
+window.processDirectPurchase = window.processDirectPurchase;
+window.processCartCheckout = window.processCartCheckout;
+window.addToCart = window.addToCart;
 
 document.addEventListener('DOMContentLoaded', () => {
     window.updateCartCount();
