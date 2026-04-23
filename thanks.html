@@ -23,7 +23,7 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -40,6 +40,11 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // NEW: Sign in anonymously if not logged in
+    signInAnonymously(auth).catch((error) => {
+      console.error("Anonymous auth failed:", error);
+    });
 
     function parseCSV(text) {
       const rows = []; let row = [], field = '', inQuotes = false;
@@ -105,26 +110,27 @@
         manualLink.href = downloadUrl;
         manualLink.style.display = 'inline-block';
 
-        // Save order to Firebase whether logged in or not
+        // Wait for auth state, then save order
         onAuthStateChanged(auth, async (user) => {
+          if (!user) return; // Will trigger once signInAnonymously completes
+
           const orderData = {
-            uid: user? user.uid : 'guest',
-            email: user?.email || 'guest',
+            uid: user.uid, // Now it's a real anon UID, not "guest"
+            email: user.email || 'guest',
             amount: product.price,
             status: "paid",
             createdAt: serverTimestamp(),
             items: [product],
             paypalRef: paypalRef,
-            source: 'paypal'
+            source: 'paypal',
+            isAnonymous: user.isAnonymous
           };
 
           try {
             await addDoc(collection(db, "orders"), orderData);
-            statusEl.innerHTML += `<br><br>✅ Order saved.`;
-            if (user) {
-              statusEl.innerHTML += ` View in <a href="/" style="color:#a78bfa;">Library</a>.`;
-            } else {
-              statusEl.innerHTML += `<br><br>⚠️ <a href="/" style="color:#a78bfa;">Log in</a> to save future purchases to your Library.`;
+            statusEl.innerHTML += `<br><br>✅ Saved to your <a href="/" style="color:#a78bfa;">Library</a>.`;
+            if (user.isAnonymous) {
+              statusEl.innerHTML += `<br><br>💡 <a href="/?signup=1" style="color:#a78bfa;">Create a free account</a> to keep access forever.`;
             }
           } catch(e) {
             console.error("Firebase write failed:", e);
