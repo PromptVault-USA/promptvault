@@ -1,74 +1,53 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Checkout</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-</head>
-<body style="font-family:sans-serif;text-align:center;padding:40px;max-width:500px;margin:auto;">
-<h2 id="packName">Loading...</h2>
-<p id="packDesc">You're buying one pack. Click below to pay with PayPal.</p>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="ppForm" style="margin-top:20px;">
-  <input type="hidden" name="cmd" value="_s-xclick">
-  <input type="hidden" name="hosted_button_id" value="N9VN2WGBWTBTA">
-  <input type="hidden" name="return" id="returnUrl" value="">
-  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" name="submit" alt="Buy Now">
-</form>
+  // YOUR FIREBASE CONFIG HERE
+  const firebaseConfig = { /* ... paste your config ... */ };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-<div id="error" style="color:red;margin-top:20px;display:none;"></div>
-<div id="debug" style="color:#666;font-size:11px;margin-top:20px;text-align:left;word-break:break-all;"></div>
-
-<script>
-async function setupCheckout(){
-  const params = new URLSearchParams(window.location.search);
-  const itemId = params.get('item')?.trim();
-  const errorDiv = document.getElementById('error');
-  const debugDiv = document.getElementById('debug');
-
-  if(!itemId){
-    document.getElementById('packName').innerText='Error';
-    errorDiv.innerText='No product selected.';
-    errorDiv.style.display='block';
-    document.getElementById('ppForm').style.display='none';
-    return;
-  }
-
-  try {
-    const res = await fetch('https://promptvaultusa.shop/products.csv?t=' + Date.now()); // cache bust
-    if(!res.ok) throw new Error('CSV not found');
-
-    const text = await res.text();
-    const rows = text.trim().split('\n').filter(r=>r);
+  async function handlePayment(e) {
+    e.preventDefault();
+    const params = new URLSearchParams(window.location.search);
+    const itemId = params.get('item');
     
-    // Clean function: removes quotes, spaces, BOM
-    const clean = (s) => s.replace(/^\uFEFF/, '').replace(/^["']|["']$/g, '').trim();
-    
-    const headers = rows[0].split(',').map(h => clean(h).toLowerCase());
-    const idIdx = headers.indexOf('id');
-    const nameIdx = headers.indexOf('name');
-    
-    if(idIdx === -1) throw new Error('No "id" column. Headers: ' + headers.join(', '));
+    // 1. Ensure user is logged in
+    const user = auth.currentUser;
+    if(!user) { alert("Please log in first!"); return; }
 
-    const allIds = rows.slice(1).map((r,i) => {
-      const cols = r.split(',').map(clean);
-      return `"${cols[idIdx]}"`;
-    });
-    
-    debugDiv.innerHTML = `Searching for: "${itemId}"<br>First 5 IDs in CSV: ${allIds.slice(0,5).join(', ')}`;
+    try {
+      // 2. Create the PENDING order in Firestore
+      // This generates a unique ID we will use to verify the payment later
+      const orderRef = await addDoc(collection(db, "orders"), {
+        uid: user.uid,
+        itemId: itemId,
+        status: "pending", // 🔥 Crucial: Start as pending
+        createdAt: serverTimestamp()
+      });
 
-    const packRow = rows.slice(1).map(r => r.split(',').map(clean)).find(r => r[idIdx] === itemId);
-
-    if(packRow){
-      document.getElementById('packName').innerText = packRow[nameIdx] || 'Prompt Pack';
-      document.getElementById('returnUrl').value = `${window.location.origin}/thanks.html?item=${itemId}`;
-      debugDiv.innerHTML += '<br><span style="color:green">MATCH FOUND!</span>';
-    } else {
-      throw new Error(`ID "${itemId}" not found. Check quotes/spaces in CSV.`);
+      // 3. Update the form hidden fields dynamically
+      const form = document.getElementById('ppForm');
+      
+      // We change from "hosted_button" to a dynamic "xclick"
+      form.innerHTML = `
+        <input type="hidden" name="cmd" value="_xclick">
+        <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@HERE.com">
+        <input type="hidden" name="item_name" value="${document.getElementById('packName').innerText}">
+        <input type="hidden" name="item_number" value="${orderRef.id}"> <input type="hidden" name="amount" value="9.00"> 
+        <input type="hidden" name="currency_code" value="USD">
+        <input type="hidden" name="notify_url" value="https://YOUR_FUNCTION_URL_HERE">
+        <input type="hidden" name="return" value="${window.location.origin}/thanks.html">
+      `;
+      
+      form.submit();
+    } catch (err) {
+      console.error(err);
+      alert("Checkout failed to initialize.");
     }
-  } catch(e) {
-    document.getElementById('packName').innerText='Error loading product';
-    errorDiv.innerText=`${e.message}`;
-    errorDiv.style.display='block';
-    document.getElementById('ppForm').style.display='none';
   }
-}
-setupCheckout();
+
+  document.getElementById('ppForm').addEventListener('submit', handlePayment);
 </script>
-</body></html>
