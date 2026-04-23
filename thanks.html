@@ -1,53 +1,67 @@
 <!DOCTYPE html>
 <html>
-<head><title>Processing Order...</title></head>
+<head>
+  <title>Processing Order...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <body style="background:#0f172a; color:white; font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh;">
   <h2 id="status">Finalizing your order...</h2>
+
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-  import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-  import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, signInAnonymously, setPersistence, browserLocalPersistence, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
     authDomain: "promptvaultusa.firebaseapp.com",
     projectId: "promptvaultusa"
   };
-  
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // FIX 1: Force Firebase to remember the same guest user
+  await setPersistence(auth, browserLocalPersistence);
+
   const params = new URLSearchParams(window.location.search);
   const reference = params.get("reference") || params.get("tx");
-  const item = params.get("item") || "PV001"; // Default to your first niche if missing
+  const item = params.get("item") || "PV001";
 
-  if (reference) {
-    signInAnonymously(auth).then(async (result) => {
+  if (!reference) {
+    document.getElementById('status').innerText = "Missing transaction ID";
+    setTimeout(() => window.location.href = '/index.html#library', 2000);
+  } else {
+    // FIX 2: Wait for auth state instead of creating new user every time
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        signInAnonymously(auth);
+        return; // onAuthStateChanged will run again with the new user
+      }
+
       const orderRef = doc(db, "orders", reference);
       const existing = await getDoc(orderRef);
       
       if (existing.exists()) {
-        window.location.href = '/index.html#library';
+        document.getElementById('status').innerText = "Order already processed";
+        setTimeout(() => window.location.href = '/index.html#library', 1000);
         return;
       }
 
       await setDoc(orderRef, {
-        uid: result.user.uid,
-        item: item, 
+        uid: user.uid,
+        item: item,
         status: "paid",
         reference: reference,
         account_type: "guest",
+        payer_email: "anonymous",
         createdAt: serverTimestamp()
       });
-      
-      // Short delay so the user feels the "Finalizing" before redirect
-      setTimeout(() => { window.location.href = '/index.html#library'; }, 1500);
-    }).catch(e => {
-        document.getElementById('status').innerText = "Redirecting to your library...";
-        window.location.href = '/index.html#library';
+
+      document.getElementById('status').innerText = "✅ Payment Successful!";
+      setTimeout(() => window.location.href = '/index.html#library', 1500);
     });
-  } else {
-      window.location.href = '/index.html#library';
   }
 </script>
 </body>
