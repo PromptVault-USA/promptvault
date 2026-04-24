@@ -1,15 +1,12 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v5.4
+ * PROMPTVAULT USA - CORE ENGINE v5.5
  * MODE: HEADLESS (Spreadsheet-Driven) 
- * FIX: Cart PayPal render timing + Product page URL params
+ * FIX: Cart PayPal render timing + Product page URL params + Shared Firebase instance
  */
-import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { auth } from './firebase-config.js';
+import { doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { auth, db } from './firebase-config.js'; // FIX: Import shared db + auth
 
 window.auth = auth;
-const db = getFirestore();
-
-// FIX 1: REMOVED duplicate PAYPAL_CLIENT_ID - index.html loads it
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
 let allProducts = [];
 
@@ -175,12 +172,12 @@ window.clearCart = () => {
   window.renderCart();
 };
 
-// FIX 2: THE CRITICAL PAYPAL TIMING FIX
+// CRITICAL FIX: PayPal render timing for cart modal
 window.renderCartPayPal = (total) => {
-  setTimeout(() => {  // FIX: 300ms delay lets modal become visible first
+  setTimeout(() => { 
     const container = document.getElementById('cart-paypal-container');
     if (!container) return;
-    container.innerHTML = ''; // Clear before render
+    container.innerHTML = '';
     paypal.Buttons({
       style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
       createOrder: (data, actions) => {
@@ -203,7 +200,7 @@ window.renderCartPayPal = (total) => {
         alert('Cart checkout failed. Try again or contact admin@promptvaultusa.shop');
       }
     }).render('#cart-paypal-container');
-  }, 300);  // FIX: This delay fixes the invisible button
+  }, 300);
 };
 
 // --- 5. NAVIGATION ---
@@ -224,14 +221,13 @@ window.changePage = (id, el) => {
   if (id === 'cart') window.renderCart();
 };
 
-// FIX 3: HANDLE /vault/ PRODUCT PAGES WITH ?price= PARAMS
+// HANDLE /vault/ PRODUCT PAGES WITH ?price= PARAMS
 const initProductPage = () => {
   const params = new URLSearchParams(window.location.search);
   const price = params.get('price');
   const msrp = params.get('msrp');
   
   if (window.location.pathname.includes('/vault/') && price) {
-    // We're on a product page like /vault/real-estate-lead-generation.html?price=9&msrp=15
     const productName = document.title.replace(' - PromptVault USA', '');
     const productData = {
       id: window.location.pathname.split('/').pop().replace('.html', ''),
@@ -239,48 +235,11 @@ const initProductPage = () => {
       price: parseFloat(price)
     };
     
-    // Auto-render single product view or add to cart
     const pData = encodeURIComponent(JSON.stringify(productData));
     const pricingHTML = (msrp && parseFloat(msrp) > parseFloat(price)) 
       ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${parseFloat(msrp).toFixed(2)}</span> <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${parseFloat(price).toFixed(2)}</span>`
       : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${parseFloat(price).toFixed(2)}</span>`;
     
-    // Inject into product page if containers exist
     const priceEl = document.getElementById('product-price');
     const buttonEl = document.getElementById('product-paypal-button');
-    const cartBtnEl = document.getElementById('product-add-cart');
-    
-    if (priceEl) priceEl.innerHTML = pricingHTML;
-    if (cartBtnEl) cartBtnEl.onclick = () => window.addToCart(pData);
-    if (buttonEl) {
-      paypal.Buttons({
-        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
-        createOrder: (data, actions) => {
-          return actions.order.create({
-            purchase_units: [{ amount: { value: price }, description: `PromptVaultUSA - ${productName}`, custom_id: productData.id }]
-          });
-        },
-        onApprove: (data, actions) => actions.order.capture().then(async (details) => {
-          const identity = getActiveIdentity();
-          await setDoc(doc(db, "orders", details.id), { uid: identity, items: [productData], status: 'completed', paypalTransactionId: details.id, payerEmail: details.payer.email_address, createdAt: serverTimestamp() });
-          window.location.href = `/success.html?tx=${details.id}&guest=${identity}`;
-        })
-      }).render('#product-paypal-button');
-    }
-  }
-};
-
-// --- BOOTSTRAP ---
-document.addEventListener('DOMContentLoaded', () => {
-  window.updateCartCount();
-  initProductPage(); // FIX 3: Run product page handler
-  const urlParams = new URLSearchParams(window.location.search);
-  const action = urlParams.get('action');
-  if (action) window.changePage(action, document.querySelector(`[onclick*="${action}"]`));
-});
-
-// Explicit Global Exposure
-window.renderProducts = renderProducts;
-window.loadUserLibrary = loadUserLibrary;
-window.getActiveIdentity = getActiveIdentity;
-window.renderCart = renderCart;
+    const cartBtnEl = document.getElementById
