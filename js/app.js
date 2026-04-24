@@ -1,15 +1,15 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v4.8
- * MODE: HEADLESS (Spreadsheet-Driven)
- * FIX: Added Firebase Auth import + window.auth exposure for Buy Now buttons
+ * PROMPTVAULT USA - CORE ENGINE v4.9
+ * MODE: HEADLESS (Spreadsheet-Driven) 
+ * FIX: Switched to PayPal JS SDK v2 for webhook compatibility + custom_id
  */
-import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { auth } from './firebase-config.js'; // ADDED: Import auth
-window.auth = auth; // ADDED: Make auth global for getActiveIdentity
 
-// Initialize Firestore
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { auth } from './firebase-config.js';
+
+window.auth = auth; 
 const db = getFirestore();
-const PAYPAL_EMAIL = "emilyperong23@gmail.com";
+const PAYPAL_CLIENT_ID = "YOUR_LIVE_CLIENT_ID"; // REPLACE THIS
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
 let allProducts = [];
 
@@ -26,38 +26,82 @@ const getActiveIdentity = () => {
   return gid;
 };
 
-// --- 2. SPREADSHEET-DRIVEN RENDERING ---
+// --- 2. SPREADSHEET-DRIVEN RENDERING + PAYPAL BUTTONS ---
 const renderProducts = (productsToDisplay) => {
   const list = document.getElementById('product-list');
   if (!list) return;
-  list.innerHTML = productsToDisplay.map(p => {
-    // AUTO-DETECT PRICING: MSRP from 'price', Actual from 'sale_price'
+  
+  list.innerHTML = productsToDisplay.map((p, index) => {
     const msrp = parseFloat(p.price) || 0;
     const sale = parseFloat(p.sale_price) || 0;
     const finalPrice = (sale > 0) ? sale : msrp;
     const absoluteImg = p.img?.startsWith('http') ? p.img : `${window.location.origin}/${p.img?.replace(/^\//, '') || 'logo.png'}`;
     
-    // Data package for PayPal
     const cleanP = { id: p.id, name: p.title || p.name, price: finalPrice };
     const pData = encodeURIComponent(JSON.stringify(cleanP));
-    
-    // Generate Sale UI (Crossed out MSRP if it exists and is higher than sale)
-    const pricingHTML = (sale > 0 && msrp > sale) ? 
-      `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${msrp.toFixed(2)}</span> <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${sale.toFixed(2)}</span>` : 
-      `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${finalPrice.toFixed(2)}</span>`;
-      
+    const buttonContainerId = `paypal-button-${p.id}-${index}`;
+
+    const pricingHTML = (sale > 0 && msrp > sale) 
+      ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${msrp.toFixed(2)}</span> <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${sale.toFixed(2)}</span>` 
+      : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${finalPrice.toFixed(2)}</span>`;
+
+    // Render card, then inject PayPal button after DOM update
+    setTimeout(() => {
+      if (document.getElementById(buttonContainerId)) {
+        paypal.Buttons({
+          style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
+          
+          createOrder: function(data, actions) {
+            return actions.order.create({
+              purchase_units: [{
+                amount: { value: finalPrice.toFixed(2) },
+                description: `PromptVaultUSA - ${cleanP.name}`,
+                custom_id: cleanP.id, // CRITICAL: Shows in Pipedream webhook
+                invoice_id: `PV-${cleanP.id}-${Date.now()}` // Unique per purchase
+              }]
+            });
+          },
+
+          onApprove: function(data, actions) {
+            return actions.order.capture().then(async function(details) {
+              // Log to Firestore for library
+              const identity = getActiveIdentity();
+              const txID = data.orderID;
+              await setDoc(doc(db, "orders", txID), {
+                uid: identity,
+                items: [{ id: cleanP.id, name: cleanP.name, price: cleanP.price }],
+                status: 'completed', // Mark paid immediately
+                paypalTransactionId: details.id,
+                payerEmail: details.payer.email_address,
+                createdAt: serverTimestamp()
+              });
+              
+              // Redirect to success
+              window.location.href = `/success.html?tx=${txID}&guest=${identity}`;
+            });
+          },
+
+          onError: function(err) {
+            console.error('PayPal Error:', err);
+            alert('Payment failed. Try again or contact admin@promptvaultusa.shop');
+          }
+
+        }).render(`#${buttonContainerId}`);
+      }
+    }, 0);
+
     return `
-      <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; height: 100%;">
-        <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
-          <img src="${absoluteImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/logo.png'">
-        </div>
-        <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px; color:white; line-height:1.2;">${p.title || p.name}</div>
-        <div style="margin-bottom:15px;">${pricingHTML}</div>
-        <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto;">
-          <button onclick="window.processDirectPurchase('${pData}')" class="btn-main" style="background:var(--success); color:white; font-weight:800; padding:12px; border-radius:12px; cursor:pointer; border:none;">Buy Now</button>
-          <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:rgba(255,255,255,0.05); color:white; border:1px solid var(--border); font-size:0.8rem; padding:10px; border-radius:12px; cursor:pointer;">+ Cart</button>
-        </div>
-      </div>`;
+    <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; height: 100%;">
+      <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; border:1px solid var(--border); background:#000;">
+        <img src="${absoluteImg}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/logo.png'">
+      </div>
+      <div style="font-weight:800; font-size:1.1rem; margin-bottom:5px; color:white; line-height:1.2;">${p.title || p.name}</div>
+      <div style="margin-bottom:15px;">${pricingHTML}</div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto;">
+        <div id="${buttonContainerId}"></div>
+        <button onclick="window.addToCart('${pData}')" class="btn-main" style="background:rgba(255,255,255,0.05); color:white; border:1px solid var(--border); font-size:0.8rem; padding:10px; border-radius:12px; cursor:pointer;">+ Cart</button>
+      </div>
+    </div>`;
   }).join('');
 };
 
@@ -78,52 +122,23 @@ const loadUserLibrary = async () => {
         data.items.forEach(item => {
           const freshData = syncedProducts.find(p => p.id === item.id || p.gmc_id === item.id);
           libraryHTML += `
-            <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; width:100%;">
-              <div>
-                <h4 style="margin:0; color:white; font-size:1rem;">${item.name}</h4>
-                <small style="color:var(--secondary); font-weight:800; text-transform:uppercase; font-size:0.6rem;">Permanent Vault Access</small>
-              </div>
-              <a href="${freshData?.drivelink || '#'}" target="_blank" class="btn-main" style="padding:10px 18px; background:var(--success); border-radius:10px; text-decoration:none; font-size:0.8rem;">Open Access ↗</a>
-            </div>`;
+          <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; width:100%;">
+            <div>
+              <h4 style="margin:0; color:white; font-size:1rem;">${item.name}</h4>
+              <small style="color:var(--secondary); font-weight:800; text-transform:uppercase; font-size:0.6rem;">Permanent Vault Access</small>
+            </div>
+            <a href="${freshData?.drivelink || '#'}" target="_blank" class="btn-main" style="padding:10px 18px; background:var(--success); border-radius:10px; text-decoration:none; font-size:0.8rem;">Open Access ↗</a>
+          </div>`;
         });
       }
     });
-    grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px; color:#94a3b8;">No prompt packs found. GMC purchases appear here automatically.</p>`;
+    grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px; color:#94a3b8;">No prompt packs found. Purchases appear here automatically.</p>`;
   } catch (e) {
     console.error("Library Error:", e);
   }
 };
 
-// --- 4. CHECKOUT ENGINE ---
-window.processDirectPurchase = async (productStr) => {
-  const product = JSON.parse(decodeURIComponent(productStr));
-  const identity = getActiveIdentity();
-  const txID = "PV-TX-" + Date.now();
-  try {
-    await setDoc(doc(db, "orders", txID), {
-      uid: identity,
-      items: [{ id: product.id, name: product.name, price: product.price }],
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-    const params = new URLSearchParams({
-      cmd: "_xclick",
-      business: PAYPAL_EMAIL,
-      currency_code: "USD",
-      amount: product.price.toFixed(2),
-      item_name: product.name,
-      custom: txID,
-      no_shipping: "1",
-      return: `${window.location.origin}/success.html?tx=${txID}&guest=${identity}`,
-      rm: "2"
-    });
-    window.location.href = `https://www.paypal.com/cgi-bin/webscr?${params.toString()}`;
-  } catch(e) {
-    console.error("Checkout Sync Failed:", e);
-    alert("Payment system busy. Please try again. Error: " + e.message);
-  }
-};
-
+// --- 4. CART ENGINE ---
 window.addToCart = (productStr) => {
   const product = JSON.parse(decodeURIComponent(productStr));
   cart.push(product);
@@ -151,8 +166,7 @@ window.changePage = (id, el) => {
   el?.classList.add('active');
   if (id === 'browse' && allProducts.length === 0) {
     Papa.parse('/products.csv', {
-      download: true,
-      header: true,
+      download: true, header: true,
       complete: (results) => {
         allProducts = results.data;
         renderProducts(allProducts);
