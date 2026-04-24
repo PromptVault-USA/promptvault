@@ -8,47 +8,12 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    .loader { 
-      border: 3px solid rgba(255, 255, 255, 0.1); 
-      border-radius: 50%; 
-      border-top: 3px solid var(--success); 
-      width: 30px; 
-      height: 30px; 
-      animation: spin 1s linear infinite; 
-      margin: 20px auto; 
-    } 
-    @keyframes spin { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(360deg); } 
-    } 
-    .success-item { 
-      background:rgba(16, 185, 129, 0.05); 
-      padding:18px; 
-      border-radius:16px; 
-      border:1px solid var(--border); 
-      margin-bottom:12px; 
-      text-align:left; 
-      display:flex; 
-      justify-content:space-between; 
-      align-items:center; 
-      transition: 0.3s; 
-    } 
-    .success-item:hover { 
-      border-color: var(--success); 
-      background: rgba(16, 185, 129, 0.1); 
-      transform: scale(1.02);
-    } 
-    .btn-main { 
-      transition: 0.3s; 
-      border: none; 
-      text-decoration: none; 
-      display: inline-block; 
-      text-align: center; 
-    } 
-    .btn-main:hover { 
-      transform: translateY(-3px); 
-      opacity: 0.9; 
-    } 
+    .loader { border: 3px solid rgba(255, 255, 255, 0.1); border-radius: 50%; border-top: 3px solid var(--success); width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .success-item { background:rgba(16, 185, 129, 0.05); padding:18px; border-radius:16px; border:1px solid var(--border); margin-bottom:12px; text-align:left; display:flex; justify-content:space-between; align-items:center; transition: 0.3s; }
+    .success-item:hover { border-color: var(--success); background: rgba(16, 185, 129, 0.1); transform: scale(1.02); }
+    .btn-main { transition: 0.3s; border: none; text-decoration: none; display: inline-block; text-align: center; }
+    .btn-main:hover { transform: translateY(-3px); opacity: 0.9; }
   </style>
 </head>
 <body>
@@ -63,11 +28,10 @@
         <div id="loading-spinner" class="loader"></div>
         <p id="verification-text" style="color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">VERIFYING WITH PAYPAL...</p>
       </div>
-
-      <button onclick="location.reload()" id="refresh-btn" class="btn-main" style="margin-top: 30px; background: var(--accent); color: white; width: 100%; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">Refresh Status</button>
       
+      <button onclick="location.reload()" id="refresh-btn" class="btn-main" style="margin-top: 30px; background: var(--accent); color: white; width: 100%; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">Refresh Status</button>
       <button onclick="window.location.href='index.html?action=library#library'" id="finish-btn" class="btn-main" style="margin-top: 15px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
-
+      
       <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border);">
         <p style="font-size: 0.75rem; color: #475569; margin-bottom: 5px;">Payment Reference</p>
         <span id="display-tx" style="font-family: monospace; color: var(--accent); font-size: 0.85rem; font-weight: 800;">---</span>
@@ -76,22 +40,10 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
-      authDomain: "promptvaultusa.firebaseapp.com",
-      projectId: "promptvaultusa",
-      storageBucket: "promptvaultusa.firebasestorage.app",
-      messagingSenderId: "960105895017",
-      appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // FIX: Use shared Firebase instance from config
+    import { auth, db } from './firebase-config.js';
+    import { signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     async function checkOrderStatus(txID) {
       const displayArea = document.getElementById('product-delivery-zone');
@@ -117,15 +69,15 @@
         }
 
         const orderData = orderSnap.data();
-
+        
         if (orderData.status === 'paid' || orderData.status === 'completed') {
           const res = await fetch('products.json');
           const products = await res.json();
-
-          // Sync local state
+          
+          // CRITICAL: Clear cart from localStorage for both /#browse and /vault/ purchases
           localStorage.removeItem('pv_cart');
           localStorage.setItem('pv_last_confirmed', txID);
-
+          
           statusIcon.innerText = "🚀";
           statusTitle.innerText = "Assets Unlocked!";
           statusTitle.style.color = "var(--success)";
@@ -134,7 +86,7 @@
           finishBtn.style.display = "block";
           spinner.style.display = "none";
           verificationText.style.display = "none";
-
+          
           displayArea.innerHTML = orderData.items.map(item => {
             const catalogItem = products.find(p => p.id === item.id || p.gmc_id === item.id);
             return `
@@ -151,24 +103,26 @@
           statusIcon.innerText = "⏳";
           statusTitle.innerText = "Processing Payment";
           verificationText.innerText = "AWAITING WEBHOOK CONFIRMATION...";
-          
           // Poll every 5 seconds
           setTimeout(() => checkOrderStatus(txID), 5000);
-          
         } else {
           statusIcon.innerText = "⚠️";
           statusTitle.innerText = "Payment Status: " + orderData.status;
           spinner.style.display = "none";
         }
-
       } catch (error) {
         console.error("Status check error:", error);
+        statusTitle.innerText = "Verification Error";
+        statusMsg.innerText = "Error checking order. Refresh or contact support.";
+        statusIcon.innerText = "⚠️";
+        spinner.style.display = "none";
       }
     }
 
     onAuthStateChanged(auth, (user) => {
       const urlParams = new URLSearchParams(window.location.search);
       const txID = urlParams.get('tx') || urlParams.get('custom');
+      
       if (txID) {
         document.getElementById('display-tx').innerText = txID;
         if (!user) {
@@ -176,6 +130,11 @@
         } else {
           checkOrderStatus(txID);
         }
+      } else {
+        document.getElementById('status-title').innerText = "No Transaction Found";
+        document.getElementById('status-msg').innerText = "Missing payment reference in URL.";
+        document.getElementById('status-icon').innerText = "❌";
+        document.getElementById('loading-spinner').style.display = "none";
       }
     });
   </script>
