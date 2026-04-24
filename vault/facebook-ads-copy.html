@@ -32,10 +32,14 @@
   </script>
   
   <style>
+    :root {
+      --accent-teal: #4fd1c5;
+      --bg-dark: #0a1120;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      background: #0a1120;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-dark);
       min-height: 100vh;
       color: #e6f1ff;
       padding: 20px;
@@ -43,15 +47,15 @@
     .container { max-width: 800px; margin: 40px auto; }
     .glass {
       background: rgba(17, 34, 64, 0.4);
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 40px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
-    h1 { font-size: 2.2rem; color: #4fd1c5; margin-bottom: 8px; font-weight: 800; }
+    h1 { font-size: 2.2rem; color: var(--accent-teal); margin-bottom: 8px; font-weight: 800; letter-spacing: -1px; }
     .meta { display: flex; gap: 8px; margin-bottom: 25px; }
-    .meta span { background: rgba(79, 209, 197, 0.1); color: #4fd1c5; padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; border: 1px solid rgba(79, 209, 197, 0.2); }
+    .meta span { background: rgba(79, 209, 197, 0.1); color: var(--accent-teal); padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; border: 1px solid rgba(79, 209, 197, 0.2); }
     
     .hero-visual {
       width: 100%;
@@ -65,12 +69,12 @@
     
     .desc { font-size: 0.95rem; line-height: 1.6; color: #94a3b8; margin: 25px 0; }
 
-    /* PRICING STYLE MATCH */
-    .price-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    /* CORRECTED PRICING BLOCK */
+    .price-wrap { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
     .old-price { text-decoration: line-through; color: #475569; font-size: 1.6rem; font-weight: 600; }
-    .current-price { font-size: 3rem; font-weight: 800; color: #4fd1c5; text-shadow: 0 0 15px rgba(79, 209, 197, 0.2); }
+    .current-price { font-size: 3.2rem; font-weight: 800; color: var(--accent-teal); text-shadow: 0 0 15px rgba(79, 209, 197, 0.2); }
 
-    /* POLICY BOX MATCH */
+    /* LEGAL POLICY BOX */
     .policy-box {
       background: rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(79, 209, 197, 0.1);
@@ -80,30 +84,23 @@
       font-size: 0.75rem;
       color: #64748b;
       line-height: 1.6;
-      text-align: left;
     }
-    .policy-box strong { color: #4fd1c5; display: block; margin-bottom: 10px; font-size: 0.8rem; }
+    .policy-box strong { color: var(--accent-teal); display: block; margin-bottom: 10px; font-size: 0.8rem; }
     .policy-box ul { list-style: none; }
-    .policy-box li { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 8px; }
-    .policy-box li::before { content: "✓"; color: #4fd1c5; font-weight: 800; }
+    .policy-box li { margin-bottom: 5px; display: flex; align-items: flex-start; gap: 8px; }
+    .policy-box li::before { content: "✓"; color: var(--accent-teal); font-weight: 800; }
 
     .fine-print { margin-top: 30px; font-size: 0.65rem; color: #334155; text-align: center; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 20px; }
-    .fine-print a { color: #475569; text-decoration: none; }
-
-    #paypal-button-container { margin-top: 20px; }
     
-    @media (max-width: 600px) {
-      .glass { padding: 25px; }
-      .current-price { font-size: 2.2rem; }
-    }
+    #paypal-button-container { margin-top: 20px; max-width: 400px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="glass">
-      <a href="/#browse" style="color:#4fd1c5; text-decoration:none; font-size:0.7rem; font-weight:800; letter-spacing:1px; text-transform:uppercase;">← Back to Vaults</a>
+      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;">← Back to Vaults</a>
       
-      <h1 style="margin-top:15px;">Facebook Ads Copy</h1>
+      <h1 style="margin-top:20px;">Facebook Ads Copy</h1>
       <div class="meta">
         <span>Ads</span>
         <span>ID: niche_009</span>
@@ -116,7 +113,7 @@
       <div class="desc">High-converting ad copy frameworks for Facebook and Meta campaigns.</div>
       
       <div class="price-wrap">
-        <span class="old-price" id="msrp-tag">$$15.00</span>
+        <span class="old-price">$15.00</span>
         <span class="current-price">$9.00</span>
       </div>
 
@@ -129,8 +126,8 @@
         <ul>
             <li>Instant download via email after PayPal payment</li>
             <li>No physical shipping - Delivered in 1-5 minutes</li>
-            <li>All sales final due to digital nature per <a href="/legal.html#refunds" style="color:#4fd1c5;">Refund Policy</a></li>
-            <li>By purchasing, you agree to <a href="/legal.html#terms" style="color:#4fd1c5;">Terms of Service</a></li>
+            <li>All sales final due to digital nature per <a href="/legal.html#refunds" style="color:var(--accent-teal);">Refund Policy</a></li>
+            <li>By purchasing, you agree to <a href="/legal.html#terms" style="color:var(--accent-teal);">Terms of Service</a></li>
         </ul>
       </div>
 
@@ -158,13 +155,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const price = parseFloat("9.00").toFixed(2);
-    const msrp = parseFloat("$15.00") || 0;
-
-    // Adaptive Pricing: Only show MSRP if it is actually higher than display price
-    if (msrp <= parseFloat(price)) {
-        document.getElementById('msrp-tag').style.display = 'none';
-    }
+    // Hard-coded to $9.00 for the sale
+    const checkoutPrice = "9.00";
 
     const getGid = () => {
       let gid = localStorage.getItem('pv_guest_uid');
@@ -180,7 +172,7 @@
       createOrder: (data, actions) => {
         return actions.order.create({
           purchase_units: [{
-            amount: { value: price },
+            amount: { value: checkoutPrice },
             description: "PromptVaultUSA - Facebook Ads Copy",
             custom_id: "niche_009"
           }]
@@ -191,7 +183,7 @@
           const gid = getGid();
           await setDoc(doc(db, "orders", details.id), {
             uid: gid,
-            items: [{ id: "niche_009", name: "Facebook Ads Copy", price: price }],
+            items: [{ id: "niche_009", name: "Facebook Ads Copy", price: 9.00 }],
             status: 'paid',
             createdAt: serverTimestamp()
           });
@@ -202,11 +194,10 @@
 
     window.addToCartLocal = () => {
         let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-        cart.push({ id: "niche_009", name: "Facebook Ads Copy", price: parseFloat(price) });
+        cart.push({ id: "niche_009", name: "Facebook Ads Copy", price: 9.00 });
         localStorage.setItem('pv_cart', JSON.stringify(cart));
         alert("Selection added!");
     };
   </script>
-  <script src="/js/inject-footer.js"></script>
 </body>
 </html>
