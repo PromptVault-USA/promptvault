@@ -36,6 +36,7 @@
     .success-item:hover { 
       border-color: var(--success); 
       background: rgba(16, 185, 129, 0.1); 
+      transform: scale(1.02);
     } 
     .btn-main { 
       transition: 0.3s; 
@@ -57,12 +58,16 @@
       <div id="status-icon" style="font-size: 4rem; margin-bottom: 25px;">⏳</div>
       <h2 id="status-title" style="color:var(--accent); margin-bottom: 12px; font-weight: 800; font-size: 1.8rem;">Checking Payment...</h2>
       <p id="status-msg" style="margin-bottom:35px; color:#94a3b8; font-size: 1rem; line-height: 1.6;">We're waiting for PayPal to confirm your payment. This usually takes 10-60 seconds.</p>
+      
       <div id="product-delivery-zone">
         <div id="loading-spinner" class="loader"></div>
         <p id="verification-text" style="color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">VERIFYING WITH PAYPAL...</p>
       </div>
+
       <button onclick="location.reload()" id="refresh-btn" class="btn-main" style="margin-top: 30px; background: var(--accent); color: white; width: 100%; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">Refresh Status</button>
+      
       <button onclick="window.location.href='index.html?action=library#library'" id="finish-btn" class="btn-main" style="margin-top: 15px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
+
       <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border);">
         <p style="font-size: 0.75rem; color: #475569; margin-bottom: 5px;">Payment Reference</p>
         <span id="display-tx" style="font-family: monospace; color: var(--accent); font-size: 0.85rem; font-weight: 800;">---</span>
@@ -99,7 +104,6 @@
       const verificationText = document.getElementById('verification-text');
 
       try {
-        // 1. Fetch Order
         const orderRef = doc(db, "orders", txID);
         const orderSnap = await getDoc(orderRef);
         
@@ -114,16 +118,18 @@
 
         const orderData = orderSnap.data();
 
-        // 2. Check if paid - DO NOT UPDATE HERE. Only read.
         if (orderData.status === 'paid' || orderData.status === 'completed') {
-          // PAID: Show unlocks
           const res = await fetch('products.json');
           const products = await res.json();
+
+          // Sync local state
+          localStorage.removeItem('pv_cart');
+          localStorage.setItem('pv_last_confirmed', txID);
 
           statusIcon.innerText = "🚀";
           statusTitle.innerText = "Assets Unlocked!";
           statusTitle.style.color = "var(--success)";
-          statusMsg.innerText = "Payment verified. Your intelligence has been moved to your permanent library.";
+          statusMsg.innerText = "Your intelligence vaults have been successfully moved to your permanent library.";
           refreshBtn.style.display = "none";
           finishBtn.style.display = "block";
           spinner.style.display = "none";
@@ -135,47 +141,28 @@
               <div class="success-item">
                 <div>
                   <strong style="color:white; font-size:0.9rem;">${item.name}</strong><br>
-                  <small style="color:var(--success); font-weight:800;">VERIFIED PERMANENT ACCESS</small>
+                  <small style="color:var(--success); font-weight:800;">PERMANENT ACCESS GRANTED</small>
                 </div>
                 <a href="${catalogItem?.drivelink || '#'}" target="_blank" style="background:var(--success); color:white; padding:10px 16px; border-radius:12px; font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
               </div>`;
           }).join('');
-
-          localStorage.removeItem('pv_cart');
           
         } else if (orderData.status === 'pending') {
-          // PENDING: Show waiting message
           statusIcon.innerText = "⏳";
-          statusTitle.innerText = "Payment Pending";
-          statusTitle.style.color = "var(--accent)";
-          statusMsg.innerText = "We're still waiting for PayPal confirmation. This usually takes 10-60 seconds. If you just paid, hit Refresh Status.";
-          spinner.style.display = "block";
-          verificationText.innerText = "AWAITING PAYPAL WEBHOOK...";
-          refreshBtn.style.display = "block";
-          finishBtn.style.display = "none";
+          statusTitle.innerText = "Processing Payment";
+          verificationText.innerText = "AWAITING WEBHOOK CONFIRMATION...";
           
-          // Auto-retry every 5 seconds for 2 minutes
+          // Poll every 5 seconds
           setTimeout(() => checkOrderStatus(txID), 5000);
           
         } else {
-          // FAILED/CANCELLED
-          statusIcon.innerText = "❌";
-          statusTitle.innerText = "Payment Failed";
-          statusTitle.style.color = "#ef4444";
-          statusMsg.innerText = `Status: ${orderData.status}. If you were charged, contact support with reference ${txID}.`;
+          statusIcon.innerText = "⚠️";
+          statusTitle.innerText = "Payment Status: " + orderData.status;
           spinner.style.display = "none";
-          verificationText.innerText = "TRANSACTION FAILED";
-          refreshBtn.style.display = "block";
-          refreshBtn.innerText = "Try Again";
-          refreshBtn.onclick = () => window.location.href = 'index.html';
         }
 
       } catch (error) {
         console.error("Status check error:", error);
-        statusTitle.innerText = "Connection Error";
-        statusMsg.innerText = "Couldn't check payment status. Refresh the page or contact support.";
-        statusIcon.innerText = "⚠️";
-        spinner.style.display = "none";
       }
     }
 
@@ -184,18 +171,11 @@
       const txID = urlParams.get('tx') || urlParams.get('custom');
       if (txID) {
         document.getElementById('display-tx').innerText = txID;
-        // Sign in anonymously if needed to read the order
         if (!user) {
-          signInAnonymously(auth).then(() => checkOrderStatus(txID)).catch(() => {
-            document.getElementById('status-msg').innerText = "Auth error. Refresh the page.";
-          });
+          signInAnonymously(auth).then(() => checkOrderStatus(txID));
         } else {
           checkOrderStatus(txID);
         }
-      } else {
-        document.getElementById('status-title').innerText = "No Payment Reference";
-        document.getElementById('status-msg').innerText = "Missing transaction ID in URL.";
-        document.getElementById('loading-spinner').style.display = "none";
       }
     });
   </script>
