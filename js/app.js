@@ -1,7 +1,7 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v4.9
+ * PROMPTVAULT USA - CORE ENGINE v4.9.1
  * MODE: HEADLESS (Spreadsheet-Driven) 
- * FIX: Switched to PayPal JS SDK v2 for webhook compatibility + custom_id
+ * FIX: Enhanced PayPal SDK Lifecycle + Identity Mapping
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -9,7 +9,8 @@ import { auth } from './firebase-config.js';
 
 window.auth = auth; 
 const db = getFirestore();
-const PAYPAL_CLIENT_ID = "YOUR_LIVE_CLIENT_ID"; // REPLACE THIS
+// REPLACED WITH YOUR LIVE CLIENT ID
+const PAYPAL_CLIENT_ID = "AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m"; 
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
 let allProducts = [];
 
@@ -32,6 +33,8 @@ const renderProducts = (productsToDisplay) => {
   if (!list) return;
   
   list.innerHTML = productsToDisplay.map((p, index) => {
+    if (!p.id) return ""; // Guard against empty spreadsheet rows
+    
     const msrp = parseFloat(p.price) || 0;
     const sale = parseFloat(p.sale_price) || 0;
     const finalPrice = (sale > 0) ? sale : msrp;
@@ -39,53 +42,50 @@ const renderProducts = (productsToDisplay) => {
     
     const cleanP = { id: p.id, name: p.title || p.name, price: finalPrice };
     const pData = encodeURIComponent(JSON.stringify(cleanP));
-    const buttonContainerId = `paypal-button-${p.id}-${index}`;
+    const buttonContainerId = `paypal-button-${p.id}`; // Fixed ID for stability
 
     const pricingHTML = (sale > 0 && msrp > sale) 
       ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${msrp.toFixed(2)}</span> <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${sale.toFixed(2)}</span>` 
       : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${finalPrice.toFixed(2)}</span>`;
 
-    // Render card, then inject PayPal button after DOM update
+    // Render card, then inject PayPal button
     setTimeout(() => {
-      if (document.getElementById(buttonContainerId)) {
+      const container = document.getElementById(buttonContainerId);
+      // PREVENT DUPLICATE BUTTONS
+      if (container && !container.hasChildNodes()) {
         paypal.Buttons({
           style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
-          
-          createOrder: function(data, actions) {
+          createOrder: (data, actions) => {
             return actions.order.create({
               purchase_units: [{
                 amount: { value: finalPrice.toFixed(2) },
                 description: `PromptVaultUSA - ${cleanP.name}`,
-                custom_id: cleanP.id, // CRITICAL: Shows in Pipedream webhook
-                invoice_id: `PV-${cleanP.id}-${Date.now()}` // Unique per purchase
+                custom_id: cleanP.id, // Handshake for Pipedream
+                invoice_id: `PV-${cleanP.id}-${Date.now()}`
               }]
             });
           },
-
-          onApprove: function(data, actions) {
-            return actions.order.capture().then(async function(details) {
-              // Log to Firestore for library
+          onApprove: (data, actions) => {
+            return actions.order.capture().then(async (details) => {
               const identity = getActiveIdentity();
-              const txID = data.orderID;
+              const txID = details.id; 
+              
+              // Set to 'paid' so loadUserLibrary detects it instantly
               await setDoc(doc(db, "orders", txID), {
                 uid: identity,
                 items: [{ id: cleanP.id, name: cleanP.name, price: cleanP.price }],
-                status: 'completed', // Mark paid immediately
+                status: 'paid', 
                 paypalTransactionId: details.id,
                 payerEmail: details.payer.email_address,
                 createdAt: serverTimestamp()
               });
               
-              // Redirect to success
               window.location.href = `/success.html?tx=${txID}&guest=${identity}`;
             });
           },
-
-          onError: function(err) {
-            console.error('PayPal Error:', err);
-            alert('Payment failed. Try again or contact admin@promptvaultusa.shop');
+          onError: (err) => {
+            console.error('PayPal SDK Error:', err);
           }
-
         }).render(`#${buttonContainerId}`);
       }
     }, 0);
@@ -110,11 +110,17 @@ const loadUserLibrary = async () => {
   const identity = getActiveIdentity();
   const grid = document.getElementById('user-library-grid');
   if (!grid) return;
+  
+  grid.innerHTML = `<p style="text-align:center; padding:20px; color:#94a3b8;">Syncing Vault...</p>`;
+  
   try {
     const res = await fetch('products.json');
     const syncedProducts = await res.json();
+    
+    // Listen for 'paid' or 'completed' to cover both local and webhook updates
     const q = query(collection(db, "orders"), where("uid", "==", identity));
     const querySnapshot = await getDocs(q);
+    
     let libraryHTML = "";
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -134,7 +140,7 @@ const loadUserLibrary = async () => {
     });
     grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px; color:#94a3b8;">No prompt packs found. Purchases appear here automatically.</p>`;
   } catch (e) {
-    console.error("Library Error:", e);
+    console.error("Library Sync Error:", e);
   }
 };
 
@@ -157,18 +163,20 @@ window.changePage = (id, el) => {
   const targetPage = document.getElementById(id);
   if (!targetPage) {
     if (id === 'blog') window.location.href = 'blog.html';
-    if (id === 'browse' || id === 'library') window.location.href = `index.html?action=${id}#${id}`;
     return;
   }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   targetPage.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   el?.classList.add('active');
+  
   if (id === 'browse' && allProducts.length === 0) {
     Papa.parse('/products.csv', {
-      download: true, header: true,
+      download: true, 
+      header: true,
+      skipEmptyLines: true,
       complete: (results) => {
-        allProducts = results.data;
+        allProducts = results.data.filter(row => row.id);
         renderProducts(allProducts);
       }
     });
