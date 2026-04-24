@@ -242,10 +242,6 @@
                                         });
                                         
                                         window.location.href = `/success.html?tx=${details.id}&guest=${gid}`;
-                                    },
-                                    onError: (err) => {
-                                        console.error('PayPal Error:', err);
-                                        alert('Payment encountered an error. Please contact support.');
                                     }
                                 }).render(`#${buttonId}`);
                             }
@@ -324,10 +320,11 @@
 
             checkout: {
                 add(productStr) {
-                    PV.state.cart.push(JSON.parse(decodeURIComponent(productStr)));
+                    const p = JSON.parse(decodeURIComponent(productStr));
+                    PV.state.cart.push(p);
                     localStorage.setItem('pv_cart', JSON.stringify(PV.state.cart));
                     PV.ui.updateCartCount();
-                    alert("Added to cart!");
+                    alert(`Added ${p.name} to cart!`);
                 },
                 remove(idx) {
                     PV.state.cart.splice(idx, 1);
@@ -341,27 +338,23 @@
                     const modal = document.getElementById('checkout-overlay');
                     const list = document.getElementById('cart-items-list');
                     modal.style.display = 'flex';
-                    list.innerHTML = PV.state.cart.map((item, idx) => `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
-                            <span style="font-size:0.8rem;">${item.name}</span>
-                            <strong>$${item.price.toFixed(2)}</strong>
-                            <button onclick="PV.checkout.remove(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
-                        </div>`).join('');
-                    document.getElementById('cart-total').innerText = `$${PV.state.cart.reduce((s, i) => s + i.price, 0).toFixed(2)}`;
-                },
-                async process() {
-                    const total = PV.state.cart.reduce((s, i) => s + i.price, 0);
-                    const txID = "PV-TX-" + Date.now();
-                    const gid = PV.identity.ensure();
                     
-                    await setDoc(doc(db, "orders", txID), {
-                        uid: gid,
-                        items: PV.state.cart,
-                        status: 'pending',
-                        createdAt: serverTimestamp()
-                    });
+                    list.innerHTML = PV.state.cart.map((item, idx) => `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <span style="font-size:0.85rem; color:white;">${item.name}</span>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <strong style="color:var(--secondary)">$${item.price.toFixed(2)}</strong>
+                                <button onclick="PV.checkout.remove(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer;">✕</button>
+                            </div>
+                        </div>`).join('');
 
-                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${total.toFixed(2)}&currency_code=USD&item_name=PromptVault+Order&custom=${txID}&no_shipping=1&return=${window.location.origin}/success.html?tx=${txID}&guest=${gid}&rm=2`;
+                    const total = PV.state.cart.reduce((s, i) => s + i.price, 0);
+                    document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+
+                    // Trigger the Cart Smart Button from app.js engine
+                    if (window.renderCartPayPal) {
+                        window.renderCartPayPal(total);
+                    }
                 }
             },
 
@@ -484,14 +477,18 @@
 </nav> 
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 20000; align-items: center; justify-content: center;">
-    <div class="glass-card" style="width: 90%; max-width: 450px;">
+    <div class="glass-card" style="width: 90%; max-width: 450px; padding: 30px;">
         <h3 style="text-align: center; margin-bottom: 20px;">Your Shopping Cart</h3>
-        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:800; padding-top:15px; margin-top:15px; border-top:1px solid var(--border);">
+        
+        <div id="cart-items-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
+        
+        <div style="display:flex; justify-content:space-between; font-weight:800; padding-top:15px; border-top:1px solid var(--border);">
             <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
         </div>
-        <button onclick="PV.checkout.process()" class="btn-main" style="background:var(--success); width: 100%; margin-top:20px;">Checkout with PayPal</button>
-        <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; cursor:pointer;">Continue Browsing</button>
+
+        <div id="cart-paypal-container" style="margin-top: 25px; min-height: 150px;"></div>
+        
+        <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; cursor:pointer; font-size: 0.8rem;">Continue Browsing</button>
     </div>
 </div>
 
