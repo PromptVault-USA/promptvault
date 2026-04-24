@@ -1,7 +1,7 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v5.0
+ * PROMPTVAULT USA - CORE ENGINE v5.2
  * MODE: HEADLESS (Spreadsheet-Driven) 
- * UPDATE: Fixed Cart "Dead" Button with Smart SDK Bundle Logic
+ * FIX: Fully Adaptive Pricing + Smart Cart Logic Sync
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -26,7 +26,7 @@ const getActiveIdentity = () => {
   return gid;
 };
 
-// --- 2. SPREADSHEET-DRIVEN RENDERING + PAYPAL BUTTONS ---
+// --- 2. SPREADSHEET-DRIVEN RENDERING + ADAPTIVE PAYPAL BUTTONS ---
 const renderProducts = (productsToDisplay) => {
   const list = document.getElementById('product-list');
   if (!list) return;
@@ -34,11 +34,14 @@ const renderProducts = (productsToDisplay) => {
   list.innerHTML = productsToDisplay.map((p, index) => {
     if (!p.id) return ""; 
     
+    // Dynamic Pricing Logic: Prioritize Sale Price
     const msrp = parseFloat(p.price) || 0;
     const sale = parseFloat(p.sale_price) || 0;
     const finalPrice = (sale > 0) ? sale : msrp;
+    
     const absoluteImg = p.img?.startsWith('http') ? p.img : `${window.location.origin}/${p.img?.replace(/^\//, '') || 'logo.png'}`;
     
+    // Data package for the cart function
     const cleanP = { id: p.id, name: p.title || p.name, price: finalPrice };
     const pData = encodeURIComponent(JSON.stringify(cleanP));
     const buttonContainerId = `paypal-button-${p.id}`; 
@@ -68,7 +71,7 @@ const renderProducts = (productsToDisplay) => {
               const txID = details.id; 
               await setDoc(doc(db, "orders", txID), {
                 uid: identity,
-                items: [{ id: cleanP.id, name: cleanP.name, price: cleanP.price }],
+                items: [{ id: cleanP.id, name: cleanP.name, price: finalPrice }],
                 status: 'paid', 
                 paypalTransactionId: details.id,
                 payerEmail: details.payer.email_address,
@@ -134,7 +137,9 @@ window.addToCart = (productStr) => {
   cart.push(product);
   localStorage.setItem('pv_cart', JSON.stringify(cart));
   window.updateCartCount();
-  alert(`Added ${product.name} to selection!`);
+  
+  // Create a toast/notif instead of a blocky alert for better UX
+  console.log(`🛒 Added: ${product.name}`);
 };
 
 window.updateCartCount = () => {
@@ -142,11 +147,11 @@ window.updateCartCount = () => {
   if (pill) pill.innerText = cart.length;
 };
 
-// --- NEW: THE SMART CART CHECKOUT FIX ---
+// --- THE SMART CART CHECKOUT FIX ---
 window.renderCartPayPal = (total) => {
   const container = document.getElementById('cart-paypal-container');
   if (!container) return;
-  container.innerHTML = ''; 
+  container.innerHTML = ''; // Force clear to prevent duplication
   
   paypal.Buttons({
     style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
@@ -154,7 +159,7 @@ window.renderCartPayPal = (total) => {
       return actions.order.create({
         purchase_units: [{
           amount: { value: total.toFixed(2) },
-          description: "PromptVaultUSA - Multiple Asset Selection",
+          description: "PromptVaultUSA - Multiple Asset Bundle",
           custom_id: "CART_BUNDLE" 
         }]
       });
@@ -164,7 +169,7 @@ window.renderCartPayPal = (total) => {
         const identity = getActiveIdentity();
         await setDoc(doc(db, "orders", details.id), {
           uid: identity,
-          items: cart, 
+          items: cart, // Pass the entire bundle array
           status: 'paid',
           paypalTransactionId: details.id,
           createdAt: serverTimestamp()
