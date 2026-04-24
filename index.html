@@ -212,30 +212,62 @@
                     if (!list) return;
                     list.innerHTML = data.map(p => {
                         const pData = encodeURIComponent(JSON.stringify(p));
-                        const imagePath = p.img || `assets/images/niches/${p.id}.jpg`;
+                        const buttonId = `paypal-button-${p.id}`;
                         
+                        setTimeout(() => {
+                            if (document.getElementById(buttonId) && !document.getElementById(buttonId).hasChildNodes()) {
+                                paypal.Buttons({
+                                    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
+                                    createOrder: (data, actions) => {
+                                        return actions.order.create({
+                                            purchase_units: [{
+                                                amount: { value: p.price.toFixed(2) },
+                                                description: `PromptVaultUSA - ${p.name}`,
+                                                custom_id: p.id,
+                                                invoice_id: `PV-${p.id}-${Date.now()}`
+                                            }]
+                                        });
+                                    },
+                                    onApprove: async (data, actions) => {
+                                        const details = await actions.order.capture();
+                                        const gid = PV.identity.ensure();
+                                        
+                                        await setDoc(doc(db, "orders", details.id), {
+                                            uid: gid,
+                                            items: [{ id: p.id, name: p.name, price: p.price }],
+                                            status: 'paid',
+                                            paypalTransactionId: details.id,
+                                            payerEmail: details.payer.email_address,
+                                            createdAt: serverTimestamp()
+                                        });
+                                        
+                                        window.location.href = `/success.html?tx=${details.id}&guest=${gid}`;
+                                    },
+                                    onError: (err) => {
+                                        console.error('PayPal Error:', err);
+                                        alert('Payment encountered an error. Please contact support.');
+                                    }
+                                }).render(`#${buttonId}`);
+                            }
+                        }, 0);
+
                         return `
-                            <div class="glass-card" data-id="${p.id}" style="text-align: left; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="glass-card" data-id="${p.id}" style="text-align: left; padding: 20px; border-radius: 24px; display: flex; flex-direction: column; height: 100%;">
                                 <div>
                                     <a href="vault/${p.slug}.html" style="text-decoration:none;">
-                                        <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:12px; background: #1e293b; cursor:pointer;">
-                                            <img src="${imagePath}" 
-                                                 alt="${p.name}" 
-                                                 style="width:100%; height:100%; object-fit:cover;" 
-                                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${p.name}</span>';">
+                                        <div class="smart-cover" style="height:160px; margin-bottom:15px; border-radius:15px; overflow:hidden;">
+                                            <img src="${p.img || 'logo.png'}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; this.parentElement.style.background='#000'">
                                         </div>
                                     </a>
-                                    <div style="font-weight:800; color:white; margin-bottom:8px; font-size:1.1rem; line-height:1.2;">${p.name}</div>
-                                    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:15px; line-height:1.5;">${p.desc || "Professional AI asset vault."}</p>
+                                    <div style="font-weight:800; color:white; margin-bottom:5px;">${p.name}</div>
+                                    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:15px;">${p.desc || 'Professional AI Asset'}</p>
                                 </div>
-                                <div class="product-footer">
-                                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:12px;">
+                                <div class="product-footer" style="margin-top:auto;">
+                                    <div style="color:var(--secondary); font-weight:800; font-size:1.4rem; margin-bottom:15px;">
                                         $${p.price.toFixed(2)}
                                     </div>
-                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                        <button onclick="PV.checkout.direct('${pData}')" class="btn-main" style="background:var(--success); padding:10px; font-size:0.8rem; font-weight:700;">Buy Now</button>
-                                        <button onclick="PV.checkout.add('${pData}')" style="background:var(--glass); border:1px solid var(--border); color:white; padding:10px; border-radius:12px; cursor:pointer; font-size:0.8rem; font-weight:600;">+ Cart</button>
-                                    </div>
+                                    <div id="${buttonId}"></div>
+                                    <button onclick="PV.checkout.add('${pData}')" style="background:rgba(255,255,255,0.05); color:white; border:1px solid var(--border); font-size:0.8rem; padding:10px; border-radius:12px; cursor:pointer; width:100%; margin-top:8px;">+ Cart</button>
                                 </div>
                             </div>`;
                     }).join('');
@@ -291,20 +323,6 @@
             },
 
             checkout: {
-                async direct(productStr) {
-                    const p = JSON.parse(decodeURIComponent(productStr));
-                    const txID = "PV-TX-" + Date.now();
-                    const gid = PV.identity.ensure();
-
-                    await setDoc(doc(db, "orders", txID), {
-                        uid: gid,
-                        items: [{ id: p.id, name: p.name }],
-                        status: 'pending',
-                        createdAt: serverTimestamp()
-                    });
-
-                    window.location.href = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PV.consts.PAYPAL_EMAIL}&amount=${p.price.toFixed(2)}&currency_code=USD&item_name=${encodeURIComponent(p.name)}&custom=${txID}&no_shipping=1&return=${window.location.origin}/success.html?tx=${txID}&guest=${gid}&rm=2`;
-                },
                 add(productStr) {
                     PV.state.cart.push(JSON.parse(decodeURIComponent(productStr)));
                     localStorage.setItem('pv_cart', JSON.stringify(PV.state.cart));
@@ -384,6 +402,7 @@
         window.PV = PV;
         document.addEventListener('DOMContentLoaded', () => PV.init());
     </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD"></script>
 </head>
 <body> 
 
