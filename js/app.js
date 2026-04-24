@@ -1,7 +1,7 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v4.9.1
+ * PROMPTVAULT USA - CORE ENGINE v5.0
  * MODE: HEADLESS (Spreadsheet-Driven) 
- * FIX: Enhanced PayPal SDK Lifecycle + Identity Mapping
+ * UPDATE: Fixed Cart "Dead" Button with Smart SDK Bundle Logic
  */
 
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -9,7 +9,6 @@ import { auth } from './firebase-config.js';
 
 window.auth = auth; 
 const db = getFirestore();
-// REPLACED WITH YOUR LIVE CLIENT ID
 const PAYPAL_CLIENT_ID = "AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m"; 
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
 let allProducts = [];
@@ -33,7 +32,7 @@ const renderProducts = (productsToDisplay) => {
   if (!list) return;
   
   list.innerHTML = productsToDisplay.map((p, index) => {
-    if (!p.id) return ""; // Guard against empty spreadsheet rows
+    if (!p.id) return ""; 
     
     const msrp = parseFloat(p.price) || 0;
     const sale = parseFloat(p.sale_price) || 0;
@@ -42,16 +41,14 @@ const renderProducts = (productsToDisplay) => {
     
     const cleanP = { id: p.id, name: p.title || p.name, price: finalPrice };
     const pData = encodeURIComponent(JSON.stringify(cleanP));
-    const buttonContainerId = `paypal-button-${p.id}`; // Fixed ID for stability
+    const buttonContainerId = `paypal-button-${p.id}`; 
 
     const pricingHTML = (sale > 0 && msrp > sale) 
       ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${msrp.toFixed(2)}</span> <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${sale.toFixed(2)}</span>` 
       : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${finalPrice.toFixed(2)}</span>`;
 
-    // Render card, then inject PayPal button
     setTimeout(() => {
       const container = document.getElementById(buttonContainerId);
-      // PREVENT DUPLICATE BUTTONS
       if (container && !container.hasChildNodes()) {
         paypal.Buttons({
           style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
@@ -60,7 +57,7 @@ const renderProducts = (productsToDisplay) => {
               purchase_units: [{
                 amount: { value: finalPrice.toFixed(2) },
                 description: `PromptVaultUSA - ${cleanP.name}`,
-                custom_id: cleanP.id, // Handshake for Pipedream
+                custom_id: cleanP.id,
                 invoice_id: `PV-${cleanP.id}-${Date.now()}`
               }]
             });
@@ -69,8 +66,6 @@ const renderProducts = (productsToDisplay) => {
             return actions.order.capture().then(async (details) => {
               const identity = getActiveIdentity();
               const txID = details.id; 
-              
-              // Set to 'paid' so loadUserLibrary detects it instantly
               await setDoc(doc(db, "orders", txID), {
                 uid: identity,
                 items: [{ id: cleanP.id, name: cleanP.name, price: cleanP.price }],
@@ -79,12 +74,8 @@ const renderProducts = (productsToDisplay) => {
                 payerEmail: details.payer.email_address,
                 createdAt: serverTimestamp()
               });
-              
               window.location.href = `/success.html?tx=${txID}&guest=${identity}`;
             });
-          },
-          onError: (err) => {
-            console.error('PayPal SDK Error:', err);
           }
         }).render(`#${buttonContainerId}`);
       }
@@ -110,17 +101,12 @@ const loadUserLibrary = async () => {
   const identity = getActiveIdentity();
   const grid = document.getElementById('user-library-grid');
   if (!grid) return;
-  
   grid.innerHTML = `<p style="text-align:center; padding:20px; color:#94a3b8;">Syncing Vault...</p>`;
-  
   try {
     const res = await fetch('products.json');
     const syncedProducts = await res.json();
-    
-    // Listen for 'paid' or 'completed' to cover both local and webhook updates
     const q = query(collection(db, "orders"), where("uid", "==", identity));
     const querySnapshot = await getDocs(q);
-    
     let libraryHTML = "";
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -139,12 +125,10 @@ const loadUserLibrary = async () => {
       }
     });
     grid.innerHTML = libraryHTML || `<p style="text-align:center; padding:40px; color:#94a3b8;">No prompt packs found. Purchases appear here automatically.</p>`;
-  } catch (e) {
-    console.error("Library Sync Error:", e);
-  }
+  } catch (e) { console.error("Library Sync Error:", e); }
 };
 
-// --- 4. CART ENGINE ---
+// --- 4. CART ENGINE (SMART BUNDLE) ---
 window.addToCart = (productStr) => {
   const product = JSON.parse(decodeURIComponent(productStr));
   cart.push(product);
@@ -156,6 +140,42 @@ window.addToCart = (productStr) => {
 window.updateCartCount = () => {
   const pill = document.getElementById('cart-count-pill');
   if (pill) pill.innerText = cart.length;
+};
+
+// --- NEW: THE SMART CART CHECKOUT FIX ---
+window.renderCartPayPal = (total) => {
+  const container = document.getElementById('cart-paypal-container');
+  if (!container) return;
+  container.innerHTML = ''; 
+  
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
+    createOrder: (data, actions) => {
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: total.toFixed(2) },
+          description: "PromptVaultUSA - Multiple Asset Selection",
+          custom_id: "CART_BUNDLE" 
+        }]
+      });
+    },
+    onApprove: (data, actions) => {
+      return actions.order.capture().then(async (details) => {
+        const identity = getActiveIdentity();
+        await setDoc(doc(db, "orders", details.id), {
+          uid: identity,
+          items: cart, 
+          status: 'paid',
+          paypalTransactionId: details.id,
+          createdAt: serverTimestamp()
+        });
+        localStorage.removeItem('pv_cart');
+        cart = [];
+        window.updateCartCount();
+        window.location.href = `/success.html?tx=${details.id}&guest=${identity}`;
+      });
+    }
+  }).render('#cart-paypal-container');
 };
 
 // --- 5. NAVIGATION ---
@@ -172,9 +192,7 @@ window.changePage = (id, el) => {
   
   if (id === 'browse' && allProducts.length === 0) {
     Papa.parse('/products.csv', {
-      download: true, 
-      header: true,
-      skipEmptyLines: true,
+      download: true, header: true, skipEmptyLines: true,
       complete: (results) => {
         allProducts = results.data.filter(row => row.id);
         renderProducts(allProducts);
