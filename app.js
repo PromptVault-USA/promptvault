@@ -2,15 +2,18 @@
 import {
   doc,
   setDoc,
-  getDoc,
   collection,
   getDocs,
   serverTimestamp,
+  query,
+  where,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 import {
   signInAnonymously,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
 import { auth, db } from "./firebase-config.js";
 
 function toNumber(v) {
@@ -28,7 +31,11 @@ function normalizeImg(img) {
 
 function finalPrice(p) {
   const price = toNumber(p.price);
-  const sale = p.sale_price === null || p.sale_price === undefined || p.sale_price === "" ? NaN : toNumber(p.sale_price);
+  const sale =
+    p.sale_price === null || p.sale_price === undefined || p.sale_price === ""
+      ? NaN
+      : toNumber(p.sale_price);
+
   if (Number.isFinite(sale) && sale > 0 && sale < price) return sale;
   return price;
 }
@@ -46,30 +53,42 @@ async function requireAnonAuth() {
 async function fetchProducts() {
   const res = await fetch("/products.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`products.json fetch failed: ${res.status}`);
+
   const raw = await res.json();
-  return (raw || []).map((p) => ({
-    id: String(p.id ?? "").trim(),
-    slug: String(p.slug ?? "").trim(),
-    title: String(p.title ?? "").trim(),
-    price: toNumber(p.price),
-    sale_price: p.sale_price === null || p.sale_price === undefined || p.sale_price === "" ? null : toNumber(p.sale_price),
-    img: normalizeImg(p.img),
-    drivelink: String(p.drivelink ?? "").trim(),
-    gmc_id: String(p.gmc_id ?? "").trim(),
-    desc: String(p.desc ?? "").trim(),
-  })).filter((p) => p.id && p.slug && p.title && Number.isFinite(p.price));
+
+  return (raw || [])
+    .map((p) => ({
+      id: String(p.id ?? "").trim(),
+      slug: String(p.slug ?? "").trim(),
+      title: String(p.title ?? "").trim(),
+      price: toNumber(p.price),
+      sale_price:
+        p.sale_price === null || p.sale_price === undefined || p.sale_price === ""
+          ? null
+          : toNumber(p.sale_price),
+      img: normalizeImg(p.img),
+      drivelink: String(p.drivelink ?? "").trim(),
+      gmc_id: String(p.gmc_id ?? "").trim(),
+      desc: String(p.desc ?? "").trim(),
+    }))
+    .filter((p) => p.id && p.slug && p.title && Number.isFinite(p.price));
 }
 
 function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  const q = (document.getElementById("product-search")?.value || "").trim().toLowerCase();
+  // index.html uses #vault-search, not #product-search
+  const q = (document.getElementById("vault-search")?.value || "")
+    .trim()
+    .toLowerCase();
+
   const filtered = q
-    ? products.filter((p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.slug.toLowerCase().includes(q) ||
-        p.id.toLowerCase().includes(q)
+    ? products.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.slug.toLowerCase().includes(q) ||
+          p.id.toLowerCase().includes(q),
       )
     : products;
 
@@ -77,7 +96,11 @@ function renderGrid(products) {
     .map((p) => {
       const fp = finalPrice(p);
       const hasSale = p.sale_price !== null && p.sale_price < p.price;
-      const old = hasSale ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>` : "";
+
+      const old = hasSale
+        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>`
+        : "";
+
       const price = `<span style="font-weight:800;">$${fp.toFixed(2)}</span>`;
       const buttonId = `paypal-button-${p.id}`;
 
@@ -89,15 +112,19 @@ function renderGrid(products) {
     </div>
     <div style="margin-top:10px;font-weight:800;">${p.title}</div>
   </a>
+
   <div style="margin:10px 0;display:flex;gap:10px;align-items:baseline;">
     ${old}
     ${price}
   </div>
-  <div id="${buttonId}" data-rendered="0"
+
+  <div
+    id="${buttonId}"
+    data-rendered="0"
     data-product-id="${p.id}"
-    data-product-slug="${p.slug}"
     data-product-title="${p.title}"
-    data-product-price="${fp.toFixed(2)}"></div>
+    data-product-price="${fp.toFixed(2)}"
+  ></div>
 </div>`;
     })
     .join("");
@@ -147,8 +174,7 @@ function renderPayPalButtonForContainer(containerId) {
         const uid = auth.currentUser.uid;
         const orderId = details.id;
 
-        // NOTE: This is client-side write and may be blocked by your rules until you align them.
-        // It is direct-purchase only and contains no cart logic.
+        // IMPORTANT: If your rules disallow client create or require "pending", this must be aligned.
         await setDoc(doc(db, "orders", orderId), {
           uid,
           status: "completed",
@@ -175,17 +201,19 @@ async function loadLibrary(products) {
 
   grid.innerHTML = `<p style="text-align:center;opacity:0.8;">Syncing Assets...</p>`;
 
-  const q = collection(db, "orders");
+  // Query only the current user's orders (do NOT scan the entire orders collection)
+  const q = query(collection(db, "orders"), where("uid", "==", uid));
   const snap = await getDocs(q);
 
   let html = "";
+
   snap.forEach((d) => {
     const o = d.data();
-    if (!o || o.uid !== uid) return;
+    if (!o) return;
     if (o.status !== "completed" && o.status !== "paid") return;
 
     for (const it of o.items || []) {
-      const pid = String(it.id || "").trim();
+      const pid = String(it?.id || "").trim();
       const p = products.find((x) => x.id === pid);
       if (!p) continue;
 
@@ -197,27 +225,30 @@ async function loadLibrary(products) {
     }
   });
 
-  grid.innerHTML = html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
+  grid.innerHTML =
+    html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
 }
 
 async function boot() {
   const products = await fetchProducts();
 
-  const search = document.getElementById("product-search");
+  const search = document.getElementById("vault-search");
   if (search) {
     search.addEventListener("input", () => renderGrid(products));
   }
 
   renderGrid(products);
 
+  // Single product page support
   const single = document.getElementById("single-paypal-button");
   if (single) {
     single.setAttribute("data-rendered", "0");
     if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
   }
 
-  const libraryPage = document.getElementById("user-library-grid");
-  if (libraryPage) {
+  // Library page support
+  const libraryGrid = document.getElementById("user-library-grid");
+  if (libraryGrid) {
     onAuthStateChanged(auth, async () => {
       await loadLibrary(products);
     });
