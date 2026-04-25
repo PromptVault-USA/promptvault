@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NAME | PromptVault USA</title>
-  <meta name="description" content="DESC">
+  <meta name="description" content="DESC" />
 
   <script type="application/ld+json" id="gmc-schema">
   {
@@ -27,7 +27,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css" />
 
   <style>
     :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; --secondary: #8b5cf6; }
@@ -47,15 +47,15 @@
 <body>
   <div class="container">
     <div class="glass">
-      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing: 1px;">← Back to Vaults</a>
+      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;">← Back to Vaults</a>
 
-      <h1 style="margin-top:20px; color:white; letter-spacing: -1px;">NAME</h1>
+      <h1 style="margin-top:20px; color:white; letter-spacing:-1px;">NAME</h1>
 
       <div style="margin: 25px 0; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08);">
         <img src="IMG" alt="NAME" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
       </div>
 
-      <p style="color: #94a3b8; line-height: 1.6; margin-bottom: 25px; font-size: 1.05rem;">DESC</p>
+      <p style="color:#94a3b8; line-height:1.6; margin-bottom:25px; font-size:1.05rem;">DESC</p>
 
       <div class="price-wrap">
         <span class="old-price" id="msrp-display"></span>
@@ -72,7 +72,7 @@
         <a href="/legal.html#privacy">Privacy Policy</a>
       </div>
 
-      <div style="margin-top:40px; font-size:0.7rem; color:#475569; text-align: center; opacity: 0.6;">
+      <div style="margin-top:40px; font-size:0.7rem; color:#475569; text-align:center; opacity:0.6;">
         SKU: ID | GMC ID: GMC_ID | Instant Delivery via Secure Intelligence Vault
       </div>
     </div>
@@ -81,15 +81,11 @@
   <script src="https://www.paypal.com/sdk/js?client-id=AWpMh-Ki1opxnGQEIw9oEhJCsGnN8ol5QxJ1SJSdR39y2nTu0zciYa6UftX0-DgPz6A0iTZ_x0g4d6Nr&currency=USD"></script>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-
     const msrp = parseFloat("MSRP") || 0;
     const sale = parseFloat("SALE_PRICE") || 0;
 
     const computed = (sale > 0 && msrp > sale) ? sale : (parseFloat("PRICE") || msrp);
-
-    const override = parseFloat(urlParams.get('price'));
-    window.checkoutPrice = Number.isFinite(override) && override > 0 ? override : computed;
+    window.checkoutPrice = computed;
 
     document.getElementById('price-display').textContent = `$${window.checkoutPrice.toFixed(2)}`;
 
