@@ -2,6 +2,7 @@
  * PROMPTVAULT USA - CORE ENGINE v5.9
  * MODE: DIRECT-PURCHASE (Headless & Event-Driven)
  * PATH: /app.js (Root)
+ * AUDIT: Cart logic purged. Single-action PayPal triggers active.
  */
 import { doc, setDoc, collection, getDocs, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { auth, db } from './firebase-config.js';
@@ -23,7 +24,7 @@ const getActiveIdentity = () => {
 const renderProducts = (productsToDisplay) => {
   const list = document.getElementById('product-list');
   if (!list) return;
-  
+
   list.innerHTML = productsToDisplay.map((p) => {
     if (!p.id) return "";
     
@@ -54,16 +55,18 @@ const renderProducts = (productsToDisplay) => {
             purchase_units: [{ 
               amount: { value: finalPrice.toFixed(2) }, 
               description: `PV - ${p.title || p.name}`,
-              custom_id: p.id // Crucial for Pipedream Webhook tracking
+              custom_id: p.id // Crucial for Pipedream Webhook identification
             }]
           }),
           onApprove: (data, actions) => actions.order.capture().then(async (details) => {
             const identity = getActiveIdentity();
-            // Immediate Frontend Write
+            // Immediate Firestore Write (Verification happens via Pipedream Webhook)
             await setDoc(doc(db, "orders", details.id), {
               uid: identity,
               items: [{ id: p.id, name: p.title || p.name, price: finalPrice }],
-              status: 'completed', // Handled by Webhook afterward to double-verify
+              status: 'completed',
+              paypalTransactionId: details.id,
+              payerEmail: details.payer.email_address,
               createdAt: serverTimestamp()
             });
             window.location.href = `/success.html?tx=${details.id}`;
@@ -106,38 +109,43 @@ window.loadUserLibrary = async () => {
     let libraryHTML = "";
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      data.items.forEach(item => {
-        const fresh = syncedProducts.find(p => p.id === item.id);
-        libraryHTML += `
-          <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; width:100%; max-width:600px;">
-            <div style="color:white; font-weight:800;">${item.name}</div>
-            <a href="${fresh?.drivelink || '#'}" target="_blank" style="padding:8px 15px; background:var(--success); border-radius:8px; color:white; text-decoration:none; font-size:0.85rem; font-weight:600;">Download</a>
-          </div>`;
-      });
+      // Only show verified purchases
+      if (data.status === 'completed' || data.status === 'paid') {
+        data.items.forEach(item => {
+          const fresh = syncedProducts.find(p => p.id === item.id || p.gmc_id === item.id);
+          libraryHTML += `
+            <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; width:100%; max-width:600px;">
+              <div style="color:white; font-weight:800;">${item.name}</div>
+              <a href="${fresh?.drivelink || '#'}" target="_blank" style="padding:8px 15px; background:var(--success); border-radius:8px; color:white; text-decoration:none; font-size:0.85rem; font-weight:600;">Download</a>
+            </div>`;
+        });
+      }
     });
     
     grid.innerHTML = libraryHTML || `<p style="text-align:center; color:#94a3b8; padding:40px;">No vaults unlocked yet.</p>`;
-  } catch (e) { 
+  } catch (e) {
     console.error("Library Sync Error:", e);
-    grid.innerHTML = `<p style="color:#ef4444; text-align:center;">Sync failed. Refresh and try again.</p>`; 
+    grid.innerHTML = `<p style="color:#ef4444; text-align:center;">Sync failed. Please refresh.</p>`;
   }
 };
 
 // --- 4. ROUTER ---
 window.changePage = (id, el) => {
-  if (id === 'blog') { window.location.href = '/blog.html'; return; }
-  
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById(id);
-  if (target) target.classList.add('active');
+  if (!target) return;
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  target.classList.add('active');
   
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   if (el) el.classList.add('active');
-  
+
   if (id === 'browse') {
-    Papa.parse('/products.csv', {
-      download: true, header: true, skipEmptyLines: true,
-      complete: (results) => renderProducts(results.data)
+    Papa.parse('/products.csv', { 
+      download: true, 
+      header: true, 
+      skipEmptyLines: true, 
+      complete: (results) => renderProducts(results.data.filter(r => r.id)) 
     });
   }
   if (id === 'library') window.loadUserLibrary();
@@ -145,12 +153,14 @@ window.changePage = (id, el) => {
 };
 
 // --- INITIALIZATION ---
-// Check for existing hash on direct load
-if (window.location.hash) {
-  const pageId = window.location.hash.substring(1);
-  window.changePage(pageId);
-} else {
-  // Default to Browse if on home but wanting to see products
-  const productList = document.getElementById('product-list');
-  if (productList) window.changePage('browse');
-}
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.location.hash) {
+    const pageId = window.location.hash.substring(1);
+    const navEl = document.querySelector(`[onclick*="${pageId}"]`);
+    window.changePage(pageId, navEl);
+  } else {
+    // Check if we are on the main browse page
+    const productList = document.getElementById('product-list');
+    if (productList) window.changePage('browse', document.querySelector('[onclick*="browse"]'));
+  }
+});
