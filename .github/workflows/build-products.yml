@@ -1,13 +1,18 @@
 name: Build Product Pages
+
 on:
   push:
     paths:
-      - 'products.csv'
-      - 'scripts/build.js'
-      - 'vault/_product-template.html'
+      - 'products.yml'                # Trigger when your source database changes
+      - 'scripts/build.js'            # Trigger if you update the generator logic
+      - 'vault/_product-template.html' # Trigger if you change the UI design
+  workflow_dispatch:                  # Allows you to run this manually from GitHub Actions tab
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write                 # Essential for pushing generated files back to the repo
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -19,6 +24,14 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm install
+          else
+            npm install js-yaml # Ensures the build script can parse your YAML
+          fi
+
       - name: Run build script
         run: node scripts/build.js
 
@@ -26,6 +39,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add vault/*.html gmc-lookup.json
-          git diff --staged --quiet || git commit -m "Auto-build: Update product pages from products.csv"
-          git push
+          
+          # Stage all generated HTML in vault and the GMC lookup file
+          git add vault/*.html gmc-lookup.json 
+          
+          # Only commit if changes actually exist
+          git diff --staged --quiet || (git commit -m "Auto-build: Generated pages from products.yml" && git push)
