@@ -8,16 +8,9 @@ const VAULT_DIR = path.join(ROOT, "vault");
 const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
+// YOUR CSV HEADERS - UPDATED TO MATCH YOUR FILE
 const REQUIRED_HEADERS = [
-  "id",
-  "slug",
-  "title",
-  "price",
-  "sale_price",
-  "img",
-  "drivelink",
-  "gmc_id",
-  "desc",
+  "gmc_id", "id", "slug", "name", "price", "sale_price", "category", "desc", "paylink", "img", "drivelink"
 ];
 
 function fail(msg) {
@@ -32,11 +25,11 @@ function toNumber(v) {
 
 function escapeHtml(s) {
   return String(s?? "")
-   .replaceAll("&", "&amp;")
-   .replaceAll("<", "&lt;")
-   .replaceAll(">", "&gt;")
-   .replaceAll('"', "&quot;")
-   .replaceAll("'", "&#039;");
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;")
+  .replaceAll("'", "&#039;");
 }
 
 function normalizeImg(img) {
@@ -50,7 +43,7 @@ function normalizeImg(img) {
 function normalizeRow(r, i) {
   const id = String(r.id?? "").trim();
   const slug = String(r.slug?? "").trim();
-  const title = String(r.title?? "").trim();
+  const title = String(r.name?? "").trim(); // YOUR CSV USES 'name' NOT 'title'
   const desc = String(r.desc?? "").trim();
   const price = toNumber(r.price);
   const salePriceRaw = String(r.sale_price?? "").trim();
@@ -61,7 +54,7 @@ function normalizeRow(r, i) {
 
   if (!id) fail(`Row ${i + 2}: missing id`);
   if (!slug) fail(`Row ${i + 2}: missing slug`);
-  if (!title) fail(`Row ${i + 2}: missing title`);
+  if (!title) fail(`Row ${i + 2}: missing name`);
   if (!Number.isFinite(price) || price <= 0) fail(`Row ${i + 2}: invalid price`);
   if (salePriceRaw!== "" && (!Number.isFinite(sale_price) || sale_price <= 0)) {
     fail(`Row ${i + 2}: invalid sale_price`);
