@@ -80,8 +80,6 @@
         .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
         .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; cursor: pointer; }
-        .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
-        .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); padding: 15px; }
         .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
         .gmc-micro { margin-top: 12px; font-size: 0.65rem; line-height: 1.4; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
         .library-card { background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border); width: 100%; max-width: 600px; }
@@ -104,7 +102,6 @@
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-            <a onclick="window.changePage('blog', this)" style="text-decoration:none; color:white; font-weight:800; font-size:0.75rem; margin-right:10px; cursor:pointer;">BLOG</a>
             <button class="signin-pill" onclick="if(window.renderCart) { window.renderCart(); document.getElementById('checkout-overlay').style.display='flex'; }" style="background:var(--glass); position:relative; padding: 10px 12px; border:1px solid var(--border);">
                 🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
             </button>
