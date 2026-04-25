@@ -1,192 +1,187 @@
-const fs = require("fs");
+import fs from "node:fs";
+import path from "node:path";
+import Papa from "papaparse";
 
-function parseCSVLine(line) {
-	const out = [];
-	let cur = "";
-	let inQuotes = false;
+const ROOT = process.cwd();
+const CSV_PATH = path.join(ROOT, "products.csv");
+const VAULT_DIR = path.join(ROOT, "vault");
+const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
+const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
-	for (let i = 0; i < line.length; i++) {
-		const ch = line[i];
+const REQUIRED_HEADERS = [
+  "id",
+  "slug",
+  "title",
+  "price",
+  "sale_price",
+  "img",
+  "drivelink",
+  "gmc_id",
+  "desc",
+];
 
-		if (ch === '"') {
-			if (inQuotes && line[i + 1] === '"') {
-				cur += '"';
-				i++;
-			} else {
-				inQuotes = !inQuotes;
-			}
-			continue;
-		}
-
-		if (ch === "," && !inQuotes) {
-			out.push(cur);
-			cur = "";
-			continue;
-		}
-
-		cur += ch;
-	}
-
-	out.push(cur);
-	return out.map((s) => s.trim());
-}
-
-function parseCSV(text) {
-	const lines = text
-		.replace(/\r\n/g, "\n")
-		.split("\n")
-		.map((l) => l.trim())
-		.filter(Boolean);
-
-	if (lines.length < 2) return { headers: [], rows: [] };
-
-	const headers = parseCSVLine(lines[0]);
-	const rows = [];
-
-	for (let i = 1; i < lines.length; i++) {
-		const cols = parseCSVLine(lines[i]);
-		const row = {};
-		headers.forEach((h, idx) => {
-			row[h] = cols[idx] ?? "";
-		});
-		rows.push(row);
-	}
-
-	return { headers, rows };
+function fail(msg) {
+  console.error(`[build] ${msg}`);
+  process.exit(1);
 }
 
 function toNumber(v) {
-	const n = Number(String(v ?? "").replace(/,/g, "").trim());
-	return Number.isFinite(n) ? n : 0;
+  const n = Number(String(v?? "").trim());
+  return Number.isFinite(n)? n : NaN;
 }
 
-function escapeHtml(str) {
-	return String(str ?? "")
-		.replaceAll("&", "&amp;")
-		.replaceAll("<", "&lt;")
-		.replaceAll(">", "&gt;")
-		.replaceAll('"', "&quot;")
-		.replaceAll("'", "&#39;");
-}
-
-function validateSlug(slug) {
-	return /^[a-z0-9-]+$/.test(slug);
+function escapeHtml(s) {
+  return String(s?? "")
+   .replaceAll("&", "&amp;")
+   .replaceAll("<", "&lt;")
+   .replaceAll(">", "&gt;")
+   .replaceAll('"', "&quot;")
+   .replaceAll("'", "&#039;");
 }
 
 function normalizeImg(img) {
-	const raw = String(img ?? "").trim();
-	if (!raw) return "/logo.png";
-	if (raw.startsWith("http")) return raw;
-	if (raw.startsWith("/")) return raw;
-	return `/${raw}`;
+  const raw = String(img?? "").trim();
+  if (!raw) return "/logo.png";
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+  if (raw.startsWith("/")) return raw;
+  return `/${raw}`;
 }
 
-(function main() {
-	if (!fs.existsSync("products.csv")) {
-		console.error("❌ products.csv not found in repo root.");
-		process.exit(1);
-	}
+function normalizeRow(r, i) {
+  const id = String(r.id?? "").trim();
+  const slug = String(r.slug?? "").trim();
+  const title = String(r.title?? "").trim();
+  const desc = String(r.desc?? "").trim();
+  const price = toNumber(r.price);
+  const salePriceRaw = String(r.sale_price?? "").trim();
+  const sale_price = salePriceRaw === ""? NaN : toNumber(salePriceRaw);
+  const img = normalizeImg(r.img);
+  const drivelink = String(r.drivelink?? "").trim();
+  const gmc_id = String(r.gmc_id?? "").trim();
 
-	if (!fs.existsSync("vault/_product-template.html")) {
-		console.error("❌ vault/_product-template.html not found.");
-		process.exit(1);
-	}
+  if (!id) fail(`Row ${i + 2}: missing id`);
+  if (!slug) fail(`Row ${i + 2}: missing slug`);
+  if (!title) fail(`Row ${i + 2}: missing title`);
+  if (!Number.isFinite(price) || price <= 0) fail(`Row ${i + 2}: invalid price`);
+  if (salePriceRaw!== "" && (!Number.isFinite(sale_price) || sale_price <= 0)) {
+    fail(`Row ${i + 2}: invalid sale_price`);
+  }
+  if (!drivelink) fail(`Row ${i + 2}: missing drivelink`);
+  if (!gmc_id) fail(`Row ${i + 2}: missing gmc_id`);
 
-	const csvText = fs.readFileSync("products.csv", "utf8");
-	const template = fs.readFileSync("vault/_product-template.html", "utf8");
-	const { rows } = parseCSV(csvText);
+  const finalPrice = Number.isFinite(sale_price) && sale_price > 0 && sale_price < price? sale_price : price;
+  return { id, slug, title, price, sale_price: Number.isFinite(sale_price)? sale_price : null, finalPrice, img, drivelink, gmc_id, desc };
+}
 
-	if (!rows.length) {
-		console.error("❌ No rows found in products.csv");
-		process.exit(1);
-	}
+function validateHeaders(fields) {
+  const got = (fields || []).map((f) => String(f).trim());
+  const missing = REQUIRED_HEADERS.filter((h) =>!got.includes(h));
+  const extras = got.filter((h) =>!REQUIRED_HEADERS.includes(h));
+  if (missing.length) fail(`CSV missing headers: ${missing.join(", ")}`);
+  if (extras.length) fail(`CSV has unexpected headers: ${extras.join(", ")}`);
+}
 
-	const products = rows.map((r) => {
-		const gmc_id = String(r.Gmc_id || "").trim();
-		const id = String(r.id || "").trim();
-		const slug = String(r.slug || "").trim();
-		const name = String(r.name || "").trim();
-		const desc = String(r.desc || "").trim();
-		const category = String(r.category || "").trim();
-		const paylink = String(r.paylink || "").trim();
-		const img = normalizeImg(r.img);
-		const drivelink = String(r.drivelink || "").trim();
+function renderProductPage(p) {
+  const msrp = p.price.toFixed(2);
+  const final = p.finalPrice.toFixed(2);
+  const hasSale = p.sale_price!== null && p.sale_price < p.price;
+  const oldPriceHtml = hasSale? `<span id="oldprice" style="text-decoration:line-through; opacity:0.7;">$${msrp}</span>` : `<span id="oldprice"></span>`;
+  const msrpHtml = `<span id="msrp">$${msrp}</span>`;
+  const priceHtml = `<span id="price">$${final}</span>`;
+  const paypalHook = `<div id="single-paypal-button" data-product-id="${escapeHtml(p.id)}" data-product-slug="${escapeHtml(p.slug)}" data-product-title="${escapeHtml(p.title)}" data-product-price="${escapeHtml(final)}"></div>`;
 
-		const price = toNumber(r.price);
-		const sale_price = toNumber(r.sale_price);
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${escapeHtml(p.title)} | PromptVault USA</title>
+  <meta name="description" content="${escapeHtml(p.desc)}">
+  <link rel="canonical" href="https://promptvaultusa.shop/vault/${escapeHtml(p.slug)}.html">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main style="max-width:980px;margin:0 auto;padding:24px;">
+    <a href="https://promptvaultusa.shop/" style="text-decoration:none;">Back to shop</a>
+    <h1 style="margin-top:16px;">${escapeHtml(p.title)}</h1>
+    <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-top:20px;">
+      <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;">
+        <img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.title)}" style="width:100%;display:block;" onerror="this.src='/logo.png'">
+      </div>
+      <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:18px;">
+        <p>${escapeHtml(p.desc)}</p>
+        <div style="display:flex;gap:10px;align-items:baseline;margin:14px 0;">
+          ${oldPriceHtml} ${priceHtml} ${msrpHtml}
+        </div>
+        ${paypalHook}
+        <div style="margin-top:12px;font-size:0.9rem;opacity:0.8;">
+          After payment, your pack unlocks in My Library on this device.
+        </div>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>`;
+}
 
-		return {
-			gmc_id,
-			id,
-			slug,
-			name,
-			desc,
-			category,
-			paylink,
-			img,
-			drivelink,
-			price,
-			sale_price,
-		};
-	});
+function ensureDir(dir) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
-	for (const p of products) {
-		if (!p.id) throw new Error("❌ Missing id in products.csv row");
-		if (!p.slug) throw new Error(`❌ Missing slug for product id=${p.id}`);
-		if (!validateSlug(p.slug)) throw new Error(`❌ Invalid slug "${p.slug}" for id=${p.id}`);
-		if (!p.name) throw new Error(`❌ Missing name for product id=${p.id}`);
-		if (!p.price || p.price <= 0) throw new Error(`❌ Invalid price for product id=${p.id}`);
-	}
+function main() {
+  if (!fs.existsSync(CSV_PATH)) fail("products.csv not found in repo root");
+  const csv = fs.readFileSync(CSV_PATH, "utf8");
+  const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
+  if (parsed.errors && parsed.errors.length) {
+    const e = parsed.errors[0];
+    fail(`CSV parse error: ${e.message || JSON.stringify(e)}`);
+  }
+  validateHeaders(parsed.meta?.fields);
+  const rows = (parsed.data || []).filter((r) => r && String(r.id?? "").trim()!== "");
+  if (!rows.length) fail("products.csv has zero products");
+  const products = rows.map((r, i) => normalizeRow(r, i));
 
-	if (!fs.existsSync("vault")) fs.mkdirSync("vault", { recursive: true });
+  const seenSlugs = new Set();
+  for (const p of products) {
+    if (seenSlugs.has(p.slug)) fail(`Duplicate slug: ${p.slug}`);
+    seenSlugs.add(p.slug);
+  }
 
-	const lookup = [];
+  ensureDir(VAULT_DIR);
 
-	for (const p of products) {
-		const msrp = toNumber(p.price);
-		const sale = toNumber(p.sale_price);
+  for (const p of products) {
+    const outPath = path.join(VAULT_DIR, `${p.slug}.html`);
+    fs.writeFileSync(outPath, renderProductPage(p), "utf8");
+  }
 
-		const hasSale = sale > 0 && msrp > sale;
-		const finalPrice = hasSale ? sale : msrp;
+  const productsJson = products.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    price: p.price,
+    sale_price: p.sale_price,
+    img: p.img,
+    drivelink: p.drivelink,
+    gmc_id: p.gmc_id,
+    desc: p.desc,
+  }));
+  fs.writeFileSync(PRODUCTS_JSON_PATH, JSON.stringify(productsJson, null, 2) + "\n", "utf8");
 
-		const data = {
-			...p,
-			NAME: escapeHtml(p.name),
-			DESC: escapeHtml(p.desc),
-			IMG: p.img,
-			ID: p.id,
-			SLUG: p.slug,
-			GMC_ID: p.gmc_id || p.id,
-			PRICE: finalPrice.toFixed(2),
-			MSRP: msrp.toFixed(2),
-			SALE_PRICE: sale.toFixed(2),
-			PAYPAL_HOOK: `<div id="single-paypal-button" data-id="${escapeHtml(p.id)}" data-price="${finalPrice.toFixed(
-				2,
-			)}"></div>`,
-		};
+  const gmcLookup = {};
+  for (const p of products) {
+    gmcLookup[p.gmc_id] = {
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      url: `https://promptvaultusa.shop/vault/${p.slug}.html`,
+    };
+  }
+  fs.writeFileSync(GMC_LOOKUP_JSON_PATH, JSON.stringify(gmcLookup, null, 2) + "\n", "utf8");
 
-		let html = template;
+  console.log(`[build] Wrote ${products.length} vault pages`);
+  console.log(`[build] Wrote products.json`);
+  console.log(`[build] Wrote gmc-lookup.json`);
+}
 
-		for (const key of Object.keys(data)) {
-			const placeholder = `{{${String(key).toUpperCase()}}}`;
-			const value = data[key] === undefined || data[key] === null ? "" : String(data[key]);
-			html = html.replaceAll(placeholder, value);
-		}
-
-		fs.writeFileSync(`vault/${p.slug}.html`, html);
-
-		lookup.push({
-			id: p.gmc_id || p.id,
-			slug: p.slug,
-			price: finalPrice.toFixed(2),
-			msrp: msrp.toFixed(2),
-			hasSale: hasSale,
-		});
-	}
-
-	fs.writeFileSync("gmc-lookup.json", JSON.stringify(lookup, null, 2));
-
-	console.log("✅ Build Complete!");
-	console.log(`📂 Created/updated ${products.length} pages in /vault/`);
-	console.log("🔗 Updated gmc-lookup.json");
-})();
+main();
