@@ -5,13 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Freelancer Client Acquisition | PromptVault USA</title>
   <meta name="description" content="Prompts for proposals, outreach messages, and negotiation scripts for freelancers.">
-  <meta property="og:title" content="Freelancer Client Acquisition">
-  <meta property="og:description" content="Prompts for proposals, outreach messages, and negotiation scripts for freelancers.">
-  <meta property="og:image" content="https://promptvaultusa.shop/assets/images/niches/niche_002.jpg">
-  <meta name="twitter:card" content="summary_large_image">
   
-  <!-- GMC SCHEMA: Now uses dynamic pricing -->
-  <script type="application/ld+json">
+  <script type="application/ld+json" id="gmc-schema">
   {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -32,157 +27,64 @@
   }
   </script>
   
+  <link rel="stylesheet" href="/css/style.css">
+  
   <style>
     :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); min-height: 100vh; color: #e6f1ff; padding: 20px; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #e6f1ff; padding: 20px; }
     .container { max-width: 800px; margin: 40px auto; }
-    .glass { background: rgba(17, 34, 64, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 40px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); }
-    h1 { font-size: 2.2rem; color: var(--accent-teal); margin-bottom: 8px; font-weight: 800; letter-spacing: -1px; }
-    .meta { display: flex; gap: 8px; margin-bottom: 25px; }
-    .meta span { background: rgba(79, 209, 197, 0.1); color: var(--accent-teal); padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; border: 1px solid rgba(79, 209, 197, 0.2); }
-    .hero-visual { width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(255, 255, 255, 0.05); background: #000; overflow: hidden; }
-    .hero-visual img { width: 100%; display: block; }
-    .desc { font-size: 0.95rem; line-height: 1.6; color: #94a3b8; margin: 25px 0; }
+    .glass { background: rgba(17, 34, 64, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 40px; }
     .price-wrap { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
-    .old-price { text-decoration: line-through; color: #475569; font-size: 1.6rem; font-weight: 600; display: none; }
-    .current-price { font-size: 3.2rem; font-weight: 800; color: var(--accent-teal); text-shadow: 0 0 15px rgba(79, 209, 197, 0.2); }
-    .policy-box { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(79, 209, 197, 0.1); padding: 20px; border-radius: 12px; margin-top: 25px; font-size: 0.75rem; color: #64748b; line-height: 1.6; }
-    .policy-box strong { color: var(--accent-teal); display: block; margin-bottom: 10px; font-size: 0.8rem; }
-    .policy-box ul { list-style: none; }
-    .policy-box li { margin-bottom: 5px; display: flex; align-items: flex-start; gap: 8px; }
-    .policy-box li::before { content: "✓"; color: var(--accent-teal); font-weight: 800; }
-    .fine-print { margin-top: 30px; font-size: 0.65rem; color: #334155; text-align: center; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 20px; }
-    #paypal-button-container { margin-top: 20px; max-width: 400px; }
+    .old-price { text-decoration: line-through; color: #475569; font-size: 1.6rem; display: none; }
+    .current-price { font-size: 3.2rem; font-weight: 800; color: var(--accent-teal); }
+    #single-paypal-button { margin-top: 20px; max-width: 400px; min-height: 150px; }
     .btn-main { background:rgba(255,255,255,0.03); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); width:100%; margin-top:12px; padding:15px; border-radius:12px; cursor:pointer; font-weight:700; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="glass">
-      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;">← Back to Vaults</a>
-      <h1 style="margin-top:20px;">Freelancer Client Acquisition</h1>
-      <div class="meta">
-        <span>Business</span>
-        <span>ID: niche_002</span>
-      </div>
-      <div class="hero-visual">
-        <img src="/assets/images/niches/niche_002.jpg" alt="Freelancer Client Acquisition" onerror="this.src='/logo.png'">
-      </div>
-      <div class="desc">Prompts for proposals, outreach messages, and negotiation scripts for freelancers.</div>
+      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase;">← Back to Vaults</a>
       
-      <!-- DYNAMIC PRICING: Updates from URL params -->
+      <h1 style="margin-top:20px; color:var(--accent-teal);">Freelancer Client Acquisition</h1>
+      <div style="margin: 20px 0; border-radius: 12px; overflow: hidden; background: #000;">
+        <img src="/assets/images/niches/niche_002.jpg" alt="Freelancer Client Acquisition" style="width: 100%;" onerror="this.src='/logo.png'">
+      </div>
+      
+      <p style="color: #94a3b8; line-height: 1.6;">Prompts for proposals, outreach messages, and negotiation scripts for freelancers.</p>
+      
       <div class="price-wrap">
         <span class="old-price" id="msrp-display"></span>
-        <span class="current-price" id="price-display"></span>
+        <span class="current-price" id="price-display">$0.00</span>
       </div>
       
-      <div id="paypal-button-container"></div>
-      <button onclick="addToCartLocal()" class="btn-main">+ Add to Selection</button>
+      <div id="single-paypal-button"></div>
       
-      <div class="policy-box">
-        <strong>Digital Product Terms:</strong>
-        <ul>
-          <li>Instant download via email after PayPal payment</li>
-          <li>No physical shipping - Delivered in 1-5 minutes</li>
-          <li>All sales final due to digital nature per <a href="/legal.html#refunds" style="color:var(--accent-teal);">Refund Policy</a></li>
-          <li>By purchasing, you agree to <a href="/legal.html#terms" style="color:var(--accent-teal);">Terms of Service</a></li>
-        </ul>
-      </div>
-      <div class="fine-print">
-        GMC ID: 6510434386 | Secure PayPal Checkout | Instant delivery to your library
+      <button onclick="window.addToCart(encodeURIComponent(JSON.stringify({id: 'niche_002', name: 'Freelancer Client Acquisition', price: checkoutPrice})))" class="btn-main">
+        + Add to Cart
+      </button>
+
+      <div style="margin-top:40px; font-size:0.7rem; color:#475569; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
+        SKU: niche_002 | Secure PayPal Checkout | Instant Delivery
       </div>
     </div>
   </div>
 
-  <!-- PayPal SDK: YOUR LIVE CLIENT ID -->
   <script src="https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD"></script>
   
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDGB5seZrnWVXv--Yr_z1lPOOk1kO5CLFU",
-      authDomain: "promptvaultusa.firebaseapp.com",
-      projectId: "promptvaultusa",
-      storageBucket: "promptvaultusa.firebasestorage.app",
-      messagingSenderId: "960105895017",
-      appId: "1:960105895017:web:1aa79742d36960d2bfbef8"
-    };
-    
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // --- DYNAMIC PRICING FOR GMC COMPLIANCE ---
+  <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const checkoutPrice = parseFloat(urlParams.get('price')) || 9.00;
-    const msrpPrice = parseFloat(urlParams.get('msrp')) || 0;
-    
-    // Update price display + show MSRP only if it's higher
-    document.getElementById('price-display').textContent = `$${checkoutPrice.toFixed(2)}`;
-    if (msrpPrice > checkoutPrice) {
-      const msrpEl = document.getElementById('msrp-display');
-      msrpEl.textContent = `$${msrpPrice.toFixed(2)}`;
-      msrpEl.style.display = 'inline';
+    window.checkoutPrice = parseFloat(urlParams.get('price')) || 9.00;
+    const msrp = parseFloat(urlParams.get('msrp')) || 0;
+
+    document.getElementById('price-display').textContent = `$${window.checkoutPrice.toFixed(2)}`;
+    if (msrp > window.checkoutPrice) {
+      const el = document.getElementById('msrp-display');
+      el.textContent = `$${msrp.toFixed(2)}`;
+      el.style.display = 'inline';
     }
-
-    // Update Schema price for GMC crawlers
-    const schemaScript = document.querySelector('script[type="application/ld+json"]');
-    if (schemaScript) {
-      const schema = JSON.parse(schemaScript.textContent);
-      schema.offers.price = checkoutPrice.toFixed(2);
-      schemaScript.textContent = JSON.stringify(schema);
-    }
-
-    const getGid = () => {
-      let gid = localStorage.getItem('pv_guest_uid');
-      if (!gid) {
-        gid = 'pv_guest_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('pv_guest_uid', gid);
-      }
-      return gid;
-    };
-
-    // --- PAYPAL BUTTON WITH CUSTOM_ID FOR WEBHOOK ---
-    paypal.Buttons({
-      style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: checkoutPrice.toFixed(2) },
-            description: "PromptVaultUSA - Freelancer Client Acquisition",
-            custom_id: "niche_002", // CRITICAL: Shows in Pipedream webhook
-            invoice_id: `PV-niche_002-${Date.now()}`
-          }]
-        });
-      },
-      onApprove: (data, actions) => {
-        return actions.order.capture().then(async (details) => {
-          const gid = getGid();
-          await setDoc(doc(db, "orders", details.id), {
-            uid: gid,
-            items: [{ id: "niche_002", name: "Freelancer Client Acquisition", price: checkoutPrice }],
-            status: 'completed', // Mark paid for library
-            paypalTransactionId: details.id,
-            payerEmail: details.payer.email_address,
-            createdAt: serverTimestamp()
-          });
-          window.location.href = `/success.html?tx=${details.id}&guest=${gid}`;
-        });
-      },
-      onError: (err) => {
-        console.error('PayPal Error:', err);
-        alert('Payment failed. Try again or contact admin@promptvaultusa.shop');
-      }
-    }).render('#paypal-button-container');
-
-    window.addToCartLocal = () => {
-      let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
-      cart.push({ id: "niche_002", name: "Freelancer Client Acquisition", price: checkoutPrice });
-      localStorage.setItem('pv_cart', JSON.stringify(cart));
-      alert("Selection added!");
-    };
   </script>
+
+  <script type="module" src="/app.js"></script>
 </body>
 </html>
