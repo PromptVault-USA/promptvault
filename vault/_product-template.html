@@ -37,8 +37,12 @@
     .price-wrap { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
     .old-price { text-decoration: line-through; color: #475569; font-size: 1.6rem; display: none; }
     .current-price { font-size: 3.2rem; font-weight: 800; color: var(--accent-teal); }
-    #single-paypal-button { margin-top: 20px; max-width: 400px; min-height: 150px; }
-    .btn-main { background:rgba(255,255,255,0.03); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); width:100%; margin-top:12px; padding:15px; border-radius:12px; cursor:pointer; font-weight:700; }
+    
+    /* Container for the injected PayPal Hook */
+    .payment-zone { margin-top: 20px; max-width: 400px; min-height: 150px; }
+    
+    .btn-main { background:rgba(255,255,255,0.03); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); width:100%; margin-top:12px; padding:15px; border-radius:12px; cursor:pointer; font-weight:700; transition: all 0.2s; }
+    .btn-main:hover { background:rgba(255,255,255,0.08); color:white; }
   </style>
 </head>
 <body>
@@ -47,25 +51,27 @@
       <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase;">← Back to Vaults</a>
       
       <h1 style="margin-top:20px; color:var(--accent-teal);">{{NAME}}</h1>
-      <div style="margin: 20px 0; border-radius: 12px; overflow: hidden; background: #000;">
-        <img src="{{IMG}}" alt="{{NAME}}" style="width: 100%;" onerror="this.src='/logo.png'">
+      <div style="margin: 20px 0; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.05);">
+        <img src="{{IMG}}" alt="{{NAME}}" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
       </div>
       
-      <p style="color: #94a3b8; line-height: 1.6;">{{DESC}}</p>
+      <p style="color: #94a3b8; line-height: 1.6; margin-bottom: 25px;">{{DESC}}</p>
       
       <div class="price-wrap">
         <span class="old-price" id="msrp-display"></span>
         <span class="current-price" id="price-display">$0.00</span>
       </div>
       
-      <div id="single-paypal-button"></div>
+      <div class="payment-zone">
+        {{PAYPAL_HOOK}}
+      </div>
       
-      <button onclick="window.addToCart(encodeURIComponent(JSON.stringify({id: '{{ID}}', name: '{{NAME}}', price: checkoutPrice})))" class="btn-main">
+      <button onclick="window.addToCart(encodeURIComponent(JSON.stringify({id: '{{ID}}', name: '{{NAME}}', price: window.checkoutPrice})))" class="btn-main">
         + Add to Cart
       </button>
 
-      <div style="margin-top:40px; font-size:0.7rem; color:#475569; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
-        SKU: {{ID}} | Secure PayPal Checkout | Instant Delivery
+      <div style="margin-top:40px; font-size:0.7rem; color:#475569; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px; text-align: center;">
+        SKU: {{ID}} | GMC ID: {{GMC_ID}} | Instant Global Intelligence
       </div>
     </div>
   </div>
@@ -74,14 +80,23 @@
   
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    window.checkoutPrice = parseFloat(urlParams.get('price')) || 9.00;
-    const msrp = parseFloat(urlParams.get('msrp')) || 0;
+    // Use URL price, fallback to build-time placeholder if necessary
+    window.checkoutPrice = parseFloat(urlParams.get('price')) || parseFloat("{{PRICE}}") || 9.00;
+    const msrp = parseFloat(urlParams.get('msrp')) || parseFloat("{{MSRP}}") || 0;
 
     document.getElementById('price-display').textContent = `$${window.checkoutPrice.toFixed(2)}`;
     if (msrp > window.checkoutPrice) {
       const el = document.getElementById('msrp-display');
       el.textContent = `$${msrp.toFixed(2)}`;
       el.style.display = 'inline';
+    }
+
+    // Update JSON-LD schema price for GMC crawlers dynamically
+    const schemaScript = document.getElementById('gmc-schema');
+    if (schemaScript) {
+      const schema = JSON.parse(schemaScript.textContent);
+      schema.offers.price = window.checkoutPrice.toFixed(2);
+      schemaScript.textContent = JSON.stringify(schema);
     }
   </script>
 
