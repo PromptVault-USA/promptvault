@@ -49,14 +49,9 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://promptvaultusa.shop/">
     <meta property="og:title" content="PromptVault USA | ChatGPT Prompts for AI Monetization">
-    <meta property="og:description" content="Access high-yield ChatGPT prompt vaults and professional monetization blueprints. Built for creators using ChatGPT,Claude and Gemini.">
+    <meta property="og:description" content="Access high-yield ChatGPT prompt vaults and professional monetization blueprints.">
     <meta property="og:image" content="https://promptvaultusa.shop/logo.png">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PromptVault USA | AI Monetization Blueprints">
-    <meta name="twitter:description" content="Professional AI prompt engineering and asset vaults for ChatGPT creators and entrepreneurs building automated businesses.">
-    <meta name="twitter:image" content="https://promptvaultusa.shop/logo.png">
-    
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -81,10 +76,7 @@
         .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
         .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; cursor: pointer; }
         .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
-        .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); padding: 15px; }
         .glass-card:hover .smart-cover { transform: translateY(-5px); border-color: var(--secondary); }
-        .gmc-micro { margin-top: 12px; font-size: 0.65rem; line-height: 1.4; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
-        .library-card { background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border); width: 100%; max-width: 600px; }
         .bottom-nav { max-width: 480px !important; }
         .nav-item small { font-size: 0.55rem !important; font-weight: 800; }
         .cart-checkout-prompt { margin-top: 20px; padding: 15px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; text-align: center; }
@@ -99,16 +91,16 @@
 
 <header>
     <div class="header-wrap">
-        <div onclick="window.PV.router.go('home')" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+        <div onclick="window.changePage('home', this)" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
             <img src="logo.png" class="logo-box" alt="Logo">
             <span style="font-weight:800; letter-spacing:-1px;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-            <a href="blog.html" style="text-decoration:none; color:white; font-weight:800; font-size:0.75rem; margin-right:10px;">BLOG</a>
-            <button class="signin-pill" onclick="window.PV.checkout.openModal()" style="background:var(--glass); position:relative; padding: 10px 12px; border:1px solid var(--border);">
+            <a onclick="window.changePage('blog', this)" style="text-decoration:none; color:white; font-weight:800; font-size:0.75rem; margin-right:10px; cursor:pointer;">BLOG</a>
+            <button class="signin-pill" onclick="if(window.renderCart) { window.renderCart(); document.getElementById('checkout-overlay').style.display='flex'; }" style="background:var(--glass); position:relative; padding: 10px 12px; border:1px solid var(--border);">
                 🛒 <span id="cart-count-pill" style="background:var(--accent); color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
             </button>
-            <button class="signin-pill" id="login-pill">Sign In</button>
+            <button class="signin-pill" id="login-pill" onclick="document.getElementById('auth-overlay').style.display='flex'">Sign In</button>
         </div>
     </div>
 </header> 
@@ -120,7 +112,7 @@
         <span class="sub-accent">Free Sign Up • Join 20,000+ Creators</span>
         <p class="hero-subheadline">The marketplace for high-resolution AI prompts. Join the elite architects building the future of automated business.</p> 
         <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
-            <button class="btn-main" onclick="window.PV.router.go('browse')" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
+            <button class="btn-main" onclick="window.changePage('browse', this)" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
             <span style="color: var(--secondary); font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;">🎁 2026 AI Starter Kit (Free)</span>
         </div>
 
@@ -132,7 +124,7 @@
 
     <div id="browse" class="page">
         <div style="padding: 30px 0; width: 100%;">
-            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="window.PV.vault.filter(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:20px; outline:none;">
+            <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="if(window.filterProducts) window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:20px; outline:none;">
             <div class="vault-grid" id="product-list"></div>
         </div>
     </div>
@@ -153,7 +145,7 @@
 
     <footer class="legal-text">
         <div class="legal-links">
-            <a onclick="window.PV.router.go('home')">Home</a>
+            <a onclick="window.changePage('home', this)">Home</a>
             <a href="/legal.html#privacy">Privacy</a>
             <a href="/legal.html#terms">Terms</a>
             <a href="/legal.html#refunds">Refunds</a>
@@ -163,10 +155,10 @@
 </main> 
 
 <nav class="bottom-nav">
-    <a class="nav-item active" onclick="window.PV.router.go('home', this)"><span>🏠</span><small>Home</small></a>
-    <a class="nav-item" onclick="window.PV.router.go('browse', this)"><span>⊞</span><small>Vaults</small></a>
-    <a class="nav-item" onclick="window.PV.router.go('blog', this)"><span>📖</span><small>Blog</small></a>
-    <a class="nav-item" onclick="window.PV.router.go('library', this)"><span>👤</span><small>Library</small></a>
+    <a class="nav-item active" onclick="window.changePage('home', this)"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item" onclick="window.changePage('browse', this)"><span>⊞</span><small>Vaults</small></a>
+    <a class="nav-item" onclick="window.changePage('blog', this)"><span>📖</span><small>Blog</small></a>
+    <a class="nav-item" onclick="window.changePage('library', this)"><span>👤</span><small>Library</small></a>
 </nav> 
 
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 20000; align-items: center; justify-content: center;">
@@ -194,10 +186,10 @@
         <input type="email" id="auth-email" placeholder="Email" class="auth-input">
         <input type="password" id="auth-pass" placeholder="Password" class="auth-input">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 15px 0;">
-            <button onclick="window.PV.auth.handleEmail('login')" class="btn-main" style="background:var(--accent);">Login</button>
-            <button onclick="window.PV.auth.handleEmail('signup')" class="btn-main" style="background:var(--glass);">Join</button>
+            <button onclick="if(window.handleAuth) window.handleAuth('login')" class="btn-main" style="background:var(--accent);">Login</button>
+            <button onclick="if(window.handleAuth) window.handleAuth('signup')" class="btn-main" style="background:var(--glass);">Join</button>
         </div>
-        <button onclick="window.PV.auth.handleGoogle()" class="btn-main" style="background: white; color: black; width: 100%;">Continue with Google</button>
+        <button onclick="if(window.handleGoogleAuth) window.handleGoogleAuth()" class="btn-main" style="background: white; color: black; width: 100%;">Continue with Google</button>
         <button onclick="document.getElementById('auth-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; cursor:pointer;">Close</button>
     </div>
 </div>
