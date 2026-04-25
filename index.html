@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptVault USA | Global AI Intelligence & Digital Assets</title>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
     <script>
     !function(f,b,e,v,n,t,s)
@@ -46,11 +45,6 @@
       }
     }
     </script>
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://promptvaultusa.shop/">
-    <meta property="og:title" content="PromptVault USA | ChatGPT Prompts for AI Monetization">
-    <meta property="og:description" content="Access high-yield ChatGPT prompt vaults and professional monetization blueprints.">
-    <meta property="og:image" content="https://promptvaultusa.shop/logo.png">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -115,11 +109,6 @@
             <button class="btn-main" onclick="window.changePage('browse', this)" style="background:var(--success); padding: 18px 40px; font-size: 1rem;">Unlock The Vault</button>
             <span style="color: var(--secondary); font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;">🎁 2026 AI Starter Kit (Free)</span>
         </div>
-
-        <section class="content-rich-section">
-            <h3>Master the AI Landscape with <span class="highlight-text">PromptVault USA</span></h3>
-            <p>At PromptVault USA, we provide industrial-strength logic.</p>
-        </section>
     </div> 
 
     <div id="browse" class="page">
@@ -132,13 +121,6 @@
     <div id="library" class="page">
         <div style="padding: 30px 0; width: 100%; align-items: center; display: flex; flex-direction: column;">
             <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
-            
-            <div style="background:rgba(255, 243, 205, 0.05); border:1px solid #ffeaa7; padding:15px; border-radius:12px; margin:20px 0; max-width:600px; font-size: 0.85rem; color: #ffeaa7; text-align: left;">
-              <strong>⚠️ Guest Access Active:</strong> Purchases are locked to this device. Bookmark this page to keep access. 
-              <br><br>
-              <em>Lost it? Email your PayPal ID to admin@promptvaultusa.shop</em>
-            </div>
-
             <div id="user-library-grid" style="margin-top:20px; width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
         </div>
     </div>
@@ -164,37 +146,31 @@
 <div id="checkout-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 20000; align-items: center; justify-content: center;">
     <div class="glass-card" style="width: 90%; max-width: 450px; padding: 30px;">
         <h3 style="text-align: center; margin-bottom: 20px;">Your Shopping Cart</h3>
-        
         <div id="cart-items-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
-        
-        <div style="display:flex; justify-content:space-between; font-weight:800; padding-top:15px; border-top:1px solid var(--border);">
-            <span>Total:</span> <span id="cart-total" style="color:var(--secondary)">$0.00</span>
-        </div>
-
+        <div id="cart-total" style="display:flex; justify-content:space-between; font-weight:800; padding-top:15px; border-top:1px solid var(--border); color: white;"></div>
         <div class="cart-checkout-prompt">
-            <p style="font-size: 0.85rem; color: #fff; margin-bottom: 10px;">Proceed to secure checkout below:</p>
             <div id="cart-paypal-container" style="min-height: 50px;"></div>
         </div>
-        
-        <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; cursor:pointer; font-size: 0.8rem;">Continue Browsing</button>
+        <button onclick="document.getElementById('checkout-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; width:100%; cursor:pointer;">Continue Browsing</button>
     </div>
 </div>
 
 <div id="auth-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 21000; align-items: center; justify-content: center;">
-    <div class="glass-card" style="width: 90%; max-width: 400px; text-align: center;">
-        <h2 style="margin-bottom:15px;">Secure Access</h2>
-        <input type="email" id="auth-email" placeholder="Email" class="auth-input">
-        <input type="password" id="auth-pass" placeholder="Password" class="auth-input">
+    <div class="glass-card" style="width: 90%; max-width: 400px; text-align: center; padding: 20px;">
+        <h2 style="margin-bottom:15px; color: white;">Secure Access</h2>
+        <input type="email" id="auth-email" placeholder="Email" class="auth-input" style="width:100%; margin-bottom:10px; padding:10px; border-radius:8px;">
+        <input type="password" id="auth-pass" placeholder="Password" class="auth-input" style="width:100%; margin-bottom:10px; padding:10px; border-radius:8px;">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 15px 0;">
-            <button onclick="if(window.handleAuth) window.handleAuth('login')" class="btn-main" style="background:var(--accent);">Login</button>
-            <button onclick="if(window.handleAuth) window.handleAuth('signup')" class="btn-main" style="background:var(--glass);">Join</button>
+            <button onclick="if(window.handleAuth) window.handleAuth('login')" class="btn-main" style="background:var(--accent); padding:10px; border-radius:8px; border:none;">Login</button>
+            <button onclick="if(window.handleAuth) window.handleAuth('signup')" class="btn-main" style="background:var(--glass); color:white; padding:10px; border-radius:8px; border:1px solid var(--border);">Join</button>
         </div>
-        <button onclick="if(window.handleGoogleAuth) window.handleGoogleAuth()" class="btn-main" style="background: white; color: black; width: 100%;">Continue with Google</button>
         <button onclick="document.getElementById('auth-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; margin-top:15px; cursor:pointer;">Close</button>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=AWpMh-Ki1opxnGQEIw9oEhJCsGnN8ol5QxJ1SJSdR39y2nTu0zciYa6UftX0-DgPz6A0iTZ_x0g4d6Nr&currency=USD"></script>
 <script type="module" src="app.js"></script>
+
 </body>
 </html>
