@@ -4,44 +4,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Success | PromptVault USA</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" type="image/png" href="logo.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/png" href="/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
   <style>
+    :root {
+      --accent: #4fd1c5;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --glass: rgba(17, 34, 64, 0.4);
+      --border: rgba(255, 255, 255, 0.05);
+    }
     .loader { border: 3px solid rgba(255, 255, 255, 0.1); border-radius: 50%; border-top: 3px solid var(--success); width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .success-item { background:rgba(16, 185, 129, 0.05); padding:18px; border-radius:16px; border:1px solid var(--border); margin-bottom:12px; text-align:left; display:flex; justify-content:space-between; align-items:center; transition: 0.3s; }
-    .success-item:hover { border-color: var(--success); background: rgba(16, 185, 129, 0.1); transform: scale(1.02); }
-    .btn-main { transition: 0.3s; border: none; text-decoration: none; display: inline-block; text-align: center; }
+    .success-item:hover { border-color: var(--success); background: rgba(16, 185, 129, 0.1); transform: scale(1.01); }
+    .btn-main { transition: 0.3s; border: none; text-decoration: none; display: inline-block; text-align: center; cursor: pointer; }
     .btn-main:hover { transform: translateY(-3px); opacity: 0.9; }
+    body { background: #0a0e27; color: white; font-family: 'Plus Jakarta Sans', sans-serif; }
   </style>
 </head>
 <body>
-  <div class="spotlight"></div>
-  <div class="container" style="text-align:center; padding-top:100px; padding-bottom: 60px;">
+  <div class="container" style="text-align:center; padding-top:80px; padding-bottom: 60px; max-width: 1200px; margin: 0 auto;">
     <div class="glass-card" style="max-width:550px; margin:0 auto; padding: 45px; border: 1px solid var(--border); border-radius: 32px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px);">
+      
       <div id="status-icon" style="font-size: 4rem; margin-bottom: 25px;">⏳</div>
-      <h2 id="status-title" style="color:var(--accent); margin-bottom: 12px; font-weight: 800; font-size: 1.8rem;">Checking Payment...</h2>
-      <p id="status-msg" style="margin-bottom:35px; color:#94a3b8; font-size: 1rem; line-height: 1.6;">We're waiting for PayPal to confirm your payment. This usually takes 10-60 seconds.</p>
+      <h2 id="status-title" style="color:var(--accent); margin-bottom: 12px; font-weight: 800; font-size: 1.8rem;">Verifying Payment...</h2>
+      <p id="status-msg" style="margin-bottom:35px; color:#94a3b8; font-size: 1rem; line-height: 1.6;">Securely confirming your transaction with PayPal. Please don't close this window.</p>
       
       <div id="product-delivery-zone">
         <div id="loading-spinner" class="loader"></div>
-        <p id="verification-text" style="color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">VERIFYING WITH PAYPAL...</p>
+        <p id="verification-text" style="color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">Syncing Database...</p>
       </div>
       
-      <button onclick="location.reload()" id="refresh-btn" class="btn-main" style="margin-top: 30px; background: var(--accent); color: white; width: 100%; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">Refresh Status</button>
-      <button onclick="window.location.href='index.html?action=library#library'" id="finish-btn" class="btn-main" style="margin-top: 15px; background: var(--success); color: white; width: 100%; display: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">View in My Library</button>
+      <button onclick="location.reload()" id="refresh-btn" class="btn-main" style="margin-top: 30px; background: var(--secondary); color: white; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800;">Refresh Status</button>
+      
+      <a href="/#library" id="finish-btn" class="btn-main" style="margin-top: 15px; background: var(--success); color: white; width: 100%; display: none; padding: 18px; border-radius: 15px; font-weight: 800; text-decoration: none;">Go to My Library</a>
       
       <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border);">
-        <p style="font-size: 0.75rem; color: #475569; margin-bottom: 5px;">Payment Reference</p>
+        <p style="font-size: 0.7rem; color: #475569; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Transaction Reference</p>
         <span id="display-tx" style="font-family: monospace; color: var(--accent); font-size: 0.85rem; font-weight: 800;">---</span>
       </div>
     </div>
   </div>
 
   <script type="module">
-    // FIX: Use shared Firebase instance from config
-    import { auth, db } from './firebase-config.js';
+    // IMPORT FROM ROOT CONFIG
+    import { auth, db } from '/firebase-config.js';
     import { signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -60,68 +71,55 @@
         const orderSnap = await getDoc(orderRef);
         
         if (!orderSnap.exists()) {
-          statusTitle.innerText = "Order Not Found";
-          statusMsg.innerText = "We couldn't find this payment reference. Contact support if you were charged.";
-          statusIcon.innerText = "❌";
-          spinner.style.display = "none";
-          verificationText.innerText = "REFERENCE ERROR";
+          // If not found yet, wait and try again (Webhook might be slow)
+          verificationText.innerText = "WAITING FOR PAYPAL WEBHOOK...";
+          setTimeout(() => checkOrderStatus(txID), 4000);
           return;
         }
 
         const orderData = orderSnap.data();
         
         if (orderData.status === 'paid' || orderData.status === 'completed') {
-          const res = await fetch('products.json');
-          const products = await res.json();
+          // SUCCESS FLOW
+          localStorage.removeItem('pv_cart'); // Clear cart on success
           
-          // CRITICAL: Clear cart from localStorage for both /#browse and /vault/ purchases
-          localStorage.removeItem('pv_cart');
-          localStorage.setItem('pv_last_confirmed', txID);
-          
-          statusIcon.innerText = "🚀";
-          statusTitle.innerText = "Assets Unlocked!";
+          statusIcon.innerText = "✅";
+          statusTitle.innerText = "Payment Confirmed!";
           statusTitle.style.color = "var(--success)";
-          statusMsg.innerText = "Your intelligence vaults have been successfully moved to your permanent library.";
+          statusMsg.innerText = "Your digital assets have been unlocked and added to your permanent library.";
+          
           refreshBtn.style.display = "none";
           finishBtn.style.display = "block";
           spinner.style.display = "none";
           verificationText.style.display = "none";
           
-          displayArea.innerHTML = orderData.items.map(item => {
-            const catalogItem = products.find(p => p.id === item.id || p.gmc_id === item.id);
-            return `
-              <div class="success-item">
-                <div>
-                  <strong style="color:white; font-size:0.9rem;">${item.name}</strong><br>
-                  <small style="color:var(--success); font-weight:800;">PERMANENT ACCESS GRANTED</small>
-                </div>
-                <a href="${catalogItem?.drivelink || '#'}" target="_blank" style="background:var(--success); color:white; padding:10px 16px; border-radius:12px; font-weight:800; text-decoration:none; font-size:0.75rem;">OPEN ↗</a>
-              </div>`;
-          }).join('');
+          // Show quick access links
+          displayArea.innerHTML = orderData.items.map(item => `
+            <div class="success-item">
+              <div>
+                <strong style="color:white; font-size:0.9rem;">${item.name}</strong><br>
+                <small style="color:var(--success); font-weight:800; font-size:0.65rem;">ACCESS GRANTED</small>
+              </div>
+              <span style="color:var(--accent); font-size:1.2rem;">💎</span>
+            </div>`).join('');
           
-        } else if (orderData.status === 'pending') {
-          statusIcon.innerText = "⏳";
-          statusTitle.innerText = "Processing Payment";
-          verificationText.innerText = "AWAITING WEBHOOK CONFIRMATION...";
-          // Poll every 5 seconds
-          setTimeout(() => checkOrderStatus(txID), 5000);
         } else {
-          statusIcon.innerText = "⚠️";
-          statusTitle.innerText = "Payment Status: " + orderData.status;
-          spinner.style.display = "none";
+          // PENDING FLOW
+          statusIcon.innerText = "⏳";
+          statusTitle.innerText = "Processing Order";
+          verificationText.innerText = "AWAITING CONFIRMATION...";
+          setTimeout(() => checkOrderStatus(txID), 5000);
         }
       } catch (error) {
         console.error("Status check error:", error);
-        statusTitle.innerText = "Verification Error";
-        statusMsg.innerText = "Error checking order. Refresh or contact support.";
-        statusIcon.innerText = "⚠️";
-        spinner.style.display = "none";
+        statusTitle.innerText = "Network Error";
+        statusMsg.innerText = "We're having trouble reaching the server. Please refresh.";
       }
     }
 
     onAuthStateChanged(auth, (user) => {
       const urlParams = new URLSearchParams(window.location.search);
-      const txID = urlParams.get('tx') || urlParams.get('custom');
+      const txID = urlParams.get('tx');
       
       if (txID) {
         document.getElementById('display-tx').innerText = txID;
@@ -131,9 +129,8 @@
           checkOrderStatus(txID);
         }
       } else {
-        document.getElementById('status-title').innerText = "No Transaction Found";
-        document.getElementById('status-msg').innerText = "Missing payment reference in URL.";
-        document.getElementById('status-icon').innerText = "❌";
+        document.getElementById('status-title').innerText = "No ID Found";
+        document.getElementById('status-icon').innerText = "❓";
         document.getElementById('loading-spinner').style.display = "none";
       }
     });
