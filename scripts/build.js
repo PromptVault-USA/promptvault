@@ -1,3 +1,4 @@
+// /scripts/build.js
 import fs from "node:fs";
 import path from "node:path";
 import Papa from "papaparse";
@@ -8,9 +9,23 @@ const VAULT_DIR = path.join(ROOT, "vault");
 const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
-// YOUR CSV HEADERS - UPDATED TO MATCH YOUR FILE
+// PayPal SDK must be included on every generated vault page (Option A)
+const PAYPAL_SDK_SRC =
+  "https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture";
+
+// CSV headers must match your repo CSV exactly
 const REQUIRED_HEADERS = [
-  "gmc_id", "id", "slug", "name", "price", "sale_price", "category", "desc", "paylink", "img", "drivelink"
+  "gmc_id",
+  "id",
+  "slug",
+  "name",
+  "price",
+  "sale_price",
+  "category",
+  "desc",
+  "paylink",
+  "img",
+  "drivelink",
 ];
 
 function fail(msg) {
@@ -19,69 +34,94 @@ function fail(msg) {
 }
 
 function toNumber(v) {
-  const n = Number(String(v?? "").trim());
-  return Number.isFinite(n)? n : NaN;
+  const n = Number(String(v ?? "").trim());
+  return Number.isFinite(n) ? n : NaN;
 }
 
 function escapeHtml(s) {
-  return String(s?? "")
-  .replaceAll("&", "&amp;")
-  .replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;")
-  .replaceAll('"', "&quot;")
-  .replaceAll("'", "&#039;");
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function normalizeImg(img) {
-  const raw = String(img?? "").trim();
+  const raw = String(img ?? "").trim();
   if (!raw) return "/logo.png";
   if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
   if (raw.startsWith("/")) return raw;
   return `/${raw}`;
 }
 
+function validateHeaders(fields) {
+  const got = (fields || []).map((f) => String(f).trim());
+  const missing = REQUIRED_HEADERS.filter((h) => !got.includes(h));
+  const extras = got.filter((h) => !REQUIRED_HEADERS.includes(h));
+  if (missing.length) fail(`CSV missing headers: ${missing.join(", ")}`);
+  if (extras.length) fail(`CSV has unexpected headers: ${extras.join(", ")}`);
+}
+
 function normalizeRow(r, i) {
-  const id = String(r.id?? "").trim();
-  const slug = String(r.slug?? "").trim();
-  const title = String(r.name?? "").trim(); // YOUR CSV USES 'name' NOT 'title'
-  const desc = String(r.desc?? "").trim();
+  const id = String(r.id ?? "").trim();
+  const slug = String(r.slug ?? "").trim();
+  const title = String(r.name ?? "").trim(); // CSV uses 'name'
+  const desc = String(r.desc ?? "").trim();
+
   const price = toNumber(r.price);
-  const salePriceRaw = String(r.sale_price?? "").trim();
-  const sale_price = salePriceRaw === ""? NaN : toNumber(salePriceRaw);
+  const salePriceRaw = String(r.sale_price ?? "").trim();
+  const sale_price = salePriceRaw === "" ? NaN : toNumber(salePriceRaw);
+
   const img = normalizeImg(r.img);
-  const drivelink = String(r.drivelink?? "").trim();
-  const gmc_id = String(r.gmc_id?? "").trim();
+  const drivelink = String(r.drivelink ?? "").trim();
+  const gmc_id = String(r.gmc_id ?? "").trim();
 
   if (!id) fail(`Row ${i + 2}: missing id`);
   if (!slug) fail(`Row ${i + 2}: missing slug`);
   if (!title) fail(`Row ${i + 2}: missing name`);
   if (!Number.isFinite(price) || price <= 0) fail(`Row ${i + 2}: invalid price`);
-  if (salePriceRaw!== "" && (!Number.isFinite(sale_price) || sale_price <= 0)) {
+  if (salePriceRaw !== "" && (!Number.isFinite(sale_price) || sale_price <= 0)) {
     fail(`Row ${i + 2}: invalid sale_price`);
   }
   if (!drivelink) fail(`Row ${i + 2}: missing drivelink`);
   if (!gmc_id) fail(`Row ${i + 2}: missing gmc_id`);
 
-  const finalPrice = Number.isFinite(sale_price) && sale_price > 0 && sale_price < price? sale_price : price;
-  return { id, slug, title, price, sale_price: Number.isFinite(sale_price)? sale_price : null, finalPrice, img, drivelink, gmc_id, desc };
-}
+  const finalPrice =
+    Number.isFinite(sale_price) && sale_price > 0 && sale_price < price ? sale_price : price;
 
-function validateHeaders(fields) {
-  const got = (fields || []).map((f) => String(f).trim());
-  const missing = REQUIRED_HEADERS.filter((h) =>!got.includes(h));
-  const extras = got.filter((h) =>!REQUIRED_HEADERS.includes(h));
-  if (missing.length) fail(`CSV missing headers: ${missing.join(", ")}`);
-  if (extras.length) fail(`CSV has unexpected headers: ${extras.join(", ")}`);
+  return {
+    id,
+    slug,
+    title,
+    price,
+    sale_price: Number.isFinite(sale_price) ? sale_price : null,
+    finalPrice,
+    img,
+    drivelink,
+    gmc_id,
+    desc,
+  };
 }
 
 function renderProductPage(p) {
   const msrp = p.price.toFixed(2);
   const final = p.finalPrice.toFixed(2);
-  const hasSale = p.sale_price!== null && p.sale_price < p.price;
-  const oldPriceHtml = hasSale? `<span id="oldprice" style="text-decoration:line-through; opacity:0.7;">$${msrp}</span>` : `<span id="oldprice"></span>`;
-  const msrpHtml = `<span id="msrp">$${msrp}</span>`;
-  const priceHtml = `<span id="price">$${final}</span>`;
-  const paypalHook = `<div id="single-paypal-button" data-product-id="${escapeHtml(p.id)}" data-product-slug="${escapeHtml(p.slug)}" data-product-title="${escapeHtml(p.title)}" data-product-price="${escapeHtml(final)}"></div>`;
+
+  const hasSale = p.sale_price !== null && p.sale_price < p.price;
+  const oldPriceHtml = hasSale
+    ? `<span id="oldprice" style="text-decoration:line-through; opacity:0.7;">$${escapeHtml(msrp)}</span>`
+    : `<span id="oldprice"></span>`;
+
+  const msrpHtml = `<span id="msrp">$${escapeHtml(msrp)}</span>`;
+  const priceHtml = `<span id="price">$${escapeHtml(final)}</span>`;
+
+  // app.js will render a PayPal button into this container
+  const paypalHook = `<div id="single-paypal-button"
+    data-product-id="${escapeHtml(p.id)}"
+    data-product-slug="${escapeHtml(p.slug)}"
+    data-product-title="${escapeHtml(p.title)}"
+    data-product-price="${escapeHtml(final)}"></div>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -97,22 +137,31 @@ function renderProductPage(p) {
   <main style="max-width:980px;margin:0 auto;padding:24px;">
     <a href="https://promptvaultusa.shop/" style="text-decoration:none;">Back to shop</a>
     <h1 style="margin-top:16px;">${escapeHtml(p.title)}</h1>
+
     <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-top:20px;">
       <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;">
         <img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.title)}" style="width:100%;display:block;" onerror="this.src='/logo.png'">
       </div>
+
       <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:18px;">
         <p>${escapeHtml(p.desc)}</p>
+
         <div style="display:flex;gap:10px;align-items:baseline;margin:14px 0;">
-          ${oldPriceHtml} ${priceHtml} ${msrpHtml}
+          ${oldPriceHtml}
+          ${priceHtml}
+          ${msrpHtml}
         </div>
+
         ${paypalHook}
+
         <div style="margin-top:12px;font-size:0.9rem;opacity:0.8;">
           After payment, your pack unlocks in My Library on this device.
         </div>
       </div>
     </div>
   </main>
+
+  <script src="${PAYPAL_SDK_SRC}"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>`;
@@ -124,15 +173,20 @@ function ensureDir(dir) {
 
 function main() {
   if (!fs.existsSync(CSV_PATH)) fail("products.csv not found in repo root");
+
   const csv = fs.readFileSync(CSV_PATH, "utf8");
   const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
+
   if (parsed.errors && parsed.errors.length) {
     const e = parsed.errors[0];
     fail(`CSV parse error: ${e.message || JSON.stringify(e)}`);
   }
+
   validateHeaders(parsed.meta?.fields);
-  const rows = (parsed.data || []).filter((r) => r && String(r.id?? "").trim()!== "");
+
+  const rows = (parsed.data || []).filter((r) => r && String(r.id ?? "").trim() !== "");
   if (!rows.length) fail("products.csv has zero products");
+
   const products = rows.map((r, i) => normalizeRow(r, i));
 
   const seenSlugs = new Set();
@@ -148,6 +202,7 @@ function main() {
     fs.writeFileSync(outPath, renderProductPage(p), "utf8");
   }
 
+  // products.json for app.js
   const productsJson = products.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -161,6 +216,7 @@ function main() {
   }));
   fs.writeFileSync(PRODUCTS_JSON_PATH, JSON.stringify(productsJson, null, 2) + "\n", "utf8");
 
+  // gmc-lookup.json
   const gmcLookup = {};
   for (const p of products) {
     gmcLookup[p.gmc_id] = {
@@ -173,8 +229,8 @@ function main() {
   fs.writeFileSync(GMC_LOOKUP_JSON_PATH, JSON.stringify(gmcLookup, null, 2) + "\n", "utf8");
 
   console.log(`[build] Wrote ${products.length} vault pages`);
-  console.log(`[build] Wrote products.json`);
-  console.log(`[build] Wrote gmc-lookup.json`);
+  console.log("[build] Wrote products.json");
+  console.log("[build] Wrote gmc-lookup.json");
 }
 
 main();
