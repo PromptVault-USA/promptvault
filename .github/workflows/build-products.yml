@@ -1,3 +1,4 @@
+
 name: Build Product Pages
 
 on:
@@ -21,8 +22,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: true
-          token: $ secrets.GITHUB_TOKEN 
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,7 +35,9 @@ jobs:
       - name: Build vault pages + gmc-lookup.json
         run: node scripts/build.js
 
-      - name: Commit generated files
+      - name: Commit and push generated files
+        env:
+          GITHUB_TOKEN: $ secrets.GITHUB_TOKEN 
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -49,7 +51,5 @@ jobs:
 
           git commit -m "Auto-build: pages + products.json from products.csv"
 
-      - name: Push changes
-        run: |
-          git remote set-url origin "https://x-access-token:$ secrets.GITHUB_TOKEN @github.com/$ github.repository .git"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push origin HEAD:main
