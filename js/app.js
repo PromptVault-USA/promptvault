@@ -1,12 +1,14 @@
 /**
- * PROMPTVAULT USA - CORE ENGINE v5.5
+ * PROMPTVAULT USA - CORE ENGINE v5.6
  * MODE: HEADLESS (Spreadsheet-Driven) 
- * FIX: Cart PayPal render timing + Product page URL params + Shared Firebase instance
+ * FIX: Repaired truncated initProductPage + added load confirmation
  */
 import { doc, setDoc, collection, getDocs, getDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { auth, db } from './firebase-config.js'; // FIX: Import shared db + auth
-
+import { auth, db } from './firebase-config.js';
 window.auth = auth;
+
+console.log('PV Core v5.6 loaded'); // DEBUG: Check console for this
+
 let cart = JSON.parse(localStorage.getItem('pv_cart')) || [];
 let allProducts = [];
 
@@ -150,7 +152,7 @@ window.renderCart = () => {
         <div style="color:white; font-weight:700;">${item.name}</div>
         <div style="color:var(--secondary); font-size:0.9rem;">$${item.price.toFixed(2)}</div>
       </div>
-      <button onclick="removeFromCart(${index})" style="background:rgba(255,0,0,0.1); color:#ef4444; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:800;">×</button>
+      <button onclick="window.removeFromCart(${index})" style="background:rgba(255,0,0,0.1); color:#ef4444; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:800;">×</button>
     </div>
   `).join('');
   const total = cart.reduce((sum, item) => sum + item.price, 0);
@@ -175,71 +177,4 @@ window.clearCart = () => {
 // CRITICAL FIX: PayPal render timing for cart modal
 window.renderCartPayPal = (total) => {
   setTimeout(() => { 
-    const container = document.getElementById('cart-paypal-container');
-    if (!container) return;
-    container.innerHTML = '';
-    paypal.Buttons({
-      style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [{ amount: { value: total.toFixed(2) }, description: "PromptVaultUSA - Multiple Asset Bundle", custom_id: "CART_BUNDLE", invoice_id: `PV-BUNDLE-${Date.now()}` }]
-        });
-      },
-      onApprove: (data, actions) => {
-        return actions.order.capture().then(async (details) => {
-          const identity = getActiveIdentity();
-          await setDoc(doc(db, "orders", details.id), { uid: identity, items: cart, status: 'completed', paypalTransactionId: details.id, payerEmail: details.payer.email_address, createdAt: serverTimestamp() });
-          localStorage.removeItem('pv_cart');
-          cart = [];
-          window.updateCartCount();
-          window.location.href = `/success.html?tx=${details.id}&guest=${identity}`;
-        });
-      },
-      onError: (err) => {
-        console.error('PayPal Cart Error:', err);
-        alert('Cart checkout failed. Try again or contact admin@promptvaultusa.shop');
-      }
-    }).render('#cart-paypal-container');
-  }, 300);
-};
-
-// --- 5. NAVIGATION ---
-window.changePage = (id, el) => {
-  const targetPage = document.getElementById(id);
-  if (!targetPage) {
-    if (id === 'blog') window.location.href = 'blog.html';
-    return;
-  }
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  targetPage.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  el?.classList.add('active');
-  if (id === 'browse' && allProducts.length === 0) {
-    Papa.parse('/products.csv', { download: true, header: true, skipEmptyLines: true, complete: (results) => { allProducts = results.data.filter(row => row.id); renderProducts(allProducts); } });
-  }
-  if (id === 'library') loadUserLibrary();
-  if (id === 'cart') window.renderCart();
-};
-
-// HANDLE /vault/ PRODUCT PAGES WITH ?price= PARAMS
-const initProductPage = () => {
-  const params = new URLSearchParams(window.location.search);
-  const price = params.get('price');
-  const msrp = params.get('msrp');
-  
-  if (window.location.pathname.includes('/vault/') && price) {
-    const productName = document.title.replace(' - PromptVault USA', '');
-    const productData = {
-      id: window.location.pathname.split('/').pop().replace('.html', ''),
-      name: productName,
-      price: parseFloat(price)
-    };
-    
-    const pData = encodeURIComponent(JSON.stringify(productData));
-    const pricingHTML = (msrp && parseFloat(msrp) > parseFloat(price)) 
-      ? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${parseFloat(msrp).toFixed(2)}</span> <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${parseFloat(price).toFixed(2)}</span>`
-      : `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${parseFloat(price).toFixed(2)}</span>`;
-    
-    const priceEl = document.getElementById('product-price');
-    const buttonEl = document.getElementById('product-paypal-button');
-    const cartBtnEl = document.getElementById
+    const
