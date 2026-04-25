@@ -1,0 +1,56 @@
+name: Build Site (no auto-commit)
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "index.html"
+      - "app.js"
+      - "products.csv"
+      - "scripts/**"
+      - "vault/_product-template.html"
+      - "vault/**"
+      - "blog/**"
+      - "css/**"
+      - "assets/**"
+      - "logo.png"
+      - "legal.html"
+      - "blog.html"
+      - "success.html"
+      - ".github/workflows/site-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build dist
+        run: |
+          set -euxo pipefail
+          rm -rf dist
+          mkdir -p dist
+
+          node scripts/generate-products-json.js
+          node scripts/build.js
+
+          cp -R \
+            index.html app.js products.csv products.json gmc-lookup.json sitemap.xml \
+            css assets vault blog \
+            logo.png legal.html blog.html success.html \
+            dist/ || true
+
+          node scripts/pages-postprocess.js
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
