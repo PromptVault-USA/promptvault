@@ -1,3 +1,18 @@
+/**
+ * COPY-PASTE READY FILE. Replace entire file content.
+ *
+ * FILE: scripts/build.js
+ *
+ * Source of truth: products.csv
+ * Generates:
+ * - vault/<slug>.html
+ * - gmc-lookup.json
+ *
+ * Sale logic:
+ * - If sale_price > 0 AND price > sale_price, then PRICE = sale_price, MSRP = price
+ * - Else PRICE = price, MSRP = price
+ */
+
 const fs = require("fs");
 
 function parseCSVLine(line) {
@@ -9,6 +24,7 @@ function parseCSVLine(line) {
 		const ch = line[i];
 
 		if (ch === '"') {
+			// Handle escaped quotes ""
 			if (inQuotes && line[i + 1] === '"') {
 				cur += '"';
 				i++;
@@ -56,7 +72,8 @@ function parseCSV(text) {
 }
 
 function toNumber(v) {
-	const n = Number(String(v ?? "").trim());
+	// IMPORTANT: handles "15.00", 15, "", null
+	const n = Number(String(v ?? "").replace(/,/g, "").trim());
 	return Number.isFinite(n) ? n : 0;
 }
 
@@ -101,6 +118,7 @@ function normalizeImg(img) {
 		process.exit(1);
 	}
 
+	// Build product objects (typed)
 	const products = rows.map((r) => {
 		const gmc_id = String(r.Gmc_id || "").trim();
 		const id = String(r.id || "").trim();
@@ -130,6 +148,7 @@ function normalizeImg(img) {
 		};
 	});
 
+	// Validate
 	for (const p of products) {
 		if (!p.id) throw new Error("❌ Missing id in products.csv row");
 		if (!p.slug) throw new Error(`❌ Missing slug for product id=${p.id}`);
@@ -145,19 +164,25 @@ function normalizeImg(img) {
 	for (const p of products) {
 		const msrp = toNumber(p.price);
 		const sale = toNumber(p.sale_price);
+
+		// AUTO SALE DETECTION
 		const hasSale = sale > 0 && msrp > sale;
 		const finalPrice = hasSale ? sale : msrp;
 
+		// NOTE: Only escape fields that are user content
 		const data = {
+			// raw fields (for any placeholders you might use)
 			...p,
+
+			// template placeholders (must match exactly: NAME, DESC, PRICE, MSRP, etc.)
 			NAME: escapeHtml(p.name),
 			DESC: escapeHtml(p.desc),
 			IMG: p.img,
 			ID: p.id,
 			SLUG: p.slug,
 			GMC_ID: p.gmc_id || p.id,
-			PRICE: finalPrice.toFixed(2),
-			MSRP: msrp.toFixed(2),
+			PRICE: finalPrice.toFixed(2), // should become 9.00 when sale is active
+			MSRP: msrp.toFixed(2), // should remain 15.00
 			PAYPAL_HOOK: `<div id="single-paypal-button" data-id="${escapeHtml(p.id)}" data-price="${finalPrice.toFixed(
 				2,
 			)}"></div>`,
@@ -165,6 +190,7 @@ function normalizeImg(img) {
 
 		let html = template;
 
+		// Replace placeholders
 		for (const key of Object.keys(data)) {
 			const placeholder = `{{${String(key).toUpperCase()}}}`;
 			const value = data[key] === undefined || data[key] === null ? "" : String(data[key]);
@@ -177,6 +203,8 @@ function normalizeImg(img) {
 			id: p.gmc_id || p.id,
 			slug: p.slug,
 			price: finalPrice.toFixed(2),
+			msrp: msrp.toFixed(2),
+			hasSale: hasSale,
 		});
 	}
 
