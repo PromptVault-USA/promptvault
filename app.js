@@ -74,11 +74,12 @@ async function fetchProducts() {
     .filter((p) => p.id && p.slug && p.title && Number.isFinite(p.price));
 }
 
+let PRODUCTS_CACHE = [];
+
 function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  // index.html uses #vault-search, not #product-search
   const q = (document.getElementById("vault-search")?.value || "")
     .trim()
     .toLowerCase();
@@ -174,7 +175,6 @@ function renderPayPalButtonForContainer(containerId) {
         const uid = auth.currentUser.uid;
         const orderId = details.id;
 
-        // IMPORTANT: If your rules disallow client create or require "pending", this must be aligned.
         await setDoc(doc(db, "orders", orderId), {
           uid,
           status: "completed",
@@ -201,7 +201,6 @@ async function loadLibrary(products) {
 
   grid.innerHTML = `<p style="text-align:center;opacity:0.8;">Syncing Assets...</p>`;
 
-  // Query only the current user's orders (do NOT scan the entire orders collection)
   const q = query(collection(db, "orders"), where("uid", "==", uid));
   const snap = await getDocs(q);
 
@@ -229,15 +228,45 @@ async function loadLibrary(products) {
     html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
 }
 
+// ROUTER: required by index.html nav onclick handlers
+window.changePage = async (id, el) => {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+  target.classList.add("active");
+
+  document.querySelectorAll(".nav-item").forEach((i) => i.classList.remove("active"));
+  if (el && el.classList) el.classList.add("active");
+
+  window.location.hash = id;
+
+  if (id === "browse") {
+    renderGrid(PRODUCTS_CACHE);
+  }
+
+  if (id === "library") {
+    await loadLibrary(PRODUCTS_CACHE);
+  }
+};
+
 async function boot() {
-  const products = await fetchProducts();
+  PRODUCTS_CACHE = await fetchProducts();
 
   const search = document.getElementById("vault-search");
   if (search) {
-    search.addEventListener("input", () => renderGrid(products));
+    search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
   }
 
-  renderGrid(products);
+  // If hash is present, route to it, else default behavior stays as-is.
+  if (window.location.hash) {
+    const pageId = window.location.hash.substring(1);
+    const navEl = document.querySelector(`.nav-item[onclick*="'${pageId}'"]`);
+    window.changePage(pageId, navEl);
+  }
+
+  // Render grid if present
+  renderGrid(PRODUCTS_CACHE);
 
   // Single product page support
   const single = document.getElementById("single-paypal-button");
@@ -246,11 +275,11 @@ async function boot() {
     if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
   }
 
-  // Library page support
+  // Keep library refreshed when auth becomes available
   const libraryGrid = document.getElementById("user-library-grid");
   if (libraryGrid) {
     onAuthStateChanged(auth, async () => {
-      await loadLibrary(products);
+      await loadLibrary(PRODUCTS_CACHE);
     });
   }
 }
