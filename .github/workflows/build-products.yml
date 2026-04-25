@@ -3,10 +3,11 @@ name: Build Product Pages
 on:
   push:
     paths:
-      - 'products.csv'
-      - 'scripts/build.js'
-      - 'scripts/generate-products-json.js'
-      - 'vault/_product-template.html'
+      - "products.csv"
+      - "scripts/build.js"
+      - "scripts/generate-products-json.js"
+      - "vault/_product-template.html"
+      - ".github/workflows/build-products.yml"
   workflow_dispatch:
 
 jobs:
@@ -19,15 +20,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           token: $ secrets.GITHUB_TOKEN 
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install Dependencies
-        run: npm install
 
       - name: Generate products.json from products.csv
         run: node scripts/generate-products-json.js
@@ -42,4 +41,9 @@ jobs:
 
           git add vault/*.html products.json gmc-lookup.json
 
-          git diff --staged --quiet || (git commit -m "Auto-build: pages + products.json from products.csv" && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-build: pages + products.json from products.csv"
+            git push
+          fi
