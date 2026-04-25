@@ -1,8 +1,13 @@
 {
-  "name": "promptvault-sync",
+  "name": "promptvaultusa",
   "version": "1.0.0",
-  "main": "scripts/upload.js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
   "dependencies": {
-    "googleapis": "^126.0.0"
+    "googleapis": "^129.0.0",
+    "papaparse": "^5.4.1"
   }
 }
