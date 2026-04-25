@@ -1,286 +1,178 @@
-/**
- * PROMPTVAULT USA - CORE ENGINE v5.9.1 (Audit Patch)
- * MODE: DIRECT-PURCHASE (Headless & Event-Driven)
- * PATH: /app.js (Root)
- *
- * Step 1 Fixes applied:
- * - Removed FulfillmentService dependency completely (prevents module boot failure).
- * - Added hard guards for missing PayPal SDK + PapaParse so the app doesn’t crash silently.
- * - Normalized product field handling for CSV (title/name, sale_price, img).
- * - Removed price query-string injection to vault links (prevents tamperable pricing display).
- * - Prevented double-render/double-button injection during rerenders.
- *
- * WARNING (intentional): This still does NOT implement secure server-side payment verification.
- * It only restores site boot + stability so you can proceed to Step 2/3 safely.
- */
-
-import {
-	doc,
-	setDoc,
-	collection,
-	getDocs,
-	serverTimestamp,
-	query,
-	where,
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, setDoc, getDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { auth, db } from "./firebase-config.js";
 
-console.log("PV Core v5.9.1 Online [Direct-Purchase Mode]");
+function toNumber(v) {
+  const n = Number(String(v?? "").trim());
+  return Number.isFinite(n)? n : NaN;
+}
 
-// ---------------------------
-// 1) IDENTITY SYSTEM
-// ---------------------------
-const getActiveIdentity = () => {
-	// NOTE: Your current Firestore rules require request.auth != null for create.
-	// That means "guest uid" only works if the user is actually authenticated (anonymous auth counts).
-	// This function is kept for continuity, but Step 3 should ensure auth is present before checkout.
-	if (auth?.currentUser && !auth.currentUser.isAnonymous) return auth.currentUser.uid;
+function normalizeImg(img) {
+  const raw = String(img?? "").trim();
+  if (!raw) return "/logo.png";
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+  if (raw.startsWith("/")) return raw;
+  return `/${raw}`;
+}
 
-	let gid = localStorage.getItem("pv_guest_uid");
-	if (!gid) {
-		gid = "pv_guest_" + Math.random().toString(36).substr(2, 9);
-		localStorage.setItem("pv_guest_uid", gid);
-	}
-	return gid;
-};
+function finalPrice(p) {
+  const price = toNumber(p.price);
+  const sale = p.sale_price === null || p.sale_price === undefined || p.sale_price === ""? NaN : toNumber(p.sale_price);
+  if (Number.isFinite(sale) && sale > 0 && sale < price) return sale;
+  return price;
+}
 
-// ---------------------------
-// 2) HELPERS
-// ---------------------------
-const toNumber = (v) => {
-	const n = Number(String(v ?? "").trim());
-	return Number.isFinite(n) ? n : 0;
-};
+function ensurePayPalReady() {
+  return!!(window.paypal && window.paypal.Buttons);
+}
 
-const normalizeImg = (img) => {
-	const raw = String(img ?? "").trim();
-	if (!raw) return "/logo.png";
-	if (raw.startsWith("http")) return raw;
-	if (raw.startsWith("/")) return raw;
-	return `/${raw}`;
-};
+async function requireAnonAuth() {
+  if (auth.currentUser) return auth.currentUser;
+  await signInAnonymously(auth);
+  return auth.currentUser;
+}
 
-const normalizeProduct = (p) => {
-	const id = String(p.id ?? "").trim();
-	const slug = String(p.slug ?? "").trim();
-	const name = String(p.title ?? p.name ?? "").trim();
-	const msrp = toNumber(p.price);
-	const sale = toNumber(p.sale_price);
-	const finalPrice = sale > 0 && msrp > sale ? sale : msrp;
+async function fetchProducts() {
+  const res = await fetch("/products.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`products.json fetch failed: ${res.status}`);
+  const raw = await res.json();
+  return (raw || []).map((p) => ({
+    id: String(p.id?? "").trim(),
+    slug: String(p.slug?? "").trim(),
+    title: String(p.title?? "").trim(),
+    price: toNumber(p.price),
+    sale_price: p.sale_price === null || p.sale_price === undefined || p.sale_price === ""? null : toNumber(p.sale_price),
+    img: normalizeImg(p.img),
+    drivelink: String(p.drivelink?? "").trim(),
+    gmc_id: String(p.gmc_id?? "").trim(),
+    desc: String(p.desc?? "").trim(),
+  })).filter((p) => p.id && p.slug && p.title && Number.isFinite(p.price));
+}
 
-	return {
-		id,
-		slug,
-		name,
-		price: msrp,
-		sale_price: sale,
-		finalPrice,
-		img: normalizeImg(p.img),
-		gmc_id: String(p.gmc_id ?? p.Gmc_id ?? "").trim(),
-		drivelink: String(p.drivelink ?? p.driveLink ?? "").trim(),
-	};
-};
+function renderGrid(products) {
+  const list = document.getElementById("product-list");
+  if (!list) return;
+  const q = (document.getElementById("product-search")?.value || "").trim().toLowerCase();
+  const filtered = q? products.filter((p) => p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q) || p.id.toLowerCase().includes(q)) : products;
 
-const ensurePayPalReady = () => {
-	if (!window.paypal || !window.paypal.Buttons) {
-		console.warn("PayPal SDK not ready. Buttons will not render yet.");
-		return false;
-	}
-	return true;
-};
-
-const ensurePapaReady = () => {
-	if (!window.Papa || !window.Papa.parse) {
-		console.error("PapaParse is missing. Ensure index.html includes papaparse before app.js.");
-		return false;
-	}
-	return true;
-};
-
-// ---------------------------
-// 3) GRID RENDERING (DIRECT PAYPAL BUTTONS)
-// ---------------------------
-const renderProducts = (rawProducts) => {
-	const list = document.getElementById("product-list");
-	if (!list) return;
-
-	const products = (rawProducts || [])
-		.map(normalizeProduct)
-		.filter((p) => p.id && p.slug && p.name);
-
-	list.innerHTML = products
-		.map((p) => {
-			const buttonId = `paypal-button-${p.id}`;
-
-			const hasSale = p.sale_price > 0 && p.price > p.sale_price;
-			const pricingHTML = hasSale
-				? `<span style="text-decoration:line-through; color:#64748b; font-size:0.85rem; margin-right:8px;">$${p.price.toFixed(2)}</span>
-           <span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${p.finalPrice.toFixed(2)}</span>`
-				: `<span style="color:var(--secondary); font-weight:800; font-size:1.4rem;">$${p.finalPrice.toFixed(2)}</span>`;
-
-			return `
-      <div class="product-card" style="background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:20px; display:flex; flex-direction:column; height: 100%;">
-        <a href="/vault/${p.slug}.html" style="text-decoration:none;">
-          <div style="aspect-ratio:1/1; border-radius:15px; overflow:hidden; margin-bottom:15px; background:#000; border:1px solid var(--border);">
-            <img src="${p.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/logo.png'">
+  list.innerHTML = filtered.map((p) => {
+    const fp = finalPrice(p);
+    const hasSale = p.sale_price!== null && p.sale_price < p.price;
+    const old = hasSale? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>` : "";
+    const price = `<span style="font-weight:800;">$${fp.toFixed(2)}</span>`;
+    const buttonId = `paypal-button-${p.id}`;
+    return `
+      <div class="product-card" style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:14px;">
+        <a href="/vault/${p.slug}.html" style="text-decoration:none;color:inherit;">
+          <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,0.08);">
+            <img src="${p.img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/logo.png'">
           </div>
-          <div style="font-weight:800; color:white; font-size:1.1rem; margin-bottom:5px;">${p.name}</div>
+          <div style="margin-top:10px;font-weight:800;">${p.title}</div>
         </a>
-
-        <div style="margin-bottom:15px;">${pricingHTML}</div>
-
-        <div style="margin-top:auto;">
-          <div id="${buttonId}" data-rendered="0"></div>
+        <div style="margin:10px 0;display:flex;gap:10px;align-items:baseline;">
+          ${old} ${price}
         </div>
+        <div id="${buttonId}" data-rendered="0" data-product-id="${p.id}" data-product-slug="${p.slug}" data-product-title="${p.title}" data-product-price="${fp.toFixed(2)}"></div>
       </div>`;
-		})
-		.join("");
+  }).join("");
 
-	if (!ensurePayPalReady()) return;
+  if (ensurePayPalReady()) {
+    filtered.forEach((p) => renderPayPalButtonForContainer(`paypal-button-${p.id}`));
+  }
+}
 
-	products.forEach((p) => {
-		const buttonId = `paypal-button-${p.id}`;
-		const container = document.getElementById(buttonId);
-		if (!container) return;
+function renderPayPalButtonForContainer(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!ensurePayPalReady()) return;
+  if (el.getAttribute("data-rendered") === "1") return;
+  el.setAttribute("data-rendered", "1");
 
-		if (container.getAttribute("data-rendered") === "1") return;
-		container.setAttribute("data-rendered", "1");
+  const productId = el.getAttribute("data-product-id") || "";
+  const title = el.getAttribute("data-product-title") || "PromptVault Pack";
+  const price = el.getAttribute("data-product-price") || "0.00";
 
-		window.paypal
-			.Buttons({
-				style: {
-					layout: "vertical",
-					color: "gold",
-					shape: "rect",
-					height: 40,
-					label: "buynow",
-				},
-				createOrder: (data, actions) =>
-					actions.order.create({
-						purchase_units: [
-							{
-								amount: { value: p.finalPrice.toFixed(2) },
-								description: `PV - ${p.name}`,
-								custom_id: p.id,
-							},
-						],
-					}),
-				onApprove: (data, actions) =>
-					actions.order.capture().then(async (details) => {
-						const identity = getActiveIdentity();
+  window.paypal.Buttons({
+    style: { layout: "vertical", color: "gold", shape: "rect", height: 40, label: "buynow" },
+    createOrder: async (data, actions) => {
+      await requireAnonAuth();
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: String(price) },
+          description: `PV - ${title}`,
+          custom_id: String(productId),
+        }],
+      });
+    },
+    onApprove: async (data, actions) => {
+      await requireAnonAuth();
+      const details = await actions.order.capture();
+      const uid = auth.currentUser.uid;
+      const orderId = details.id;
+      await setDoc(doc(db, "orders", orderId), {
+        uid,
+        status: "completed",
+        items: [{ id: productId, qty: 1 }],
+        paypalOrderId: orderId,
+        createdAt: serverTimestamp(),
+      });
+      window.location.href = `/success.html?tx=${encodeURIComponent(orderId)}`;
+    },
+    onError: (err) => {
+      console.error("PayPal Buttons error:", err);
+    },
+  }).render(`#${containerId}`);
+}
 
-						await setDoc(doc(db, "orders", details.id), {
-							uid: identity,
-							items: [{ id: p.id, name: p.name, price: p.finalPrice }],
-							status: "completed",
-							paypalTransactionId: details.id,
-							payerEmail: details?.payer?.email_address || null,
-							createdAt: serverTimestamp(),
-						});
+async function loadLibrary(products) {
+  await requireAnonAuth();
+  const uid = auth.currentUser.uid;
+  const grid = document.getElementById("user-library-grid");
+  if (!grid) return;
+  grid.innerHTML = `<p style="text-align:center;opacity:0.8;">Syncing Assets...</p>`;
+  const q = collection(db, "orders");
+  const snap = await getDocs(q);
+  let html = "";
+  snap.forEach((d) => {
+    const o = d.data();
+    if (!o || o.uid!== uid) return;
+    if (o.status!== "completed" && o.status!== "paid") return;
+    for (const it of o.items || []) {
+      const pid = String(it.id || "").trim();
+      const p = products.find((x) => x.id === pid);
+      if (!p) continue;
+      html += `
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-weight:800;">${p.title}</div>
+          <a href="${p.drivelink}" target="_blank" rel="noopener" style="padding:8px 12px;border-radius:10px;text-decoration:none;background:#10b981;color:white;font-weight:700;">Download</a>
+        </div>`;
+    }
+  });
+  grid.innerHTML = html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
+}
 
-						window.location.href = `/success.html?tx=${encodeURIComponent(details.id)}`;
-					}),
-				onError: (err) => {
-					console.error("PayPal Buttons error:", err);
-				},
-			})
-			.render(`#${buttonId}`);
-	});
-};
+async function boot() {
+  const products = await fetchProducts();
+  const search = document.getElementById("product-search");
+  if (search) {
+    search.addEventListener("input", () => renderGrid(products));
+  }
+  renderGrid(products);
 
-// ---------------------------
-// 4) AUTO-SYNC LIBRARY
-// ---------------------------
-window.loadUserLibrary = async () => {
-	const identity = getActiveIdentity();
-	const grid = document.getElementById("user-library-grid");
-	if (!grid) return;
+  const single = document.getElementById("single-paypal-button");
+  if (single) {
+    single.setAttribute("data-rendered", "0");
+    if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
+  }
 
-	grid.innerHTML = `<p style="text-align:center; color:#94a3b8;">Syncing Assets...</p>`;
+  const libraryPage = document.getElementById("user-library-grid");
+  if (libraryPage) {
+    onAuthStateChanged(auth, async () => {
+      await loadLibrary(products);
+    });
+  }
+}
 
-	try {
-		const res = await fetch("/products.json", { cache: "no-store" });
-		if (!res.ok) throw new Error(`products.json fetch failed: ${res.status}`);
-		const syncedProductsRaw = await res.json();
-		const syncedProducts = (syncedProductsRaw || []).map(normalizeProduct);
-
-		const q = query(collection(db, "orders"), where("uid", "==", identity));
-		const querySnapshot = await getDocs(q);
-
-		let libraryHTML = "";
-
-		querySnapshot.forEach((orderDoc) => {
-			const data = orderDoc.data();
-
-			if (data.status === "completed" || data.status === "paid") {
-				(data.items || []).forEach((item) => {
-					const itemId = String(item.id ?? "").trim();
-					const fresh = syncedProducts.find((p) => p.id === itemId || p.gmc_id === itemId);
-
-					libraryHTML += `
-            <div class="library-card" style="background:var(--glass); border:1px solid var(--border); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; width:100%; max-width:600px;">
-              <div style="color:white; font-weight:800;">${item.name || fresh?.name || "Unlocked Vault"}</div>
-              <a href="${fresh?.drivelink || "#"}" target="_blank" rel="noopener" style="padding:8px 15px; background:var(--success); border-radius:8px; color:white; text-decoration:none; font-size:0.85rem; font-weight:600;">Download</a>
-            </div>`;
-				});
-			}
-		});
-
-		grid.innerHTML =
-			libraryHTML ||
-			`<p style="text-align:center; color:#94a3b8; padding:40px;">No vaults unlocked yet.</p>`;
-	} catch (e) {
-		console.error("Library Sync Error:", e);
-		grid.innerHTML = `<p style="color:#ef4444; text-align:center;">Sync failed. Please refresh.</p>`;
-	}
-};
-
-// ---------------------------
-// 5) ROUTER
-// ---------------------------
-window.changePage = (id, el) => {
-	const target = document.getElementById(id);
-	if (!target) return;
-
-	document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
-	target.classList.add("active");
-
-	document.querySelectorAll(".nav-item").forEach((i) => i.classList.remove("active"));
-	if (el) el.classList.add("active");
-
-	if (id === "browse") {
-		if (!ensurePapaReady()) return;
-
-		window.Papa.parse("/products.csv", {
-			download: true,
-			header: true,
-			skipEmptyLines: true,
-			complete: (results) => {
-				const rows = (results?.data || []).filter((r) => r && r.id);
-				renderProducts(rows);
-			},
-			error: (err) => console.error("CSV parse error:", err),
-		});
-	}
-
-	if (id === "library") window.loadUserLibrary();
-
-	window.location.hash = id;
-};
-
-// ---------------------------
-// 6) INITIALIZATION
-// ---------------------------
 document.addEventListener("DOMContentLoaded", () => {
-	if (window.location.hash) {
-		const pageId = window.location.hash.substring(1);
-		const navEl = document.querySelector(`[onclick*="${pageId}"]`);
-		window.changePage(pageId, navEl);
-		return;
-	}
-
-	const productList = document.getElementById("product-list");
-	if (productList) {
-		window.changePage("browse", document.querySelector(`[onclick*="browse"]`));
-	}
+  boot().catch((e) => console.error(e));
 });
