@@ -20,7 +20,7 @@
       "@type": "Offer",
       "url": "https://promptvaultusa.shop/vault/copywriting-sales-pages.html",
       "priceCurrency": "USD",
-      "price": "15.00",
+      "price": "15",
       "availability": "https://schema.org/InStock",
       "seller": { "@type": "Organization", "name": "PromptVault USA" }
     }
@@ -30,58 +30,77 @@
   <link rel="stylesheet" href="/css/style.css">
   
   <style>
-    :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; }
+    :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; --secondary: #8b5cf6; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #e6f1ff; padding: 20px; }
     .container { max-width: 800px; margin: 40px auto; }
     .glass { background: rgba(17, 34, 64, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 40px; }
+    
     .price-wrap { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
     .old-price { text-decoration: line-through; color: #475569; font-size: 1.6rem; display: none; }
     .current-price { font-size: 3.2rem; font-weight: 800; color: var(--accent-teal); }
-    #single-paypal-button { margin-top: 20px; max-width: 400px; min-height: 150px; }
-    .btn-main { background:rgba(255,255,255,0.03); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); width:100%; margin-top:12px; padding:15px; border-radius:12px; cursor:pointer; font-weight:700; }
+    
+    .payment-zone { margin: 30px 0; max-width: 450px; min-height: 150px; }
+    
+    /* Legal Links Styling */
+    .legal-tabs { display: flex; gap: 20px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); justify-content: center; }
+    .legal-tabs a { color: #94a3b8; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: color 0.2s; }
+    .legal-tabs a:hover { color: var(--accent-teal); }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="glass">
-      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase;">← Back to Vaults</a>
+      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing: 1px;">← Back to Vaults</a>
       
-      <h1 style="margin-top:20px; color:var(--accent-teal);">Copywriting Sales Pages</h1>
-      <div style="margin: 20px 0; border-radius: 12px; overflow: hidden; background: #000;">
-        <img src="/assets/images/niches/niche_006.jpg" alt="Copywriting Sales Pages" style="width: 100%;" onerror="this.src='/logo.png'">
+      <h1 style="margin-top:20px; color:white; letter-spacing: -1px;">Copywriting Sales Pages</h1>
+      
+      <div style="margin: 25px 0; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08);">
+        <img src="/assets/images/niches/niche_006.jpg" alt="Copywriting Sales Pages" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
       </div>
       
-      <p style="color: #94a3b8; line-height: 1.6;">Prompts to create persuasive landing pages and sales funnels that convert visitors to customers.</p>
+      <p style="color: #94a3b8; line-height: 1.6; margin-bottom: 25px; font-size: 1.05rem;">Prompts to create persuasive landing pages and sales funnels that convert visitors to customers.</p>
       
       <div class="price-wrap">
         <span class="old-price" id="msrp-display"></span>
         <span class="current-price" id="price-display">$0.00</span>
       </div>
       
-      <div id="single-paypal-button"></div>
-      
-      <button onclick="window.addToCart(encodeURIComponent(JSON.stringify({id: 'niche_006', name: 'Copywriting Sales Pages', price: checkoutPrice})))" class="btn-main">
-        + Add to Cart
-      </button>
+      <div class="payment-zone">
+        <div id="single-paypal-button" data-id="niche_006" data-price="9.00"></div>
+      </div>
 
-      <div style="margin-top:40px; font-size:0.7rem; color:#475569; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
-        SKU: niche_006 | Secure PayPal Checkout | Instant Delivery
+      <div class="legal-tabs">
+        <a href="/legal.html#refunds">Refund Policy</a>
+        <a href="/legal.html#terms">Terms of Service</a>
+        <a href="/legal.html#privacy">Privacy Policy</a>
+      </div>
+      
+      <div style="margin-top:40px; font-size:0.7rem; color:#475569; text-align: center; opacity: 0.6;">
+        SKU: niche_006 | GMC ID: PV006 | Instant Delivery via Secure Intelligence Vault
       </div>
     </div>
   </div>
 
-  <script src="https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AWpMh-Ki1opxnGQEIw9oEhJCsGnN8ol5QxJ1SJSdR39y2nTu0zciYa6UftX0-DgPz6A0iTZ_x0g4d6Nr&currency=USD"></script>
   
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    window.checkoutPrice = parseFloat(urlParams.get('price')) || 9.00;
-    const msrp = parseFloat(urlParams.get('msrp')) || 0;
+    window.checkoutPrice = parseFloat(urlParams.get('price')) || parseFloat("15") || 9.00;
+    const msrp = parseFloat(urlParams.get('msrp')) || parseFloat("15.00") || 0;
 
     document.getElementById('price-display').textContent = `$${window.checkoutPrice.toFixed(2)}`;
     if (msrp > window.checkoutPrice) {
       const el = document.getElementById('msrp-display');
       el.textContent = `$${msrp.toFixed(2)}`;
       el.style.display = 'inline';
+    }
+
+    // Dynamic Schema Update for GMC Crawlers
+    const schemaScript = document.getElementById('gmc-schema');
+    if (schemaScript) {
+      const schema = JSON.parse(schemaScript.textContent);
+      schema.offers.price = window.checkoutPrice.toFixed(2);
+      schemaScript.textContent = JSON.stringify(schema);
     }
   </script>
 

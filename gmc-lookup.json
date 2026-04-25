@@ -1,71 +1,117 @@
 [
   {
-    "slug": "real-estate-lead-generation"
+    "id": "5080295845",
+    "slug": "real-estate-lead-generation",
+    "price": "9.00"
   },
   {
-    "slug": "freelancer-client-acquisition"
+    "id": "6510434386",
+    "slug": "freelancer-client-acquisition",
+    "price": "9.00"
   },
   {
-    "slug": "tiktok-affiliate-marketing"
+    "id": "PV003",
+    "slug": "tiktok-affiliate-marketing",
+    "price": "9.00"
   },
   {
-    "slug": "youtube-automation"
+    "id": "PV004",
+    "slug": "youtube-automation",
+    "price": "9.00"
   },
   {
-    "slug": "e-commerce-product-descriptions"
+    "id": "PV005",
+    "slug": "e-commerce-product-descriptions",
+    "price": "9.00"
   },
   {
-    "slug": "copywriting-sales-pages"
+    "id": "PV006",
+    "slug": "copywriting-sales-pages",
+    "price": "9.00"
   },
   {
-    "slug": "email-marketing-campaigns"
+    "id": "PV007",
+    "slug": "email-marketing-campaigns",
+    "price": "9.00"
   },
   {
-    "slug": "instagram-growth"
+    "id": "PV008",
+    "slug": "instagram-growth",
+    "price": "9.00"
   },
   {
-    "slug": "facebook-ads-copy"
+    "id": "PV009",
+    "slug": "facebook-ads-copy",
+    "price": "9.00"
   },
   {
-    "slug": "personal-branding"
+    "id": "PV010",
+    "slug": "personal-branding",
+    "price": "9.00"
   },
   {
-    "slug": "resume-job-applications"
+    "id": "PV011",
+    "slug": "resume-job-applications",
+    "price": "9.00"
   },
   {
-    "slug": "startup-pitch-decks"
+    "id": "PV012",
+    "slug": "startup-pitch-decks",
+    "price": "9.00"
   },
   {
-    "slug": "blog-content-creation"
+    "id": "PV013",
+    "slug": "blog-content-creation",
+    "price": "9.00"
   },
   {
-    "slug": "seo-optimization"
+    "id": "PV014",
+    "slug": "seo-optimization",
+    "price": "9.00"
   },
   {
-    "slug": "podcast-scripts"
+    "id": "PV015",
+    "slug": "podcast-scripts",
+    "price": "9.00"
   },
   {
-    "slug": "online-course-creation"
+    "id": "PV016",
+    "slug": "online-course-creation",
+    "price": "9.00"
   },
   {
-    "slug": "digital-product-sales"
+    "id": "PV017",
+    "slug": "digital-product-sales",
+    "price": "9.00"
   },
   {
-    "slug": "ai-art-generation"
+    "id": "PV018",
+    "slug": "ai-art-generation",
+    "price": "9.00"
   },
   {
-    "slug": "midjourney-prompt-pack"
+    "id": "PV019",
+    "slug": "midjourney-prompt-pack",
+    "price": "9.00"
   },
   {
-    "slug": "chatbot-scripts"
+    "id": "PV020",
+    "slug": "chatbot-scripts",
+    "price": "9.00"
   },
   {
-    "slug": "customer-support-replies"
+    "id": "PV021",
+    "slug": "customer-support-replies",
+    "price": "9.00"
   },
   {
-    "slug": "cold-email-outreach"
+    "id": "PV022",
+    "slug": "cold-email-outreach",
+    "price": "9.00"
   },
   {
-    "slug": "linkedin-networking"
+    "id": "PV023",
+    "slug": "linkedin-networking",
+    "price": "9.00"
   }
 ]
