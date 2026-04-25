@@ -1,163 +1,140 @@
-[
-  {
-    "id": "5080295845",
+{
+  "5080295845": {
+    "id": "niche_001",
     "slug": "real-estate-lead-generation",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Real Estate Lead Generation",
+    "url": "https://promptvaultusa.shop/vault/real-estate-lead-generation.html"
   },
-  {
-    "id": "6510434386",
+  "6510434386": {
+    "id": "niche_002",
     "slug": "freelancer-client-acquisition",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Freelancer Client Acquisition",
+    "url": "https://promptvaultusa.shop/vault/freelancer-client-acquisition.html"
   },
-  {
-    "id": "PV003",
+  "PV003": {
+    "id": "niche_003",
     "slug": "tiktok-affiliate-marketing",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "TikTok Affiliate Marketing",
+    "url": "https://promptvaultusa.shop/vault/tiktok-affiliate-marketing.html"
   },
-  {
-    "id": "PV004",
+  "PV004": {
+    "id": "niche_004",
     "slug": "youtube-automation",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "YouTube Automation",
+    "url": "https://promptvaultusa.shop/vault/youtube-automation.html"
   },
-  {
-    "id": "PV005",
+  "PV005": {
+    "id": "niche_005",
     "slug": "e-commerce-product-descriptions",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "E-commerce Product Descriptions",
+    "url": "https://promptvaultusa.shop/vault/e-commerce-product-descriptions.html"
   },
-  {
-    "id": "PV006",
+  "PV006": {
+    "id": "niche_006",
     "slug": "copywriting-sales-pages",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Copywriting Sales Pages",
+    "url": "https://promptvaultusa.shop/vault/copywriting-sales-pages.html"
   },
-  {
-    "id": "PV007",
+  "PV007": {
+    "id": "niche_007",
     "slug": "email-marketing-campaigns",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Email Marketing Campaigns",
+    "url": "https://promptvaultusa.shop/vault/email-marketing-campaigns.html"
   },
-  {
-    "id": "PV008",
+  "PV008": {
+    "id": "niche_008",
     "slug": "instagram-growth",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Instagram Growth",
+    "url": "https://promptvaultusa.shop/vault/instagram-growth.html"
   },
-  {
-    "id": "PV009",
+  "PV009": {
+    "id": "niche_009",
     "slug": "facebook-ads-copy",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Facebook Ads Copy",
+    "url": "https://promptvaultusa.shop/vault/facebook-ads-copy.html"
   },
-  {
-    "id": "PV010",
+  "PV010": {
+    "id": "niche_010",
     "slug": "personal-branding",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Personal Branding",
+    "url": "https://promptvaultusa.shop/vault/personal-branding.html"
   },
-  {
-    "id": "PV011",
+  "PV011": {
+    "id": "niche_011",
     "slug": "resume-job-applications",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Resume & Job Applications",
+    "url": "https://promptvaultusa.shop/vault/resume-job-applications.html"
   },
-  {
-    "id": "PV012",
+  "PV012": {
+    "id": "niche_012",
     "slug": "startup-pitch-decks",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Startup Pitch Decks",
+    "url": "https://promptvaultusa.shop/vault/startup-pitch-decks.html"
   },
-  {
-    "id": "PV013",
+  "PV013": {
+    "id": "niche_013",
     "slug": "blog-content-creation",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Blog Content Creation",
+    "url": "https://promptvaultusa.shop/vault/blog-content-creation.html"
   },
-  {
-    "id": "PV014",
+  "PV014": {
+    "id": "niche_014",
     "slug": "seo-optimization",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "SEO Optimization",
+    "url": "https://promptvaultusa.shop/vault/seo-optimization.html"
   },
-  {
-    "id": "PV015",
+  "PV015": {
+    "id": "niche_015",
     "slug": "podcast-scripts",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Podcast Scripts",
+    "url": "https://promptvaultusa.shop/vault/podcast-scripts.html"
   },
-  {
-    "id": "PV016",
+  "PV016": {
+    "id": "niche_016",
     "slug": "online-course-creation",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Online Course Creation",
+    "url": "https://promptvaultusa.shop/vault/online-course-creation.html"
   },
-  {
-    "id": "PV017",
+  "PV017": {
+    "id": "niche_017",
     "slug": "digital-product-sales",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Digital Product Sales",
+    "url": "https://promptvaultusa.shop/vault/digital-product-sales.html"
   },
-  {
-    "id": "PV018",
+  "PV018": {
+    "id": "niche_018",
     "slug": "ai-art-generation",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "AI Art Generation",
+    "url": "https://promptvaultusa.shop/vault/ai-art-generation.html"
   },
-  {
-    "id": "PV019",
+  "PV019": {
+    "id": "niche_019",
     "slug": "midjourney-prompt-pack",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Midjourney Prompt Pack",
+    "url": "https://promptvaultusa.shop/vault/midjourney-prompt-pack.html"
   },
-  {
-    "id": "PV020",
+  "PV020": {
+    "id": "niche_020",
     "slug": "chatbot-scripts",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Chatbot Scripts",
+    "url": "https://promptvaultusa.shop/vault/chatbot-scripts.html"
   },
-  {
-    "id": "PV021",
+  "PV021": {
+    "id": "niche_021",
     "slug": "customer-support-replies",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Customer Support Replies",
+    "url": "https://promptvaultusa.shop/vault/customer-support-replies.html"
   },
-  {
-    "id": "PV022",
+  "PV022": {
+    "id": "niche_022",
     "slug": "cold-email-outreach",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "Cold Email Outreach",
+    "url": "https://promptvaultusa.shop/vault/cold-email-outreach.html"
   },
-  {
-    "id": "PV023",
+  "PV023": {
+    "id": "niche_023",
     "slug": "linkedin-networking",
-    "price": "9.00",
-    "msrp": "15.00",
-    "hasSale": true
+    "title": "LinkedIn Networking",
+    "url": "https://promptvaultusa.shop/vault/linkedin-networking.html"
   }
-]
+}

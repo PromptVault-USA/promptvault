@@ -1,108 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NAME | PromptVault USA</title>
-  <meta name="description" content="DESC" />
-
-  <script type="application/ld+json" id="gmc-schema">
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "NAME",
-    "description": "DESC",
-    "image": "https://promptvaultusa.shopIMG",
-    "sku": "ID",
-    "mpn": "GMC_ID",
-    "brand": { "@type": "Brand", "name": "PromptVault USA" },
-    "offers": {
-      "@type": "Offer",
-      "url": "https://promptvaultusa.shop/vault/SLUG.html",
-      "priceCurrency": "USD",
-      "price": "PRICE",
-      "availability": "https://schema.org/InStock",
-      "seller": { "@type": "Organization", "name": "PromptVault USA" }
-    }
-  }
-  </script>
-
-  <link rel="stylesheet" href="/css/style.css" />
-
-  <style>
-    :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; --secondary: #8b5cf6; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #e6f1ff; padding: 20px; }
-    .container { max-width: 800px; margin: 40px auto; }
-    .glass { background: rgba(17, 34, 64, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 40px; }
-    .price-wrap { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
-    .old-price { text-decoration: line-through; color: #475569; font-size: 1.6rem; display: none; }
-    .current-price { font-size: 3.2rem; font-weight: 800; color: var(--accent-teal); }
-    .payment-zone { margin: 30px 0; max-width: 450px; min-height: 150px; }
-    .legal-tabs { display: flex; gap: 20px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); justify-content: center; }
-    .legal-tabs a { color: #94a3b8; text-decoration: none; font-size: 0.75rem; font-weight: 600; transition: color 0.2s; }
-    .legal-tabs a:hover { color: var(--accent-teal); }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Resume &amp; Job Applications | PromptVault USA</title>
+  <meta name="description" content="Resume writing, cover letters, and interview preparation prompts for top-tier roles.">
+  <link rel="canonical" href="https://promptvaultusa.shop/vault/resume-job-applications.html">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-  <div class="container">
-    <div class="glass">
-      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;">← Back to Vaults</a>
-
-      <h1 style="margin-top:20px; color:white; letter-spacing:-1px;">NAME</h1>
-
-      <div style="margin: 25px 0; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08);">
-        <img src="IMG" alt="NAME" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
+  <main style="max-width:980px;margin:0 auto;padding:24px;">
+    <a href="https://promptvaultusa.shop/" style="text-decoration:none;">Back to shop</a>
+    <h1 style="margin-top:16px;">Resume &amp; Job Applications</h1>
+    <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-top:20px;">
+      <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;">
+        <img src="/assets/images/niches/niche_011.jpg" alt="Resume &amp; Job Applications" style="width:100%;display:block;" onerror="this.src='/logo.png'">
       </div>
-
-      <p style="color:#94a3b8; line-height:1.6; margin-bottom:25px; font-size:1.05rem;">DESC</p>
-
-      <div class="price-wrap">
-        <span class="old-price" id="msrp-display"></span>
-        <span class="current-price" id="price-display">$0.00</span>
-      </div>
-
-      <div class="payment-zone">
-        PAYPAL_HOOK
-      </div>
-
-      <div class="legal-tabs">
-        <a href="/legal.html#refunds">Refund Policy</a>
-        <a href="/legal.html#terms">Terms of Service</a>
-        <a href="/legal.html#privacy">Privacy Policy</a>
-      </div>
-
-      <div style="margin-top:40px; font-size:0.7rem; color:#475569; text-align:center; opacity:0.6;">
-        SKU: ID | GMC ID: GMC_ID | Instant Delivery via Secure Intelligence Vault
+      <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:18px;">
+        <p>Resume writing, cover letters, and interview preparation prompts for top-tier roles.</p>
+        <div style="display:flex;gap:10px;align-items:baseline;margin:14px 0;">
+          <span id="oldprice" style="text-decoration:line-through; opacity:0.7;">$15.00</span> <span id="price">$9.00</span> <span id="msrp">$15.00</span>
+        </div>
+        <div id="single-paypal-button" data-product-id="niche_011" data-product-slug="resume-job-applications" data-product-title="Resume &amp; Job Applications" data-product-price="9.00"></div>
+        <div style="margin-top:12px;font-size:0.9rem;opacity:0.8;">
+          After payment, your pack unlocks in My Library on this device.
+        </div>
       </div>
     </div>
-  </div>
-
-  <script src="https://www.paypal.com/sdk/js?client-id=AWpMh-Ki1opxnGQEIw9oEhJCsGnN8ol5QxJ1SJSdR39y2nTu0zciYa6UftX0-DgPz6A0iTZ_x0g4d6Nr&currency=USD"></script>
-
-  <script>
-    const msrp = parseFloat("MSRP") || 0;
-    const sale = parseFloat("SALE_PRICE") || 0;
-
-    const computed = (sale > 0 && msrp > sale) ? sale : (parseFloat("PRICE") || msrp);
-    window.checkoutPrice = computed;
-
-    document.getElementById('price-display').textContent = `$${window.checkoutPrice.toFixed(2)}`;
-
-    if (msrp > window.checkoutPrice) {
-      const el = document.getElementById('msrp-display');
-      el.textContent = `$${msrp.toFixed(2)}`;
-      el.style.display = 'inline';
-    }
-
-    const schemaScript = document.getElementById('gmc-schema');
-    if (schemaScript) {
-      const schema = JSON.parse(schemaScript.textContent);
-      schema.offers.price = window.checkoutPrice.toFixed(2);
-      schemaScript.textContent = JSON.stringify(schema);
-    }
-  </script>
-
+  </main>
   <script type="module" src="/app.js"></script>
 </body>
 </html>
