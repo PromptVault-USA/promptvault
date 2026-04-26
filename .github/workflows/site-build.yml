@@ -34,13 +34,13 @@ jobs:
           rm -rf dist
           mkdir -p dist
 
-          node scripts/generate-products-json.js
+          node scripts/generate-products-json.cjs
           node scripts/build.js
 
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
           # Fix markdown-links-in-HTML + GitHub project-pages basepath
-          node scripts/pages-postprocess.js dist $ github.event.repository.name 
+          node scripts/pages-postprocess.cjs dist $ github.event.repository.name 
 
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
