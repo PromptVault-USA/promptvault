@@ -1,36 +1,47 @@
 name: Build site
+
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
   group: "site-build"
   cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+
       - name: Install deps
-        run: npm ci
+        run: npm install
+
       - name: Build dist
         run: |
           set -euxo pipefail
           rm -rf dist
           mkdir -p dist
+
           node scripts/generate-products-json.js
           node scripts/build.js
+
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
+
           # Fix markdown-links-in-HTML + GitHub project-pages basepath
-          node scripts/pages-postprocess.js dist ${{ github.event.repository.name }}
+          node scripts/pages-postprocess.js dist $ github.event.repository.name 
+
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
         with:
