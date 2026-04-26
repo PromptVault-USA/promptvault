@@ -34,9 +34,9 @@ jobs:
           rm -rf dist
           mkdir -p dist
 
-          node scripts/generate-products-json.cjs
-          node scripts/build.cjs
-          node scripts/upload.cjs
+          node scripts/generate-products-json.mjs
+          node scripts/build.mjs
+          node scripts/upload.mjs
 
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
