@@ -24,9 +24,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       - name: Install deps
-        run: npm install
+        run: npm ci
 
       - name: Build dist
         run: |
@@ -35,12 +36,13 @@ jobs:
           mkdir -p dist
 
           node scripts/generate-products-json.js
-          node scripts/build.mjs
+          node scripts/build.js
           node scripts/upload.js
 
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
           # Fix markdown-links-in-HTML + GitHub project-pages basepath
+          # IMPORTANT: GitHub Actions expressions must be exactly $ ...  (no backslash before $)
           node scripts/pages-postprocess.cjs dist $ github.event.repository.name 
 
       - name: Upload artifact for Pages
