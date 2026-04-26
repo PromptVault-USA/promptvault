@@ -35,7 +35,7 @@ jobs:
           mkdir -p dist
 
           node scripts/generate-products-json.js
-          node scripts/build.js
+          node scripts/build.mjs
           node scripts/upload.js
 
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
