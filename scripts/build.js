@@ -1,7 +1,9 @@
-// /scripts/build.js
-import fs from "node:fs";
-import path from "node:path";
-import Papa from "papaparse";
+// /scripts/build.js (CommonJS)
+// Node 20 compatible when package.json does NOT have "type": "module"
+
+const fs = require("node:fs");
+const path = require("node:path");
+const Papa = require("papaparse");
 
 const ROOT = process.cwd();
 const CSV_PATH = path.join(ROOT, "products.csv");
@@ -10,6 +12,7 @@ const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
 // PayPal SDK must be included on every generated vault page (Option A)
+// IMPORTANT: this must be a plain URL, not a Markdown link.
 const PAYPAL_SDK_SRC =
   "https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture";
 
@@ -44,7 +47,7 @@ function escapeHtml(s) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("'", "&#39;");
 }
 
 function normalizeImg(img) {
@@ -64,18 +67,18 @@ function validateHeaders(fields) {
 }
 
 function normalizeRow(r, i) {
-  const id = String(r.id ?? "").trim();
-  const slug = String(r.slug ?? "").trim();
-  const title = String(r.name ?? "").trim();
-  const desc = String(r.desc ?? "").trim();
+  const id = String(r?.id ?? "").trim();
+  const slug = String(r?.slug ?? "").trim();
+  const title = String(r?.name ?? "").trim();
+  const desc = String(r?.desc ?? "").trim();
 
-  const price = toNumber(r.price);
-  const salePriceRaw = String(r.sale_price ?? "").trim();
+  const price = toNumber(r?.price);
+  const salePriceRaw = String(r?.sale_price ?? "").trim();
   const sale_price = salePriceRaw === "" ? NaN : toNumber(salePriceRaw);
 
-  const img = normalizeImg(r.img);
-  const drivelink = String(r.drivelink ?? "").trim();
-  const gmc_id = String(r.gmc_id ?? "").trim();
+  const img = normalizeImg(r?.img);
+  const drivelink = String(r?.drivelink ?? "").trim();
+  const gmc_id = String(r?.gmc_id ?? "").trim();
 
   if (!id) fail(`Row ${i + 2}: missing id`);
   if (!slug) fail(`Row ${i + 2}: missing slug`);
@@ -125,8 +128,7 @@ function renderProductPage(p) {
     data-product-title="${escapeHtml(p.title)}"
     data-product-price="${escapeHtml(final)}"></div>`;
 
-  // IMPORTANT: canonical must be plain text inside the generated HTML.
-  // Do NOT use {{ ... }} here. Those braces break the Node script parsing if copied into JS incorrectly.
+  // IMPORTANT: canonical must be a plain URL (not wrapped in   and not Markdown).
   const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`;
 
   return `<!doctype html>
@@ -190,9 +192,11 @@ function main() {
     fail(`CSV parse error: ${e.message || JSON.stringify(e)}`);
   }
 
-  validateHeaders(parsed.meta?.fields);
+  validateHeaders(parsed.meta && parsed.meta.fields ? parsed.meta.fields : null);
 
-  const rows = (parsed.data || []).filter((r) => r && String(r.id ?? "").trim() !== "");
+  const rows = (parsed.data || []).filter(
+    (r) => r && String(r.id ?? "").trim() !== "",
+  );
   if (!rows.length) fail("products.csv has zero products");
 
   const products = rows.map((r, i) => normalizeRow(r, i));
