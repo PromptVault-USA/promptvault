@@ -29,15 +29,17 @@ function normalizeImg(img) {
   return `/${raw}`;
 }
 
-function finalPrice(p) {
-  const price = toNumber(p.price);
-  const sale =
-    p.sale_price === null || p.sale_price === undefined || p.sale_price === ""
-      ? NaN
-      : toNumber(p.sale_price);
+function hasSale(p) {
+  return (
+    p.sale_price !== null &&
+    Number.isFinite(p.sale_price) &&
+    p.sale_price > 0 &&
+    p.sale_price < p.price
+  );
+}
 
-  if (Number.isFinite(sale) && sale > 0 && sale < price) return sale;
-  return price;
+function finalPrice(p) {
+  return hasSale(p) ? p.sale_price : p.price;
 }
 
 function ensurePayPalReady() {
@@ -80,10 +82,7 @@ function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  const q = (document.getElementById("vault-search")?.value || "")
-    .trim()
-    .toLowerCase();
-
+  const q = (document.getElementById("vault-search")?.value || "").trim().toLowerCase();
   const filtered = q
     ? products.filter(
         (p) =>
@@ -96,13 +95,17 @@ function renderGrid(products) {
   list.innerHTML = filtered
     .map((p) => {
       const fp = finalPrice(p);
-      const hasSale = p.sale_price !== null && p.sale_price < p.price;
+      const sale = hasSale(p);
 
-      const old = hasSale
+      const saleBadge = sale
+        ? `<div style="display:inline-block;background:#fbbf24;color:#0a0e27;font-weight:900;font-size:0.7rem;letter-spacing:1px;padding:6px 10px;border-radius:999px;margin-bottom:8px;">SALE</div>`
+        : "";
+
+      const old = sale
         ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>`
         : "";
 
-      const price = `<span style="font-weight:800;">$${fp.toFixed(2)}</span>`;
+      const price = `<span style="font-weight:900;">$${fp.toFixed(2)}</span>`;
       const buttonId = `paypal-button-${p.id}`;
 
       return `
@@ -114,9 +117,12 @@ function renderGrid(products) {
     <div style="margin-top:10px;font-weight:800;">${p.title}</div>
   </a>
 
-  <div style="margin:10px 0;display:flex;gap:10px;align-items:baseline;">
-    ${old}
-    ${price}
+  <div style="margin:10px 0;">
+    ${saleBadge}
+    <div style="display:flex;gap:10px;align-items:baseline;">
+      ${old}
+      ${price}
+    </div>
   </div>
 
   <div
@@ -228,7 +234,12 @@ async function loadLibrary(products) {
     html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
 }
 
-// ROUTER: required by index.html nav onclick handlers
+window.filterProducts = (text) => {
+  const el = document.getElementById("vault-search");
+  if (el) el.value = String(text ?? "");
+  renderGrid(PRODUCTS_CACHE);
+};
+
 window.changePage = async (id, el) => {
   const target = document.getElementById(id);
   if (!target) return;
@@ -241,41 +252,30 @@ window.changePage = async (id, el) => {
 
   window.location.hash = id;
 
-  if (id === "browse") {
-    renderGrid(PRODUCTS_CACHE);
-  }
-
-  if (id === "library") {
-    await loadLibrary(PRODUCTS_CACHE);
-  }
+  if (id === "browse") renderGrid(PRODUCTS_CACHE);
+  if (id === "library") await loadLibrary(PRODUCTS_CACHE);
 };
 
 async function boot() {
   PRODUCTS_CACHE = await fetchProducts();
 
   const search = document.getElementById("vault-search");
-  if (search) {
-    search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
-  }
+  if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
 
-  // If hash is present, route to it, else default behavior stays as-is.
   if (window.location.hash) {
     const pageId = window.location.hash.substring(1);
     const navEl = document.querySelector(`.nav-item[onclick*="'${pageId}'"]`);
     window.changePage(pageId, navEl);
   }
 
-  // Render grid if present
   renderGrid(PRODUCTS_CACHE);
 
-  // Single product page support
   const single = document.getElementById("single-paypal-button");
   if (single) {
     single.setAttribute("data-rendered", "0");
     if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
   }
 
-  // Keep library refreshed when auth becomes available
   const libraryGrid = document.getElementById("user-library-grid");
   if (libraryGrid) {
     onAuthStateChanged(auth, async () => {
