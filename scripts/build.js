@@ -9,11 +9,9 @@ const VAULT_DIR = path.join(ROOT, "vault");
 const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
-// PayPal SDK must be included on every generated vault page (Option A)
 const PAYPAL_SDK_SRC =
   "https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture";
 
-// CSV headers must match your repo CSV exactly
 const REQUIRED_HEADERS = [
   "gmc_id",
   "id",
@@ -66,7 +64,7 @@ function validateHeaders(fields) {
 function normalizeRow(r, i) {
   const id = String(r.id ?? "").trim();
   const slug = String(r.slug ?? "").trim();
-  const title = String(r.name ?? "").trim(); // CSV uses 'name'
+  const title = String(r.name ?? "").trim();
   const desc = String(r.desc ?? "").trim();
 
   const price = toNumber(r.price);
@@ -87,15 +85,15 @@ function normalizeRow(r, i) {
   if (!drivelink) fail(`Row ${i + 2}: missing drivelink`);
   if (!gmc_id) fail(`Row ${i + 2}: missing gmc_id`);
 
-  const finalPrice =
-    Number.isFinite(sale_price) && sale_price > 0 && sale_price < price ? sale_price : price;
+  const hasSale = Number.isFinite(sale_price) && sale_price > 0 && sale_price < price;
+  const finalPrice = hasSale ? sale_price : price;
 
   return {
     id,
     slug,
     title,
     price,
-    sale_price: Number.isFinite(sale_price) ? sale_price : null,
+    sale_price: hasSale ? sale_price : null,
     finalPrice,
     img,
     drivelink,
@@ -107,16 +105,18 @@ function normalizeRow(r, i) {
 function renderProductPage(p) {
   const msrp = p.price.toFixed(2);
   const final = p.finalPrice.toFixed(2);
-
   const hasSale = p.sale_price !== null && p.sale_price < p.price;
+
+  const saleBadge = hasSale
+    ? `<span style="display:inline-block;background:#fbbf24;color:#0a0e27;font-weight:900;font-size:0.75rem;letter-spacing:1px;padding:6px 10px;border-radius:999px;">SALE</span>`
+    : "";
+
   const oldPriceHtml = hasSale
     ? `<span id="oldprice" style="text-decoration:line-through; opacity:0.7;">$${escapeHtml(msrp)}</span>`
-    : `<span id="oldprice"></span>`;
+    : "";
 
-  const msrpHtml = `<span id="msrp">$${escapeHtml(msrp)}</span>`;
-  const priceHtml = `<span id="price">$${escapeHtml(final)}</span>`;
+  const priceHtml = `<span id="price" style="font-weight:900;font-size:1.25rem;">$${escapeHtml(final)}</span>`;
 
-  // app.js will render a PayPal button into this container
   const paypalHook = `<div id="single-paypal-button"
     data-product-id="${escapeHtml(p.id)}"
     data-product-slug="${escapeHtml(p.slug)}"
@@ -130,12 +130,12 @@ function renderProductPage(p) {
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>${escapeHtml(p.title)} | PromptVault USA</title>
   <meta name="description" content="${escapeHtml(p.desc)}">
-  <link rel="canonical" href="https://promptvaultusa.shop/vault/${escapeHtml(p.slug)}.html">
+  <link rel="canonical" href="{{https://promptvaultusa.shop/vault/${escapeHtml(p.slug}})}.html">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <main style="max-width:980px;margin:0 auto;padding:24px;">
-    <a href="https://promptvaultusa.shop/" style="text-decoration:none;">Back to shop</a>
+    <a href="https://promptvaultusa.shop/#browse" style="text-decoration:none;">Back to shop</a>
     <h1 style="margin-top:16px;">${escapeHtml(p.title)}</h1>
 
     <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-top:20px;">
@@ -146,10 +146,12 @@ function renderProductPage(p) {
       <div style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:18px;">
         <p>${escapeHtml(p.desc)}</p>
 
-        <div style="display:flex;gap:10px;align-items:baseline;margin:14px 0;">
-          ${oldPriceHtml}
-          ${priceHtml}
-          ${msrpHtml}
+        <div style="display:flex;gap:10px;align-items:center;margin:14px 0;">
+          ${saleBadge}
+          <div style="display:flex;gap:10px;align-items:baseline;">
+            ${oldPriceHtml}
+            ${priceHtml}
+          </div>
         </div>
 
         ${paypalHook}
@@ -202,7 +204,6 @@ function main() {
     fs.writeFileSync(outPath, renderProductPage(p), "utf8");
   }
 
-  // products.json for app.js
   const productsJson = products.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -216,14 +217,13 @@ function main() {
   }));
   fs.writeFileSync(PRODUCTS_JSON_PATH, JSON.stringify(productsJson, null, 2) + "\n", "utf8");
 
-  // gmc-lookup.json
   const gmcLookup = {};
   for (const p of products) {
     gmcLookup[p.gmc_id] = {
       id: p.id,
       slug: p.slug,
       title: p.title,
-      url: `https://promptvaultusa.shop/vault/${p.slug}.html`,
+      url: `{{https://promptvaultusa.shop/vault/${p.slug}}}.html`,
     };
   }
   fs.writeFileSync(GMC_LOOKUP_JSON_PATH, JSON.stringify(gmcLookup, null, 2) + "\n", "utf8");
