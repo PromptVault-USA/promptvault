@@ -76,10 +76,7 @@
     .page { display: none; width: 100%; opacity: 0; transition: opacity 0.4s ease; flex-direction: column; align-items: center; }
     .page.active { display: flex; opacity: 1; }
 
-    /* GAP FIX:
-       Do not force #home to display:flex always. Let .page/.page.active control visibility.
-       Only apply flex layout rules without overriding display.
-    */
+    /* GAP FIX: do not force #home to display:flex always */
     #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center; }
     #home.page.active { display: flex; }
 
