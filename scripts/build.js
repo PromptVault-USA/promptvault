@@ -128,7 +128,7 @@ function renderProductPage(p) {
     data-product-title="${escapeHtml(p.title)}"
     data-product-price="${escapeHtml(final)}"></div>`;
 
-  // IMPORTANT: canonical must be a plain URL (not wrapped in   and not Markdown).
+  // IMPORTANT: canonical must be a plain URL (no Markdown, no  )
   const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`;
 
   return `<!doctype html>
@@ -226,7 +226,11 @@ function main() {
     gmc_id: p.gmc_id,
     desc: p.desc,
   }));
-  fs.writeFileSync(PRODUCTS_JSON_PATH, JSON.stringify(productsJson, null, 2) + "\n", "utf8");
+  fs.writeFileSync(
+    PRODUCTS_JSON_PATH,
+    JSON.stringify(productsJson, null, 2) + "\n",
+    "utf8",
+  );
 
   // gmc-lookup.json
   const gmcLookup = {};
@@ -235,10 +239,14 @@ function main() {
       id: p.id,
       slug: p.slug,
       title: p.title,
-      url: `https://promptvaultusa.shop/vault/${p.slug}.html`,
+      url: `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`,
     };
   }
-  fs.writeFileSync(GMC_LOOKUP_JSON_PATH, JSON.stringify(gmcLookup, null, 2) + "\n", "utf8");
+  fs.writeFileSync(
+    GMC_LOOKUP_JSON_PATH,
+    JSON.stringify(gmcLookup, null, 2) + "\n",
+    "utf8",
+  );
 
   console.log(`[build] Wrote ${products.length} vault pages`);
   console.log("[build] Wrote products.json");
