@@ -1,16 +1,12 @@
-name: Build vault from products.csv
+name: Build site
 
 on:
   push:
     branches: ["main"]
-    paths:
-      - "products.csv"
-      - "scripts/build.js"
-      - "package.json"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: "site-build"
@@ -28,26 +24,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       - name: Install deps
-        run: npm install
+        run: npm ci
 
-      - name: Build
-        run: node scripts/build.js
-
-      - name: Commit generated outputs
+      - name: Build dist
         run: |
-          set -euo pipefail
+          set -euxo pipefail
+          rm -rf dist
+          mkdir -p dist
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          node scripts/generate-products-json.js
+          node scripts/build.js
 
-          git add products.json gmc-lookup.json vault/
+          cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
+          # Fix markdown-links-in-HTML + GitHub project-pages basepath
+          node scripts/pages-postprocess.js dist $ github.event.repository.name 
 
-          git commit -m "Build vault from products.csv"
-          git push
+      - name: Upload artifact for Pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: dist
+          if-no-files-found: error
