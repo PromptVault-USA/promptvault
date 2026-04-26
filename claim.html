@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Claim Purchase | PromptVault USA</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/png" href="/logo.png">
+</head>
+<body>
+  <main style="max-width:720px;margin:0 auto;padding:24px;">
+    <a href="https://promptvaultusa.shop/#library" style="text-decoration:none;">Back to Library</a>
+
+    <h1 style="margin-top:16px;">Claim Purchase</h1>
+    <p style="opacity:0.85;">
+      Use this if you paid but your Library is empty (new device, cleared browser, etc).
+    </p>
+
+    <div style="border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;margin-top:16px;">
+      <label style="display:block;font-weight:800;margin-bottom:6px;">PayPal Order ID</label>
+      <input id="orderId" type="text" placeholder="Example: 5O190127TN364715T"
+        style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(17,34,64,0.4);border:1px solid rgba(255,255,255,0.08);color:white;outline:none;">
+
+      <div style="height:14px;"></div>
+
+      <label style="display:block;font-weight:800;margin-bottom:6px;">Payer Email</label>
+      <input id="payerEmail" type="email" placeholder="The email you used in PayPal"
+        style="width:100%;padding:14px 16px;border-radius:12px;background:rgba(17,34,64,0.4);border:1px solid rgba(255,255,255,0.08);color:white;outline:none;">
+
+      <div style="height:16px;"></div>
+
+      <button id="claimBtn"
+        style="width:100%;padding:14px 16px;border-radius:12px;border:none;background:#10b981;color:#0a0e27;font-weight:900;font-size:1rem;cursor:pointer;">
+        Claim
+      </button>
+
+      <p id="status" style="margin-top:12px;opacity:0.85;"></p>
+    </div>
+
+    <p style="margin-top:16px;font-size:0.9rem;opacity:0.8;">
+      Tip: Your PayPal Order ID is shown in your PayPal receipt details.
+    </p>
+  </main>
+
+  <script type="module">
+    import { auth } from "/firebase-config.js";
+    import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const CLAIM_URL = "https://eosmqcmsx75r65q.m.pipedream.net/claim";
+
+    async function requireAnon() {
+      if (auth.currentUser) return auth.currentUser;
+      await signInAnonymously(auth);
+      return auth.currentUser;
+    }
+
+    const $orderId = document.getElementById("orderId");
+    const $payerEmail = document.getElementById("payerEmail");
+    const $btn = document.getElementById("claimBtn");
+    const $status = document.getElementById("status");
+
+    $btn.addEventListener("click", async () => {
+      try {
+        $status.textContent = "";
+        $btn.disabled = true;
+        $btn.textContent = "Claiming...";
+
+        const user = await requireAnon();
+        const orderId = String($orderId.value || "").trim();
+        const payerEmail = String($payerEmail.value || "").trim().toLowerCase();
+
+        if (!orderId) throw new Error("Enter your PayPal Order ID.");
+        if (!payerEmail) throw new Error("Enter the payer email used in PayPal.");
+
+        const res = await fetch(CLAIM_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId,
+            payerEmail,
+            firebaseUid: user.uid
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.error || `Claim failed (${res.status})`);
+        }
+
+        $status.textContent = "Claim successful. Redirecting to Library...";
+        window.location.href = "https://promptvaultusa.shop/#library";
+      } catch (e) {
+        $status.textContent = e.message || "Claim failed.";
+      } finally {
+        $btn.disabled = false;
+        $btn.textContent = "Claim";
+      }
+    });
+  </script>
+</body>
+</html>
