@@ -9,9 +9,11 @@ const VAULT_DIR = path.join(ROOT, "vault");
 const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
+// PayPal SDK must be included on every generated vault page (Option A)
 const PAYPAL_SDK_SRC =
   "https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture";
 
+// CSV headers must match your repo CSV exactly
 const REQUIRED_HEADERS = [
   "gmc_id",
   "id",
@@ -123,6 +125,10 @@ function renderProductPage(p) {
     data-product-title="${escapeHtml(p.title)}"
     data-product-price="${escapeHtml(final)}"></div>`;
 
+  // IMPORTANT: canonical must be plain text inside the generated HTML.
+  // Do NOT use {{ ... }} here. Those braces break the Node script parsing if copied into JS incorrectly.
+  const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`;
+
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -130,7 +136,7 @@ function renderProductPage(p) {
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>${escapeHtml(p.title)} | PromptVault USA</title>
   <meta name="description" content="${escapeHtml(p.desc)}">
-  <link rel="canonical" href="{{https://promptvaultusa.shop/vault/${escapeHtml(p.slug}})}.html">
+  <link rel="canonical" href="${canonicalUrl}">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -204,6 +210,7 @@ function main() {
     fs.writeFileSync(outPath, renderProductPage(p), "utf8");
   }
 
+  // products.json for app.js
   const productsJson = products.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -217,13 +224,14 @@ function main() {
   }));
   fs.writeFileSync(PRODUCTS_JSON_PATH, JSON.stringify(productsJson, null, 2) + "\n", "utf8");
 
+  // gmc-lookup.json
   const gmcLookup = {};
   for (const p of products) {
     gmcLookup[p.gmc_id] = {
       id: p.id,
       slug: p.slug,
       title: p.title,
-      url: `{{https://promptvaultusa.shop/vault/${p.slug}}}.html`,
+      url: `https://promptvaultusa.shop/vault/${p.slug}.html`,
     };
   }
   fs.writeFileSync(GMC_LOOKUP_JSON_PATH, JSON.stringify(gmcLookup, null, 2) + "\n", "utf8");
