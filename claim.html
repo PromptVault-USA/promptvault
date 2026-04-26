@@ -46,7 +46,7 @@
     import { auth } from "/firebase-config.js";
     import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const CLAIM_URL = "https://eosmqcmsx75r65q.m.pipedream.net/claim";
+    const CLAIM_URL = "https://eoghch09m1wrqm5.m.pipedream.net";
 
     async function requireAnon() {
       if (auth.currentUser) return auth.currentUser;
@@ -78,7 +78,7 @@
           body: JSON.stringify({
             orderId,
             payerEmail,
-            firebaseUid: user.uid,
+            firebaseUid: user.uid
           }),
         });
 
