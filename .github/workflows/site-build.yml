@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22" # Upgraded to LTS 22 to fix deprecation warnings
           cache: "npm"
 
       - name: Install deps
@@ -35,15 +35,18 @@ jobs:
           rm -rf dist
           mkdir -p dist
 
+          # Running your scripts (Ensuring build.js uses the new ESM version we just made)
           node scripts/generate-products-json.js
           node scripts/build.js
+          
+          # Note: If upload.js hasn't been converted to ESM yet, it might fail next.
           node scripts/upload.js
 
+          # Copying all necessary storefront files to the dist folder
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
-          # Fix markdown-links-in-HTML + GitHub project-pages basepath
-          # IMPORTANT: GitHub Actions expressions must be exactly $ ...  (no backslash before $)
-          node scripts/pages-postprocess.cjs dist $ github.event.repository.name 
+          # Post-processing for GitHub Pages compatibility
+          node scripts/pages-postprocess.cjs dist ${{ github.event.repository.name }}
 
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
