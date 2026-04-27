@@ -142,96 +142,119 @@ function renderGrid(products) {
 }
 
 function renderPayPalButtonForContainer(containerId) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  if (!ensurePayPalReady()) return;
+  try {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!ensurePayPalReady()) return;
 
-  if (el.getAttribute("data-rendered") === "1") return;
-  el.setAttribute("data-rendered", "1");
+    if (el.getAttribute("data-rendered") === "1") return;
+    el.setAttribute("data-rendered", "1");
 
-  const productId = el.getAttribute("data-product-id") || "";
-  const title = el.getAttribute("data-product-title") || "PromptVault Pack";
-  const price = el.getAttribute("data-product-price") || "0.00";
+    const productId = el.getAttribute("data-product-id") || "";
+    const title = el.getAttribute("data-product-title") || "PromptVault Pack";
+    const price = el.getAttribute("data-product-price") || "0.00";
 
-  window.paypal
-    .Buttons({
-      style: {
-        layout: "vertical",
-        color: "gold",
-        shape: "rect",
-        height: 40,
-        label: "buynow",
-      },
-      createOrder: async (data, actions) => {
-        await requireAnonAuth();
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: { value: String(price) },
-              description: `PV - ${title}`,
-              custom_id: String(productId),
-            },
-          ],
-        });
-      },
-      onApprove: async (data, actions) => {
-        await requireAnonAuth();
-        const details = await actions.order.capture();
+    window.paypal
+      .Buttons({
+        style: {
+          layout: "vertical",
+          color: "gold",
+          shape: "rect",
+          height: 40,
+          label: "buynow",
+        },
+        createOrder: async (data, actions) => {
+          try {
+            await requireAnonAuth();
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: { value: String(price) },
+                  description: `PV - ${title}`,
+                  custom_id: String(productId),
+                },
+              ],
+            });
+          } catch (err) {
+            console.error("PayPal Order Creation Error:", err);
+            throw new Error("Failed to create order. Please try again.");
+          }
+        },
+        onApprove: async (data, actions) => {
+          try {
+            await requireAnonAuth();
+            const details = await actions.order.capture();
 
-        const uid = auth.currentUser.uid;
-        const orderId = details.id;
+            const uid = auth.currentUser.uid;
+            const orderId = details.id;
 
-        await setDoc(doc(db, "orders", orderId), {
-          uid,
-          status: "completed",
-          items: [{ id: productId, qty: 1 }],
-          paypalOrderId: orderId,
-          createdAt: serverTimestamp(),
-        });
+            await setDoc(doc(db, "orders", orderId), {
+              uid,
+              status: "completed",
+              items: [{ id: productId, qty: 1 }],
+              paypalOrderId: orderId,
+              createdAt: serverTimestamp(),
+            });
 
-        window.location.href = `/success.html?tx=${encodeURIComponent(orderId)}`;
-      },
-      onError: (err) => {
-        console.error("PayPal Buttons error:", err);
-      },
-    })
-    .render(`#${containerId}`);
+            window.location.href = `/success.html?tx=${encodeURIComponent(orderId)}`;
+          } catch (err) {
+            console.error("PayPal Approval Error:", err);
+            alert("Payment processing failed. Please contact support.");
+          }
+        },
+        onError: (err) => {
+          console.error("PayPal Buttons error:", err);
+          alert("An error occurred with PayPal. Please try again.");
+        },
+      })
+      .render(`#${containerId}`);
+  } catch (error) {
+    console.error("PayPal Button Container Error:", error);
+  }
 }
 
 async function loadLibrary(products) {
-  await requireAnonAuth();
-  const uid = auth.currentUser.uid;
+  try {
+    await requireAnonAuth();
+    const uid = auth.currentUser.uid;
 
-  const grid = document.getElementById("user-library-grid");
-  if (!grid) return;
+    const grid = document.getElementById("user-library-grid");
+    if (!grid) return;
 
-  grid.innerHTML = `<p style="text-align:center;opacity:0.8;">Syncing Assets...</p>`;
+    grid.innerHTML = `<p style="text-align:center;opacity:0.8;">Syncing Assets...</p>`;
 
-  const q = query(collection(db, "orders"), where("uid", "==", uid));
-  const snap = await getDocs(q);
+    const q = query(collection(db, "orders"), where("uid", "==", uid));
+    const snap = await getDocs(q);
 
-  let html = "";
+    let html = "";
 
-  snap.forEach((d) => {
-    const o = d.data();
-    if (!o) return;
-    if (o.status !== "completed" && o.status !== "paid") return;
+    snap.forEach((d) => {
+      const o = d.data();
+      if (!o) return;
+      if (o.status !== "completed" && o.status !== "paid") return;
 
-    for (const it of o.items || []) {
-      const pid = String(it?.id || "").trim();
-      const p = products.find((x) => x.id === pid);
-      if (!p) continue;
+      for (const it of o.items || []) {
+        const pid = String(it?.id || "").trim();
+        const p = products.find((x) => x.id === pid);
+        if (!p) continue;
 
-      html += `
+        html += `
 <div style="border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
   <div style="font-weight:800;">${p.title}</div>
   <a href="${p.drivelink}" target="_blank" rel="noopener" style="padding:8px 12px;border-radius:10px;text-decoration:none;background:#10b981;color:white;font-weight:700;">Download</a>
 </div>`;
-    }
-  });
+      }
+    });
 
-  grid.innerHTML =
-    html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
+    grid.innerHTML =
+      html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
+  } catch (error) {
+    console.error("Library Loading Error:", error);
+    const grid = document.getElementById("user-library-grid");
+    if (grid) {
+      grid.innerHTML = `<p style="text-align:center;color:#ef4444;padding:30px;">Error loading library. Please try again.</p>`;
+    }
+  }
 }
 
 window.filterProducts = (text) => {
@@ -241,49 +264,61 @@ window.filterProducts = (text) => {
 };
 
 window.changePage = async (id, el) => {
-  const target = document.getElementById(id);
-  if (!target) return;
+  try {
+    const target = document.getElementById(id);
+    if (!target) return;
 
-  document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
-  target.classList.add("active");
+    document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+    target.classList.add("active");
 
-  document.querySelectorAll(".nav-item").forEach((i) => i.classList.remove("active"));
-  if (el && el.classList) el.classList.add("active");
+    document.querySelectorAll(".nav-item").forEach((i) => i.classList.remove("active"));
+    if (el && el.classList) el.classList.add("active");
 
-  window.location.hash = id;
+    window.location.hash = id;
 
-  if (id === "browse") renderGrid(PRODUCTS_CACHE);
-  if (id === "library") await loadLibrary(PRODUCTS_CACHE);
+    if (id === "browse") renderGrid(PRODUCTS_CACHE);
+    if (id === "library") await loadLibrary(PRODUCTS_CACHE);
+  } catch (error) {
+    console.error("Page Change Error:", error);
+  }
 };
 
 async function boot() {
-  PRODUCTS_CACHE = await fetchProducts();
+  try {
+    PRODUCTS_CACHE = await fetchProducts();
 
-  const search = document.getElementById("vault-search");
-  if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
+    const search = document.getElementById("vault-search");
+    if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
 
-  if (window.location.hash) {
-    const pageId = window.location.hash.substring(1);
-    const navEl = document.querySelector(`.nav-item[onclick*="'${pageId}'"]`);
-    window.changePage(pageId, navEl);
-  }
+    if (window.location.hash) {
+      const pageId = window.location.hash.substring(1);
+      const navEl = document.querySelector(`.nav-item[onclick*="'${pageId}'"]`);
+      window.changePage(pageId, navEl);
+    }
 
-  renderGrid(PRODUCTS_CACHE);
+    renderGrid(PRODUCTS_CACHE);
 
-  const single = document.getElementById("single-paypal-button");
-  if (single) {
-    single.setAttribute("data-rendered", "0");
-    if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
-  }
+    const single = document.getElementById("single-paypal-button");
+    if (single) {
+      single.setAttribute("data-rendered", "0");
+      if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
+    }
 
-  const libraryGrid = document.getElementById("user-library-grid");
-  if (libraryGrid) {
-    onAuthStateChanged(auth, async () => {
-      await loadLibrary(PRODUCTS_CACHE);
-    });
+    const libraryGrid = document.getElementById("user-library-grid");
+    if (libraryGrid) {
+      onAuthStateChanged(auth, async () => {
+        await loadLibrary(PRODUCTS_CACHE);
+      });
+    }
+  } catch (error) {
+    console.error("Application Boot Error:", error);
+    const list = document.getElementById("product-list");
+    if (list) {
+      list.innerHTML = `<p style="text-align:center;color:#ef4444;padding:40px;">Failed to load products. Please refresh the page.</p>`;
+    }
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  boot().catch((e) => console.error(e));
+  boot().catch((e) => console.error("Boot Failed:", e));
 });
