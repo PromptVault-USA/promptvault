@@ -1,22 +1,29 @@
-// /scripts/build.js (CommonJS)
-// Node 20 compatible when package.json does NOT have "type": "module"
+/**
+ * /scripts/build.js (ES Module)
+ * Fully compatible with "type": "module" in package.json
+ */
 
-const fs = require("node:fs");
-const path = require("node:path");
-const Papa = require("papaparse");
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Papa from 'papaparse';
 
-const ROOT = process.cwd();
+// ESM equivalent for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Since the script is in /scripts/, we go up one level to reach the repo root
+const ROOT = path.resolve(__dirname, '..');
 const CSV_PATH = path.join(ROOT, "products.csv");
 const VAULT_DIR = path.join(ROOT, "vault");
 const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
-// PayPal SDK must be included on every generated vault page (Option A)
-// IMPORTANT: this must be a plain URL, not a Markdown link.
+// PayPal SDK Configuration
 const PAYPAL_SDK_SRC =
   "https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture";
 
-// CSV headers must match your repo CSV exactly
+// CSV headers validation
 const REQUIRED_HEADERS = [
   "gmc_id",
   "id",
@@ -32,7 +39,7 @@ const REQUIRED_HEADERS = [
 ];
 
 function fail(msg) {
-  console.error(`[build] ${msg}`);
+  console.error(`[build] ❌ ${msg}`);
   process.exit(1);
 }
 
@@ -61,9 +68,7 @@ function normalizeImg(img) {
 function validateHeaders(fields) {
   const got = (fields || []).map((f) => String(f).trim());
   const missing = REQUIRED_HEADERS.filter((h) => !got.includes(h));
-  const extras = got.filter((h) => !REQUIRED_HEADERS.includes(h));
   if (missing.length) fail(`CSV missing headers: ${missing.join(", ")}`);
-  if (extras.length) fail(`CSV has unexpected headers: ${extras.join(", ")}`);
 }
 
 function normalizeRow(r, i) {
@@ -128,7 +133,6 @@ function renderProductPage(p) {
     data-product-title="${escapeHtml(p.title)}"
     data-product-price="${escapeHtml(final)}"></div>`;
 
-  // IMPORTANT: canonical must be a plain URL (no Markdown, no  )
   const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`;
 
   return `<!doctype html>
@@ -182,7 +186,7 @@ function ensureDir(dir) {
 }
 
 function main() {
-  if (!fs.existsSync(CSV_PATH)) fail("products.csv not found in repo root");
+  if (!fs.existsSync(CSV_PATH)) fail(`products.csv not found at ${CSV_PATH}`);
 
   const csv = fs.readFileSync(CSV_PATH, "utf8");
   const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
@@ -214,7 +218,7 @@ function main() {
     fs.writeFileSync(outPath, renderProductPage(p), "utf8");
   }
 
-  // products.json for app.js
+  // Generate products.json
   const productsJson = products.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -232,7 +236,7 @@ function main() {
     "utf8",
   );
 
-  // gmc-lookup.json
+  // Generate gmc-lookup.json
   const gmcLookup = {};
   for (const p of products) {
     gmcLookup[p.gmc_id] = {
@@ -248,9 +252,9 @@ function main() {
     "utf8",
   );
 
-  console.log(`[build] Wrote ${products.length} vault pages`);
-  console.log("[build] Wrote products.json");
-  console.log("[build] Wrote gmc-lookup.json");
+  console.log(`[build] ✅ Wrote ${products.length} vault pages to /vault`);
+  console.log("[build] ✅ Wrote products.json");
+  console.log("[build] ✅ Wrote gmc-lookup.json");
 }
 
 main();
