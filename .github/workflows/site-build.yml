@@ -23,11 +23,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22" # Upgraded to LTS 22 to fix deprecation warnings
-          cache: "npm"
+          node-version: "22"
+          # Cache removed because package-lock.json is missing
 
       - name: Install deps
-        run: npm ci
+        run: npm install # Changed from 'npm ci' to allow building without a lock file
 
       - name: Build dist
         run: |
@@ -35,18 +35,17 @@ jobs:
           rm -rf dist
           mkdir -p dist
 
-          # Running your scripts (Ensuring build.js uses the new ESM version we just made)
+          # Running your ESM scripts
           node scripts/generate-products-json.js
           node scripts/build.js
-          
-          # Note: If upload.js hasn't been converted to ESM yet, it might fail next.
           node scripts/upload.js
 
-          # Copying all necessary storefront files to the dist folder
+          # Copying storefront files to dist
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
-          # Post-processing for GitHub Pages compatibility
-          node scripts/pages-postprocess.cjs dist ${{ github.event.repository.name }}
+          # Ensure the post-process script matches the filename in your /scripts/ folder
+          # If you renamed it to .js in the previous step, update the extension here:
+          node scripts/pages-postprocess.js dist ${{ github.event.repository.name }}
 
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
