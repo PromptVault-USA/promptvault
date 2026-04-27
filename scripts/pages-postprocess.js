@@ -1,20 +1,23 @@
-/*
-Rewrites absolute-root asset paths ("/assets/...", "/css/...", etc.) so they work on
-GitHub Project Pages served under /<repo-name>/.
+/**
+ * scripts/pages-postprocess.js (ES Module)
+ * Rewrites absolute-root asset paths for GitHub Project Pages.
+ * * Usage: node scripts/pages-postprocess.js dist <repoName>
+ */
 
-Usage (in site-build.yml, after building to dist/):
-  node scripts/pages-postprocess.js dist <repoName>
-*/
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const fs = require("fs");
-const path = require("path");
+// ESM equivalent for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const distDir = process.argv[2] || "dist";
 const repoName = process.argv[3];
 
 if (!repoName) {
   console.error(
-    "Missing repo name. Usage: node scripts/pages-postprocess.js <distDir> <repoName>",
+    "❌ Missing repo name. Usage: node scripts/pages-postprocess.js <distDir> <repoName>",
   );
   process.exit(1);
 }
@@ -22,6 +25,10 @@ if (!repoName) {
 const prefix = `/${repoName}/`;
 
 function walk(dir) {
+  if (!fs.existsSync(dir)) {
+    console.warn(`⚠️ Directory not found: ${dir}`);
+    return;
+  }
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const e of entries) {
     const full = path.join(dir, e.name);
@@ -36,9 +43,7 @@ function rewriteFile(filePath) {
 
   let s = fs.readFileSync(filePath, "utf8");
 
-  // Fix Markdown links pasted into HTML attributes (Gemini copy/paste issue)
-  // href="[https://a.com/x](https://a.com/x)" -> href="https://a.com/x"
-  // src="[/css/style.css](https://a.com/css/style.css)" -> src="/css/style.css"
+  // Fix Markdown links pasted into HTML attributes
   s = s.replace(
     /(\b(?:href|src|content)=)"\[(\/[^\]]*?)\]\([^)]+\)"/g,
     '$1"$2"',
@@ -48,9 +53,7 @@ function rewriteFile(filePath) {
     '$1"$2"',
   );
 
-  // Replace occurrences of href="/..." src="/..." content="/..." and url(/...) etc.
-  // Avoid touching protocol-relative URLs ("//example.com")
-  // and existing prefixed paths ("/<repo>/...").
+  // Replace occurrences of href="/..." etc.
   const repoEsc = escapeRegExp(repoName);
 
   s = s
@@ -70,4 +73,6 @@ function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+console.log(`🚀 Post-processing ${distDir} for repo: ${repoName}...`);
 walk(distDir);
+console.log("✅ Post-processing complete.");
