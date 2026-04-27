@@ -13,22 +13,26 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false # Changed to false to ensure deployments finish sequentially
 
 jobs:
   deploy:
-    if: $ github.event.workflow_run.conclusion == 'success' 
+    # Fixed: Wrapped in ${{ }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: $ steps.deployment.outputs.page_url 
+      # Fixed: Wrapped in ${{ }}
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: github-pages
-          run-id: $ github.event.workflow_run.id 
+          github-token: ${{ secrets.GITHUB_TOKEN }} # Needed to download from another workflow
+          # Fixed: Wrapped in ${{ }}
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
