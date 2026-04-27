@@ -266,6 +266,7 @@ header {
     color: var(--text-gray);
     text-decoration: none;
     transition: 0.3s;
+    cursor: pointer;
 }
 
 .nav-item.active { color: var(--secondary); }
@@ -302,6 +303,9 @@ header {
     border: 1px solid var(--border);
     z-index: 14000;
     white-space: nowrap;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 /* --- 📱 MOBILE RESPONSIVE (UPDATED) --- */
@@ -357,5 +361,3 @@ header {
 /* --- 📟 SPA PAGE LOGIC --- */
 .page { display: none; }
 .page.active { display: flex; flex-direction: column; width: 100%; }
-
-Update the code and give back to me the updated one
