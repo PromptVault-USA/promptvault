@@ -80,16 +80,16 @@
     #home { text-align: center; min-height: 85vh; position: relative; padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center; }
     #home.page.active { display: flex; }
 
-    .hero-glow { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%); filter: blur(60px); z-index: -1; }
+    .hero-glow { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 800px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%); filter: blur(40px); }
     h1 { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; line-height: 1.1; margin-top: 20px; color: white; }
     .sub-accent { color: var(--secondary); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: block; }
     .hero-subheadline { max-width: 600px; margin: 0 auto 25px; color: var(--text-gray); font-size: 1.1rem; line-height: 1.6; text-align: center; }
-    .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-inline: auto; }
+    .content-rich-section { margin-top: 60px; text-align: center; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; max-width: 850px; width: 100%; margin-left: auto; margin-right: auto; }
     .legal-text { font-size: 0.75rem; color: var(--text-gray); margin-top: 60px; text-align: center; padding: 40px; border-top: 1px solid var(--border); width: 100%; opacity: 0.8; }
     .legal-links a { color: var(--accent); text-decoration: none; margin: 0 10px; font-weight: 600; cursor: pointer; }
     .smart-cover { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
     .smart-cover span { color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); padding: 15px; }
-    .library-card { background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border); width: 100%; max-width: 600px; }
+    .library-card { background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border); }
     .bottom-nav { max-width: 480px !important; }
     .nav-item small { font-size: 0.55rem !important; font-weight: 800; }
   </style>
@@ -97,7 +97,7 @@
 
 <body>
 
-  <div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 15000; display: none; align-items: center; gap: 12px; backdrop-filter: blur(10px);">
+  <div id="sales-notif" style="position: fixed; bottom: 100px; left: 20px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); padding: 12px 20px; border-radius: 50px; z-index: 14000; display: none; align-items: center; gap: 10px;">
     <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
     <span id="notif-text" style="font-size: 0.8rem; font-weight: 600; color: white;"></span>
   </div>
@@ -133,7 +133,7 @@
 
     <div id="browse" class="page">
       <div style="padding: 30px 0; width: 100%;">
-        <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="if(window.filterProducts) window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:50px; background:var(--glass); border:1px solid var(--border); color:white; margin-bottom:20px; outline:none;">
+        <input type="text" id="vault-search" placeholder="Search the Vault..." oninput="if(window.filterProducts) window.filterProducts(this.value)" style="width:100%; padding:15px 25px; border-radius:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; font-size:1rem; margin-bottom:20px;">
         <div class="vault-grid" id="product-list"></div>
       </div>
     </div>
@@ -142,10 +142,10 @@
       <div style="padding: 30px 0; width: 100%; align-items: center; display: flex; flex-direction: column;">
         <h2 style="font-size:2rem; text-align: center;">My <span class="highlight-text">Library</span></h2>
 
-        <div style="background:rgba(255, 243, 205, 0.05); border:1px solid #ffeaa7; padding:15px; border-radius:12px; margin:20px 0; max-width:600px; font-size: 0.85rem; color: #ffeaa7; text-align: left;">
+        <div style="background:rgba(255, 243, 205, 0.05); border:1px solid #ffeaa7; padding:15px; border-radius:12px; margin:20px 0; max-width:600px; font-size: 0.85rem; color: #ffeaa7; text-align:center;">
           <strong>⚠️ Guest Access Active:</strong> Purchases are locked to this device. Bookmark this page to keep access.
           <br><br><br>
-          <em>Lost it? Email your PayPal ID to <a href="mailto:admin@promptvaultusa.shop">admin@promptvaultusa.shop</a></em>
+          <em>Lost it? Email your PayPal ID to <a href="mailto:admin@promptvaultusa.shop" style="color:#ffeaa7; text-decoration:underline;">admin@promptvaultusa.shop</a></em>
 
           <div style="margin-top:10px;">
             <a href="/claim.html" style="color:var(--accent);font-weight:800;text-decoration:none;">Claim purchase</a>
@@ -171,13 +171,12 @@
   <nav class="bottom-nav">
     <a class="nav-item active" onclick="window.changePage('home', this)"><span>🏠</span><small>Home</small></a>
     <a class="nav-item" onclick="window.changePage('browse', this)"><span>⊞</span><small>Vaults</small></a>
-    <a class="nav-item" onclick="window.changePage('library', this)"><span>👤</span><small>Library</small></a>
     <a class="nav-item" href="/blog.html"><span>📰</span><small>Blog</small></a>
     <a class="nav-item" href="/claim.html"><span>🧾</span><small>Claim</small></a>
   </nav>
 
   <div id="auth-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 21000; align-items: center; justify-content: center;">
-    <div class="glass-card" style="width: 90%; max-width: 400px; text-align: center;">
+    <div class="glass-card" style="width: 90%; max-width: 400px; text-align: center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:28px; padding:24px;">
       <h2 style="margin-bottom:15px;">Secure Access</h2>
       <input type="email" id="auth-email" placeholder="Email" class="auth-input">
       <input type="password" id="auth-pass" placeholder="Password" class="auth-input">
