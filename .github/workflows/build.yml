@@ -2,9 +2,13 @@ name: Test Old GMC Key Sync
 
 on:
   workflow_dispatch:
+  # Add this to sync every time you update your products
+  push:
+    paths:
+      - 'products.csv' 
 
 permissions:
-  contents: read
+  contents: write # Changed from read to allow script updates
 
 jobs:
   test-old-key-sync:
@@ -25,5 +29,7 @@ jobs:
       - name: Test Old Key Sync
         run: node scripts/gmc-sync.js
         env:
+          # IMPORTANT: You must go to Org Settings > Secrets > Actions 
+          # and re-add these two keys!
           MERCHANT_ID: ${{ secrets.MERCHANT_ID }}
           GMC_KEY: ${{ secrets.GMC_KEY }}
