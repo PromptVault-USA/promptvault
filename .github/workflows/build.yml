@@ -25,5 +25,5 @@ jobs:
       - name: Test Old Key Sync
         run: node scripts/gmc-sync.js
         env:
-          GMC_MERCHANT_ID: ${{ secrets.GMC_MERCHANT_ID }}
+          MERCHANT_ID: ${{ secrets.MERCHANT_ID }}
           GMC_KEY: ${{ secrets.GMC_KEY }}

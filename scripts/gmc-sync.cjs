@@ -1,12 +1,16 @@
-const { google } = require('googleapis');
-const fs = require('fs');
-const { parse } = require('csv-parse');
+import { google } from 'googleapis';
+import fs from 'fs';
+import { parse } from 'csv-parse';
 
 const GMC_KEY = process.env.GMC_KEY;
-const GMC_MERCHANT_ID = process.env.GMC_MERCHANT_ID || '5766495931';
+const MERCHANT_ID = process.env.MERCHANT_ID;
 
 if (!GMC_KEY) {
   throw new Error('GMC_KEY environment variable is required');
+}
+
+if (!MERCHANT_ID) {
+  throw new Error('MERCHANT_ID environment variable is required');
 }
 
 const key = JSON.parse(GMC_KEY);
@@ -78,7 +82,7 @@ async function syncProduct() {
   };
 
   await content.accounts.products.insert({
-    merchantId: GMC_MERCHANT_ID,
+    merchantId: String(MERCHANT_ID).trim(),
     requestBody: product,
   });
 

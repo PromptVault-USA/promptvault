@@ -30,6 +30,9 @@ jobs:
         run: npm install # Changed from 'npm ci' to allow building without a lock file
 
       - name: Build dist
+        env:
+          GMC_KEY: ${{ secrets.GMC_KEY }}
+          MERCHANT_ID: ${{ secrets.MERCHANT_ID }}
         run: |
           set -euxo pipefail
           rm -rf dist
@@ -38,7 +41,7 @@ jobs:
           # Running your ESM scripts
           node scripts/generate-products-json.js
           node scripts/build.js
-          node scripts/upload.js
+          node scripts/gmc-sync.js
 
           # Copying storefront files to dist
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
