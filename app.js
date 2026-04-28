@@ -82,7 +82,10 @@ function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  const q = (document.getElementById("vault-search")?.value || "").trim().toLowerCase();
+  const q = (document.getElementById("vault-search")?.value || "")
+    .trim()
+    .toLowerCase();
+
   const filtered = q
     ? products.filter(
         (p) =>
@@ -102,10 +105,13 @@ function renderGrid(products) {
         : "";
 
       const old = sale
-        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>`
+        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(
+            2,
+          )}</span>`
         : "";
 
       const price = `<span style="font-weight:900;">$${fp.toFixed(2)}</span>`;
+
       const buttonId = `paypal-button-${p.id}`;
 
       return `
@@ -137,7 +143,9 @@ function renderGrid(products) {
     .join("");
 
   if (ensurePayPalReady()) {
-    filtered.forEach((p) => renderPayPalButtonForContainer(`paypal-button-${p.id}`));
+    filtered.forEach((p) =>
+      renderPayPalButtonForContainer(`paypal-button-${p.id}`),
+    );
   }
 }
 
@@ -196,7 +204,9 @@ function renderPayPalButtonForContainer(containerId) {
               createdAt: serverTimestamp(),
             });
 
-            window.location.href = `/success.html?tx=${encodeURIComponent(orderId)}`;
+            window.location.href = `/success.html?tx=${encodeURIComponent(
+              orderId,
+            )}`;
           } catch (err) {
             console.error("PayPal Approval Error:", err);
             alert("Payment processing failed. Please contact support.");
@@ -247,7 +257,8 @@ async function loadLibrary(products) {
     });
 
     grid.innerHTML =
-      html || `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
+      html ||
+      `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
   } catch (error) {
     console.error("Library Loading Error:", error);
     const grid = document.getElementById("user-library-grid");
@@ -257,55 +268,38 @@ async function loadLibrary(products) {
   }
 }
 
+// Keep this for the search box on vault.html
 window.filterProducts = (text) => {
   const el = document.getElementById("vault-search");
   if (el) el.value = String(text ?? "");
   renderGrid(PRODUCTS_CACHE);
 };
 
-window.changePage = async (id, el) => {
-  try {
-    const target = document.getElementById(id);
-    if (!target) return;
-
-    document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
-    target.classList.add("active");
-
-    document.querySelectorAll(".nav-item").forEach((i) => i.classList.remove("active"));
-    if (el && el.classList) el.classList.add("active");
-
-    window.location.hash = id;
-
-    if (id === "browse") renderGrid(PRODUCTS_CACHE);
-    if (id === "library") await loadLibrary(PRODUCTS_CACHE);
-  } catch (error) {
-    console.error("Page Change Error:", error);
-  }
-};
+// NOTE: changePage() removed — you’re now using separate HTML pages (href navigation).
 
 async function boot() {
   try {
     PRODUCTS_CACHE = await fetchProducts();
 
-    const search = document.getElementById("vault-search");
-    if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
+    // Vault page behavior
+    const hasVaultGrid = !!document.getElementById("product-list");
+    if (hasVaultGrid) {
+      const search = document.getElementById("vault-search");
+      if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
 
-    if (window.location.hash) {
-      const pageId = window.location.hash.substring(1);
-      const navEl = document.querySelector(`.nav-item[onclick*="'${pageId}'"]`);
-      window.changePage(pageId, navEl);
+      renderGrid(PRODUCTS_CACHE);
+
+      // Optional: handle a single-paypal container if you use it anywhere
+      const single = document.getElementById("single-paypal-button");
+      if (single) {
+        single.setAttribute("data-rendered", "0");
+        if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
+      }
     }
 
-    renderGrid(PRODUCTS_CACHE);
-
-    const single = document.getElementById("single-paypal-button");
-    if (single) {
-      single.setAttribute("data-rendered", "0");
-      if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
-    }
-
-    const libraryGrid = document.getElementById("user-library-grid");
-    if (libraryGrid) {
+    // Library page behavior
+    const hasLibraryGrid = !!document.getElementById("user-library-grid");
+    if (hasLibraryGrid) {
       onAuthStateChanged(auth, async () => {
         await loadLibrary(PRODUCTS_CACHE);
       });
