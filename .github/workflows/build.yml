@@ -1,0 +1,29 @@
+name: Test Old GMC Key Sync
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-old-key-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install deps
+        run: npm install
+
+      - name: Test Old Key Sync
+        run: node scripts/gmc-sync.js
+        env:
+          GMC_MERCHANT_ID: ${{ secrets.GMC_MERCHANT_ID }}
+          GMC_KEY: ${{ secrets.GMC_KEY }}
