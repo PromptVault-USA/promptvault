@@ -27,8 +27,11 @@ fs.createReadStream('gmc_products.csv')
     const clean = (val) => val?.toString().trim() || '';
     const offerId = clean(row.id);
 
+    // Clean sale date: removes spaces around the "/" to satisfy GMC formatting
+    const rawSaleDate = clean(row.sale_price_effective_date);
+    const cleanSaleDate = rawSaleDate.replace(/\s/g, ''); 
+
     TARGET_COUNTRIES.forEach(country => {
-      // Final safety check: skip if code is KR (South Korea) or KP (North Korea)
       if (country === 'KR' || country === 'KP') return;
 
       productsToSync.push({
@@ -44,10 +47,17 @@ fs.createReadStream('gmc_products.csv')
           value: clean(row.price).replace(/[^0-9.]/g, '') || '0',
           currency: 'USD'
         },
+        // NEW: Added Sale Price logic
+        salePrice: {
+          value: clean(row.sale_price).replace(/[^0-9.]/g, '') || '0',
+          currency: 'USD'
+        },
+        // NEW: Added Sale Price Effective Date
+        salePriceEffectiveDate: cleanSaleDate,
         condition: clean(row.condition) || 'new',
         availability: clean(row.availability) || 'in stock',
         brand: clean(row.brand) || 'PromptVault USA',
-        googleProductCategory: clean(row.google_product_category) || '5827',
+        googleProductCategory: '5827', // Updated to your requested category
         identifierExists: 'no',
         shipping: [{
           country: country,
@@ -58,7 +68,7 @@ fs.createReadStream('gmc_products.csv')
     });
   })
   .on('end', async () => {
-    console.log(`🚀 Starting Batched Sync: ${productsToSync.length} total listings (Excluding Korea)`);
+    console.log(`🚀 Starting Batched Sync: ${productsToSync.length} listings (Excluding Korea)`);
     
     const BATCH_SIZE = 100;
     let successCount = 0;
@@ -86,7 +96,7 @@ fs.createReadStream('gmc_products.csv')
         successCount += (entries.length - errors.length);
         
         if (errors.length > 0) {
-          console.error(`❌ Batch Error: ${errors[0].errors.errors[0].message}`);
+          console.error(`❌ Batch Error (First item): ${errors[0].errors.errors[0].message}`);
         }
 
         console.log(`Progress: ${successCount}/${productsToSync.length} synced...`);
@@ -96,6 +106,6 @@ fs.createReadStream('gmc_products.csv')
       }
     }
 
-    console.log(`✅ DONE: ${successCount} listings successfully pushed to GMC.`);
+    console.log(`✅ DONE: ${successCount} listings successfully pushed with Sale Prices.`);
     if (successCount === 0) process.exit(1);
   });
