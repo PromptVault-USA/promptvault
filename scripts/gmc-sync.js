@@ -33,7 +33,7 @@ fs.createReadStream('products.csv')
     let successCount = 0;
     for (const product of products) {
       try {
-        await content.accounts.products.insert({
+        await content.products.insert({
           merchantId: merchantId,
           requestBody: product
         });
