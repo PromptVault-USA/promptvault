@@ -1,21 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/#browse">
-    <title>Redirecting to Vaults...</title>
-    <script>window.location.replace("/#browse");</script>
-    <style>
-        body { background: #0a0e27; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .spinner { border: 4px solid rgba(255,255,255,0.1); border-left-color: #22c55e; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptVault USA | Vault</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --accent: #4fd1c5;
+      --secondary: #8b5cf6;
+      --glass: rgba(17, 34, 64, 0.4);
+      --border: rgba(255, 255, 255, 0.05);
+      --success: #10b981;
+      --text-gray: #94a3b8;
+    }
+    .bottom-nav { max-width: 480px !important; }
+    .nav-item small { font-size: 0.55rem !important; font-weight: 800; }
+  </style>
 </head>
+
 <body>
-    <div style="text-align: center;">
-        <div class="spinner" style="margin: 0 auto 20px;"></div>
-        <p>Unlocking the Vault...</p>
-        <a href="/#browse" style="color: #22c55e; text-decoration: none; font-size: 0.8rem;">Click here if not redirected</a>
+  <header>
+    <div class="header-wrap">
+      <a href="/index.html" style="cursor:pointer; display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+        <img src="logo.png" class="logo-box" alt="Logo" />
+        <span style="font-weight:800; letter-spacing:-1px;">
+          PROMPTVAULT<span style="color:var(--secondary)">USA</span>
+        </span>
+      </a>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a href="/library.html" class="signin-pill" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+          My Library
+        </a>
+      </div>
     </div>
+  </header>
+
+  <main class="container">
+    <div style="padding: 30px 0; width: 100%;">
+      <input
+        type="text"
+        id="vault-search"
+        placeholder="Search the Vault..."
+        oninput="if(window.filterProducts) window.filterProducts(this.value)"
+        style="width:100%; padding:15px 25px; border-radius:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; font-size:1rem; margin-bottom:20px;"
+      />
+      <div class="vault-grid" id="product-list"></div>
+    </div>
+
+    <footer class="legal-text">
+      <div class="legal-links">
+        <a href="/index.html">Home</a>
+        <a href="/vault.html">Vault</a>
+        <a href="/library.html">Library</a>
+        <a href="/blog.html">Blog</a>
+        <a href="/claim.html">Claim</a>
+        <a href="/legal.html#privacy">Privacy</a>
+        <a href="/legal.html#terms">Terms</a>
+        <a href="/legal.html#refunds">Refunds</a>
+      </div>
+      <p>© 2026 PromptVault USA | Cebu City, PH</p>
+    </footer>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="/index.html"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item active" href="/vault.html"><span>⊞</span><small>Vault</small></a>
+    <a class="nav-item" href="/blog.html"><span>📰</span><small>Blog</small></a>
+    <a class="nav-item" href="/library.html"><span>🎁</span><small>Library</small></a>
+    <a class="nav-item" href="/claim.html"><span>🧾</span><small>Claim</small></a>
+  </nav>
+
+  <!-- Your app.js should fetch products.json and render into #product-list -->
+  <script type="module" src="/app.js"></script>
 </body>
 </html>
