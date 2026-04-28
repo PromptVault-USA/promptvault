@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
     "@type": "Product",
     "name": "NAME",
     "description": "DESC",
-    "image": "https://promptvaultusa.shopIMG",
+    "image": "https://promptvaultusa.shop/IMG", 
     "sku": "ID",
     "mpn": "GMC_ID",
     "brand": { "@type": "Brand", "name": "PromptVault USA" },
@@ -52,7 +53,7 @@
       <h1 style="margin-top:20px; color:white; letter-spacing:-1px;">NAME</h1>
 
       <div style="margin: 25px 0; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08);">
-        <img src="IMG" alt="NAME" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
+        <img src="/IMG" alt="NAME" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
       </div>
 
       <p style="color:#94a3b8; line-height:1.6; margin-bottom:25px; font-size:1.05rem;">DESC</p>
@@ -99,6 +100,10 @@
     if (schemaScript) {
       const schema = JSON.parse(schemaScript.textContent);
       schema.offers.price = window.checkoutPrice.toFixed(2);
+      // Ensure the image URL is absolute for Google
+      if(!schema.image.startsWith('http')) {
+          schema.image = "https://promptvaultusa.shop/" + schema.image.replace(/^\//, '');
+      }
       schemaScript.textContent = JSON.stringify(schema);
     }
   </script>
