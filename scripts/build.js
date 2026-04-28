@@ -57,12 +57,18 @@ function escapeHtml(s) {
     .replaceAll("'", "&#39;");
 }
 
+/**
+ * UPDATED: Optimized Image Normalization
+ * Ensures relative paths don't break during Organization migration.
+ */
 function normalizeImg(img) {
   const raw = String(img ?? "").trim();
   if (!raw) return "/logo.png";
   if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
-  if (raw.startsWith("/")) return raw;
-  return `/${raw}`;
+  
+  // Remove leading slash if it exists, then add a single one for root-relative loading
+  const cleanPath = raw.replace(/^\//, '');
+  return `/${cleanPath}`;
 }
 
 function validateHeaders(fields) {
@@ -133,6 +139,10 @@ function renderProductPage(p) {
     data-product-title="${escapeHtml(p.title)}"
     data-product-price="${escapeHtml(final)}"></div>`;
 
+  /**
+   * FIX: Absolute Canonical URL
+   * Essential for Google Merchant Center and SEO in the new Organization.
+   */
   const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`;
 
   return `<!doctype html>
