@@ -1,6 +1,6 @@
 /**
- * PROJECT MEMORY: UI & UX Service (v2.2)
- * Upgrades: Absolute Image Path Resolution & Trust Center Integration.
+ * PROJECT MEMORY: UI & UX Service (v2.3)
+ * Upgrades: Absolute Image Path Resolution, Global Root Fetching & Niche Folder Mapping.
  * Responsibility: Notifications, Cart UI, Navigation, and SEO-compliant Rendering.
  */
 
@@ -33,7 +33,7 @@ export const UIService = {
     },
 
     // REUSED: Standardized page switching logic
-    // MODIFIED: Added Trust Center trigger
+    // FIXED: Added leading slash to products.json to prevent 404s on sub-pages
     changePage: (id, el) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const target = document.getElementById(id);
@@ -47,19 +47,22 @@ export const UIService = {
         }
 
         if (id === 'library' && window.loadUserLibrary) window.loadUserLibrary();
+        
+        // FIX: Using '/products.json' ensures it fetches from the root domain
         if (id === 'browse' && (!window.allProducts || window.allProducts.length === 0)) {
-            fetch('products.json')
+            fetch('/products.json')
                 .then(res => res.json())
                 .then(data => {
                     window.allProducts = data;
                     UIService.renderProducts(data);
-                });
+                })
+                .catch(err => console.error("Vault Grid Load Error:", err));
         }
     },
 
     /**
      * UPGRADED: Standardized Product Rendering Logic
-     * FIX: Resolves "Unable to show image" by forcing absolute URLs for Google Crawler.
+     * FIX: Resolves "Unable to show image" by forcing absolute URLs and mapping niche folders.
      */
     renderProducts: (productsToDisplay) => {
         const list = document.getElementById('product-list');
@@ -71,11 +74,17 @@ export const UIService = {
         }
 
         list.innerHTML = productsToDisplay.map(p => {
-            // FIX: Generate Absolute URL for the image
+            // STEP 1: Handle specific niche folder path if 'assets/' is missing
+            let rawImg = p.img || '';
+            if (!rawImg.startsWith('http') && !rawImg.startsWith('assets/')) {
+                rawImg = `assets/images/niches/${rawImg.replace(/^\//, '')}`;
+            }
+
+            // STEP 2: Generate Absolute URL for the image
             // This ensures Google Merchant Center can find the image from the USA
-            const absoluteImg = p.img.startsWith('http') 
-                ? p.img 
-                : `${window.location.origin}/${p.img.replace(/^\//, '')}`;
+            const absoluteImg = rawImg.startsWith('http') 
+                ? rawImg 
+                : `${window.location.origin}/${rawImg.replace(/^\//, '')}`;
 
             const secureProduct = {
                 id: p.id,
