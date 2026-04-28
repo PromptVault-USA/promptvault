@@ -12,38 +12,40 @@ const auth = new google.auth.GoogleAuth({
 const content = google.content({ version: 'v2.1', auth });
 const products = [];
 
-// CHANGED: Now reads gmc_products.csv instead of products.csv
 fs.createReadStream('gmc_products.csv')
   .pipe(csv())
   .on('data', (row) => {
+    // Trim spaces from all CSV fields - fixes "Invalid product availability" errors
+    const clean = (val) => val?.toString().trim() || '';
+
     const gmcProduct = {
-      offerId: row.id,
-      title: row.title,
-      description: row.description,
-      link: row.link,
-      imageLink: row.image_link,
+      offerId: clean(row.id),
+      title: clean(row.title),
+      description: clean(row.description),
+      link: clean(row.link),
+      imageLink: clean(row.image_link),
       contentLanguage: 'en',
       targetCountry: 'US',
       channel: 'online',
       price: {
-        // FIXED: Strips USD and any symbols, keeps only numbers
-        value: row.price?.toString().replace(/[^0-9.]/g, '') || '0',
+        // Strips USD, $, commas, spaces - keeps only numbers + decimal
+        value: clean(row.price).replace(/[^0-9.]/g, '') || '0',
         currency: 'USD'
       },
-      condition: row.condition || 'new',
-      availability: row.availability || 'in stock',
-      brand: row.brand || 'PromptVault USA',
-      googleProductCategory: row.google_product_category || '5827',
+      condition: clean(row.condition) || 'new',
+      availability: clean(row.availability) || 'in stock',
+      brand: clean(row.brand) || 'PromptVault USA',
+      googleProductCategory: clean(row.google_product_category) || '5827',
       identifierExists: 'no',
-      // ADDED: Free shipping required by GMC
       shipping: [{
         country: 'US',
         service: 'Standard',
         price: { value: '0', currency: 'USD' }
       }]
     };
-    
-    // REMOVED: salePrice block completely. Blank sale_price was killing approvals.
+
+    // Debug log to verify URLs before sending to GMC
+    console.log(`QUEUED: ${gmcProduct.offerId} | Image: ${gmcProduct.imageLink}`);
     
     products.push(gmcProduct);
   })
@@ -61,6 +63,8 @@ fs.createReadStream('gmc_products.csv')
         successCount++;
       } catch (err) {
         console.error(`FAILED: ${product.offerId} - ${err.message}`);
+        console.error(`  Link: ${product.link}`);
+        console.error(`  Image: ${product.imageLink}`);
       }
     }
     
