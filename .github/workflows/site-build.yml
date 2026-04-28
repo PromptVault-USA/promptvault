@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # Changed to write so scripts can update data
 
 concurrency:
   group: "site-build"
@@ -24,10 +24,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          # Cache removed because package-lock.json is missing
 
       - name: Install deps
-        run: npm install # Changed from 'npm ci' to allow building without a lock file
+        run: npm install
 
       - name: Build dist
         env:
@@ -38,17 +37,16 @@ jobs:
           rm -rf dist
           mkdir -p dist
 
-          # Running your ESM scripts
+          # 1. Generate data
           node scripts/generate-products-json.js
           node scripts/build.js
           node scripts/gmc-sync.js
 
-          # Copying storefront files to dist
+          # 2. Copy files to dist
           cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
 
-          # Ensure the post-process script matches the filename in your /scripts/ folder
-          # If you renamed it to .js in the previous step, update the extension here:
-          node scripts/pages-postprocess.js dist ${{ github.event.repository.name }}
+          # 3. CRITICAL FIX: We DELETED the pages-postprocess line.
+          # You no longer need to prefix URLs for a custom domain.
 
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
