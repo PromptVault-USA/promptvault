@@ -4,70 +4,98 @@ import csv from 'csv-parser';
 
 const merchantId = '5766495931';
 
+// 90 countries list - South Korea (KR) strictly excluded
+const TARGET_COUNTRIES = [
+  'US','GB','CA','AU','DE','FR','IT','ES','NL','SE','NO','DK','FI','IE','NZ','AT','CH','BE','PT','PL',
+  'CZ','HU','RO','GR','IL','AE','SA','SG','MY','TH','PH','ID','VN','JP','HK','TW','MX','BR','AR','CL',
+  'CO','PE','ZA','EG','TR','UA','SK','SI','HR','BG','LT','LV','EE','LU','MT','CY','IS','LI','MC','SM',
+  'VA','AD','BH','QA','KW','OM','JO','LB','MA','TN','DZ','KE','NG','GH','UG','TZ','ZM','BW','MU','RU',
+  'IN','BD','PK','LK','NP','UZ','KZ','AZ','GE','AM','MD','BY','RS','ME','MK','AL','BA','XK','CR','PA'
+];
+
 const auth = new google.auth.GoogleAuth({
   credentials: JSON.parse(process.env.GMC_KEY),
   scopes: ['https://www.googleapis.com/auth/content']
 });
 
 const content = google.content({ version: 'v2.1', auth });
-const products = [];
+const productsToSync = [];
 
 fs.createReadStream('gmc_products.csv')
   .pipe(csv())
   .on('data', (row) => {
-    // Trim spaces from all CSV fields - fixes "Invalid product availability" errors
     const clean = (val) => val?.toString().trim() || '';
+    const offerId = clean(row.id);
 
-    const gmcProduct = {
-      offerId: clean(row.id),
-      title: clean(row.title),
-      description: clean(row.description),
-      link: clean(row.link),
-      imageLink: clean(row.image_link),
-      contentLanguage: 'en',
-      targetCountry: 'US',
-      channel: 'online',
-      price: {
-        // Strips USD, $, commas, spaces - keeps only numbers + decimal
-        value: clean(row.price).replace(/[^0-9.]/g, '') || '0',
-        currency: 'USD'
-      },
-      condition: clean(row.condition) || 'new',
-      availability: clean(row.availability) || 'in stock',
-      brand: clean(row.brand) || 'PromptVault USA',
-      googleProductCategory: clean(row.google_product_category) || '5827',
-      identifierExists: 'no',
-      shipping: [{
-        country: 'US',
-        service: 'Standard',
-        price: { value: '0', currency: 'USD' }
-      }]
-    };
+    TARGET_COUNTRIES.forEach(country => {
+      // Final safety check: skip if code is KR (South Korea) or KP (North Korea)
+      if (country === 'KR' || country === 'KP') return;
 
-    // Debug log to verify URLs before sending to GMC
-    console.log(`QUEUED: ${gmcProduct.offerId} | Image: ${gmcProduct.imageLink}`);
-    
-    products.push(gmcProduct);
+      productsToSync.push({
+        offerId: offerId,
+        title: clean(row.title),
+        description: clean(row.description),
+        link: clean(row.link),
+        imageLink: clean(row.image_link),
+        contentLanguage: 'en',
+        targetCountry: country,
+        channel: 'online',
+        price: {
+          value: clean(row.price).replace(/[^0-9.]/g, '') || '0',
+          currency: 'USD'
+        },
+        condition: clean(row.condition) || 'new',
+        availability: clean(row.availability) || 'in stock',
+        brand: clean(row.brand) || 'PromptVault USA',
+        googleProductCategory: clean(row.google_product_category) || '5827',
+        identifierExists: 'no',
+        shipping: [{
+          country: country,
+          service: 'Standard',
+          price: { value: '0', currency: 'USD' }
+        }]
+      });
+    });
   })
   .on('end', async () => {
-    console.log(`Starting sync of ${products.length} products to GMC ${merchantId}`);
-    let successCount = 0;
+    console.log(`🚀 Starting Batched Sync: ${productsToSync.length} total listings (Excluding Korea)`);
     
-    for (const product of products) {
-      try {
-        await content.products.insert({
+    const BATCH_SIZE = 100;
+    let successCount = 0;
+
+    for (let i = 0; i < productsToSync.length; i += BATCH_SIZE) {
+      const currentBatch = productsToSync.slice(i, i + BATCH_SIZE);
+      
+      const batchRequest = {
+        entries: currentBatch.map((prod, index) => ({
+          batchId: i + index,
           merchantId: merchantId,
-          requestBody: product
+          method: 'insert',
+          product: prod
+        }))
+      };
+
+      try {
+        const response = await content.products.custombatch({
+          requestBody: batchRequest
         });
-        console.log(`SYNCED: ${product.offerId} - ${product.title}`);
-        successCount++;
+
+        const entries = response.data.entries || [];
+        const errors = entries.filter(e => e.errors);
+        
+        successCount += (entries.length - errors.length);
+        
+        if (errors.length > 0) {
+          console.error(`❌ Batch Error: ${errors[0].errors.errors[0].message}`);
+        }
+
+        console.log(`Progress: ${successCount}/${productsToSync.length} synced...`);
+        
       } catch (err) {
-        console.error(`FAILED: ${product.offerId} - ${err.message}`);
-        console.error(`  Link: ${product.link}`);
-        console.error(`  Image: ${product.imageLink}`);
+        console.error(`Critical Batch Failure: ${err.message}`);
       }
     }
-    
-    console.log(`DONE: ${successCount}/${products.length} products synced to GMC`);
+
+    console.log(`✅ DONE: ${successCount} listings successfully pushed to GMC.`);
     if (successCount === 0) process.exit(1);
   });
