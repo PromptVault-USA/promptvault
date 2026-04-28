@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # Changed to write so scripts can update data
+  contents: write
 
 concurrency:
   group: "site-build"
@@ -30,8 +30,8 @@ jobs:
 
       - name: Build dist
         env:
-          GMC_KEY: ${{ secrets.GMC_KEY }}
-          MERCHANT_ID: ${{ secrets.MERCHANT_ID }}
+          GMC_KEY: $ secrets.GMC_KEY 
+          MERCHANT_ID: $ secrets.MERCHANT_ID 
         run: |
           set -euxo pipefail
           rm -rf dist
@@ -42,11 +42,10 @@ jobs:
           node scripts/build.js
           node scripts/gmc-sync.js
 
-          # 2. Copy files to dist
-          cp -R index.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html blog.html dist/
+          # 2. Copy files to dist (UPDATED: include vault.html, library.html, claim.html)
+          cp -R index.html vault.html library.html claim.html blog.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html dist/
 
-          # 3. CRITICAL FIX: We DELETED the pages-postprocess line.
-          # You no longer need to prefix URLs for a custom domain.
+          # 3. pages-postprocess intentionally removed for custom domain
 
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
