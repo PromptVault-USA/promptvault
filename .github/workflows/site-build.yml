@@ -30,8 +30,9 @@ jobs:
 
       - name: Build dist
         env:
-          GMC_KEY: $ secrets.GMC_KEY 
-          MERCHANT_ID: $ secrets.MERCHANT_ID 
+          # FIXED: Wrapped secrets in correct GitHub Action syntax
+          GMC_KEY: ${{ secrets.GMC_KEY }}
+          MERCHANT_ID: ${{ secrets.MERCHANT_ID }}
         run: |
           set -euxo pipefail
           rm -rf dist
@@ -42,10 +43,11 @@ jobs:
           node scripts/build.js
           node scripts/gmc-sync.js
 
-          # 2. Copy files to dist (UPDATED: include vault.html, library.html, claim.html)
-          cp -R index.html vault.html library.html claim.html blog.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html dist/
+          # 2. Copy files to dist (Ensures all new redirect files are deployed)
+          # Using -Rf to force recursive copy of folders like 'assets' and 'vault'
+          cp -Rf index.html vault.html library.html claim.html blog.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html dist/
 
-          # 3. pages-postprocess intentionally removed for custom domain
+          # 3. pages-postprocess intentionally removed to maintain root paths on custom domain
 
       - name: Upload artifact for Pages
         uses: actions/upload-artifact@v4
