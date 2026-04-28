@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "csv-parse": "^5.5.6",
+    "csv-parser": "^3.2.0",
     "googleapis": "^144.0.0",
     "papaparse": "^5.4.1"
   }

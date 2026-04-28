@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import fs from 'fs';
-import { parse } from 'csv-parse';
+import csv from 'csv-parser';
 
 const GMC_KEY = process.env.GMC_KEY;
 const MERCHANT_ID = '5766495931';
@@ -10,33 +10,23 @@ if (!GMC_KEY) {
   throw new Error('GMC_KEY environment variable is required');
 }
 
-const key = JSON.parse(GMC_KEY);
-
 const auth = new google.auth.GoogleAuth({
-  credentials: key,
+  credentials: JSON.parse(GMC_KEY),
   scopes: ['https://www.googleapis.com/auth/content'],
 });
 
-google.options({ auth });
-
-const content = google.content('v2.1');
+const content = google.content({ version: 'v2.1', auth });
 
 async function parseProductsCsv() {
-  const csvData = fs.readFileSync(CSV_PATH, 'utf8');
-  const records = [];
+  return new Promise((resolve, reject) => {
+    const records = [];
 
-  await new Promise((resolve, reject) => {
-    parse(csvData, {
-      columns: true,
-      skip_empty_lines: true,
-      trim: true,
-    })
+    fs.createReadStream(CSV_PATH)
+      .pipe(csv())
       .on('data', (record) => records.push(record))
-      .on('end', resolve)
+      .on('end', () => resolve(records))
       .on('error', reject);
   });
-
-  return records;
 }
 
 async function syncProducts() {
