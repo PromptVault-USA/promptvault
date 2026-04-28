@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>NAME | PromptVault USA</title>
   <meta name="description" content="DESC" />
 
@@ -13,7 +13,7 @@
     "@type": "Product",
     "name": "NAME",
     "description": "DESC",
-    "image": "https://promptvaultusa.shop/IMG", 
+    "image": "https://promptvaultusa.shop/IMG",
     "sku": "ID",
     "mpn": "GMC_ID",
     "brand": { "@type": "Brand", "name": "PromptVault USA" },
@@ -48,7 +48,10 @@
 <body>
   <div class="container">
     <div class="glass">
-      <a href="/#browse" style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;">← Back to Vaults</a>
+      <a href="/vault.html"
+         style="color:var(--accent-teal); text-decoration:none; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;">
+        ← Back to Vault
+      </a>
 
       <h1 style="margin-top:20px; color:white; letter-spacing:-1px;">NAME</h1>
 
@@ -100,10 +103,12 @@
     if (schemaScript) {
       const schema = JSON.parse(schemaScript.textContent);
       schema.offers.price = window.checkoutPrice.toFixed(2);
-      // Ensure the image URL is absolute for Google
-      if(!schema.image.startsWith('http')) {
-          schema.image = "https://promptvaultusa.shop/" + schema.image.replace(/^\//, '');
+
+      // Ensure image URL is absolute for Google (fix regex: /^\//)
+      if (schema.image && !schema.image.startsWith('http')) {
+        schema.image = "https://promptvaultusa.shop/" + schema.image.replace(/^\//, "");
       }
+
       schemaScript.textContent = JSON.stringify(schema);
     }
   </script>
