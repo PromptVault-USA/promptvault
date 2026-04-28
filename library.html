@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Library | PromptVault USA</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #e6f1ff; margin: 0; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 30px; }
+    .library-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+        gap: 25px; 
+        max-width: 1000px; 
+        margin: 0 auto; 
+    }
+    .empty-state { text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.03); border-radius: 24px; border: 1px dashed rgba(255,255,255,0.1); }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <a href="/#home" style="color:var(--accent-teal); text-decoration:none; font-weight:800; font-size:0.8rem;">← RETURN TO SHOP</a>
+    <h1 style="font-size: 1.5rem; letter-spacing: -1px;">Intelligence Vault</h1>
+  </div>
+
+  <div id="library-container" class="library-grid">
+    <div class="empty-state" id="empty-msg">
+        <p style="color: #94a3b8;">Your vault is currently locked.</p>
+        <a href="/#browse" class="btn-main" style="display:inline-block; margin-top:15px; background:var(--accent-teal); color:#000; padding:10px 20px; border-radius:12px; text-decoration:none; font-weight:800;">BROWSE PROMPTS</a>
+    </div>
+  </div>
+
+  <script type="module">
+    // We import your existing app logic if possible, or run a standalone check
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedItems = JSON.parse(localStorage.getItem('pv_library')) || [];
+        const container = document.getElementById('library-container');
+        const emptyMsg = document.getElementById('empty-msg');
+
+        if (savedItems.length > 0) {
+            emptyMsg.style.display = 'none';
+            container.innerHTML = savedItems.map(item => `
+                <div class="glass" style="padding:20px; border-radius:24px; background:rgba(17,34,64,0.4); border:1px solid rgba(255,255,255,0.05);">
+                    <img src="${item.img}" style="width:100%; border-radius:12px; margin-bottom:15px;">
+                    <h3 style="margin:0 0 10px 0; font-size:1.1rem;">${item.name}</h3>
+                    <a href="${item.driveLink}" target="_blank" class="btn-main" style="display:block; text-align:center; background:#22c55e; color:white; padding:12px; border-radius:12px; text-decoration:none; font-weight:800;">ACCESS PROMPT PACK</a>
+                </div>
+            `).join('');
+        }
+    });
+  </script>
+</body>
+</html>
