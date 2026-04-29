@@ -16,6 +16,22 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 
+// --- Localization Engine ---
+function getStoreCurrency() {
+  return window.STORE_CURRENCY || "USD";
+}
+
+const currencyFormatter = new Intl.NumberFormat(navigator.language || 'en-US', {
+  style: 'currency',
+  currency: getStoreCurrency(),
+  minimumFractionDigits: 2
+});
+
+function formatPrice(value) {
+  return currencyFormatter.format(value);
+}
+// ---------------------------
+
 function toNumber(v) {
   const n = Number(String(v ?? "").trim());
   return Number.isFinite(n) ? n : NaN;
@@ -82,9 +98,8 @@ function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  const q = (document.getElementById("vault-search")?.value || "")
-    .trim()
-    .toLowerCase();
+  const searchEl = document.getElementById("vault-search");
+  const q = (searchEl?.value || "").trim().toLowerCase();
 
   const filtered = q
     ? products.filter(
@@ -105,13 +120,10 @@ function renderGrid(products) {
         : "";
 
       const old = sale
-        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(
-            2,
-          )}</span>`
+        ? `<span style="text-decoration:line-through;opacity:0.7;">${formatPrice(p.price)}</span>`
         : "";
 
-      const price = `<span style="font-weight:900;">$${fp.toFixed(2)}</span>`;
-
+      const priceHTML = `<span style="font-weight:900;">${formatPrice(fp)}</span>`;
       const buttonId = `paypal-button-${p.id}`;
 
       return `
@@ -127,7 +139,7 @@ function renderGrid(products) {
     ${saleBadge}
     <div style="display:flex;gap:10px;align-items:baseline;">
       ${old}
-      ${price}
+      ${priceHTML}
     </div>
   </div>
 
@@ -177,7 +189,10 @@ function renderPayPalButtonForContainer(containerId) {
             return actions.order.create({
               purchase_units: [
                 {
-                  amount: { value: String(price) },
+                  amount: { 
+                    value: String(price),
+                    currency_code: getStoreCurrency() 
+                  },
                   description: `PV - ${title}`,
                   custom_id: String(productId),
                 },
@@ -201,6 +216,7 @@ function renderPayPalButtonForContainer(containerId) {
               status: "completed",
               items: [{ id: productId, qty: 1 }],
               paypalOrderId: orderId,
+              currency: getStoreCurrency(),
               createdAt: serverTimestamp(),
             });
 
@@ -209,12 +225,12 @@ function renderPayPalButtonForContainer(containerId) {
             )}`;
           } catch (err) {
             console.error("PayPal Approval Error:", err);
-            alert("Payment processing failed. Please contact support.");
+            alert(`Payment processing failed. Support Trace: ${auth.currentUser?.uid || 'Unknown'}`);
           }
         },
         onError: (err) => {
           console.error("PayPal Buttons error:", err);
-          alert("An error occurred with PayPal. Please try again.");
+          alert("An error occurred with PayPal. Please try again or disable ad-blockers.");
         },
       })
       .render(`#${containerId}`);
