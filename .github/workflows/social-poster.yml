@@ -1,27 +1,29 @@
-name: Auto Social Poster
+name: Auto Social Media Poster
 
 on:
   schedule:
-    # Runs automatically every day at 14:00 UTC (10:00 AM Eastern Time)
+    # Runs every day at 14:00 UTC (9:00 AM EST)
     - cron: '0 14 * * *'
-  workflow_dispatch: # Allows you to trigger it manually whenever you want using a button
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
 
 jobs:
   post-to-socials:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v4
-
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install Social Dependencies
-        run: npm install twitter-api-v2 axios
-
-      - name: Run Post Script
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run social media automation script
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
@@ -29,4 +31,5 @@ jobs:
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
-        run: node scripts/social-poster.js
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npx tsx scripts/autopost.ts
