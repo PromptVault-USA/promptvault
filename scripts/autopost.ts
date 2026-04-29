@@ -6,18 +6,27 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Initialize APIs
+const requireEnv = (name: string): string => {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Environment variable ${name} is missing!`);
+  }
+  return value.trim();
+};
+
 const twitterClient = new TwitterApi({
-  appKey: process.env.TWITTER_API_KEY!,
-  appSecret: process.env.TWITTER_API_SECRET!,
-  accessToken: process.env.TWITTER_ACCESS_TOKEN!,
-  accessSecret: process.env.TWITTER_ACCESS_SECRET!,
+  appKey: requireEnv('TWITTER_API_KEY'),
+  appSecret: requireEnv('TWITTER_API_SECRET'),
+  accessToken: requireEnv('TWITTER_ACCESS_TOKEN'),
+  accessSecret: requireEnv('TWITTER_ACCESS_SECRET'),
 });
 
-const pinterestToken = process.env.PINTEREST_ACCESS_TOKEN!;
-const pinterestBoardId = process.env.PINTEREST_BOARD_ID!; // The board to pin to
+const pinterestToken = process.env.PINTEREST_ACCESS_TOKEN ? process.env.PINTEREST_ACCESS_TOKEN.trim() : '';
+const pinterestBoardId = process.env.PINTEREST_BOARD_ID ? process.env.PINTEREST_BOARD_ID.trim() : '';
 
 // Gemini for content generation (if you want to auto-generate variations)
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+const apiKeyValue = process.env.GEMINI_API_KEY || '';
+const ai = new GoogleGenAI({ apiKey: apiKeyValue.trim() });
 
 async function generateSocialPost() {
   const prompt = `Write a short, engaging social media post (under 250 characters) promoting PromptVault USA Intelligence.
@@ -41,9 +50,25 @@ async function postToTwitter(text: string) {
     console.log('Posting to Twitter...');
     const result = await twitterClient.v2.tweet(text + ' https://promptvaultusa.shop');
     console.log('Twitter Post successful! Tweet ID:', result.data.id);
-  } catch (err) {
+  } catch (err: any) {
     console.error('Failed to post to Twitter:', err);
-    throw err;
+    if (err.code === 401) {
+      console.error('\n!!! TWITTER AUTHENTICATION ERROR !!!');
+      console.error('Since your permissions are correctly attached, this 401 error is usually caused by:');
+      console.error('1. Trailing spaces in your GitHub Secrets (the script now automatically trims these, but double-check them).');
+      console.error('2. Or, the App Keys (API Key / Secret) and User Tokens (Access Token / Secret) are swapped.');
+      console.error('3. Or, the OAuth 1.0a User context is not enabled in User authentication settings section of the Twitter dev portal.');
+      console.error('Please verify the secrets match the developer portal exactly.\n');
+    } else if (err.code === 402) {
+      console.error('\n!!! TWITTER API CREDITS DEPLETED (402 ERROR) !!!');
+      console.error('This means your Twitter/X Developer account has run out of posting credits.');
+      console.error('To fix this:');
+      console.error('1. You may have exhausted the Free tier limit (1,500 tweets/month).');
+      console.error('2. Or, you need to set up billing/upgrade to the Basic Tier ($100/mo) in the X Developer Portal.');
+      console.error('Check your dashboard at developer.twitter.com to view your limits and billing status.\n');
+    }
+    // Don't throw err so the script can proceed to other platforms
+    console.error('Skipping Twitter post due to error, proceeding to next platform...');
   }
 }
 
