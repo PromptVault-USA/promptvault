@@ -7,13 +7,24 @@
   <title>NAME | PromptVault USA</title>
   <meta name="description" content="DESC" />
 
-  <script type="application/ld+json" id="gmc-schema">
+  <!-- ADDED: Absolute Canonical URL -->
+  <link rel="canonical" href="https://promptvaultusa.shop/vault/SLUG.html" />
+
+  <!-- ADDED: Open Graph tags for rich social sharing -->
+  <meta property="og:title" content="NAME | PromptVault USA" />
+  <meta property="og:description" content="DESC" />
+  <meta property="og:image" content="ABSOLUTE_IMAGE_URL" />
+  <meta property="og:url" content="https://promptvaultusa.shop/vault/SLUG.html" />
+  <meta property="twitter:card" content="summary_large_image" />
+
+  <!-- FIXED: Static Schema. The Build script must inject FINAL_COMPUTED_PRICE and ABSOLUTE_IMAGE_URL directly -->
+  <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "NAME",
     "description": "DESC",
-    "image": "https://promptvaultusa.shop/IMG",
+    "image": "ABSOLUTE_IMAGE_URL",
     "sku": "ID",
     "mpn": "GMC_ID",
     "brand": { "@type": "Brand", "name": "PromptVault USA" },
@@ -21,7 +32,7 @@
       "@type": "Offer",
       "url": "https://promptvaultusa.shop/vault/SLUG.html",
       "priceCurrency": "USD",
-      "price": "PRICE",
+      "price": "FINAL_COMPUTED_PRICE",
       "availability": "https://schema.org/InStock",
       "seller": { "@type": "Organization", "name": "PromptVault USA" }
     }
@@ -56,14 +67,14 @@
       <h1 style="margin-top:20px; color:white; letter-spacing:-1px;">NAME</h1>
 
       <div style="margin: 25px 0; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08);">
-        <img src="/IMG" alt="NAME" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
+        <img src="IMG" alt="NAME" style="width: 100%; display: block;" onerror="this.src='/logo.png'">
       </div>
 
       <p style="color:#94a3b8; line-height:1.6; margin-bottom:25px; font-size:1.05rem;">DESC</p>
 
       <div class="price-wrap">
         <span class="old-price" id="msrp-display"></span>
-        <span class="current-price" id="price-display">$0.00</span>
+        <span class="current-price" id="price-display">$FINAL_COMPUTED_PRICE</span>
       </div>
 
       <div class="payment-zone">
@@ -85,31 +96,18 @@
   <script src="https://www.paypal.com/sdk/js?client-id=AWpMh-Ki1opxnGQEIw9oEhJCsGnN8ol5QxJ1SJSdR39y2nTu0zciYa6UftX0-DgPz6A0iTZ_x0g4d6Nr&currency=USD"></script>
 
   <script>
+    // FIXED: Only handle basic display toggling here.
+    // Do NOT mutate JSON-LD schema or perform base calculations here.
+    // Let the Node/Build script handle that and inject the computed values statically.
+    
     const msrp = parseFloat("MSRP") || 0;
-    const sale = parseFloat("SALE_PRICE") || 0;
+    const checkoutPrice = parseFloat("FINAL_COMPUTED_PRICE") || 0;
+    window.checkoutPrice = checkoutPrice;
 
-    const computed = (sale > 0 && msrp > sale) ? sale : (parseFloat("PRICE") || msrp);
-    window.checkoutPrice = computed;
-
-    document.getElementById('price-display').textContent = `$${window.checkoutPrice.toFixed(2)}`;
-
-    if (msrp > window.checkoutPrice) {
+    if (msrp > checkoutPrice) {
       const el = document.getElementById('msrp-display');
       el.textContent = `$${msrp.toFixed(2)}`;
       el.style.display = 'inline';
-    }
-
-    const schemaScript = document.getElementById('gmc-schema');
-    if (schemaScript) {
-      const schema = JSON.parse(schemaScript.textContent);
-      schema.offers.price = window.checkoutPrice.toFixed(2);
-
-      // Ensure image URL is absolute for Google (fix regex: /^\//)
-      if (schema.image && !schema.image.startsWith('http')) {
-        schema.image = "https://promptvaultusa.shop/" + schema.image.replace(/^\//, "");
-      }
-
-      schemaScript.textContent = JSON.stringify(schema);
     }
   </script>
 
