@@ -24,12 +24,16 @@ async function generateSocialPost() {
 It should be exciting, professional, and use 2-3 relevant hashtags (e.g., #AI #Prompts #Tech).
 Do not include quotation marks around the output. End with a call to action to visit the link.`;
   
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: prompt,
-  });
-
-  return response.text?.trim() || "Discover the best AI Prompts at PromptVault USA Intelligence! Unlock your productivity today. #AI #Productivity";
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+    return response.text?.trim() || "Discover the best AI Prompts at PromptVault USA Intelligence! Unlock your productivity today. #AI #Productivity";
+  } catch (error) {
+    console.warn("Gemini API generation failed (possibly due to quota). Falling back to default message.", error);
+    return "Discover the best AI Prompts at PromptVault USA Intelligence! Unlock your productivity today. #AI #Productivity";
+  }
 }
 
 async function postToTwitter(text: string) {
@@ -39,6 +43,7 @@ async function postToTwitter(text: string) {
     console.log('Twitter Post successful! Tweet ID:', result.data.id);
   } catch (err) {
     console.error('Failed to post to Twitter:', err);
+    throw err;
   }
 }
 
@@ -70,6 +75,7 @@ async function postToPinterest(title: string, description: string, link: string)
     console.log('Pinterest Post successful! Pin ID:', response.data.id);
   } catch (err: any) {
     console.error('Failed to post to Pinterest:', err.response?.data || err.message);
+    throw err;
   }
 }
 
@@ -91,4 +97,7 @@ async function main() {
   console.log('Automation complete!');
 }
 
-main().catch(console.error);
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
