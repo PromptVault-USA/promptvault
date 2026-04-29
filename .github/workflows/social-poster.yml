@@ -21,7 +21,9 @@ jobs:
           cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci || echo "npm ci failed, skipping"
+          npm install twitter-api-v2 axios dotenv @google/genai tsx
         
       - name: Run social media automation script
         env:
