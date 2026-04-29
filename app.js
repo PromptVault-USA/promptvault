@@ -1,72 +1,55 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+// /app.js
 import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import {
-  getFirestore,
   doc,
   setDoc,
   collection,
-  query,
-  where,
   getDocs,
   serverTimestamp,
+  query,
+  where,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
 
-let app, auth, db;
-let productData = []; // Store fetched products in memory
+import {
+  signInAnonymously,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-async function boot() {
-  console.log("app.js boot() started");
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
+import { auth, db } from "./firebase-config.js";
 
-  setupAuthUI();
-  
-  if (document.getElementById("product-list")) {
-    await fetchProducts();
-    if(window.location.pathname.includes('vault.html')) {
-        renderProducts(productData); // Render all on vault.html
-    }
-  }
+function toNumber(v) {
+  const n = Number(String(v ?? "").trim());
+  return Number.isFinite(n) ? n : NaN;
 }
 
-function setupAuthUI() {
-  const btn = document.getElementById("auth-btn");
-  if (!btn) return;
+function normalizeImg(img) {
+  const raw = String(img ?? "").trim();
+  if (!raw) return "https://promptvaultusa.shop/logo.png";
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+  if (raw.startsWith("/")) return `https://promptvaultusa.shop${raw}`;
+  return `https://promptvaultusa.shop/${raw}`;
+}
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      btn.textContent = "Sign Out";
-      btn.onclick = () => signOut(auth);
-      
-      const libBtn = document.getElementById("library-btn");
-      if(libBtn) libBtn.style.display = "flex";
-      
-      if (document.getElementById("library-list")) {
-        loadLibrary(user);
-      }
-    } else {
-      btn.textContent = "Sign In / View Library";
-      btn.onclick = () => {
-        const p = new GoogleAuthProvider();
-        signInWithPopup(auth, p).catch((e) => console.error("Login failed:", e));
-      };
-      const libBtn = document.getElementById("library-btn");
-      if(libBtn) libBtn.style.display = "none";
-      
-      const libList = document.getElementById("library-list");
-      if (libList) {
-        libList.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b;">Please sign in to view your library.</div>`;
-      }
-    }
-  });
+function hasSale(p) {
+  return (
+    p.sale_price !== null &&
+    Number.isFinite(p.sale_price) &&
+    p.sale_price > 0 &&
+    p.sale_price < p.price
+  );
+}
+
+function finalPrice(p) {
+  return hasSale(p) ? p.sale_price : p.price;
+}
+
+function ensurePayPalReady() {
+  return !!(window.paypal && window.paypal.Buttons);
+}
+
+async function requireAnonAuth() {
+  if (auth.currentUser) return auth.currentUser;
+  await signInAnonymously(auth);
+  return auth.currentUser;
 }
 
 async function fetchProducts() {
@@ -74,31 +57,64 @@ async function fetchProducts() {
   if (!res.ok) throw new Error(`products.json fetch failed: ${res.status}`);
 
   const raw = await res.json();
-  productData = raw; 
 
-  // Make available globally if a specific page needs it later
-  window.products = productData;
+  return (raw || [])
+    .map((p) => ({
+      id: String(p.id ?? "").trim(),
+      slug: String(p.slug ?? "").trim(),
+      title: String(p.title ?? "").trim(),
+      price: toNumber(p.price),
+      sale_price:
+        p.sale_price === null || p.sale_price === undefined || p.sale_price === ""
+          ? null
+          : toNumber(p.sale_price),
+      img: normalizeImg(p.img),
+      drivelink: String(p.drivelink ?? "").trim(),
+      gmc_id: String(p.gmc_id ?? "").trim(),
+      desc: String(p.desc ?? "").trim(),
+    }))
+    .filter((p) => p.id && p.slug && p.title && Number.isFinite(p.price));
 }
 
-// Renders the products into the grid
-function renderProducts(items) {
-  const grid = document.getElementById("product-list");
-  if (!grid) return;
+let PRODUCTS_CACHE = [];
 
-  grid.innerHTML = "";
+function renderGrid(products) {
+  const list = document.getElementById("product-list");
+  if (!list) return;
 
-  if (!items || items.length === 0) {
-    grid.innerHTML = '<div style="text-align:center; color:#64748b; padding:40px; grid-column:1/-1;">No assets found in the vault.</div>';
-    return;
-  }
+  const q = (document.getElementById("vault-search")?.value || "")
+    .trim()
+    .toLowerCase();
 
-  items.forEach((p) => {
-    // Basic fallbacks
-    if (!p.features) p.features = ["Instant Download", "Lifetime Access"];
-    const fileId = p.pdfId || "no-file-id"; // Ensure mapping exists
+  const filtered = q
+    ? products.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.slug.toLowerCase().includes(q) ||
+          p.id.toLowerCase().includes(q),
+      )
+    : products;
 
-    const div = document.createElement("div");
-    div.innerHTML = `
+  list.innerHTML = filtered
+    .map((p) => {
+      const fp = finalPrice(p);
+      const sale = hasSale(p);
+
+      const saleBadge = sale
+        ? `<div style="display:inline-block;background:#fbbf24;color:#0a0e27;font-weight:900;font-size:0.7rem;letter-spacing:1px;padding:6px 10px;border-radius:999px;margin-bottom:8px;">SALE</div>`
+        : "";
+
+      const old = sale
+        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(
+            2,
+          )}</span>`
+        : "";
+
+      const price = `<span style="font-weight:900;">$${fp.toFixed(2)}</span>`;
+
+      const buttonId = `paypal-button-${p.id}`;
+
+      return `
 <div class="product-card" style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:14px;">
   <a href="https://promptvaultusa.shop/vault/${p.slug}.html" style="text-decoration:none;color:inherit;">
     <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,0.08);">
@@ -106,154 +122,201 @@ function renderProducts(items) {
     </div>
     <div style="margin-top:10px;font-weight:800;">${p.title}</div>
   </a>
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px; margin-bottom:15px;">
-     <div style="font-size:1.1rem; color:var(--accent); font-weight:800;">$${p.price}</div>
+
+  <div style="margin:10px 0;">
+    ${saleBadge}
+    <div style="display:flex;gap:10px;align-items:baseline;">
+      ${old}
+      ${price}
+    </div>
   </div>
-  <div id="paypal-btn-${p.slug}"></div>
+
+  <div
+    id="${buttonId}"
+    data-rendered="0"
+    data-product-id="${p.id}"
+    data-product-title="${p.title}"
+    data-product-price="${fp.toFixed(2)}"
+  ></div>
 </div>`;
-    grid.appendChild(div);
-
-    renderPayPal(p, `paypal-btn-${p.slug}`, fileId);
-  });
-}
-
-function renderPayPal(item, containerId, fileId) {
-  // If we're not on a secure (https) environment, PayPal SDK might not load properly,
-  // but we still try to render if the window.paypal object exists.
-  if (!window.paypal) {
-      console.warn("PayPal SDK not loaded yet for", containerId);
-      return;
-  }
-
-  window.paypal
-    .Buttons({
-      style: { layout: "horizontal", color: "blue", shape: "pill", label: "buy", height: 35 },
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: { value: item.price },
-              description: item.title,
-            },
-          ],
-        });
-      },
-      onApprove: async (data, actions) => {
-        try {
-          const order = await actions.order.capture();
-          const pEmail = order.payer?.email_address;
-          if (!pEmail) throw new Error("No buyer email found.");
-
-          const orderId = order.id;
-          
-          await savePurchase(pEmail, item, fileId, orderId);
-
-        } catch (err) {
-          console.error("Capture Error:", err);
-          alert("Payment processed, but order saving failed. Contact support with your email.");
-        }
-      },
-      onError: (err) => {
-        console.error("PayPal UI Error:", err);
-        alert("Payment failed or was canceled.");
-      },
     })
-    .render("#" + containerId);
+    .join("");
+
+  if (ensurePayPalReady()) {
+    filtered.forEach((p) =>
+      renderPayPalButtonForContainer(`paypal-button-${p.id}`),
+    );
+  }
 }
 
-async function savePurchase(email, item, fileId, orderId) {
-    try {
-        console.log("Saving purchase for", email);
-        const userQuery = query(
-            collection(db, "users"),
-            where("email", "==", email),
-        );
-        const snap = await getDocs(userQuery);
-
-        let uid;
-        if (!snap.empty) {
-            uid = snap.docs[0].id;
-        } else {
-            // Unregistered email, create a placeholder mapped to their email string
-            uid = `unregistered_${email}`;
-        }
-
-        const purchaseRef = doc(db, "users", uid, "purchases", orderId);
-        await setDoc(purchaseRef, {
-            orderId: orderId,
-            productSlug: item.slug,
-            productTitle: item.title,
-            pdfId: fileId,
-            buyerEmail: email,
-            pricePaid: item.price,
-            createdAt: serverTimestamp(),
-        });
-
-        window.location.href = `https://promptvaultusa.shop/success.html?tx=${encodeURIComponent(
-            orderId,
-        )}`;
-    } catch (err) {
-        console.error("Purchase logging error:", err);
-        alert("Payment succeeded, but we couldn't log the order to your account automatically. Please email support@promptvaultusa.shop to claim your asset manually.");
-    }
-}
-
-async function loadLibrary(user) {
-  const libList = document.getElementById("library-list");
-  if (!libList) return;
-
-  libList.innerHTML = `<div style="text-align:center; padding:20px;">Fetching your library...</div>`;
-
+function renderPayPalButtonForContainer(containerId) {
   try {
-    const q = query(collection(db, "users", user.uid, "purchases"));
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!ensurePayPalReady()) return;
+
+    if (el.getAttribute("data-rendered") === "1") return;
+    el.setAttribute("data-rendered", "1");
+
+    const productId = el.getAttribute("data-product-id") || "";
+    const title = el.getAttribute("data-product-title") || "PromptVault Pack";
+    const price = el.getAttribute("data-product-price") || "0.00";
+
+    window.paypal
+      .Buttons({
+        style: {
+          layout: "vertical",
+          color: "gold",
+          shape: "rect",
+          height: 40,
+          label: "buynow",
+        },
+        createOrder: async (data, actions) => {
+          try {
+            await requireAnonAuth();
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: { value: String(price) },
+                  description: `PV - ${title}`,
+                  custom_id: String(productId),
+                },
+              ],
+            });
+          } catch (err) {
+            console.error("PayPal Order Creation Error:", err);
+            throw new Error("Failed to create order. Please try again.");
+          }
+        },
+        onApprove: async (data, actions) => {
+          try {
+            await requireAnonAuth();
+            const details = await actions.order.capture();
+
+            const uid = auth.currentUser.uid;
+            const orderId = details.id;
+
+            await setDoc(doc(db, "orders", orderId), {
+              uid,
+              status: "completed",
+              items: [{ id: productId, qty: 1 }],
+              paypalOrderId: orderId,
+              createdAt: serverTimestamp(),
+            });
+
+            window.location.href = `https://promptvaultusa.shop/success.html?tx=${encodeURIComponent(
+              orderId,
+            )}`;
+          } catch (err) {
+            console.error("PayPal Approval Error:", err);
+            alert("Payment processing failed. Please contact support.");
+          }
+        },
+        onError: (err) => {
+          console.error("PayPal Buttons error:", err);
+          alert("An error occurred with PayPal. Please try again.");
+        },
+      })
+      .render(`#${containerId}`);
+  } catch (error) {
+    console.error("PayPal Button Container Error:", error);
+  }
+}
+
+async function loadLibrary(products) {
+  try {
+    await requireAnonAuth();
+    const uid = auth.currentUser.uid;
+
+    const grid = document.getElementById("user-library-grid");
+    if (!grid) return;
+
+    grid.innerHTML = `<p style="text-align:center;opacity:0.8;">Syncing Assets...</p>`;
+
+    const q = query(collection(db, "orders"), where("uid", "==", uid));
     const snap = await getDocs(q);
 
-    if (snap.empty) {
-      libList.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b; background:rgba(255,255,255,0.02); border-radius:18px;">
-        <span style="font-size:2rem; display:block; margin-bottom:10px;">📭</span>
-        You don't have any assets in your library yet.<br>
-        <a href="https://promptvaultusa.shop/vault.html" style="color:var(--accent); text-decoration:none; display:inline-block; margin-top:10px;">Browse the Vault →</a>
-      </div>`;
-      return;
-    }
+    let html = "";
 
-    libList.innerHTML = "";
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      const div = document.createElement("div");
-      div.className = "purchase-item";
-      div.style.cssText = `
-        background: rgba(255,255,255,0.03); 
-        padding: 20px; 
-        border-radius: 12px; 
-        margin-bottom: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid rgba(255,255,255,0.05);
-      `;
+    snap.forEach((d) => {
+      const o = d.data();
+      if (!o) return;
+      if (o.status !== "completed" && o.status !== "paid") return;
 
-      // The download button opens the proxy download endpoint
-      div.innerHTML = `
-        <div>
-          <div style="font-weight:800; font-size:1.1rem; color:white;">${data.productTitle}</div>
-          <div style="font-size:0.8rem; color:#64748b; margin-top:4px;">Order ID: ${data.orderId.substring(0,8)}...</div>
-        </div>
-        <a href="https://asia-southeast1-promptvaultusa.cloudfunctions.net/downloadPdf?pdfId=${data.pdfId}&uid=${user.uid}" 
-           class="btn-main" 
-           style="text-decoration:none; display:inline-block; font-size:0.85rem; padding:10px 20px;">
-           Download Asset
-        </a>
-      `;
-      libList.appendChild(div);
+      for (const it of o.items || []) {
+        const pid = String(it?.id || "").trim();
+        const p = products.find((x) => x.id === pid);
+        if (!p) continue;
+
+        html += `
+<div style="border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+  <div style="font-weight:800;">${p.title}</div>
+  <a href="${p.drivelink}" target="_blank" rel="noopener" style="padding:8px 12px;border-radius:10px;text-decoration:none;background:#10b981;color:white;font-weight:700;">Download</a>
+</div>`;
+      }
     });
-  } catch (err) {
-    console.error("Library Error:", err);
-    libList.innerHTML = `<div style="color:var(--danger); padding:20px; text-align:center;">Failed to load library: ${err.message}</div>`;
+
+    grid.innerHTML =
+      html ||
+      `<p style="text-align:center;opacity:0.8;padding:30px;">No vaults unlocked yet.</p>`;
+  } catch (error) {
+    console.error("Library Loading Error:", error);
+    const grid = document.getElementById("user-library-grid");
+    if (grid) {
+      grid.innerHTML = `<p style="text-align:center;color:#ef4444;padding:30px;">Error loading library. Please try again.</p>`;
+    }
   }
 }
 
-// Start everything up when the Document Object Model is parsed
-document.addEventListener("DOMContentLoaded", () => {
+// Keep this for the search box on vault.html
+window.filterProducts = (text) => {
+  const el = document.getElementById("vault-search");
+  if (el) el.value = String(text ?? "");
+  renderGrid(PRODUCTS_CACHE);
+};
+
+// NOTE: changePage() removed — you’re now using separate HTML pages (href navigation).
+
+async function boot() {
+  try {
+    PRODUCTS_CACHE = await fetchProducts();
+
+    // Vault page behavior
+    const hasVaultGrid = !!document.getElementById("product-list");
+    if (hasVaultGrid) {
+      const search = document.getElementById("vault-search");
+      if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
+
+      renderGrid(PRODUCTS_CACHE);
+
+      // Optional: handle a single-paypal container if you use it anywhere
+      const single = document.getElementById("single-paypal-button");
+      if (single) {
+        single.setAttribute("data-rendered", "0");
+        if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
+      }
+    }
+
+    // Library page behavior
+    const hasLibraryGrid = !!document.getElementById("user-library-grid");
+    if (hasLibraryGrid) {
+      onAuthStateChanged(auth, async () => {
+        await loadLibrary(PRODUCTS_CACHE);
+      });
+    }
+  } catch (error) {
+    console.error("Application Boot Error:", error);
+    const list = document.getElementById("product-list");
+    if (list) {
+      list.innerHTML = `<p style="text-align:center;color:#ef4444;padding:40px;">Failed to load products. Please refresh the page.</p>`;
+    }
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    boot().catch((e) => console.error("Boot Failed:", e));
+  });
+} else {
   boot().catch((e) => console.error("Boot Failed:", e));
-});
+}
