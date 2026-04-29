@@ -100,7 +100,15 @@ async function postToPinterest(title: string, description: string, link: string)
     console.log('Pinterest Post successful! Pin ID:', response.data.id);
   } catch (err: any) {
     console.error('Failed to post to Pinterest:', err.response?.data || err.message);
-    throw err;
+    if (err.response?.data?.code === 3 || err.response?.data?.message?.includes('scopes')) {
+      console.error('\n!!! PINTEREST AUTHENTICATION ERROR !!!');
+      console.error('This means your Pinterest Access Token does not have the correct permissions.');
+      console.error('To fix this:');
+      console.error('1. You may need standard access or need to request the write scopes.');
+      console.error('2. Generate a NEW Access Token with "boards:write" and "pins:write" scopes/permissions if possible.');
+      console.error('3. Update your PINTEREST_ACCESS_TOKEN secret in GitHub with the new token.\n');
+    }
+    console.error('Skipping Pinterest post due to error, proceeding...');
   }
 }
 
