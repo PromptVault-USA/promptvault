@@ -1,8 +1,15 @@
+/**
+ * GMC Sync Service v3.2 - Organization Edition
+ * Target ID: 5766495931
+ * Fixes: Duplicate listing prevention and unique country-based offer IDs.
+ */
+
 import { google } from 'googleapis';
 import fs from 'fs';
 import csv from 'csv-parser';
 
-const merchantId = '5766495931';
+// FIXED: Reverting to your preferred Merchant ID
+const merchantId = process.env.MERCHANT_ID || '5766495931';
 
 // 90 countries list - South Korea (KR) strictly excluded
 const TARGET_COUNTRIES = [
@@ -25,39 +32,40 @@ fs.createReadStream('gmc_products.csv')
   .pipe(csv())
   .on('data', (row) => {
     const clean = (val) => val?.toString().trim() || '';
-    const offerId = clean(row.id);
+    const baseOfferId = clean(row.id);
 
-    // Clean sale date: removes spaces around the "/" to satisfy GMC formatting
     const rawSaleDate = clean(row.sale_price_effective_date);
     const cleanSaleDate = rawSaleDate.replace(/\s/g, ''); 
 
     TARGET_COUNTRIES.forEach(country => {
       if (country === 'KR' || country === 'KP') return;
 
+      // ENSURES NO DUPLICATES: Unique ID per country
+      const uniqueOfferId = `${baseOfferId}_${country.toLowerCase()}`;
+
       productsToSync.push({
-        offerId: offerId,
+        offerId: uniqueOfferId,
         title: clean(row.title),
         description: clean(row.description),
         link: clean(row.link),
         imageLink: clean(row.image_link),
         contentLanguage: 'en',
         targetCountry: country,
+        feedLabel: country, 
         channel: 'online',
         price: {
           value: clean(row.price).replace(/[^0-9.]/g, '') || '0',
           currency: 'USD'
         },
-        // NEW: Added Sale Price logic
         salePrice: {
           value: clean(row.sale_price).replace(/[^0-9.]/g, '') || '0',
           currency: 'USD'
         },
-        // NEW: Added Sale Price Effective Date
         salePriceEffectiveDate: cleanSaleDate,
         condition: clean(row.condition) || 'new',
         availability: clean(row.availability) || 'in stock',
         brand: clean(row.brand) || 'PromptVault USA',
-        googleProductCategory: '5827', // Updated to your requested category
+        googleProductCategory: '5827', 
         identifierExists: 'no',
         shipping: [{
           country: country,
@@ -68,7 +76,7 @@ fs.createReadStream('gmc_products.csv')
     });
   })
   .on('end', async () => {
-    console.log(`🚀 Starting Batched Sync: ${productsToSync.length} listings (Excluding Korea)`);
+    console.log(`🚀 Starting Batched Sync: ${productsToSync.length} listings for ID: ${merchantId}`);
     
     const BATCH_SIZE = 100;
     let successCount = 0;
@@ -96,7 +104,7 @@ fs.createReadStream('gmc_products.csv')
         successCount += (entries.length - errors.length);
         
         if (errors.length > 0) {
-          console.error(`❌ Batch Error (First item): ${errors[0].errors.errors[0].message}`);
+          console.error(`❌ Batch Error: ${errors[0].errors.errors[0].message}`);
         }
 
         console.log(`Progress: ${successCount}/${productsToSync.length} synced...`);
@@ -106,6 +114,6 @@ fs.createReadStream('gmc_products.csv')
       }
     }
 
-    console.log(`✅ DONE: ${successCount} listings successfully pushed with Sale Prices.`);
+    console.log(`✅ DONE: ${successCount} listings pushed to Merchant Center.`);
     if (successCount === 0) process.exit(1);
   });
