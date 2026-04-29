@@ -43,9 +43,9 @@ jobs:
           node scripts/build.js
           node scripts/gmc-sync.js
 
-          # 2. Copy files to dist (Ensures all new redirect files are deployed)
+          # 2. Copy files to dist (Ensures all necessary files are deployed)
           # Using -Rf to force recursive copy of folders like 'assets' and 'vault'
-          cp -Rf index.html vault.html library.html claim.html blog.html app.js products.csv products.json gmc-lookup.json sitemap.xml css assets vault blog logo.png legal.html success.html dist/
+          cp -Rf index.html vault.html library.html claim.html blog.html app.js firebase-config.js products.csv products.json gmc-lookup.json sitemap.xml robots.txt CNAME google8da2d931e5014485.html pinterest-6a583.html css js assets vault blog logo.png og-image.jpg legal.html success.html template.html dist/
 
           # 3. pages-postprocess intentionally removed to maintain root paths on custom domain
 
