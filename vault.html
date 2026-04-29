@@ -5,108 +5,110 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PromptVault USA | Vault</title>
 
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="stylesheet" href="https://promptvaultusa.shop/css/style.css" />
+  <link rel="icon" type="image/png" href="https://promptvaultusa.shop/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
 
   <style>
-    :root {
-      --accent: #4fd1c5;
-      --secondary: #8b5cf6;
-      --glass: rgba(17, 34, 64, 0.4);
-      --border: rgba(255, 255, 255, 0.05);
-      --success: #10b981;
-      --text-gray: #94a3b8;
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .bottom-nav { max-width: 480px !important; }
-    .nav-item small { font-size: 0.55rem !important; font-weight: 800; }
+    .main-content {
+      flex: 1;
+      padding: 100px 20px 100px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
   </style>
 </head>
-
 <body>
   <header>
     <div class="header-wrap">
-      <a href="/index.html" style="cursor:pointer; display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
-        <img src="/logo.png" class="logo-box" alt="Logo" />
+      <a href="https://promptvaultusa.shop/index.html" style="cursor:pointer; display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+        <img src="https://promptvaultusa.shop/logo.png" class="logo-box" alt="Logo" />
         <span style="font-weight:800; letter-spacing:-1px;">
           PROMPTVAULT<span style="color:var(--secondary)">USA</span>
         </span>
       </a>
 
       <div style="display: flex; gap: 12px; align-items: center;">
-        <a href="/library.html" class="signin-pill" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+        <a href="https://promptvaultusa.shop/library.html" class="signin-pill" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
           My Library
         </a>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <div style="padding: 30px 0; width: 100%;">
-      <input
-        type="text"
-        id="vault-search"
-        placeholder="Search the Vault..."
-        oninput="if(window.filterProducts) window.filterProducts(this.value)"
-        style="width:100%; padding:15px 25px; border-radius:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; font-size:1rem; margin-bottom:20px;"
-      />
-
-      <!-- If something fails, this will show a helpful message -->
-      <div id="vault-debug" style="display:none; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid rgba(239,68,68,0.35); background: rgba(239,68,68,0.08); color: #fecaca; font-weight: 700;"></div>
-
-      <div class="vault-grid" id="product-list"></div>
+  <main class="main-content">
+    <div style="text-align:center; margin-bottom:40px;">
+      <h1 style="font-size: clamp(2rem, 5vw, 3rem); font-weight:800; margin-bottom:10px;">The Asset Vault</h1>
+      <p style="color:#94a3b8; font-size:1.1rem; max-width:600px; margin:0 auto;">
+        Browse our collection of industrial-grade prompt architectures, automated 
+        systems, and growth blueprints.
+      </p>
     </div>
 
+    <!-- Product Grid Container where app.js renders the items -->
+    <div class="product-grid" id="product-list">
+      <div style="text-align:center; color:#64748b; padding:40px; grid-column:1/-1;">
+        Loading Vault Assets...
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-injection-point">
+    <!-- Inject Footer via inject-footer.js or keep the manual HTML below -->
     <footer class="legal-text">
       <div class="legal-links">
-        <a href="/index.html">Home</a>
-        <a href="/vault.html">Vault</a>
-        <a href="/library.html">Library</a>
-        <a href="/blog.html">Blog</a>
-        <a href="/claim.html">Claim</a>
-        <a href="/legal.html#privacy">Privacy</a>
-        <a href="/legal.html#terms">Terms</a>
-        <a href="/legal.html#refunds">Refunds</a>
+        <a href="https://promptvaultusa.shop/index.html">Home</a>
+        <a href="https://promptvaultusa.shop/vault.html">Vault</a>
+        <a href="https://promptvaultusa.shop/library.html">Library</a>
+        <a href="https://promptvaultusa.shop/blog.html">Blog</a>
+        <a href="https://promptvaultusa.shop/claim.html">Claim</a>
+        <a href="https://promptvaultusa.shop/legal.html#privacy">Privacy</a>
+        <a href="https://promptvaultusa.shop/legal.html#terms">Terms</a>
+        <a href="https://promptvaultusa.shop/legal.html#refunds">Refunds</a>
       </div>
       <p>© 2026 PromptVault USA | Cebu City, PH</p>
     </footer>
-  </main>
+  </div>
 
   <nav class="bottom-nav">
-    <a class="nav-item" href="/index.html"><span>🏠</span><small>Home</small></a>
-    <a class="nav-item active" href="/vault.html"><span>⊞</span><small>Vault</small></a>
-    <a class="nav-item" href="/blog.html"><span>📰</span><small>Blog</small></a>
-    <a class="nav-item" href="/library.html"><span>🎁</span><small>Library</small></a>
-    <a class="nav-item" href="/claim.html"><span>🧾</span><small>Claim</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/index.html"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item active" href="https://promptvaultusa.shop/vault.html"><span>⊞</span><small>Vault</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/blog.html"><span>📰</span><small>Blog</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/library.html"><span>🎁</span><small>Library</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/claim.html"><span>🧾</span><small>Claim</small></a>
   </nav>
 
   <!-- PayPal SDK (needed for the Buy buttons inside the grid) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AQfP6-hFq0wO90O7mR0PqQkM3o4yU2J5Xz-6U0wOMQ91Y72eT3-2T4S3A9c8Oq1A1x3C7V9T5a0B5W6f&currency=USD&components=buttons"></script>
 
   <!-- App: fetches /products.json and renders into #product-list -->
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="https://promptvaultusa.shop/app.js"></script>
 
   <!-- Optional helper (only if you’re using it across pages) -->
-  <script src="/js/inject-footer.js"></script>
+  <script src="https://promptvaultusa.shop/js/inject-footer.js"></script>
 
   <!-- Quick debug: show an error if products.json is unreachable -->
   <script>
-    (async () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       try {
-        const res = await fetch("/products.json", { cache: "no-store" });
+        const res = await fetch("https://promptvaultusa.shop/products.json", { cache: "no-store" });
         if (!res.ok) throw new Error("products.json HTTP " + res.status);
         const data = await res.json();
         if (!Array.isArray(data) || data.length === 0) {
-          const el = document.getElementById("vault-debug");
-          el.style.display = "block";
-          el.textContent = "products.json loaded, but it’s empty. Check products.csv / build step.";
+          console.warn("products.json empty or not an array");
         }
-      } catch (e) {
-        const el = document.getElementById("vault-debug");
-        el.style.display = "block";
-        el.textContent = "Vault can’t load products.json: " + (e?.message || String(e));
+      } catch (err) {
+        console.error("Vault index sanity check failed:", err.message);
       }
-    })();
+    });
   </script>
 </body>
 </html>
