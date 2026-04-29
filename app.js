@@ -16,22 +16,6 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 
-// --- Localization Engine ---
-function getStoreCurrency() {
-  return window.STORE_CURRENCY || "USD";
-}
-
-const currencyFormatter = new Intl.NumberFormat(navigator.language || 'en-US', {
-  style: 'currency',
-  currency: getStoreCurrency(),
-  minimumFractionDigits: 2
-});
-
-function formatPrice(value) {
-  return currencyFormatter.format(value);
-}
-// ---------------------------
-
 function toNumber(v) {
   const n = Number(String(v ?? "").trim());
   return Number.isFinite(n) ? n : NaN;
@@ -98,15 +82,16 @@ function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  const searchEl = document.getElementById("vault-search");
-  const q = (searchEl?.value || "").trim().toLowerCase();
+  const q = (document.getElementById("vault-search")?.value || "")
+    .trim()
+    .toLowerCase();
 
   const filtered = q
     ? products.filter(
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.slug.toLowerCase().includes(q) ||
-          p.id.toLowerCase().includes(q),
+          p.id.toLowerCase().includes(q)
       )
     : products;
 
@@ -120,10 +105,11 @@ function renderGrid(products) {
         : "";
 
       const old = sale
-        ? `<span style="text-decoration:line-through;opacity:0.7;">${formatPrice(p.price)}</span>`
+        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>`
         : "";
 
-      const priceHTML = `<span style="font-weight:900;">${formatPrice(fp)}</span>`;
+      const priceHtml = `<span style="font-weight:900;">$${fp.toFixed(2)}</span>`;
+
       const buttonId = `paypal-button-${p.id}`;
 
       return `
@@ -139,7 +125,7 @@ function renderGrid(products) {
     ${saleBadge}
     <div style="display:flex;gap:10px;align-items:baseline;">
       ${old}
-      ${priceHTML}
+      ${priceHtml}
     </div>
   </div>
 
@@ -156,7 +142,7 @@ function renderGrid(products) {
 
   if (ensurePayPalReady()) {
     filtered.forEach((p) =>
-      renderPayPalButtonForContainer(`paypal-button-${p.id}`),
+      renderPayPalButtonForContainer(`paypal-button-${p.id}`)
     );
   }
 }
@@ -172,7 +158,10 @@ function renderPayPalButtonForContainer(containerId) {
 
     const productId = el.getAttribute("data-product-id") || "";
     const title = el.getAttribute("data-product-title") || "PromptVault Pack";
-    const price = el.getAttribute("data-product-price") || "0.00";
+    const priceStr = el.getAttribute("data-product-price") || "0.00";
+    
+    // Safety check for valid float conversion
+    const price = parseFloat(priceStr).toFixed(2);
 
     window.paypal
       .Buttons({
@@ -185,14 +174,14 @@ function renderPayPalButtonForContainer(containerId) {
         },
         createOrder: async (data, actions) => {
           try {
-            await requireAnonAuth();
+             // Ensure auth logic complete before PayPal grabs control
+            const user = await requireAnonAuth();
+            if (!user) throw new Error("Could not authenticate session.");
+
             return actions.order.create({
               purchase_units: [
                 {
-                  amount: { 
-                    value: String(price),
-                    currency_code: getStoreCurrency() 
-                  },
+                  amount: { value: String(price) },
                   description: `PV - ${title}`,
                   custom_id: String(productId),
                 },
@@ -205,10 +194,10 @@ function renderPayPalButtonForContainer(containerId) {
         },
         onApprove: async (data, actions) => {
           try {
-            await requireAnonAuth();
+            const user = await requireAnonAuth();
             const details = await actions.order.capture();
 
-            const uid = auth.currentUser.uid;
+            const uid = user.uid;
             const orderId = details.id;
 
             await setDoc(doc(db, "orders", orderId), {
@@ -216,7 +205,6 @@ function renderPayPalButtonForContainer(containerId) {
               status: "completed",
               items: [{ id: productId, qty: 1 }],
               paypalOrderId: orderId,
-              currency: getStoreCurrency(),
               createdAt: serverTimestamp(),
             });
 
@@ -225,12 +213,12 @@ function renderPayPalButtonForContainer(containerId) {
             )}`;
           } catch (err) {
             console.error("PayPal Approval Error:", err);
-            alert(`Payment processing failed. Support Trace: ${auth.currentUser?.uid || 'Unknown'}`);
+            alert("Payment processing failed. Please contact support.");
           }
         },
         onError: (err) => {
           console.error("PayPal Buttons error:", err);
-          alert("An error occurred with PayPal. Please try again or disable ad-blockers.");
+          alert("An error occurred with PayPal. Please try again.");
         },
       })
       .render(`#${containerId}`);
@@ -241,8 +229,8 @@ function renderPayPalButtonForContainer(containerId) {
 
 async function loadLibrary(products) {
   try {
-    await requireAnonAuth();
-    const uid = auth.currentUser.uid;
+    const user = await requireAnonAuth();
+    const uid = user.uid;
 
     const grid = document.getElementById("user-library-grid");
     if (!grid) return;
@@ -291,8 +279,6 @@ window.filterProducts = (text) => {
   renderGrid(PRODUCTS_CACHE);
 };
 
-// NOTE: changePage() removed — you’re now using separate HTML pages (href navigation).
-
 async function boot() {
   try {
     PRODUCTS_CACHE = await fetchProducts();
@@ -316,8 +302,13 @@ async function boot() {
     // Library page behavior
     const hasLibraryGrid = !!document.getElementById("user-library-grid");
     if (hasLibraryGrid) {
-      onAuthStateChanged(auth, async () => {
-        await loadLibrary(PRODUCTS_CACHE);
+      // Improved lifecycle logic: triggers fetch exactly once when Auth resolves.
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          loadLibrary(PRODUCTS_CACHE);
+        } else {
+          requireAnonAuth(); // Force sign in, which re-triggers the state change safely
+        }
       });
     }
   } catch (error) {
