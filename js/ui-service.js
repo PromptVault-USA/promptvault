@@ -48,9 +48,10 @@ export const UIService = {
 
         if (id === 'library' && window.loadUserLibrary) window.loadUserLibrary();
         
-        // FIX: Using '/products.json' ensures it fetches from the root domain
+        // FIX: Using absolute domain ensures consistent fetching across sub-pages
+        const domain = "https://promptvaultusa.shop";
         if (id === 'browse' && (!window.allProducts || window.allProducts.length === 0)) {
-            fetch('/products.json')
+            fetch(`${domain}/products.json`)
                 .then(res => res.json())
                 .then(data => {
                     window.allProducts = data;
@@ -73,6 +74,8 @@ export const UIService = {
             return;
         }
 
+        const domain = "https://promptvaultusa.shop";
+
         list.innerHTML = productsToDisplay.map(p => {
             // STEP 1: Handle specific niche folder path if 'assets/' is missing
             let rawImg = p.img || '';
@@ -81,10 +84,10 @@ export const UIService = {
             }
 
             // STEP 2: Generate Absolute URL for the image
-            // This ensures Google Merchant Center can find the image from the USA
+            // This ensures Google Merchant Center can find the image from the USA canonical domain
             const absoluteImg = rawImg.startsWith('http') 
                 ? rawImg 
-                : `${window.location.origin}/${rawImg.replace(/^\//, '')}`;
+                : `${domain}/${rawImg.replace(/^\//, '')}`;
 
             const secureProduct = {
                 id: p.id,
