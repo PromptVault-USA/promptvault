@@ -1,6 +1,7 @@
 import { TwitterApi } from 'twitter-api-v2';
 import axios from 'axios';
 import { GoogleGenAI } from '@google/genai';
+import { BskyAgent } from '@atproto/api';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -112,6 +113,70 @@ async function postToPinterest(title: string, description: string, link: string)
   }
 }
 
+async function postToDiscord(text: string, link: string) {
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL?.trim();
+  if (!webhookUrl) {
+    console.log('Skipping Discord (no DISCORD_WEBHOOK_URL found).');
+    return;
+  }
+  try {
+    console.log('Posting to Discord...');
+    await axios.post(webhookUrl, {
+      content: `${text}\n${link}`
+    });
+    console.log('Discord Post successful!');
+  } catch (err: any) {
+    console.error('Failed to post to Discord:', err.response?.data || err.message);
+  }
+}
+
+async function postToTelegram(text: string, link: string) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
+  
+  if (!botToken || !chatId) {
+    console.log('Skipping Telegram (missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID).');
+    return;
+  }
+  
+  try {
+    console.log('Posting to Telegram...');
+    await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      chat_id: chatId,
+      text: `${text}\n${link}`,
+      parse_mode: 'HTML'
+    });
+    console.log('Telegram Post successful!');
+  } catch (err: any) {
+    console.error('Failed to post to Telegram:', err.response?.data || err.message);
+  }
+}
+
+async function postToBluesky(text: string, link: string) {
+  const identifier = process.env.BLUESKY_IDENTIFIER?.trim();
+  const password = process.env.BLUESKY_PASSWORD?.trim();
+  
+  if (!identifier || !password) {
+    console.log('Skipping Bluesky (missing BLUESKY_IDENTIFIER or BLUESKY_PASSWORD).');
+    return;
+  }
+  
+  try {
+    console.log('Posting to Bluesky...');
+    const agent = new BskyAgent({ service: 'https://bsky.social' });
+    await agent.login({ identifier, password });
+    
+    await agent.post({
+      $type: 'app.bsky.feed.post',
+      text: `${text}\n${link}`,
+      createdAt: new Date().toISOString()
+    });
+    console.log('Bluesky Post successful!');
+  } catch (err: any) {
+    console.error('Failed to post to Bluesky:', err.message);
+  }
+}
+
 async function main() {
   console.log('Starting PromptVault Social Automation...');
   
@@ -119,13 +184,24 @@ async function main() {
   const postText = await generateSocialPost();
   console.log('Generated content:', postText);
   
+  const link = "https://promptvaultusa.shop";
+
   // 2. Post to Twitter
   await postToTwitter(postText);
   
   // 3. Post to Pinterest
   // Pinterest works well with a Title + Description
   const title = "Unlock AI Mastery - PromptVault USA";
-  await postToPinterest(title, postText, "https://promptvaultusa.shop");
+  await postToPinterest(title, postText, link);
+  
+  // 4. Post to Discord
+  await postToDiscord(postText, link);
+
+  // 5. Post to Telegram
+  await postToTelegram(postText, link);
+
+  // 6. Post to Bluesky
+  await postToBluesky(postText, link);
   
   console.log('Automation complete!');
 }
