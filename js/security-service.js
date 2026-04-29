@@ -60,8 +60,11 @@ export const SecurityService = {
     initiatePayPal: (txID, total, itemNames) => {
         const PAYPAL_EMAIL = "emilyperong23@gmail.com";
         
+        // Canonical domain for absolute URLs (Merchant Center Preference)
+        const domain = "https://promptvaultusa.shop";
+        
         // We use the txID as the reference so you can find it in Firebase later
-        const returnURL = `${window.location.origin}/success.html?tx=${txID}`;
+        const returnURL = `${domain}/success.html?tx=${txID}`;
         
         const params = new URLSearchParams({
             cmd: "_xclick",
@@ -72,7 +75,7 @@ export const SecurityService = {
             custom: txID, // Matches the Firestore Doc ID
             no_shipping: "1",
             return: returnURL,
-            cancel_return: `${window.location.origin}/index.html?action=browse`,
+            cancel_return: `${domain}/vault.html`,
             rm: "2" 
         });
 
