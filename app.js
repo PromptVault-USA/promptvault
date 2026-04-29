@@ -281,20 +281,20 @@ async function boot() {
   try {
     PRODUCTS_CACHE = await fetchProducts();
 
-    // Vault page behavior
+    // Vault Grid behavior (applies to vault.html where product-list exists)
     const hasVaultGrid = !!document.getElementById("product-list");
     if (hasVaultGrid) {
       const search = document.getElementById("vault-search");
       if (search) search.addEventListener("input", () => renderGrid(PRODUCTS_CACHE));
 
       renderGrid(PRODUCTS_CACHE);
+    }
 
-      // Optional: handle a single-paypal container if you use it anywhere
-      const single = document.getElementById("single-paypal-button");
-      if (single) {
-        single.setAttribute("data-rendered", "0");
-        if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
-      }
+    // Individual Vault Page behavior (applies to /vault/*.html pages)
+    const single = document.getElementById("single-paypal-button");
+    if (single) {
+      single.setAttribute("data-rendered", "0");
+      if (ensurePayPalReady()) renderPayPalButtonForContainer("single-paypal-button");
     }
 
     // Library page behavior
