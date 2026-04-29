@@ -2,34 +2,43 @@ name: Test Old GMC Key Sync
 
 on:
   workflow_dispatch:
-  # Add this to sync every time you update your products
+  # Syncs every time you update your products via CSV
   push:
     paths:
       - 'products.csv' 
+    branches:
+      - main
 
 permissions:
-  contents: write # Changed from read to allow script updates
+  contents: write # Needed if you intend to commit changes from the script back to the repo
 
 jobs:
   test-old-key-sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm' # Speeds up subsequent runs by caching dependencies
 
-      - name: Install deps
-        run: npm install
+      - name: Install Dependencies
+        run: npm ci # Safer structure for CI/CD compared to standard install
 
-      - name: Test Old Key Sync
+      - name: Execute GMC Sync Script
         run: node scripts/gmc-sync.js
         env:
-          # IMPORTANT: You must go to Org Settings > Secrets > Actions 
-          # and re-add these two keys!
+          # IMPORTANT: Verify these keys exist in Repo Settings > Secrets > Actions
           MERCHANT_ID: ${{ secrets.MERCHANT_ID }}
           GMC_KEY: ${{ secrets.GMC_KEY }}
+
+      - name: Upload Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gmc-sync-logs
+          path: scripts/
