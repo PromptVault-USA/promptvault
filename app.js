@@ -16,11 +16,21 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 
+// Utility: Safe Number Parsing
 function toNumber(v) {
   const n = Number(String(v ?? "").trim());
   return Number.isFinite(n) ? n : NaN;
 }
 
+// Utility: Localized Currency Formatter
+function formatCurrency(amount) {
+  return new Intl.NumberFormat(navigator.language || 'en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+}
+
+// Utility: Normalize Image Paths
 function normalizeImg(img) {
   const raw = String(img ?? "").trim();
   if (!raw) return "/logo.png";
@@ -29,6 +39,7 @@ function normalizeImg(img) {
   return `/${raw}`;
 }
 
+// Utility: Price Logic
 function hasSale(p) {
   return (
     p.sale_price !== null &&
@@ -46,12 +57,14 @@ function ensurePayPalReady() {
   return !!(window.paypal && window.paypal.Buttons);
 }
 
+// Auth: Anonymous Sign-in for Purchases/Library
 async function requireAnonAuth() {
   if (auth.currentUser) return auth.currentUser;
   await signInAnonymously(auth);
   return auth.currentUser;
 }
 
+// Data Handling: Fetching Products
 async function fetchProducts() {
   const res = await fetch("/products.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`products.json fetch failed: ${res.status}`);
@@ -71,27 +84,27 @@ async function fetchProducts() {
       img: normalizeImg(p.img),
       drivelink: String(p.drivelink ?? "").trim(),
       gmc_id: String(p.gmc_id ?? "").trim(),
-      desc: String(p.desc ?? "").trim(),
+      desc: String(p.desc ?? "").trim(), // Useful for Merchant Center metadata
     }))
     .filter((p) => p.id && p.slug && p.title && Number.isFinite(p.price));
 }
 
 let PRODUCTS_CACHE = [];
 
+// DOM: Render Grid + Merchant Center Microdata
 function renderGrid(products) {
   const list = document.getElementById("product-list");
   if (!list) return;
 
-  const q = (document.getElementById("vault-search")?.value || "")
-    .trim()
-    .toLowerCase();
+  const searchEl = document.getElementById("vault-search");
+  const q = (searchEl?.value || "").trim().toLowerCase();
 
   const filtered = q
     ? products.filter(
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.slug.toLowerCase().includes(q) ||
-          p.id.toLowerCase().includes(q)
+          p.id.toLowerCase().includes(q),
       )
     : products;
 
@@ -100,28 +113,42 @@ function renderGrid(products) {
       const fp = finalPrice(p);
       const sale = hasSale(p);
 
+      const formattedPrice = formatCurrency(fp);
+      const formattedOldPrice = sale ? formatCurrency(p.price) : "";
+
       const saleBadge = sale
         ? `<div style="display:inline-block;background:#fbbf24;color:#0a0e27;font-weight:900;font-size:0.7rem;letter-spacing:1px;padding:6px 10px;border-radius:999px;margin-bottom:8px;">SALE</div>`
         : "";
 
       const old = sale
-        ? `<span style="text-decoration:line-through;opacity:0.7;">$${p.price.toFixed(2)}</span>`
+        ? `<span style="text-decoration:line-through;opacity:0.7;">${formattedOldPrice}</span>`
         : "";
 
-      const priceHtml = `<span style="font-weight:900;">$${fp.toFixed(2)}</span>`;
+      const priceHtml = `<span style="font-weight:900;">${formattedPrice}</span>`;
 
       const buttonId = `paypal-button-${p.id}`;
 
+      // Added extensive microdata (schema.org) tags for Google Merchant Center
       return `
-<div class="product-card" style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:14px;">
-  <a href="/vault/${p.slug}.html" style="text-decoration:none;color:inherit;">
+<div class="product-card" itemscope itemtype="https://schema.org/Product" style="border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:14px;">
+  <!-- SEO/GMC Metadata -->
+  <meta itemprop="productID" content="${p.gmc_id || p.id}" />
+  <meta itemprop="description" content="${p.desc || p.title}" />
+  <meta itemprop="sku" content="${p.id}" />
+  <meta itemprop="brand" content="PromptVault USA" />
+
+  <a itemprop="url" href="/vault/${p.slug}.html" style="text-decoration:none;color:inherit;">
     <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,0.08);">
-      <img src="${p.img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/logo.png'">
+      <img itemprop="image" src="${p.img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='/logo.png'">
     </div>
-    <div style="margin-top:10px;font-weight:800;">${p.title}</div>
+    <div itemprop="name" style="margin-top:10px;font-weight:800;">${p.title}</div>
   </a>
 
-  <div style="margin:10px 0;">
+  <div style="margin:10px 0;" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+    <meta itemprop="priceCurrency" content="USD" />
+    <meta itemprop="price" content="${fp.toFixed(2)}" />
+    <meta itemprop="itemCondition" content="https://schema.org/NewCondition" />
+    <link itemprop="availability" href="https://schema.org/InStock" />
     ${saleBadge}
     <div style="display:flex;gap:10px;align-items:baseline;">
       ${old}
@@ -142,11 +169,12 @@ function renderGrid(products) {
 
   if (ensurePayPalReady()) {
     filtered.forEach((p) =>
-      renderPayPalButtonForContainer(`paypal-button-${p.id}`)
+      renderPayPalButtonForContainer(`paypal-button-${p.id}`),
     );
   }
 }
 
+// Payment: PayPal Integration
 function renderPayPalButtonForContainer(containerId) {
   try {
     const el = document.getElementById(containerId);
@@ -158,10 +186,7 @@ function renderPayPalButtonForContainer(containerId) {
 
     const productId = el.getAttribute("data-product-id") || "";
     const title = el.getAttribute("data-product-title") || "PromptVault Pack";
-    const priceStr = el.getAttribute("data-product-price") || "0.00";
-    
-    // Safety check for valid float conversion
-    const price = parseFloat(priceStr).toFixed(2);
+    const price = el.getAttribute("data-product-price") || "0.00";
 
     window.paypal
       .Buttons({
@@ -174,10 +199,7 @@ function renderPayPalButtonForContainer(containerId) {
         },
         createOrder: async (data, actions) => {
           try {
-             // Ensure auth logic complete before PayPal grabs control
-            const user = await requireAnonAuth();
-            if (!user) throw new Error("Could not authenticate session.");
-
+            await requireAnonAuth();
             return actions.order.create({
               purchase_units: [
                 {
@@ -194,10 +216,10 @@ function renderPayPalButtonForContainer(containerId) {
         },
         onApprove: async (data, actions) => {
           try {
-            const user = await requireAnonAuth();
+            await requireAnonAuth();
             const details = await actions.order.capture();
 
-            const uid = user.uid;
+            const uid = auth.currentUser.uid;
             const orderId = details.id;
 
             await setDoc(doc(db, "orders", orderId), {
@@ -227,10 +249,11 @@ function renderPayPalButtonForContainer(containerId) {
   }
 }
 
+// User Dashboard: Rendering Library
 async function loadLibrary(products) {
   try {
-    const user = await requireAnonAuth();
-    const uid = user.uid;
+    await requireAnonAuth();
+    const uid = auth.currentUser.uid;
 
     const grid = document.getElementById("user-library-grid");
     if (!grid) return;
@@ -272,13 +295,14 @@ async function loadLibrary(products) {
   }
 }
 
-// Keep this for the search box on vault.html
+// Global Filter Interface
 window.filterProducts = (text) => {
   const el = document.getElementById("vault-search");
   if (el) el.value = String(text ?? "");
   renderGrid(PRODUCTS_CACHE);
 };
 
+// Lifecycle Boot
 async function boot() {
   try {
     PRODUCTS_CACHE = await fetchProducts();
@@ -291,7 +315,7 @@ async function boot() {
 
       renderGrid(PRODUCTS_CACHE);
 
-      // Optional: handle a single-paypal container if you use it anywhere
+      // Single checkout button injection fallback
       const single = document.getElementById("single-paypal-button");
       if (single) {
         single.setAttribute("data-rendered", "0");
@@ -302,13 +326,8 @@ async function boot() {
     // Library page behavior
     const hasLibraryGrid = !!document.getElementById("user-library-grid");
     if (hasLibraryGrid) {
-      // Improved lifecycle logic: triggers fetch exactly once when Auth resolves.
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          loadLibrary(PRODUCTS_CACHE);
-        } else {
-          requireAnonAuth(); // Force sign in, which re-triggers the state change safely
-        }
+      onAuthStateChanged(auth, async () => {
+        await loadLibrary(PRODUCTS_CACHE);
       });
     }
   } catch (error) {
