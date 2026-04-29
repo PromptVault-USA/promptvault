@@ -17,12 +17,10 @@ concurrency:
 
 jobs:
   deploy:
-    # Fixed: Wrapped in ${{ }}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      # Fixed: Wrapped in ${{ }}
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
@@ -31,7 +29,6 @@ jobs:
         with:
           name: github-pages
           github-token: ${{ secrets.GITHUB_TOKEN }} # Needed to download from another workflow
-          # Fixed: Wrapped in ${{ }}
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Configure Pages
