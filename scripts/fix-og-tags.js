@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const blogDir = path.join(__dirname, '../blog');
+const blogDir = path.join(process.cwd(), 'blog');
 const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.html'));
 
 files.forEach(file => {
