@@ -1,30 +1,27 @@
+/**
+ * PROMPTVAULT USA - Global UI & Legal Compliance Engine
+ * Version: 2.0.0 (Fintech Hardened)
+ */
 document.addEventListener("DOMContentLoaded", function () {
   try {
     const path = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
+    const domain = "https://promptvaultusa.shop";
 
+    // Flags for conditional injection
     const isHomePage = path === "/" || path.includes("index.html");
-    const isVaultProductPage = path.includes("/vault/"); // /vault/<slug>.html (generated product pages)
-    const isVaultMainPage = path.includes("vault.html"); // /vault.html (grid)
+    const isVaultProductPage = path.includes("/vault/");
+    const isVaultMainPage = path.includes("vault.html");
     const isLibraryPage = path.includes("library.html");
     const isGridPage = isVaultMainPage || !!document.querySelector(".vault-grid");
 
-    // Canonical domain for absolute URLs (Merchant Center Preference)
-    const domain = "https://promptvaultusa.shop";
-
-    // 1) GLOBAL UI REPAIR (Optimized with QuerySelectorAll)
-    if (
-      isVaultProductPage ||
-      path.includes("/blog") ||
-      isVaultMainPage ||
-      isLibraryPage
-    ) {
+    // 1) GLOBAL UI REPAIR
+    if (isVaultProductPage || path.includes("/blog") || isVaultMainPage || isLibraryPage) {
       document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-        if (link.getAttribute("href") && link.getAttribute("href").includes("style.css")) {
+        if (link.getAttribute("href")?.includes("style.css")) {
           link.setAttribute("href", `${domain}/css/style.css`);
         }
       });
-
       document.querySelectorAll(".logo-box, img.logo").forEach((img) => {
         if (img.tagName.toLowerCase() === 'img') {
           img.setAttribute("src", `${domain}/logo.png`);
@@ -32,146 +29,106 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // 2) AUTO-INJECT BACK BUTTON
-    if (!document.querySelector('[data-pv-back="1"]')) {
-      let backHref = "";
+    // 2) MOBILE PADDING FIX
+    document.body.style.paddingBottom = "160px";
 
-      if (isVaultProductPage) {
-        backHref = `${domain}/vault.html`;
-      } else if (path.includes("/blog/") && !path.includes("trust-center.html")) {
-        backHref = `${domain}/blog.html`;
-      }
-
-      if (backHref) {
-        const backButtonHTML = `
-          <div data-pv-back="1" style="position: fixed; top: 85px; left: 20px; z-index: 10001;">
-            <a href="${backHref}"
-              style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); color: white; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;">
-              ← Back
-            </a>
-          </div>`;
-        document.body.insertAdjacentHTML("afterbegin", backButtonHTML);
-      }
-    }
-
-    // 3) MOBILE PADDING FIX (Reduced from 220px to 140px for better UX space usage)
-    document.body.style.paddingBottom = "140px";
-
-    // 4) DUPLICATE-SAFE INJECT GMC TERMS
+    // 3) GMC TERMS INJECTION (The Point-of-Sale Shield)
     function injectGmcTerms() {
-      // A) PRODUCT PAGES: one full box only
+      // A) PRODUCT PAGES: Detailed Disclosure
       if (isVaultProductPage && !document.querySelector(".gmc-terms-box")) {
-        const buyBtn = document.querySelector(
-          'button[onclick*="paypal"], a[href*="paypal"], .btn-main'
-        );
-        if (buyBtn && buyBtn.textContent.toLowerCase().includes("buy")) {
+        const buyBtn = document.querySelector('button[onclick*="paypal"], a[href*="paypal"], .btn-main, #paypal-button-container');
+        if (buyBtn) {
           const termsBox = document.createElement("div");
           termsBox.className = "gmc-terms-box";
-          termsBox.style.cssText =
-            "margin-top:16px; margin-bottom:8px; padding:12px; background:rgba(100,255,218,0.05); border:1px solid rgba(100,255,218,0.2); border-radius:12px; font-size:0.8rem; line-height:1.4; color:#64748b;";
-          termsBox.innerHTML =
-            '<strong style="color:#64ffda;">Digital Product Terms:</strong><br>✓ Instant download via email after PayPal payment<br>✓ No physical shipping &bull; Delivered in 1-5 minutes<br>✓ Non-refundable digital license';
-          buyBtn.parentNode.insertBefore(termsBox, buyBtn.nextSibling);
+          termsBox.style.cssText = "margin-top:20px; margin-bottom:20px; padding:15px; background:rgba(79, 209, 197, 0.05); border:1px solid rgba(79, 209, 197, 0.2); border-radius:12px; font-size:0.75rem; line-height:1.5; color:#94a3b8;";
+          termsBox.innerHTML = `
+            <strong style="color:#4fd1c5;">Digital Asset Fulfillment:</strong><br>
+            ✓ Instant delivery to your Intelligence Vault<br>
+            ✓ Verified Secure Checkout via PayPal<br>
+            <span style="color:#f87171; font-weight:800;">⚠ All sales are final. No refunds on digital assets.</span>`;
+          buyBtn.parentNode.insertBefore(termsBox, buyBtn); // Insert ABOVE button for visibility
         }
       }
 
-      // B) GRID CARDS: one micro line per card
+      // B) GRID CARDS: Micro Disclosure
       if (isGridPage) {
         document.querySelectorAll(".vault-card, .product-card").forEach((card) => {
           if (card.querySelector(".gmc-terms-micro")) return;
-
           const buyBtn = card.querySelector("button, a[href*='paypal']");
-          if (buyBtn && buyBtn.textContent.toLowerCase().includes("buy")) {
+          if (buyBtn) {
             const microTerms = document.createElement("div");
             microTerms.className = "gmc-terms-micro";
-            microTerms.style.cssText =
-              "margin-top:8px; font-size:0.65rem; line-height:1.4; color:#64748b; text-align:center; font-family:'Plus Jakarta Sans',sans-serif;";
-            microTerms.innerHTML =
-              `Digital Download &bull; No Shipping &bull; <a href="${domain}/legal.html#refund" style="color:#64ffda; text-decoration:underline;">All Sales Final</a>`;
+            microTerms.style.cssText = "margin-top:8px; font-size:0.6rem; color:#64748b; text-align:center;";
+            microTerms.innerHTML = `Digital Download &bull; <a href="${domain}/legal.html#refunds" style="color:#4fd1c5; text-decoration:none;">No Refunds</a>`;
             buyBtn.parentNode.insertBefore(microTerms, buyBtn.nextSibling);
           }
         });
       }
     }
 
-    // 5) INJECT BOTTOM NAV (Canonical URLs instead of relative)
+    // 4) GLOBAL LEGAL FOOTER (Requirement for Merchant Accounts)
+    function injectLegalFooter() {
+      if (document.querySelector(".global-legal-footer")) return;
+
+      const footerHTML = `
+      <footer class="global-legal-footer" style="margin-top: 100px; padding: 60px 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+          <div style="margin-bottom: 25px;">
+            <a href="${domain}/legal.html#terms" style="color:#94a3b8; text-decoration:none; margin:0 15px; font-size:0.75rem; font-weight:600;">Terms</a>
+            <a href="${domain}/legal.html#refunds" style="color:#94a3b8; text-decoration:none; margin:0 15px; font-size:0.75rem; font-weight:600;">Refund Policy</a>
+            <a href="${domain}/legal.html#privacy" style="color:#94a3b8; text-decoration:none; margin:0 15px; font-size:0.75rem; font-weight:600;">Privacy</a>
+          </div>
+          <p style="color:#475569; font-size:0.65rem; line-height:1.6; max-width:500px; margin:0 auto;">
+            &copy; 2024 PromptVault USA. All transactions appear as <strong>PROMPTVAULTUSA</strong> on your statement. 
+            By purchasing, you agree to our non-refundable digital fulfillment terms.
+          </p>
+        </div>
+      </footer>`;
+      document.body.insertAdjacentHTML("beforeend", footerHTML);
+    }
+
+    // 5) BOTTOM NAV (Optimized for Mobile Conversion)
     const navHTML = `
-      <nav class="bottom-nav"
-        style="position:fixed; bottom:25px; left:50%; transform:translateX(-50%);
-        display:flex; flex-direction:row; gap:0px;
-        background:rgba(15,23,42,0.95); backdrop-filter:blur(25px);
-        border:1px solid rgba(255,255,255,0.1); padding:12px 10px; border-radius:100px;
-        z-index:15000; box-shadow:0 20px 50px rgba(0,0,0,0.8); width:92%; max-width:440px; min-width:300px;">
-
-        <a class="nav-item" href="${domain}/index.html"
-          style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;transition:0.3s;">
-          <span style="font-size:1.3rem;margin-bottom:2px;">🏠</span>
-          <small style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;">Home</small>
+      <nav class="bottom-nav" style="position:fixed; bottom:25px; left:50%; transform:translateX(-50%); display:flex; background:rgba(15,23,42,0.95); backdrop-filter:blur(25px); border:1px solid rgba(255,255,255,0.1); padding:12px 10px; border-radius:100px; z-index:15000; width:92%; max-width:440px;">
+        <a class="nav-item" href="${domain}/index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;">
+          <span style="font-size:1.2rem;">🏠</span><small style="font-size:0.6rem;font-weight:800;text-transform:uppercase;">Home</small>
         </a>
-
-        <a class="nav-item" href="${domain}/vault.html"
-          style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;transition:0.3s;">
-          <span style="font-size:1.3rem;margin-bottom:2px;">⊞</span>
-          <small style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;">Vault</small>
+        <a class="nav-item" href="${domain}/vault.html" style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;">
+          <span style="font-size:1.2rem;">⊞</span><small style="font-size:0.6rem;font-weight:800;text-transform:uppercase;">Vault</small>
         </a>
-
-        <a class="nav-item" href="${domain}/library.html"
-          style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;transition:0.3s;">
-          <span style="font-size:1.3rem;margin-bottom:2px;">👤</span>
-          <small style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;">Library</small>
+        <a class="nav-item" href="${domain}/library.html" style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;">
+          <span style="font-size:1.2rem;">👤</span><small style="font-size:0.6rem;font-weight:800;text-transform:uppercase;">Library</small>
         </a>
-
-        <a class="nav-item" href="${domain}/blog.html"
-          style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;transition:0.3s;">
-          <span style="font-size:1.3rem;margin-bottom:2px;">📰</span>
-          <small style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;">Blog</small>
+        <a class="nav-item" href="${domain}/claim.html" style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;">
+          <span style="font-size:1.2rem;">🧾</span><small style="font-size:0.6rem;font-weight:800;text-transform:uppercase;">Claim</small>
         </a>
-
-        <a class="nav-item" href="${domain}/claim.html"
-          style="flex:1;display:flex;flex-direction:column;align-items:center;color:#94a3b8;text-decoration:none;transition:0.3s;">
-          <span style="font-size:1.3rem;margin-bottom:2px;">🧾</span>
-          <small style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;">Claim</small>
-        </a>
-      </nav>
-    `;
+      </nav>`;
 
     if (!document.querySelector(".bottom-nav")) {
       document.body.insertAdjacentHTML("beforeend", navHTML);
     }
 
-    // 6) RUN ONCE
+    // Execution
     injectGmcTerms();
+    injectLegalFooter();
 
-    // 7) OPTIONAL: Scroll to vault grid if action=vault
-    if (urlParams.get("action") === "vault") {
-      const vaultGrid = document.querySelector(".vault-grid");
-      if (vaultGrid) {
-        vaultGrid.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-
-    // 8) INJECT GMC ORGANIZATION JSON-LD TAG FOR TRUST (Homepage only)
-    if (isHomePage && !document.querySelector('script[type="application/ld+json"]')) {
-      const orgSchema = {
+    // 6) TRUST SCHEMA (GMC Requirement)
+    if (isHomePage && !document.querySelector('#gmc-org-schema')) {
+      const script = document.createElement('script');
+      script.id = 'gmc-org-schema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "PromptVault USA",
         "url": domain,
         "logo": `${domain}/logo.png`,
-        "description": "Premium AI prompt packs for Real Estate Agents, Freelancers, and Shopify Sellers.",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "email": "admin@promptvaultusa.shop",
-          "contactType": "Customer Support"
-        }
-      };
-      
-      const script = document.createElement('script');
-      script.type = 'application/ld+json';
-      script.text = JSON.stringify(orgSchema);
+        "contactPoint": { "@type": "ContactPoint", "email": "admin@promptvaultusa.shop", "contactType": "Customer Support" }
+      });
       document.head.appendChild(script);
     }
+
   } catch (error) {
-    console.error("Footer & GMC injection error:", error);
+    console.error("UI Injection Error:", error);
   }
 });
