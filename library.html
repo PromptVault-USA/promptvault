@@ -3,77 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Library | PromptVault USA</title>
+  <title>Intelligence Vault | PromptVault USA</title>
 
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
 
   <style>
-    :root { --accent-teal: #4fd1c5; --bg-dark: #0a1120; }
+    :root { 
+      --accent-teal: #4fd1c5; 
+      --bg-dark: #0a1120; 
+      --glass: rgba(255, 255, 255, 0.03);
+      --border: rgba(255, 255, 255, 0.1);
+    }
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg-dark);
       color: #e6f1ff;
       margin: 0;
       padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+    .content-wrap { flex: 1; }
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       max-width: 1000px;
       margin: 0 auto 30px;
-      gap: 16px;
+      padding: 20px 0;
     }
     .library-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 25px;
       max-width: 1000px;
       margin: 0 auto;
     }
+    .product-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-card:hover { border-color: var(--accent-teal); transform: translateY(-5px); }
+    .loader { border: 3px solid rgba(255, 255, 255, 0.1); border-radius: 50%; border-top: 3px solid var(--accent-teal); width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 40px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
-      padding: 60px 20px;
-      background: rgba(255,255,255,0.03);
+      padding: 80px 20px;
+      background: var(--glass);
       border-radius: 24px;
-      border: 1px dashed rgba(255,255,255,0.1);
+      border: 1px dashed var(--border);
     }
+    .btn-download {
+      background: var(--accent-teal);
+      color: #000;
+      padding: 12px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+    footer { padding: 40px 20px; text-align: center; font-size: 0.8rem; color: #64748b; border-top: 1px solid var(--border); margin-top: 50px; }
+    footer a { color: var(--accent-teal); text-decoration: none; margin: 0 10px; }
   </style>
 </head>
 
 <body>
-  <div class="header">
-    <a href="/index.html"
-       style="color:var(--accent-teal); text-decoration:none; font-weight:800; font-size:0.8rem;">
-      ← RETURN TO SHOP
-    </a>
+  <div class="content-wrap">
+    <div class="header">
+      <a href="/index.html" style="color:var(--accent-teal); text-decoration:none; font-weight:800; font-size:0.8rem;">
+        ← RETURN TO SHOP
+      </a>
+      <h1 style="font-size: 1.5rem; letter-spacing: -1px; margin: 0;">Intelligence Vault</h1>
+    </div>
 
-    <h1 style="font-size: 1.5rem; letter-spacing: -1px; margin: 0;">
-      Intelligence Vault
-    </h1>
-  </div>
+    <div id="loading-zone">
+      <div class="loader"></div>
+      <p style="text-align:center; color:#94a3b8; font-size: 0.9rem;">Syncing your assets...</p>
+    </div>
 
-  <div id="user-library-grid" class="library-grid">
-    <div class="empty-state" id="empty-msg">
-      <p style="color: #94a3b8;">Your vault is currently locked.</p>
-      <a href="/vault.html"
-         class="btn-main"
-         style="display:inline-block; margin-top:15px; background:var(--accent-teal); color:#000; padding:10px 20px; border-radius:12px; text-decoration:none; font-weight:800;">
+    <div id="user-library-grid" class="library-grid" style="display:none;">
+      <!-- Products will be injected here -->
+    </div>
+
+    <div id="empty-state" class="empty-state" style="display:none; max-width:1000px; margin: 0 auto;">
+      <p style="color: #94a3b8; font-size: 1.1rem;">Your vault is currently empty.</p>
+      <a href="/vault.html" class="btn-main" style="display:inline-block; margin-top:15px; background:var(--accent-teal); color:#000; padding:12px 25px; border-radius:12px; text-decoration:none; font-weight:800;">
         BROWSE PROMPTS
       </a>
-      <div style="margin-top:12px; font-size:0.85rem; color:#94a3b8;">
-        Paid but library is empty? <a href="/claim.html" style="color:var(--accent-teal); font-weight:800; text-decoration:none;">Claim purchase</a>
+      <div style="margin-top:25px; font-size:0.85rem; color:#64748b; border-top: 1px solid var(--border); pt:20px;">
+        Paid but nothing here? <a href="/claim.html" style="color:var(--accent-teal); font-weight:800; text-decoration:none;">Claim purchase manually</a>
       </div>
     </div>
   </div>
 
-  <!-- Loads products + fills #user-library-grid via Firebase orders (from updated app.js) -->
-  <script type="module" src="/app.js"></script>
+  <footer>
+    <p>&copy; 2024 PromptVault USA. <a href="/terms.html">Terms</a> | <a href="/refund-policy.html">Refund Policy</a></p>
+  </footer>
 
-  <!-- Optional: keeps your bottom nav + UI patching if you include it on pages -->
-  <script src="/js/inject-footer.js"></script>
+  <script type="module">
+    import { auth, db } from '/firebase-config.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Metadata mapping: In a live app, this could also come from a 'products' collection
+    const PRODUCT_MAP = {
+      'RealEstate': { name: 'Real Estate Lead Gen Pack', desc: '50 Tested Prompts', file: '/downloads/real-estate-prompts.pdf' },
+      'TikTok': { name: 'TikTok Affiliate Marketing', desc: '13 Tested Prompts', file: '/downloads/tiktok-affiliate.pdf' },
+      'Copywriting': { name: 'Copywriting Sales Pages', desc: '10 Tested Prompts', file: '/downloads/copy-sales.pdf' }
+      // Add other product IDs here matching your 'custom_id' from PayPal
+    };
+
+    const grid = document.getElementById('user-library-grid');
+    const loading = document.getElementById('loading-zone');
+    const empty = document.getElementById('empty-state');
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      // REAL-TIME SYNC: This fixes the Race Condition (VULN-05)
+      // It listens for the Webhook to write the entitlement record
+      const entitlementsRef = collection(db, "users", user.uid, "entitlements");
+      
+      onSnapshot(entitlementsRef, (snapshot) => {
+        loading.style.display = 'none';
+        
+        if (snapshot.empty) {
+          grid.style.display = 'none';
+          empty.style.display = 'block';
+        } else {
+          empty.style.display = 'none';
+          grid.style.display = 'grid';
+          grid.innerHTML = ''; // Clear previous
+
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const product = PRODUCT_MAP[data.productId] || { 
+              name: data.productId, 
+              desc: 'Digital Prompt Asset', 
+              file: '#' 
+            };
+
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+              <div>
+                <h3 style="margin:0; font-size:1.2rem; color:var(--accent-teal);">${product.name}</h3>
+                <p style="font-size:0.85rem; color:#94a3b8; margin:10px 0;">${product.desc}</p>
+                <div style="font-size:0.7rem; color:#475569; text-transform:uppercase;">Order ID: ${data.orderId || 'Direct'}</div>
+              </div>
+              <a href="${product.file}" class="btn-download" target="_blank">DOWNLOAD ACCESS</a>
+            `;
+            grid.appendChild(card);
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
