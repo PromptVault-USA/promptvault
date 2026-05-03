@@ -15,333 +15,343 @@
     <meta name="twitter:title" content="The AI Intelligence Feed | PromptVault USA">
     <meta name="twitter:description" content="Expert strategies and monetization blueprints for high-yield AI execution.">
     <meta name="twitter:image" content="https://promptvaultusa.shop/logo.png">
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_CLIENT_ID" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+          --accent: #4fd1c5;
+          --secondary: #8b5cf6;
+          --glass: rgba(17, 34, 64, 0.4);
+          --border: rgba(255, 255, 255, 0.05);
+          --success: #10b981;
+          --text-gray: #94a3b8;
+        }
         .pv-ad-slot { width: 100%; display: flex; justify-content: center; align-items: center; background: rgba(255, 255, 255, 0.01); border-radius: 20px; margin: 0; overflow: hidden; }
         .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 40px; }
-        .blog-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; height: 100%; padding: 30px; }
+        .blog-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; height: 100%; padding: 30px; text-decoration: none; }
         .blog-card:hover { transform: translateY(-5px); border-color: #8b5cf6; background: rgba(139, 92, 246, 0.03); box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
         .blog-info { flex-grow: 1; display: flex; flex-direction: column; }
+        .blog-info p { color: #94a3b8; }
         .blog-tag { background: rgba(139, 92, 246, 0.1); color: #a78bfa; padding: 4px 12px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; align-self: flex-start; margin-bottom: 15px; letter-spacing: 0.5px; }
-        .bottom-nav { position: fixed !important; bottom: 35px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; justify-content: space-around !important; align-items: center !important; background: #0f172a !important; border: 1px solid rgba(255,255,255,0.15) !important; padding: 12px 10px !important; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important; border-radius: 100px !important; width: 92% !important; max-width: 440px !important; z-index: 15000 !important; box-shadow: 0 20px 50px rgba(0,0,0,0.9) !important; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-decoration: none; text-align: center; }
-        .nav-item.active { color: #3b82f6; }
-        .nav-item small { font-size: 0.65rem !important; margin-top: 5px; font-weight: 800; text-transform: uppercase; }
-        @media (max-width: 768px) { .container { padding-bottom: 180px !important; } .blog-grid { grid-template-columns: 1fr; } }
+        
+        /* Unified bottom nav layout to match other pages */
+        .bottom-nav { max-width: 480px !important; }
+        .nav-item small { font-size: 0.55rem !important; font-weight: 800; margin-top: 2px; text-transform: none; }
+        
+        @media (max-width: 768px) { .blog-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-<div class="spotlight"></div>
 
 <header>
     <div class="header-wrap">
-        <div onclick="window.location.href='https://promptvaultusa.shop/index.html'" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
-            <img src="logo.png" class="logo-box" alt="Logo">
-            <span style="font-weight:800; letter-spacing:-1px; font-size: 0.9rem;">PROMPTVAULT<span style="color:var(--secondary)">USA</span></span>
-        </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-            <button class="signin-pill" onclick="window.location.href='https://promptvaultusa.shop/index.html?action=checkout'" style="background:rgba(255,255,255,0.03); position:relative; border:1px solid rgba(255,255,255,0.1);">
-                🛒 <span id="cart-count-pill" style="background:#8b5cf6; color:white; border-radius:50%; padding:2px 6px; font-size:10px; position:absolute; top:-5px; right:-5px; font-weight:800;">0</span>
-            </button>
-        </div>
+        <a href="index.html" style="cursor:pointer; display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+            <img src="/logo.png" class="logo-box" alt="Logo">
+            <span style="font-weight:800; letter-spacing:-1px; font-size: 0.95rem;">
+                PROMPTVAULT<span style="color:var(--secondary)">USA</span>
+            </span>
+        </a>
     </div>
 </header>
 
-<main class="container" style="padding-top: 140px; padding-bottom: 140px;">
-    <h2 style="font-size: clamp(2.2rem, 8vw, 3.5rem); line-height: 1.1; font-weight: 800; margin-bottom: 10px;">
-        The AI <span class="highlight-text">Intelligence</span> Feed
-    </h2>
-    <p style="color: #94a3b8; font-size: 1.1rem; max-width: 600px;">Expert strategies and monetization blueprints.</p>
+<main class="container">
+    <div style="padding: 30px 0;">
+        <h2 style="font-size: clamp(2.2rem, 8vw, 3.5rem); line-height: 1.1; font-weight: 800; margin-bottom: 10px; margin-top: 10px;">
+            The AI <span class="highlight-text">Intelligence</span> Feed
+        </h2>
+        <p style="color: var(--text-gray); font-size: 1.1rem; max-width: 600px;">Expert strategies and monetization blueprints.</p>
 
-    <div class="blog-grid">
+        <div class="blog-grid">
 
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/ship-log-04-20-26.html'" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.05);">
-            <div class="blog-info">
-                <span class="blog-tag" style="background: #3b82f6; color: white;">Ship Log: 04.20.26</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Google Unlocked: 50 Pages Crawling</h3>
-                <p>Merchant Center linked, 18 products approved, and 50 blog posts now validating in Search Console. Major infrastructure surge completed.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #3b82f6; font-weight: 800; font-size: 0.8rem;">VIEW LOG &rarr;</div>
-            </div>
+            <a class="blog-card" href="/blog/ship-log-04-20-26.html" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.05);">
+                <div class="blog-info">
+                    <span class="blog-tag" style="background: #3b82f6; color: white;">Ship Log: 04.20.26</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Google Unlocked: 50 Pages Crawling</h3>
+                    <p>Merchant Center linked, 18 products approved, and 50 blog posts now validating in Search Console. Major infrastructure surge completed.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: #3b82f6; font-weight: 800; font-size: 0.8rem;">VIEW LOG &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/no-code-story.html">
+                <div class="blog-info">
+                    <span class="blog-tag" style="background: rgba(59, 130, 246, 0.1); color: #60a5fa;">Sovereign Origin</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Bred from Grit, Built with AI</h3>
+                    <p>The 20-country global surge: How zero code and grit built an industrial empire.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: #3b82f6; font-weight: 800; font-size: 0.8rem;">READ THE MANIFESTO &rarr;</div>
+                </div>
+            </a>
+            
+            <a class="blog-card" href="/blog/genesis-of-promptvault-usa.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Getting Started</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Welcome to PromptVault USA</h3>
+                    <p>Our journey began with a simple mission: to make AI accessible for everyone.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ POST &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/top-ai-side-hustles-2026-leveraging-prompts-for-profit.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Monetization</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Top AI Side Hustles in 2026</h3>
+                    <p>Turn your prompt engineering skills into a high-income digital business.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ POST &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-prompt-architect-manifesto-mastering-ai-art.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Strategy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Prompt Architect’s Manifesto</h3>
+                    <p>Why your business needs a controlled Vault of assets, not just a search bar.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ MORE &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/closing-the-efficiency-gap-with-ai-automation.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Operations</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Bridging the Efficiency Gap</h3>
+                    <p>Stop wasting hours on "Regenerate Response" and start scaling with precision.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-death-of-generic-prompts-why-precision-matters.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Industry Insights</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Death of the Generic Prompt</h3>
+                    <p>Why generic AI writing is invisible in 2026 and how to reclaim your voice.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-ghostwriters-secret-leveraging-ai-for-high-converting-copy.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Advanced Prompting</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Ghostwriter’s Secret</h3>
+                    <p>The technical framework for cloning any brand voice perfectly using AI.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/faceless-tiktok-blueprint-how-to-go-viral-with-ai-video.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Monetization</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Faceless TikTok Blueprint</h3>
+                    <p>Build viral storytelling channels and high-income affiliate stores.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/prompt-engineering-vs-prompt-chaining-advanced-guide.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Technical Deep Dive</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Prompt Chaining vs. Engineering</h3>
+                    <p>Build scalable, multi-step AI factories for business operations.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/ai-ethics-for-professionals-a-guide-to-responsible-ai-use.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Policy & Safety</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">AI Ethics for Professionals</h3>
+                    <p>How to maintain human trust and originality in an era of mass AI noise.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/mastering-negative-constraints-how-to-fix-bad-ai-outputs.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Prompt Engineering</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Mastering Negative Constraints</h3>
+                    <p>The strategy for removing AI fluff and repetitive patterns.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/from-idea-to-product-in-24-hours-the-ai-entrepreneur-blueprint.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Case Study</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Idea to Product in 24 Hours</h3>
+                    <p>The exact workflow we used to deploy PromptVault USA in record time.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-future-of-search-how-ai-is-replacing-traditional-seo.html">
+                <div class="blog-info">
+                    <span class="blog-tag">SEO Strategy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Future of Search</h3>
+                    <p>Why Google's 2026 algorithms reward Human-Centered AI writing.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-2026-faceless-tiktok-blueprint-viral-ai-content-strategy.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Income Strategy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The $2,000/Month Faceless TikTok Blueprint</h3>
+                    <p>Learn how to scale viral affiliate content and automated stores without showing your face.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/how-to-monetize-ai-prompts-ecommerce-strategies-for-2026.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Revenue Strategy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Beyond the Hype: Monetizing AI Prompts</h3>
+                    <p>5 proven ways to turn your personal prompt library into a high-margin e-commerce machine.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-2026-digital-gold-mine-selling-ai-generated-assets-online.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Asset Economy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Digital Gold Mine of 2026</h3>
+                    <p>Why specialized AI assets are currently the most profitable digital products you can own.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/prompts-to-profits-how-to-build-a-profitable-ai-company-of-one.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Entrepreneurship</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Company of One Blueprint</h3>
+                    <p>Build a high-revenue enterprise as a solo architect using automated AI prompt factories.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/affiliate-architect-usa-strategy-building-passive-income-with-ai.html">
+                <div class="blog-info">
+                    <span class="blog-tag">High-Ticket Affiliate</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Affiliate Architect: High-Ticket Strategy</h3>
+                    <p>Engineer high-conversion content for high-margin tech and SaaS offers in the American market.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/how-to-make-money-selling-ai-prompts-in-2026-complete-guide.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Monetization</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Industrial Revenue: How to Sell AI Prompts in 2026</h3>
+                    <p>Architect and monetize specialized AI instructions in the high-yield digital economy.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-1000-ai-prompt-pack-milestone-scaling-your-digital-vault.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Monetization</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">From $0 to $1,000: Engineering Your First Pack</h3>
+                    <p>The blueprint for building and scaling high-margin digital prompt assets from scratch.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/top-high-yield-ai-niches-for-2026-profitable-prompt-categories.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Asset Economy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">High-Yield Niches: AI Assets That Actually Sell</h3>
+                    <p>Identify the top 10 specialized industry niches commanding premium prices today.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/pinterest-traffic-engine.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Traffic Growth</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Pinterest Engine: Driving Organic Traffic</h3>
+                    <p>Leverage visual search to drive massive, high-intent traffic to your sovereign vault.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/seo-for-ai-prompt-marketplaces-how-to-rank-on-google-in-2026.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Search Authority</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">SEO Frameworks for AI Asset Marketplaces</h3>
+                    <p>Rank fast on Google using utility-first density and semantic search optimization.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-2026-viral-content-logic-the-science-of-ai-engagement.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Growth Strategy</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Viral Logic: 10 Content Ideas to Scale</h3>
+                    <p>Engineer retention-driven content that triggers algorithms and drives vault revenue.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/ai-infrastructure-foundations.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Educational</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Foundation: Profiting from AI Infrastructure</h3>
+                    <p>A professional guide to understanding and monetizing the baseline grid of AI.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/the-executive-chatgpt-library-ai-strategies-for-business-leaders.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Operations</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Executive Library: Top ChatGPT Assets</h3>
+                    <p>Curated industrial logic for high-level marketing, business, and side hustle operations.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/quality-prompt-architecture-designing-high-fidelity-ai-outputs.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Quality Control</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Quality Architecture: Building High-Utility Packs</h3>
+                    <p>Engineering standards for creating software-grade prompt assets that consumers trust.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
+
+            <a class="blog-card" href="/blog/why-most-ai-prompt-shops-fail-and-how-to-succeed.html">
+                <div class="blog-info">
+                    <span class="blog-tag">Market Analysis</span>
+                    <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Profitability Gap: Why Prompt Shops Fail</h3>
+                    <p>Avoid common traps and learn how to position your vault for elite profitability.</p>
+                    <div style="margin-top: auto; padding-top: 20px; color: var(--secondary); font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
+                </div>
+            </a>
         </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/no-code-story.html'">
-            <div class="blog-info">
-                <span class="blog-tag" style="background: rgba(59, 130, 246, 0.1); color: #60a5fa;">Sovereign Origin</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Bred from Grit, Built with AI</h3>
-                <p>The 20-country global surge: How zero code and grit built an industrial empire.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #3b82f6; font-weight: 800; font-size: 0.8rem;">READ THE MANIFESTO &rarr;</div>
-            </div>
-        </div>
-        
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/genesis-of-promptvault-usa.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Getting Started</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Welcome to PromptVault USA</h3>
-                <p>Our journey began with a simple mission: to make AI accessible for everyone.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ POST &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/top-ai-side-hustles-2026-leveraging-prompts-for-profit.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Monetization</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Top AI Side Hustles in 2026</h3>
-                <p>Turn your prompt engineering skills into a high-income digital business.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ POST &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-prompt-architect-manifesto-mastering-ai-art.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Strategy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Prompt Architect’s Manifesto</h3>
-                <p>Why your business needs a controlled Vault of assets, not just a search bar.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ MORE &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/closing-the-efficiency-gap-with-ai-automation.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Operations</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Bridging the Efficiency Gap</h3>
-                <p>Stop wasting hours on "Regenerate Response" and start scaling with precision.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-death-of-generic-prompts-why-precision-matters.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Industry Insights</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Death of the Generic Prompt</h3>
-                <p>Why generic AI writing is invisible in 2026 and how to reclaim your voice.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-ghostwriters-secret-leveraging-ai-for-high-converting-copy.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Advanced Prompting</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Ghostwriter’s Secret</h3>
-                <p>The technical framework for cloning any brand voice perfectly using AI.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/faceless-tiktok-blueprint-how-to-go-viral-with-ai-video.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Monetization</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Faceless TikTok Blueprint</h3>
-                <p>Build viral storytelling channels and high-income affiliate stores.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/prompt-engineering-vs-prompt-chaining-advanced-guide.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Technical Deep Dive</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Prompt Chaining vs. Engineering</h3>
-                <p>Build scalable, multi-step AI factories for business operations.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/ai-ethics-for-professionals-a-guide-to-responsible-ai-use.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Policy & Safety</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">AI Ethics for Professionals</h3>
-                <p>How to maintain human trust and originality in an era of mass AI noise.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/mastering-negative-constraints-how-to-fix-bad-ai-outputs.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Prompt Engineering</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Mastering Negative Constraints</h3>
-                <p>The strategy for removing AI fluff and repetitive patterns.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/from-idea-to-product-in-24-hours-the-ai-entrepreneur-blueprint.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Case Study</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Idea to Product in 24 Hours</h3>
-                <p>The exact workflow we used to deploy PromptVault USA in record time.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-future-of-search-how-ai-is-replacing-traditional-seo.html'">
-            <div class="blog-info">
-                <span class="blog-tag">SEO Strategy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Future of Search</h3>
-                <p>Why Google's 2026 algorithms reward Human-Centered AI writing.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">READ STORY &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-2026-faceless-tiktok-blueprint-viral-ai-content-strategy.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Income Strategy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The $2,000/Month Faceless TikTok Blueprint</h3>
-                <p>Learn how to scale viral affiliate content and automated stores without showing your face.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/how-to-monetize-ai-prompts-ecommerce-strategies-for-2026.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Revenue Strategy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Beyond the Hype: Monetizing AI Prompts</h3>
-                <p>5 proven ways to turn your personal prompt library into a high-margin e-commerce machine.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-2026-digital-gold-mine-selling-ai-generated-assets-online.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Asset Economy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Digital Gold Mine of 2026</h3>
-                <p>Why specialized AI assets are currently the most profitable digital products you can own.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/prompts-to-profits-how-to-build-a-profitable-ai-company-of-one.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Entrepreneurship</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Company of One Blueprint</h3>
-                <p>Build a high-revenue enterprise as a solo architect using automated AI prompt factories.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/affiliate-architect-usa-strategy-building-passive-income-with-ai.html'">
-            <div class="blog-info">
-                <span class="blog-tag">High-Ticket Affiliate</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Affiliate Architect: High-Ticket Strategy</h3>
-                <p>Engineer high-conversion content for high-margin tech and SaaS offers in the American market.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/how-to-make-money-selling-ai-prompts-in-2026-complete-guide.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Monetization</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Industrial Revenue: How to Sell AI Prompts in 2026</h3>
-                <p>Architect and monetize specialized AI instructions in the high-yield digital economy.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-1000-ai-prompt-pack-milestone-scaling-your-digital-vault.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Monetization</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">From $0 to $1,000: Engineering Your First Pack</h3>
-                <p>The blueprint for building and scaling high-margin digital prompt assets from scratch.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/top-high-yield-ai-niches-for-2026-profitable-prompt-categories.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Asset Economy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">High-Yield Niches: AI Assets That Actually Sell</h3>
-                <p>Identify the top 10 specialized industry niches commanding premium prices today.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/pinterest-traffic-engine.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Traffic Growth</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Pinterest Engine: Driving Organic Traffic</h3>
-                <p>Leverage visual search to drive massive, high-intent traffic to your sovereign vault.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/seo-for-ai-prompt-marketplaces-how-to-rank-on-google-in-2026.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Search Authority</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">SEO Frameworks for AI Asset Marketplaces</h3>
-                <p>Rank fast on Google using utility-first density and semantic search optimization.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-2026-viral-content-logic-the-science-of-ai-engagement.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Growth Strategy</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Viral Logic: 10 Content Ideas to Scale</h3>
-                <p>Engineer retention-driven content that triggers algorithms and drives vault revenue.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/ai-infrastructure-foundations.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Educational</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Foundation: Profiting from AI Infrastructure</h3>
-                <p>A professional guide to understanding and monetizing the baseline grid of AI.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/the-executive-chatgpt-library-ai-strategies-for-business-leaders.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Operations</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Executive Library: Top ChatGPT Assets</h3>
-                <p>Curated industrial logic for high-level marketing, business, and side hustle operations.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/quality-prompt-architecture-designing-high-fidelity-ai-outputs.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Quality Control</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">Quality Architecture: Building High-Utility Packs</h3>
-                <p>Engineering standards for creating software-grade prompt assets that consumers trust.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="blog-card" onclick="window.location.href='https://promptvaultusa.shop/blog/why-most-ai-prompt-shops-fail-and-how-to-succeed.html'">
-            <div class="blog-info">
-                <span class="blog-tag">Market Analysis</span>
-                <h3 style="color:white; margin: 0 0 12px 0; font-size: 1.4rem;">The Profitability Gap: Why Prompt Shops Fail</h3>
-                <p>Avoid common traps and learn how to position your vault for elite profitability.</p>
-                <div style="margin-top: auto; padding-top: 20px; color: #8b5cf6; font-weight: 800; font-size: 0.8rem;">OPEN REPORT &rarr;</div>
-            </div>
-        </div>
-
-        <div class="pv-ad-slot">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
-                 data-ad-slot="YOUR_AD_SLOT_ID"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-
     </div>
+
+    <footer class="legal-text" style="color:var(--text-gray); font-size:0.75rem; text-align:center; padding: 40px 0; border-top: 1px solid var(--border); margin-top: 40px;">
+        <div class="legal-links" style="margin-bottom: 10px;">
+            <a href="index.html" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Home</a>
+            <a href="vault.html" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Vault</a>
+            <a href="library.html" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Library</a>
+            <a href="blog.html" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Blog</a>
+            <a href="claim.html" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Claim</a>
+            <a href="legal.html#privacy" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Privacy</a>
+            <a href="legal.html#terms" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Terms</a>
+            <a href="legal.html#refunds" style="color:var(--accent); text-decoration:none; margin:0 10px; font-weight:600;">Refunds</a>
+        </div>
+        <p>© 2026 PromptVault USA | Cebu City, PH</p>
+    </footer>
 </main>
 
 <nav class="bottom-nav">
-    <a class="nav-item" href="https://promptvaultusa.shop/index.html">🏠<br><small>Home</small></a>
-    <a class="nav-item" href="https://promptvaultusa.shop/index.html?action=browse">⊞<br><small>Vaults</small></a>
-    <a class="nav-item active" href="https://promptvaultusa.shop/blog.html">📖<br><small>Blog</small></a>
-    <a class="nav-item" href="https://promptvaultusa.shop/index.html?page=library">👤<br><small>Library</small></a>
+    <a class="nav-item" href="index.html"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item" href="vault.html"><span>⊞</span><small>Vault</small></a>
+    <a class="nav-item active" href="blog.html"><span>📰</span><small>Blog</small></a>
+    <a class="nav-item" href="library.html"><span>🎁</span><small>Library</small></a>
+    <a class="nav-item" href="claim.html"><span>🧾</span><small>Claim</small></a>
 </nav>
 
-<script type="module" src="js/main.js"></script>
+<script type="module" src="/app.js"></script>
 </body>
 </html>
