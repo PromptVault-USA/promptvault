@@ -4,12 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Claim Purchase | PromptVault USA</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="icon" type="image/png" href="/logo.png">
+  
+  <!-- SEO Fix: Explicit canonical tag pointing to the .shop domain -->
+  <link rel="canonical" href="https://promptvaultusa.shop/claim.html" />
+  
+  <!-- Use absolute paths to prevent any asset routing issues -->
+  <link rel="stylesheet" href="https://promptvaultusa.shop/css/style.css">
+  <link rel="icon" type="image/png" href="https://promptvaultusa.shop/logo.png">
 </head>
 <body>
   <main style="max-width:720px;margin:0 auto;padding:24px;">
-    <a href="https://promptvaultusa.shop/#library" style="text-decoration:none;">Back to Library</a>
+    <!-- Fixed absolute path directly to the library page -->
+    <a href="https://promptvaultusa.shop/library.html" style="text-decoration:none;">Back to Library</a>
 
     <h1 style="margin-top:16px;">Claim Purchase</h1>
     <p style="opacity:0.85;">
@@ -42,8 +48,9 @@
     </p>
   </main>
 
+  <!-- Added module script type and absolute import for firebase config -->
   <script type="module">
-    import { auth } from "/firebase-config.js";
+    import { auth } from "https://promptvaultusa.shop/firebase-config.js";
     import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const CLAIM_URL = "https://eoghch09m1wrqm5.m.pipedream.net";
@@ -88,7 +95,8 @@
         }
 
         $status.textContent = "Claim successful. Redirecting to Library...";
-        window.location.href = "https://promptvaultusa.shop/#library";
+        // Fixed absolute redirection path
+        window.location.href = "https://promptvaultusa.shop/library.html";
       } catch (e) {
         $status.textContent = e.message || "Claim failed.";
       } finally {
