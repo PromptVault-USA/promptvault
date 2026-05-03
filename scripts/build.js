@@ -110,11 +110,6 @@ function renderProductPage(p) {
     data-product-title="${escapeHtml(p.title)}"
     data-product-price="${escapeHtml(final)}"></div>`;
 
-  /**
-   * FIX: Clean URLs
-   * Removed .html suffix from the canonical link here explicitly so Google
-   * knows the "clean path" is the ultimate master version.
-   */
   const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}`;
 
   return `<!doctype html>
@@ -190,6 +185,19 @@ function main() {
   }
 
   ensureDir(VAULT_DIR);
+
+  // CLEANUP Phase: Ensure products.csv is the only source of truth
+  if (fs.existsSync(VAULT_DIR)) {
+    const existingFiles = fs.readdirSync(VAULT_DIR);
+    existingFiles.forEach(file => {
+      // If the file is a generated vault html page but the slug isn't in products.csv, delete it
+      if (file.endsWith('.html') && file !== 'index.html' && !seenSlugs.has(file.replace('.html', ''))) {
+        fs.unlinkSync(path.join(VAULT_DIR, file));
+        console.log(`[build] 🗑️ Deleted outdated vault page: ${file}`);
+      }
+    });
+  }
+  
   for (const p of products) {
     const outPath = path.join(VAULT_DIR, `${p.slug}.html`);
     fs.writeFileSync(outPath, renderProductPage(p), "utf8");
@@ -209,7 +217,6 @@ function main() {
       id: p.id,
       slug: p.slug,
       title: p.title,
-      // FIX: Clean GMC URLs as well
       url: `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}`,
     };
   }
