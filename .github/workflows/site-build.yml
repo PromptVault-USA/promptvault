@@ -41,6 +41,7 @@ jobs:
           # 1. Generate data
           node scripts/generate-products-json.js
           node scripts/build.js
+          node scripts/generate-sitemap.js
           node scripts/gmc-sync.js
 
           # 2. Copy files to dist (Ensures all necessary files are deployed)
