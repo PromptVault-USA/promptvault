@@ -8,34 +8,21 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Papa from 'papaparse';
 
-// ESM equivalent for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Since the script is in /scripts/, we go up one level to reach the repo root
 const ROOT = path.resolve(__dirname, '..');
 const CSV_PATH = path.join(ROOT, "products.csv");
 const VAULT_DIR = path.join(ROOT, "vault");
 const PRODUCTS_JSON_PATH = path.join(ROOT, "products.json");
 const GMC_LOOKUP_JSON_PATH = path.join(ROOT, "gmc-lookup.json");
 
-// PayPal SDK Configuration
 const PAYPAL_SDK_SRC =
   "https://www.paypal.com/sdk/js?client-id=AWapcH0acCdiTehBXFR48XBWweSYxkuTnJ7zLadzyL9rLjGyrvVEKwKBuLUUW1ZIvcaNlhk-qSCxvu_m&currency=USD&intent=capture";
 
-// CSV headers validation
 const REQUIRED_HEADERS = [
-  "gmc_id",
-  "id",
-  "slug",
-  "name",
-  "price",
-  "sale_price",
-  "category",
-  "desc",
-  "paylink",
-  "img",
-  "drivelink",
+  "gmc_id", "id", "slug", "name", "price", "sale_price", 
+  "category", "desc", "paylink", "img", "drivelink",
 ];
 
 function fail(msg) {
@@ -57,16 +44,10 @@ function escapeHtml(s) {
     .replaceAll("'", "&#39;");
 }
 
-/**
- * UPDATED: Optimized Image Normalization
- * Ensures relative paths don't break during Organization migration.
- */
 function normalizeImg(img) {
   const raw = String(img ?? "").trim();
   if (!raw) return "/logo.png";
   if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
-  
-  // Remove leading slash if it exists, then add a single one for root-relative loading
   const cleanPath = raw.replace(/^\//, '');
   return `/${cleanPath}`;
 }
@@ -82,11 +63,9 @@ function normalizeRow(r, i) {
   const slug = String(r?.slug ?? "").trim();
   const title = String(r?.name ?? "").trim();
   const desc = String(r?.desc ?? "").trim();
-
   const price = toNumber(r?.price);
   const salePriceRaw = String(r?.sale_price ?? "").trim();
   const sale_price = salePriceRaw === "" ? NaN : toNumber(salePriceRaw);
-
   const img = normalizeImg(r?.img);
   const drivelink = String(r?.drivelink ?? "").trim();
   const gmc_id = String(r?.gmc_id ?? "").trim();
@@ -105,16 +84,8 @@ function normalizeRow(r, i) {
   const finalPrice = hasSale ? sale_price : price;
 
   return {
-    id,
-    slug,
-    title,
-    price,
-    sale_price: hasSale ? sale_price : null,
-    finalPrice,
-    img,
-    drivelink,
-    gmc_id,
-    desc,
+    id, slug, title, price, sale_price: hasSale ? sale_price : null,
+    finalPrice, img, drivelink, gmc_id, desc,
   };
 }
 
@@ -140,10 +111,11 @@ function renderProductPage(p) {
     data-product-price="${escapeHtml(final)}"></div>`;
 
   /**
-   * FIX: Absolute Canonical URL
-   * Essential for Google Merchant Center and SEO in the new Organization.
+   * FIX: Clean URLs
+   * Removed .html suffix from the canonical link here explicitly so Google
+   * knows the "clean path" is the ultimate master version.
    */
-  const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`;
+  const canonicalUrl = `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}`;
 
   return `<!doctype html>
 <html lang="en">
@@ -197,7 +169,6 @@ function ensureDir(dir) {
 
 function main() {
   if (!fs.existsSync(CSV_PATH)) fail(`products.csv not found at ${CSV_PATH}`);
-
   const csv = fs.readFileSync(CSV_PATH, "utf8");
   const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
 
@@ -207,60 +178,43 @@ function main() {
   }
 
   validateHeaders(parsed.meta && parsed.meta.fields ? parsed.meta.fields : null);
-
-  const rows = (parsed.data || []).filter(
-    (r) => r && String(r.id ?? "").trim() !== "",
-  );
+  const rows = (parsed.data || []).filter((r) => r && String(r.id ?? "").trim() !== "");
   if (!rows.length) fail("products.csv has zero products");
 
   const products = rows.map((r, i) => normalizeRow(r, i));
-
   const seenSlugs = new Set();
+  
   for (const p of products) {
     if (seenSlugs.has(p.slug)) fail(`Duplicate slug: ${p.slug}`);
     seenSlugs.add(p.slug);
   }
 
   ensureDir(VAULT_DIR);
-
   for (const p of products) {
     const outPath = path.join(VAULT_DIR, `${p.slug}.html`);
     fs.writeFileSync(outPath, renderProductPage(p), "utf8");
   }
 
-  // Generate products.json
   const productsJson = products.map((p) => ({
-    id: p.id,
-    slug: p.slug,
-    title: p.title,
-    price: p.price,
-    sale_price: p.sale_price,
-    img: p.img,
-    drivelink: p.drivelink,
-    gmc_id: p.gmc_id,
-    desc: p.desc,
+    id: p.id, slug: p.slug, title: p.title, price: p.price,
+    sale_price: p.sale_price, img: p.img, drivelink: p.drivelink,
+    gmc_id: p.gmc_id, desc: p.desc,
   }));
-  fs.writeFileSync(
-    PRODUCTS_JSON_PATH,
-    JSON.stringify(productsJson, null, 2) + "\n",
-    "utf8",
-  );
+  
+  fs.writeFileSync(PRODUCTS_JSON_PATH, JSON.stringify(productsJson, null, 2) + "\n", "utf8");
 
-  // Generate gmc-lookup.json
   const gmcLookup = {};
   for (const p of products) {
     gmcLookup[p.gmc_id] = {
       id: p.id,
       slug: p.slug,
       title: p.title,
-      url: `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}.html`,
+      // FIX: Clean GMC URLs as well
+      url: `https://promptvaultusa.shop/vault/${encodeURIComponent(p.slug)}`,
     };
   }
-  fs.writeFileSync(
-    GMC_LOOKUP_JSON_PATH,
-    JSON.stringify(gmcLookup, null, 2) + "\n",
-    "utf8",
-  );
+  
+  fs.writeFileSync(GMC_LOOKUP_JSON_PATH, JSON.stringify(gmcLookup, null, 2) + "\n", "utf8");
 
   console.log(`[build] ✅ Wrote ${products.length} vault pages to /vault`);
   console.log("[build] ✅ Wrote products.json");
