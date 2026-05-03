@@ -5,42 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Intelligence Vault | PromptVault USA</title>
 
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="stylesheet" href="https://promptvaultusa.shop/css/style.css" />
+  <link rel="icon" type="image/png" href="https://promptvaultusa.shop/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
 
   <style>
     :root { 
-      --accent-teal: #4fd1c5; 
+      --accent: #4fd1c5; 
+      --secondary: #8b5cf6;
       --bg-dark: #0a1120; 
-      --glass: rgba(255, 255, 255, 0.03);
-      --border: rgba(255, 255, 255, 0.1);
+      --glass: rgba(17, 34, 64, 0.4);
+      --border: rgba(255, 255, 255, 0.05);
+      --success: #10b981;
+      --text-gray: #94a3b8;
     }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg-dark);
-      color: #e6f1ff;
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .content-wrap { flex: 1; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1000px;
-      margin: 0 auto 30px;
-      padding: 20px 0;
-    }
+    .bottom-nav { max-width: 480px !important; }
+    .nav-item small { font-size: 0.55rem !important; font-weight: 800; }
+
     .library-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 25px;
       max-width: 1000px;
-      margin: 0 auto;
+      margin: 30px auto;
     }
     .product-card {
       background: var(--glass);
@@ -52,9 +39,21 @@
       flex-direction: column;
       justify-content: space-between;
     }
-    .product-card:hover { border-color: var(--accent-teal); transform: translateY(-5px); }
-    .loader { border: 3px solid rgba(255, 255, 255, 0.1); border-radius: 50%; border-top: 3px solid var(--accent-teal); width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 40px auto; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .product-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+    
+    .loader { 
+      border: 3px solid rgba(255, 255, 255, 0.1); 
+      border-radius: 50%; 
+      border-top: 3px solid var(--accent); 
+      width: 40px; 
+      height: 40px; 
+      animation: spin 1s linear infinite; 
+      margin: 40px auto; 
+    }
+    @keyframes spin { 
+      0% { transform: rotate(0deg); } 
+      100% { transform: rotate(360deg); } 
+    }
     
     .empty-state {
       grid-column: 1 / -1;
@@ -63,9 +62,11 @@
       background: var(--glass);
       border-radius: 24px;
       border: 1px dashed var(--border);
+      margin: 30px auto;
+      max-width: 1000px;
     }
     .btn-download {
-      background: var(--accent-teal);
+      background: var(--accent);
       color: #000;
       padding: 12px;
       border-radius: 12px;
@@ -74,19 +75,30 @@
       text-align: center;
       margin-top: 20px;
       font-size: 0.9rem;
+      display: block;
     }
-    footer { padding: 40px 20px; text-align: center; font-size: 0.8rem; color: #64748b; border-top: 1px solid var(--border); margin-top: 50px; }
-    footer a { color: var(--accent-teal); text-decoration: none; margin: 0 10px; }
   </style>
 </head>
 
 <body>
-  <div class="content-wrap">
-    <div class="header">
-      <a href="/index.html" style="color:var(--accent-teal); text-decoration:none; font-weight:800; font-size:0.8rem;">
-        ← RETURN TO SHOP
+  <header>
+    <div class="header-wrap">
+      <a href="https://promptvaultusa.shop/index.html" style="cursor:pointer; display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+        <img src="https://promptvaultusa.shop/logo.png" class="logo-box" alt="Logo" />
+        <span style="font-weight:800; letter-spacing:-1px;">
+          PROMPTVAULT<span style="color:var(--secondary)">USA</span>
+        </span>
       </a>
-      <h1 style="font-size: 1.5rem; letter-spacing: -1px; margin: 0;">Intelligence Vault</h1>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span id="user-display" style="display:none;font-size:0.85rem;font-weight:600;color:var(--text-gray);"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="flex: 1;">
+    <div style="max-width: 1000px; margin: 0 auto; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="font-size: 1.5rem; letter-spacing: -1px; margin: 0;">My Intelligence Vault</h1>
     </div>
 
     <div id="loading-zone">
@@ -98,46 +110,69 @@
       <!-- Products will be injected here -->
     </div>
 
-    <div id="empty-state" class="empty-state" style="display:none; max-width:1000px; margin: 0 auto;">
+    <div id="empty-state" class="empty-state" style="display:none;">
       <p style="color: #94a3b8; font-size: 1.1rem;">Your vault is currently empty.</p>
-      <a href="/vault.html" class="btn-main" style="display:inline-block; margin-top:15px; background:var(--accent-teal); color:#000; padding:12px 25px; border-radius:12px; text-decoration:none; font-weight:800;">
+      <a href="https://promptvaultusa.shop/vault.html" class="btn-main" style="display:inline-block; margin-top:15px; background:var(--accent); color:#000; padding:12px 25px; border-radius:12px; text-decoration:none; font-weight:800;">
         BROWSE PROMPTS
       </a>
-      <div style="margin-top:25px; font-size:0.85rem; color:#64748b; border-top: 1px solid var(--border); pt:20px;">
-        Paid but nothing here? <a href="/claim.html" style="color:var(--accent-teal); font-weight:800; text-decoration:none;">Claim purchase manually</a>
+      <div style="margin-top:25px; padding-top:20px; font-size:0.85rem; color:#64748b; border-top: 1px solid var(--border);">
+        Paid but nothing here? <a href="https://promptvaultusa.shop/claim.html" style="color:var(--accent); font-weight:800; text-decoration:none;">Claim purchase manually</a>
       </div>
     </div>
-  </div>
+  </main>
 
-  <footer>
-    <p>&copy; 2024 PromptVault USA. <a href="/terms.html">Terms</a> | <a href="/refund-policy.html">Refund Policy</a></p>
+  <footer class="legal-text">
+    <div class="legal-links">
+      <a href="https://promptvaultusa.shop/index.html">Home</a>
+      <a href="https://promptvaultusa.shop/vault.html">Vault</a>
+      <a href="https://promptvaultusa.shop/library.html">Library</a>
+      <a href="https://promptvaultusa.shop/blog.html">Blog</a>
+      <a href="https://promptvaultusa.shop/claim.html">Claim</a>
+      <a href="https://promptvaultusa.shop/legal.html#privacy">Privacy</a>
+      <a href="https://promptvaultusa.shop/legal.html#terms">Terms</a>
+      <a href="https://promptvaultusa.shop/legal.html#refunds">Refunds</a>
+    </div>
+    <p>© 2026 PromptVault USA | Cebu City, PH</p>
   </footer>
 
+  <nav class="bottom-nav">
+    <a class="nav-item" href="https://promptvaultusa.shop/index.html"><span>🏠</span><small>Home</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/vault.html"><span>⊞</span><small>Vault</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/blog.html"><span>📰</span><small>Blog</small></a>
+    <a class="nav-item active" href="https://promptvaultusa.shop/library.html"><span>🎁</span><small>Library</small></a>
+    <a class="nav-item" href="https://promptvaultusa.shop/claim.html"><span>🧾</span><small>Claim</small></a>
+  </nav>
+
   <script type="module">
-    import { auth, db } from '/firebase-config.js';
+    import { auth, db } from 'https://promptvaultusa.shop/firebase-config.js';
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Metadata mapping: In a live app, this could also come from a 'products' collection
     const PRODUCT_MAP = {
-      'RealEstate': { name: 'Real Estate Lead Gen Pack', desc: '50 Tested Prompts', file: '/downloads/real-estate-prompts.pdf' },
-      'TikTok': { name: 'TikTok Affiliate Marketing', desc: '13 Tested Prompts', file: '/downloads/tiktok-affiliate.pdf' },
-      'Copywriting': { name: 'Copywriting Sales Pages', desc: '10 Tested Prompts', file: '/downloads/copy-sales.pdf' }
+      'RealEstate': { name: 'Real Estate Lead Gen Pack', desc: '50 Tested Prompts', file: 'https://promptvaultusa.shop/downloads/real-estate-prompts.pdf' },
+      'TikTok': { name: 'TikTok Affiliate Marketing', desc: '13 Tested Prompts', file: 'https://promptvaultusa.shop/downloads/tiktok-affiliate.pdf' },
+      'Copywriting': { name: 'Copywriting Sales Pages', desc: '10 Tested Prompts', file: 'https://promptvaultusa.shop/downloads/copy-sales.pdf' }
       // Add other product IDs here matching your 'custom_id' from PayPal
     };
 
     const grid = document.getElementById('user-library-grid');
     const loading = document.getElementById('loading-zone');
     const empty = document.getElementById('empty-state');
+    const userDisplay = document.getElementById('user-display');
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.href = "/login.html";
+        window.location.href = "https://promptvaultusa.shop/index.html#login-required";
         return;
       }
 
-      // REAL-TIME SYNC: This fixes the Race Condition (VULN-05)
-      // It listens for the Webhook to write the entitlement record
+      if (user.email) {
+        userDisplay.style.display = 'inline-block';
+        userDisplay.textContent = user.email;
+      }
+
+      // REAL-TIME SYNC: Listens for the Webhook to write the entitlement record
       const entitlementsRef = collection(db, "users", user.uid, "entitlements");
       
       onSnapshot(entitlementsRef, (snapshot) => {
@@ -163,7 +198,7 @@
             card.className = 'product-card';
             card.innerHTML = `
               <div>
-                <h3 style="margin:0; font-size:1.2rem; color:var(--accent-teal);">${product.name}</h3>
+                <h3 style="margin:0; font-size:1.2rem; color:var(--accent);">${product.name}</h3>
                 <p style="font-size:0.85rem; color:#94a3b8; margin:10px 0;">${product.desc}</p>
                 <div style="font-size:0.7rem; color:#475569; text-transform:uppercase;">Order ID: ${data.orderId || 'Direct'}</div>
               </div>
