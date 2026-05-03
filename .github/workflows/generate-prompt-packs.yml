@@ -1,0 +1,42 @@
+name: Mass Produce Prompt Pack PDFs
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  generate-pdfs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120 # Important! Generating 100 docs might take >1 hour
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Install Generation Tools
+        run: |
+          npm install @google/genai md-to-pdf
+
+      - name: Run Mass Production Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          node scripts/mass-produce-packs.js
+          
+      - name: Zip The Generated PDFs
+        run: |
+          zip -r "100_Prompt_Packs_Collection.zip" generated_packs_pdf/
+
+      - name: Upload PDF Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: 100-prompt-packs
+          path: 100_Prompt_Packs_Collection.zip
+          retention-days: 7
