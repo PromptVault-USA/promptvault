@@ -90,7 +90,7 @@ Provide:
 Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for the prompts). Do NOT output conversational intro/outro wrappers (like "Here is your pack..."). Only output the raw document.`;
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash', // You can change this to 'gemini-1.5-flash' if you want to use the free tier model
+        model: 'gemini-1.5-flash-8b',
         contents: prompt,
         config: { temperature: 0.7 }
       });
@@ -110,7 +110,7 @@ Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for th
       console.log(`[SUCCESS] => ${pack.slug}.pdf generated successfully!`);
     }
   } catch (error) {
-    console.error(`[ERROR] Failed on ${pack.title}:\n***error***:"***code":${error.status || 'unknown'},"message":"${error.message}"\n`);
+    console.error(`[ERROR] Failed on ${pack.title}: ${error.message}`);
   }
 }
 
@@ -125,8 +125,8 @@ async function start() {
   for (let i = 0; i < packs.length; i++) {
     console.log(`\n--- Progress: ${i+1} / ${packs.length} ---`);
     await generateSinglePack(packs[i]);
-    // Added a longer delay (10 seconds) to help prevent rate-limiting and quota blocks
-    await sleep(10000); 
+    // Sleep longer to help avoid free tier rate limits
+    await sleep(6000); 
   }
   
   console.log("\n🎉 All PDFs generated in 'generated_packs_pdf'!");
