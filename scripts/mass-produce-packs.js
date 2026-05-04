@@ -14,6 +14,7 @@ const OUTPUT_DIR_PDF = path.join(ROOT, "generated_packs_pdf");
 if (!fs.existsSync(OUTPUT_DIR_MD)) fs.mkdirSync(OUTPUT_DIR_MD, { recursive: true });
 if (!fs.existsSync(OUTPUT_DIR_PDF)) fs.mkdirSync(OUTPUT_DIR_PDF, { recursive: true });
 
+// Read the CSV file
 const CSV_PATH = path.join(ROOT, "products.csv");
 const rawCsv = fs.readFileSync(CSV_PATH, "utf8").split('\n');
 
@@ -28,8 +29,12 @@ for (let i = 1; i < rawCsv.length; i++) {
   
   for (let c = 0; c < row.length; c++) {
     if (row[c] === '"') {
-      if (inQuotes && row[c+1] === '"') { current += '"'; c++; } 
-      else { inQuotes = !inQuotes; }
+      if (inQuotes && row[c+1] === '"') {
+        current += '"';
+        c++;
+      } else {
+        inQuotes = !inQuotes;
+      }
     } else if (row[c] === ',' && !inQuotes) {
       cols.push(current);
       current = "";
@@ -74,24 +79,25 @@ async function generateSinglePack(pack) {
 Generate a high-quality 5-10 page "Prompt Pack" formatting exclusively in Markdown.
 Product Title: "${pack.title}"
 Category: "${pack.category}"
-Description: "${pack.description}"
+Description: "${pack.desc}"
 
 Provide:
-1. An eye-catching Title Header
+1. An eye-catching Title Header that clearly states "100+ Prompts included"
 2. Introduction & Best Practices
-3. 20-30 premium copy-paste prompts organized logically. Provide placeholders like [Insert Niche].
+3. Exactly 100 premium copy-paste prompts organized logically. Provide placeholders like [Insert Niche]. For example, number them 1 to 100.
 4. Conclusion & Next Steps
 
-Formatting rules: Use pure Markdown (Headers, bullet points, code blocks for the prompts). Do NOT output conversational wrappers (like "Here is your pack..."). Only output the raw document.`;
+Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for the prompts). Do NOT output conversational intro/outro wrappers (like "Here is your pack..."). Only output the raw document.`;
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-pro',
+        model: 'gemini-2.5-flash', // You can change this to 'gemini-1.5-flash' if you want to use the free tier model
         contents: prompt,
         config: { temperature: 0.7 }
       });
       
       mdContent = response.text || "";
       mdContent = mdContent.replace(/^[\`]{3}markdown\n/, "").replace(/\n[\`]{3}$/, "");
+      
       fs.writeFileSync(mdPath, mdContent, "utf8");
     }
 
@@ -100,18 +106,30 @@ Formatting rules: Use pure Markdown (Headers, bullet points, code blocks for the
       pdf_options: { format: 'A4', margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' } }
     });
     
-    if (pdf) console.log(`[SUCCESS] => ${pack.slug}.pdf generated successfully!`);
+    if (pdf) {
+      console.log(`[SUCCESS] => ${pack.slug}.pdf generated successfully!`);
+    }
   } catch (error) {
-    console.error(`[ERROR] Failed on ${pack.title}: ${error.message}`);
+    console.error(`[ERROR] Failed on ${pack.title}:\n***error***:"***code":${error.status || 'unknown'},"message":"${error.message}"\n`);
   }
 }
 
 async function start() {
-  console.log(`Found ${packs.length} custom prompt packs to process.`);
+  console.log(`Found ${packs.length} custom prompt packs to process from products.csv.`);
+  
+  if(!process.env.GEMINI_API_KEY) {
+      console.error("❌ GEMINI_API_KEY is not defined in the environment.");
+      process.exit(1);
+  }
+
   for (let i = 0; i < packs.length; i++) {
     console.log(`\n--- Progress: ${i+1} / ${packs.length} ---`);
     await generateSinglePack(packs[i]);
-    await sleep(4000); // Dodge AI API Rate Limits
+    // Added a longer delay (10 seconds) to help prevent rate-limiting and quota blocks
+    await sleep(10000); 
   }
+  
+  console.log("\n🎉 All PDFs generated in 'generated_packs_pdf'!");
 }
+
 start();
