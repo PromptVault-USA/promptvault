@@ -7,22 +7,24 @@ permissions:
   contents: write
 
 jobs:
-  generate-pdfs:
+  generate-and-upload:
     runs-on: ubuntu-latest
     timeout-minutes: 120 # Important! Generating 100 docs might take >1 hour
     
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           
-      - name: Install Generation Tools
+      - name: Install Generation & Upload Tools
         run: |
-          npm install @google/genai md-to-pdf
+          npm install @google/genai md-to-pdf googleapis
 
       - name: Run Mass Production Script
         env:
@@ -30,7 +32,20 @@ jobs:
         run: |
           node scripts/mass-produce-packs.js
           
-      - name: Zip The Generated PDFs
+      - name: Upload to Google Drive & Link to CSV
+        env:
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          node scripts/upload-to-drive.js
+
+      - name: Commit Updated CSV
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated: Added 100 Google Drive links to products.csv"
+          file_pattern: "products.csv"
+
+      - name: Zip The Generated PDFs (Backup)
         run: |
           zip -r "100_Prompt_Packs_Collection.zip" generated_packs_pdf/
 
