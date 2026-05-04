@@ -89,13 +89,33 @@ Provide:
 
 Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for the prompts). Do NOT output conversational intro/outro wrappers (like "Here is your pack..."). Only output the raw document.`;
       
-      const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents: prompt,
-        config: { temperature: 0.7 }
-      });
+      let response;
+      let retries = 5;
+      while(retries > 0) {
+        try {
+          response = await ai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            contents: prompt,
+            config: { temperature: 0.7 }
+          });
+          break;
+        } catch (err) {
+          if (err.status === 429 || (err.message && err.message.includes('429')) || (err.message && err.message.includes('RESOURCE_EXHAUSTED'))) {
+            console.log(`[RATE LIMIT] Hit limit on '${pack.title}'. Sleeping 60s... (${retries} retries left)`);
+            await sleep(60000); // 1 minute
+            retries--;
+          } else {
+            throw err;
+          }
+        }
+      }
+      
+      if (!response) {
+        throw new Error("Failed to generate content after retries.");
+      }
       
       mdContent = response.text || "";
+      // Strip markdown wrapper blocks often returned by the API
       mdContent = mdContent.replace(/^[\`]{3}markdown\n/, "").replace(/\n[\`]{3}$/, "");
       
       fs.writeFileSync(mdPath, mdContent, "utf8");
@@ -110,7 +130,7 @@ Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for th
       console.log(`[SUCCESS] => ${pack.slug}.pdf generated successfully!`);
     }
   } catch (error) {
-    console.error(`[ERROR] Failed on ${pack.title}: ${JSON.stringify(error)} - ${error.message}`);
+    console.error(`[ERROR] Failed on ${pack.title}: ${error.message}`);
   }
 }
 
@@ -125,6 +145,7 @@ async function start() {
   for (let i = 0; i < packs.length; i++) {
     console.log(`\n--- Progress: ${i+1} / ${packs.length} ---`);
     await generateSinglePack(packs[i]);
+    // Added a small natural 4 second sleep between generations to ease the request rate
     await sleep(4000); 
   }
   
