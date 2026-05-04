@@ -90,7 +90,7 @@ Provide:
 Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for the prompts). Do NOT output conversational intro/outro wrappers (like "Here is your pack..."). Only output the raw document.`;
       
       const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash-8b',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { temperature: 0.7 }
       });
@@ -110,7 +110,7 @@ Formatting rules: Use clean Markdown (Headers, bullet points, code blocks for th
       console.log(`[SUCCESS] => ${pack.slug}.pdf generated successfully!`);
     }
   } catch (error) {
-    console.error(`[ERROR] Failed on ${pack.title}: ${error.message}`);
+    console.error(`[ERROR] Failed on ${pack.title}: ${JSON.stringify(error)} - ${error.message}`);
   }
 }
 
@@ -125,8 +125,7 @@ async function start() {
   for (let i = 0; i < packs.length; i++) {
     console.log(`\n--- Progress: ${i+1} / ${packs.length} ---`);
     await generateSinglePack(packs[i]);
-    // Sleep longer to help avoid free tier rate limits
-    await sleep(6000); 
+    await sleep(4000); 
   }
   
   console.log("\n🎉 All PDFs generated in 'generated_packs_pdf'!");
