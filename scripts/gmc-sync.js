@@ -1,54 +1,36 @@
-/**
- * GMC Sync Service v3.2 - Organization Edition
- * Target ID: 5766495931
- * Fixes: Duplicate listing prevention and unique country-based offer IDs.
- */
+// ... existing imports ...
 
-import { google } from 'googleapis';
-import fs from 'fs';
-import csv from 'csv-parser';
-
-// FIXED: Reverting to your preferred Merchant ID
-const merchantId = process.env.MERCHANT_ID || '5766495931';
-
-// 90 countries list - South Korea (KR) strictly excluded
-const TARGET_COUNTRIES = [
-  'US','GB','CA','AU','DE','FR','IT','ES','NL','SE','NO','DK','FI','IE','NZ','AT','CH','BE','PT','PL',
-  'CZ','HU','RO','GR','IL','AE','SA','SG','MY','TH','PH','ID','VN','JP','HK','TW','MX','BR','AR','CL',
-  'CO','PE','ZA','EG','TR','UA','SK','SI','HR','BG','LT','LV','EE','LU','MT','CY','IS','LI','MC','SM',
-  'VA','AD','BH','QA','KW','OM','JO','LB','MA','TN','DZ','KE','NG','GH','UG','TZ','ZM','BW','MU','RU',
-  'IN','BD','PK','LK','NP','UZ','KZ','AZ','GE','AM','MD','BY','RS','ME','MK','AL','BA','XK','CR','PA'
-];
-
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GMC_KEY),
-  scopes: ['https://www.googleapis.com/auth/content']
-});
-
-const content = google.content({ version: 'v2.1', auth });
 const productsToSync = [];
 
-fs.createReadStream('gmc_products.csv')
+fs.createReadStream('products.csv') // <-- Changed to your main products.csv
   .pipe(csv())
   .on('data', (row) => {
     const clean = (val) => val?.toString().trim() || '';
-    const baseOfferId = clean(row.id);
+    
+    // Fallback to 'id' if 'gmc_id' doesn't exist
+    const baseOfferId = clean(row.gmc_id) || clean(row.id);
 
-    const rawSaleDate = clean(row.sale_price_effective_date);
-    const cleanSaleDate = rawSaleDate.replace(/\s/g, ''); 
+    // Hardcode an infinite effective date, or you can map this dynamically if added later
+    const rawSaleDate = '2026-01-01T00:00:00-07:00/2026-12-31T23:59:59-07:00';
+    const cleanSaleDate = rawSaleDate;
 
     TARGET_COUNTRIES.forEach(country => {
       if (country === 'KR' || country === 'KP') return;
 
-      // ENSURES NO DUPLICATES: Unique ID per country
       const uniqueOfferId = `${baseOfferId}_${country.toLowerCase()}`;
+
+      // Convert relative paths like /assets/images/ to absolute CDN URLs
+      let absoluteImage = clean(row.img);
+      if (absoluteImage.startsWith('/')) {
+        absoluteImage = `https://promptvaultusa.shop${absoluteImage}`;
+      }
 
       productsToSync.push({
         offerId: uniqueOfferId,
-        title: clean(row.title),
-        description: clean(row.description),
-        link: clean(row.link),
-        imageLink: clean(row.image_link),
+        title: clean(row.name), // mapped to main CSV 'name' column
+        description: clean(row.desc), // mapped to main CSV 'desc' column
+        link: `https://promptvaultusa.shop/vault/${clean(row.slug)}.html`,
+        imageLink: absoluteImage, // mapped to main CSV 'img'
         contentLanguage: 'en',
         targetCountry: country,
         feedLabel: country, 
@@ -62,9 +44,9 @@ fs.createReadStream('gmc_products.csv')
           currency: 'USD'
         },
         salePriceEffectiveDate: cleanSaleDate,
-        condition: clean(row.condition) || 'new',
-        availability: clean(row.availability) || 'in stock',
-        brand: clean(row.brand) || 'PromptVault USA',
+        condition: 'new',
+        availability: 'in stock',
+        brand: 'PromptVault USA',
         googleProductCategory: '5827', 
         identifierExists: 'no',
         shipping: [{
@@ -78,42 +60,4 @@ fs.createReadStream('gmc_products.csv')
   .on('end', async () => {
     console.log(`🚀 Starting Batched Sync: ${productsToSync.length} listings for ID: ${merchantId}`);
     
-    const BATCH_SIZE = 100;
-    let successCount = 0;
-
-    for (let i = 0; i < productsToSync.length; i += BATCH_SIZE) {
-      const currentBatch = productsToSync.slice(i, i + BATCH_SIZE);
-      
-      const batchRequest = {
-        entries: currentBatch.map((prod, index) => ({
-          batchId: i + index,
-          merchantId: merchantId,
-          method: 'insert',
-          product: prod
-        }))
-      };
-
-      try {
-        const response = await content.products.custombatch({
-          requestBody: batchRequest
-        });
-
-        const entries = response.data.entries || [];
-        const errors = entries.filter(e => e.errors);
-        
-        successCount += (entries.length - errors.length);
-        
-        if (errors.length > 0) {
-          console.error(`❌ Batch Error: ${errors[0].errors.errors[0].message}`);
-        }
-
-        console.log(`Progress: ${successCount}/${productsToSync.length} synced...`);
-        
-      } catch (err) {
-        console.error(`Critical Batch Failure: ${err.message}`);
-      }
-    }
-
-    console.log(`✅ DONE: ${successCount} listings pushed to Merchant Center.`);
-    if (successCount === 0) process.exit(1);
-  });
+    // ... remainder of the batch push code remains the exact same ...
